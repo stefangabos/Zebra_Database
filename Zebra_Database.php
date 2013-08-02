@@ -4133,9 +4133,6 @@ class Zebra_Database
         // frees the memory associated with the last result
         @mysqli_free_result($this->last_result);
 
-        // close connection
-        @mysqli_close($this->connection);
-
     }
 
 }
