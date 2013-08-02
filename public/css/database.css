@@ -1,0 +1,72 @@
+#zdc { position: absolute; top: 0; left:0; width: 100%; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 12px; text-align: left; z-index: 9998; overflow: hidden }
+#zdc * { margin: 0; padding: 0; font-family: inherit; font-size: inherit; color: #000 }
+
+/* COMMON */
+#zdc a              { text-decoration: none }
+#zdc .zdc-hidden    { display: none }
+#zdc .zdc-visible   { display: block }
+#zdc table          { border-collapse: collapse; border-color: #888; border: 1px solid #888 }
+#zdc table tr.even  { background: #DEDEDE }
+#zdc table td,
+#zdc table th       { padding: 4px }
+#zdc table th       { background: #73705D; color: #FFF }
+#zdc .clear         { clear: both }
+
+/* MAIN MENU */
+#zdc .zdc-main              { list-style-type: none; margin: 0; padding: 0; background: #151C24; display: block; float: left; width: 100% }
+#zdc .zdc-main li           { float: left; border-right: 1px solid #9CA68F }
+#zdc .zdc-main li a         { color: #FFF; padding: 10px; display: block; float: left }
+#zdc .zdc-main li a:hover   { background: #403D32 }
+#zdc .zdc-main li span      { background: orange; padding: 0 4px; font-weight: bold; color: #000 }
+
+/* GLOBALS SUBMENU */
+#zdc-globals-submenu                { border:1px solid #403D32 }
+#zdc-globals-submenu ul             { list-style-type: none; margin: 0; padding: 0; background: #403D32; display: block; float: left; width: 100% }
+#zdc-globals-submenu ul li          { float: left }
+#zdc-globals-submenu ul li a        { display: block; float: left; padding: 10px; color: #FFF }
+#zdc-globals-submenu ul li a:hover  { background: #73705D }
+
+/* ENTRIES */
+#zdc .zdc-entry                 { margin: 4px 4px 0 4px; border: 1px solid #666; background: #9CA68F; width: 99% }
+#zdc .zdc-box                   { background: #EEE; padding: 5px; border: 1px solid #151C24; margin-bottom: 2px }
+#zdc .zdc-transaction           { background: #FFFFCC }
+#zdc .zdc-counter               { background: #73705D; padding: 5px; border-right: 1px solid #000; color: #DDD }
+#zdc .zdc-even .zdc-counter     { background: #252626 }
+#zdc .zdc-data                  { width: 100%; padding: 5px }
+#zdc .zdc-error                 { background: #CC3333; color: #FFF; font-weight: bold }
+#zdc .zdc-error pre,
+#zdc .zdc-error span,
+#zdc .zdc-error em,  
+#zdc .zdc-error a               { font-weight: normal; color: #FFF }
+#zdc .zdc-error a               { text-decoration: underline }
+#zdc .zdc-error strong          { color: #FFF }
+#zdc .zdc-highlight             { background: orange }
+
+#zdc .zdc-actions           { padding: 2px; background: #CDD8BF; color: #151C24 }
+#zdc .zdc-actions ul        { list-style-type: none; margin: 0; padding: 0 }
+#zdc .zdc-actions ul li     { float: left; display: block; margin-right: 0px; background-repeat: no-repeat; background-position: 5px center; padding: 5px 5px 5px 28px }
+#zdc .zdc-actions ul li a   { color: #151C24 !important; text-decoration: underline }
+
+#zdc .zdc-time      { background-image: url('clock.png') }
+#zdc .zdc-cache     { background-image: url('cache.png'); background-color: #CCFF99; color: #222; border: 1px solid black }
+#zdc .zdc-top       { background-image: url('top.png') }
+#zdc .zdc-close     { background-image: url('close.png') }
+#zdc .zdc-records   { background-image: url('records.png') }
+#zdc .zdc-affected  { background-image: url('affected.png') }
+#zdc .zdc-explain   { background-image: url('explain.png') }
+#zdc .zdc-backtrace { background-image: url('backtrace.png') }
+
+/* HIGHLIGHTING */
+#zdc .keyword { font-weight: bold; color: #990099; text-transform: uppercase }
+#zdc .string { font-weight: bold; color: #008000 }
+#zdc .symbol { font-weight: bold; color: #FF00FF }
+#zdc .indent { padding: 0 0 0 20px }
+
+#zdc-successful-queries, #zdc-unsuccessful-queries, #zdc-globals, #zdc-globals-submenu,
+.zdc-entry, .zdc-records-table, .zdc-explain-table, .zdc-backtrace-table
+{ display: none }
+
+/* MINI CONSOLE */
+#zdc-mini { position: absolute; top: 0; right: 1px; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 12px; text-align: left; display: block }
+#zdc-mini a { background: #151C24 url('db.gif') no-repeat 10px center; display: block; padding: 10px 10px 10px 30px; color: #FFF; text-decoration: none }
+#zdc-mini a span { font-weight: bold; background-color: #c40000; padding: 0 5px 0 5px; margin: 0px 4px 0 4px }

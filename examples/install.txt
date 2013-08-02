@@ -1,0 +1,3 @@
+Prior to running the example, you must first download and install the the "world" database from MySQL's website at http://dev.mysql.com/doc/index-other.html.
+
+Then, you must edit example.php and change the settings of host, user name, password and database to match your configuration.
