@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.1 (last revision: August 02, 2013)
+ *  @version    2.8.2 (last revision: August 24, 2013)
  *  @copyright  (c) 2006 - 2013 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -663,7 +663,7 @@ class Zebra_Database
             SELECT
                 COUNT(' . $column . ') AS counted
             FROM
-                ' . $table .
+                `'. $table . '`' .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, $cache, false, $highlight);
@@ -724,7 +724,7 @@ class Zebra_Database
         $this->query('
 
             DELETE FROM
-                ' . $table .
+                `'. $table . '`' .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, false, false, $highlight);
@@ -797,7 +797,7 @@ class Zebra_Database
             SELECT
                 ' . $column . '
             FROM
-                ' . $table .
+                `'. $table . '`' .
             ($where != '' ? ' WHERE ' . $where : '') . '
             LIMIT 1
 
@@ -880,7 +880,7 @@ class Zebra_Database
             SELECT
                 MAX(' . $column . ') AS maximum
             FROM
-                ' . $table .
+                `'. $table . '`' .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, $cache, false, $highlight);
@@ -959,7 +959,7 @@ class Zebra_Database
             SELECT
                 SUM(' . $column . ') AS total
             FROM
-                '. $table .
+                `'. $table . '`' .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, $cache, false, $highlight);
@@ -1483,7 +1483,7 @@ class Zebra_Database
         // run the query
         $this->query('
 
-            SHOW COLUMNS FROM ' . $this->escape($table) . '
+            SHOW COLUMNS FROM `' . $this->escape($table) . '`
 
         ');
 
@@ -1687,7 +1687,7 @@ class Zebra_Database
         $this->query('
 
             INSERT' . ($ignore ? ' IGNORE' : '') . ' INTO
-                ' . $table . '
+                `' . $table . '`
                 (' . $cols . ')
             VALUES
                 (' . $values . ')'
@@ -1763,7 +1763,7 @@ class Zebra_Database
             // start preparing the INSERT statement
             $sql = '
                 INSERT' . ($ignore ? ' IGNORE' : '') . ' INTO
-                    ' . $table . '
+                    `' . $table . '`
                     (' . '`' . implode('`,`', $columns) . '`' . ')
                 VALUES
             ';
@@ -1909,7 +1909,7 @@ class Zebra_Database
         $this->query('
 
             INSERT INTO
-                ' . $table . '
+                `' . $table . '`
                 (' . $cols . ')
             VALUES
                 (' . $values . ')
@@ -2649,6 +2649,10 @@ class Zebra_Database
      *
      *  @param  string  $table          Table in which to search.
      *
+     *                                  <i>Note that table name will be enclosed in grave accents " ` " and thus only
+     *                                  one table name should be used! For anything but a simple select query use the
+     *                                  {@link query()} method.</i>
+     *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
      *                                  Default is "" (an empty string).
@@ -2709,7 +2713,7 @@ class Zebra_Database
             SELECT
                 ' . $columns . '
             FROM
-                ' . $table .
+                `' . $table . '`' .
 
             ($where != '' ? ' WHERE ' . $where : '') .
 
@@ -3430,7 +3434,7 @@ class Zebra_Database
             $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen($_SERVER['DOCUMENT_ROOT']))), '/');
 
             // link the required javascript
-            $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.js"></script>' . $output;
+            $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.src.js"></script>' . $output;
 
             // link the required css file
             $output = '<link rel="stylesheet" href="' . $path . '/public/css/database.css" type="text/css">' . $output;
@@ -3633,7 +3637,7 @@ class Zebra_Database
         $this->query('
 
             TRUNCATE
-                ' . $table
+                `' . $table . '`'
 
         , '', false, false, $highlight);
 
@@ -3742,7 +3746,7 @@ class Zebra_Database
         $this->query('
 
             UPDATE
-                ' . $table . '
+                `' . $table . '`
             SET
                 ' . $cols .
 
