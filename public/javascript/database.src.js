@@ -7,58 +7,69 @@
  *  @param  first_only      Optional. Boolean. If set to TRUE, will return only the first child.
  *
  */
-function zdc_getElements(parent, tag, class_name, first_only)
-{
+function zdc_getElements(parent, tag, className) {
 
-    // initialize the array to be returned
-    var result = new Array();
+    var
 
-    // get children elements matching tag_name
-    var children = parent.getElementsByTagName(tag);
+        // initialize the array to be returned
+        result = [],
 
-    // the total number of found children
-    var length = children.length;
+        elements, i,
+
+        // if native support is available
+        nativeSupport = parent.getElementsByClassName,
+
+        // the regular expression for matching class names
+        regexp = new RegExp('\\b' + className + '\\b', 'i');
+
+    // if parent is undefined, the parent is the document object
+    parent || (parent = document);
+
+    // if tag is undefined, match all tags
+    tag || (tag = '*');
+
+    // if native implementation is available
+    // get elements having the sought class
+    if (nativeSupport) elements = parent.getElementsByClassName(className);
+
+    // get children elements matching the given tag
+    else elements = parent.getElementsByTagName(tag);
+
+    // the total number of found elements
+    i = elements.length;
 
     // iterate through the found elements
-    for (var i = 0; i < length; i++) {
+    // decreasing while loop is the fastest way to iterate in JavaScript
+    // http://blogs.oracle.com/greimer/entry/best_way_to_code_a
+    while (i--)
 
-        // current child
-        var child = children.item(i);
+        // if getElementsByClassName is available natively
+        if ((nativeSupport &&
 
-        // if we need to narrow down the search to elements having a specific class
-        if (undefined != class_name) {
+            // and we need specific tags and current element's tag is what we're looking for
+            (tag != '*' && elements[i].nodeName.toLowerCase() == tag) ||
 
-            // get the classes of the element
-            var classes = child.getAttribute('class');
+            // or we don't need specific tags
+            tag == '*'
 
-            // if the element has any classes and the sought class is among them
-            if (null != classes && classes.indexOf(class_name) > -1) {
+        // or if getElementsByClassName is not available natively
+        ) || (!nativeSupport &&
 
-                // if we only need to return the first found element, return it
-                if (undefined != first_only && first_only === true) return child;
+            // first, test if the class name *contains* what we're searching for
+            // because indexOf is much faster than a regular expression
+            elements[i].className.indexOf(className) > -1 &&
 
-                // ...otherwise, add it to results
-                result.push(child);
+            // if class name contains what we're searching for
+            // use a regular expression to test if there's an exact match
+            regexp.test(elements[i].className))
 
-            }
+        )
 
-        // if no need to narrow down the search to elements having a specific class
-        } else {
+        // add it to results
+        result.push(elements[i]);
 
-            // if we only need to return the first found element, return it
-            if (undefined != first_only && first_only === true) return child;
-
-            // ...otherwise, add it to results
-            result.push(child);
-
-        }
-
-    }
-
-    // if we only need to return the first found element and we are here, it means that there were no elements found
-    // and return false
-    // otherwise, if there are no elements found, return false or, return the found elements if any
-    return (undefined != first_only && first_only === true) ? false : (result.length > 0 ? result : false);
+    // if there are no elements found, return false or, return the found elements if any
+    return result.length ? result : false;
 
 }
 
@@ -73,13 +84,12 @@ function zdc_setDisplay(elements, display)
 {
 
     // iterate through the array of elements
-    for (index in elements) {
+    for (index in elements)
 
         // set display for each element
-        // (exclude the entries in the array that are added by JavaScript)
+        // (exclude the entries in the array that are added through JavaScript)
         if (index.match(/^[0-9]+$/)) elements[index].style.display = display;
 
-    }
 }
 
 /**
@@ -113,8 +123,8 @@ function zdc_closeAll(skip)
                 // get the tab element from the DOM
                 var tab = document.getElementById(tab);
 
-                // if tabs exists
-                if (null != tab) {
+                // if tab exists
+                if (null !== tab) {
 
                     // get children <table>s having the 'zdc-entry' class
                     var children = zdc_getElements(tab, 'table', 'zdc-entry');
@@ -131,8 +141,11 @@ function zdc_closeAll(skip)
 
         }
 
+        // the sub-tabs of the "global" main tab
+        var tabs = ['post', 'get', 'session', 'cookie', 'files', 'server'];
+
         // if the "globals" tab is not to be skipped
-        if (null == skip.match(/^zdc\-globals/)) {
+        if (null === skip.match(/^zdc\-globals/)) {
 
             // hide the globals submenu
             document.getElementById('zdc-globals-submenu').style.display = 'none';
@@ -143,9 +156,6 @@ function zdc_closeAll(skip)
             // hide the parent element
             parent.style.display = 'none';
 
-            // the sub-tabs of the "global" main tab
-            var tabs =['post', 'get', 'session', 'cookie', 'files', 'server'];
-
             // iterate through the tabs
             for (index in tabs) {
 
@@ -153,15 +163,12 @@ function zdc_closeAll(skip)
                 var el = 'zdc-globals-' + tabs[index];
 
                 // if element exists, hide it
-                if (null != document.getElementById(el)) document.getElementById(el).style.display = 'none';
+                if (null !== document.getElementById(el)) document.getElementById(el).style.display = 'none';
 
             }
 
         // if a sub-tab of the "globals" main tab is to be skipped
         } else {
-
-            // the sub-tabs of the "global" main tab
-            var tabs =['post', 'get', 'session', 'cookie', 'files', 'server'];
 
             // iterate through the tabs
             for (index in tabs) {
@@ -170,7 +177,7 @@ function zdc_closeAll(skip)
                 el = 'zdc-globals-' + tabs[index];
 
                 // if element is not to be skipped and it exists, hide it
-                if (el != skip && null != document.getElementById(el)) document.getElementById(el).style.display = 'none';
+                if (el != skip && null !== document.getElementById(el)) document.getElementById(el).style.display = 'none';
 
             }
 
@@ -218,11 +225,13 @@ function zdc_toggle(element)
                 // if element exists
                 if (null != el) {
 
-                    // get the children <table> elements having the 'zdc-entry' class
-                    var children = zdc_getElements(el, 'table', 'zdc-entry');
+                    var
 
-                    // get the negated value of the display property of the element
-                    var status = (el.style.display != 'block' ? 'block' : 'none');
+                        // get the children <table> elements having the 'zdc-entry' class
+                        children = zdc_getElements(el, 'table', 'zdc-entry'),
+
+                        // get the negated value of the display property of the element
+                        status = (el.style.display != 'block' ? 'block' : 'none');
 
                     // update the display property for all the element's children
                     zdc_setDisplay(children, status);
@@ -235,14 +244,16 @@ function zdc_toggle(element)
 
             case 'zdc-globals-submenu':
 
-                // get the element from the DOM
-                var el = document.getElementById(element);
+                var
+
+                    // get the element from the DOM
+                    el = document.getElementById(element),
+
+                    // this is the parent of the element
+                    parent = document.getElementById('zdc-globals');
 
                 // toggle display property of the element
                 el.style.display = (el.style.display != 'block' ? 'block' : 'none');
-
-                // this is the parent of the element
-                var parent = document.getElementById('zdc-globals');
 
                 // toggle display property of the parent
                 parent.style.display = (parent.style.display != 'block' ? 'block' : 'none');
@@ -266,33 +277,36 @@ function zdc_toggle(element)
 
             default:
 
-                // get the element from the DOM
-                el = document.getElementById(element);
+                var
 
-                // se if the element is the "show records", "explain" or "backtrace" tab
-                var matches = element.match(/\-([a-z]+)([0-9]+)$/);
+                    // get the element from the DOM
+                    el = document.getElementById(element),
+
+                    // se if the element is the "show records", "explain" or "backtrace" tab
+                    matches = element.match(/\-([a-z]+)([0-9]+)$/);
 
                 // if the element is the "show records", "explain" or "backtrace" tab
-                if (null != matches) {
+                if (null !== matches) {
 
                     // when we open the "show records", "explain" or the "backtrace" tab we need to
                     // hide the other two
                     // therefore, get all three tabs
-                    var elem1 = document.getElementById('zdc-records-' + matches[1] + matches[2]);
-                    var elem2 = document.getElementById('zdc-explain-' + matches[1] + matches[2]);
-                    var elem3 = document.getElementById('zdc-backtrace-' + matches[1] + matches[2]);
+                    var elem1 = document.getElementById('zdc-records-' + matches[1] + matches[2]),
+                        elem2 = document.getElementById('zdc-explain-' + matches[1] + matches[2]);
+                        elem3 = document.getElementById('zdc-backtrace-' + matches[1] + matches[2]);
 
                     // if tab exists and is not the one being opened, close it
-                    if (null != elem1 && elem1 != el) elem1.style.display = 'none';
-                    if (null != elem2 && elem2 != el) elem2.style.display = 'none';
-                    if (null != elem3 && elem3 != el) elem3.style.display = 'none';
+                    if (null !== elem1 && elem1 != el) elem1.style.display = 'none';
+                    if (null !== elem2 && elem2 != el) elem2.style.display = 'none';
+                    if (null !== elem3 && elem3 != el) elem3.style.display = 'none';
 
                 }
 
                 // toggle display property of the element
-                if (null != el) el.style.display = (el.style.display != 'block' ? 'block' : 'none');
+                if (null !== el) el.style.display = (el.style.display != 'block' ? 'block' : 'none');
 
         }
+
     }
 
 }
@@ -345,14 +359,16 @@ window.onload = function() {
 
 registerOnLoad(function () {
 
-    // are there any error messages?
-    var errors = document.getElementById('zdc-errors');
+    var
 
-    // are there any unsuccessful queries
-    var unsuccessful = document.getElementById('zdc-unsuccessful-queries');
+        // are there any error messages?
+        errors = document.getElementById('zdc-errors'),
+
+        // are there any unsuccessful queries
+        unsuccessful = document.getElementById('zdc-unsuccessful-queries');
 
     // if there are error messages
-    if (null != errors) {
+    if (null !== errors) {
 
         // get all the "error messages" tab's children <table>s having the 'zdc-entry' class
         var children = zdc_getElements(errors, 'table', 'zdc-entry');
@@ -364,7 +380,7 @@ registerOnLoad(function () {
         errors.style.display = 'block';
 
     // if there are unsuccessful queries
-    } else if (null != unsuccessful) {
+    } else if (null !== unsuccessful) {
 
         // get all the "error messages" tab's children <table>s having the 'zdc-entry' class
         var children = zdc_getElements(unsuccessful, 'table', 'zdc-entry');
@@ -377,12 +393,14 @@ registerOnLoad(function () {
 
     } else {
 
-        // if there are successful queries
-        var successful = document.getElementById('zdc-successful-queries');
+        var
 
-        // are there any queries that need to be highlighted?
-        // get all the "successful queries" tab's children <table>s having the 'zdc-highlight' class
-        var highlight = zdc_getElements(successful, 'table', 'zdc-highlight');
+            // if there are successful queries
+            successful = document.getElementById('zdc-successful-queries'),
+
+            // are there any queries that need to be highlighted?
+            // get all the "successful queries" tab's children <table>s having the 'zdc-highlight' class
+            highlight = zdc_getElements(successful, 'table', 'zdc-highlight');
 
         // set the found tables' display property to "block"
         zdc_setDisplay(highlight, 'block');
