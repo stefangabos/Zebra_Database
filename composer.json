@@ -16,7 +16,7 @@
     "require": {
         "php": ">=5.0.0"
     },
-    "version": "2.8.2",
+    "version": "2.8.3",
     "autoload": {
         "psr-0": { "Zebra_Database": "" }
     }
