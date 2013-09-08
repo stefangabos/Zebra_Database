@@ -3138,7 +3138,7 @@ class Zebra_Database
                                     $this->_fix_pow($debug_info['execution_time']) . ' ' .
                                     $this->language['miliseconds'] . ' (<strong>' .
                                     number_format(
-                                        $debug_info['execution_time'] * 100 / $this->total_execution_time,
+                                        ($this->total_execution_time != 0 ? $debug_info['execution_time'] * 100 / $this->total_execution_time : 0),
                                         2, '.', ',') . '</strong>%)
                                 </li>
                             ';
