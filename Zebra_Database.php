@@ -1748,7 +1748,8 @@ class Zebra_Database
     {
 
         // if $data is not an array of arrays
-        if (!is_array(array_pop(array_values($data))))
+        $tmp = array_values($data);
+        if (!is_array(array_pop($tmp))) 
 
             // save debug information
             $this->_log('errors', array(
