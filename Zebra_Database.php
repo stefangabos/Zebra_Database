@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.3 (last revision: September 08, 2013)
+ *  @version    2.8.3 (last revision: September 13, 2013)
  *  @copyright  (c) 2006 - 2013 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -1747,9 +1747,11 @@ class Zebra_Database
     function insert_bulk($table, $columns, $data, $ignore = false)
     {
 
+        // we can't do array_values(array_pop()) since PHP 5.3+ as will trigger a "strict standards" error
+        $values = array_values($data);
+
         // if $data is not an array of arrays
-        $tmp = array_values($data);
-        if (!is_array(array_pop($tmp))) 
+        if (!is_array(array_pop($value)))
 
             // save debug information
             $this->_log('errors', array(
