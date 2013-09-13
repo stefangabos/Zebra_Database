@@ -52,4 +52,7 @@
         'warning_replacements_wrong_number'     => 'Die Anzahl der Ersetzungen stimmt nicht mit der Anzahl der Elemente im <em>$replacements</em> Array &uuml;berein.',
         'warning_wait_timeout'                  => 'Die MySQL-Variable <em>wait_timeout</em> hat den Wert %s. Die Variable <em>wait_timeout</em> repr&auml;sentiert die Zeit in Sekunden, die MySQL wartet, bevor eine inaktive Verbindung beendet wird. Nach Beendigung der Ausf&uuml;hrung wird die MySQL Verbindung nicht beendet sondern in einen inaktiv-Status gesetzt und erneut benutzt, wenn derselbe Nutzer wieder eine Datenbankverbindung ben&ouml;tigt (ein g&auml;ngiges Beispiel ist die Navigation durch die einzelnen Seiten einer Webseite). Der Standardwert f&uuml;r <em>wait_timeout</em> ist 28800 Sekunden oder 8 Stunden. Sofern Sie viele Besucher haben, kann das zu <em><a href="http://dev.mysql.com/doc/refman/5.5/en/too-many-connections.html" target="_blank">Too many connections</a></em>-Fehlern f&uuml;hren, weil es m&ouml;glicherweise Zeiten gibt in denen keine freien Verbindungen (<a href="http://dev.mysql.com/doc/refman/5.5/de/server-system-variables.html#sysvar_max_connections" target="_blank">free connections</a>) mehr verf&uuml;gbar sind. Der empfohlene Wert ist 300 Sekunden (5 Minuten).',
         'warnings'                              => 'Warnungen',
+
     );
+
+?>
