@@ -20,8 +20,10 @@
         'could_not_seek'                        => 'could not seek to specified row',
         'could_not_select_database'             => 'Could not select database',
         'could_not_write_to_log'                => 'Could not write to log file. Make sure the folder exists and is writable.',
+        'date'                                  => 'Date',
         'email_subject'                         => 'Slow query on %s!',
         'email_content'                         => "The following query exceeded normal running time of %s seconds by running %s seconds: \n\n %s",
+        'error'                                 => 'Error',
         'errors'                                => 'errors',
         'execution_time'                        => 'execution time',
         'explain'                               => 'explain',
@@ -38,6 +40,7 @@
                                                     configured with <em>--with-zlib[=DIR]</em>.</span>',
         'miliseconds'                           => 'ms',
         'mysql_error'                           => 'MySQL error',
+        'no'                                    => 'No',
         'no_transaction_in_progress'            => 'No transaction in progress.',
         'not_a_valid_resource'                  => 'Not a valid resource (make sure you specify a resource as argument for fetch_assoc()/fetch_obj() if you are executing a query inside the loop)',
         'optimization_needed'                   => '<strong>WARNING</strong>: The first few results returned by this query are the same as returned by <strong>%s</strong> other queries!',
@@ -51,7 +54,9 @@
         'warning_replacements_not_array'        => '<em>$replacements</em> must be an arrays of values',
         'warning_replacements_wrong_number'     => 'the number of items to replace is different than the number of items in the <em>$replacements</em> array',
         'warning_wait_timeout'                  => 'The value of MySQL\'s <em>wait_timeout</em> variable is set to %s. The <em>wait_timeout</em> variable represents the time, in seconds, that MySQL will wait before killing an idle connection. After a script finishes execution, the MySQL connection is not actually terminated but it is put in an idle state and is being reused if the same user requires a database connection (a very common scenario is when users navigate through the pages of a website). The default value of <em>wait_timeout</em> is 28800 seconds, or 8 hours. If you have lots of visitors this can lead to a <em><a href="http://dev.mysql.com/doc/refman/5.5/en/too-many-connections.html" target="_blank">Too many connections</a></em> error, as eventualy there will be times when no <a href="http://dev.mysql.com/doc/refman/5.5/en/server-system-variables.html#sysvar_max_connections" target="_blank">free connections</a> will be available. The recommended value is 300 seconds (5 minutes).',
+        'warning'                               => 'Warning',
         'warnings'                              => 'warnings',
+        'yes'                                   => 'Yes',
 
     );
 
