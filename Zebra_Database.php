@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.3 (last revision: September 13, 2013)
+ *  @version    2.8.3 (last revision: September 16, 2013)
  *  @copyright  (c) 2006 - 2013 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -3773,11 +3773,29 @@ class Zebra_Database
      *  <i>Make sure you're calling it BEFORE {@link show_debug_console()} so that you can see in the debugging console if
      *  writing to the log file was successful or not.</i>
      *
+     *  Note that by default all logs are written to a single file. Refer to the method's arguments for grouping logs by
+     *  days and/or hours.
+     *
      *  @since  1.1.0
      * 
-     *  @param daily a flag whether for each day a new file should be used (log_ymd). by default all data is in one file.
-     *  @param hourly a flag whether for each hour of a day a new file should be used (log{_ymd}_H). by default this option is disabled.
+     *  @param boolean  $daily      Should logs be grouped by days?
+     *
+     *                              Log files will have their name in the form of "log_ymd.txt", where "y", "m" and "d"
+     *                              represent two digit values for year, month and day, respectively.
+     *
+     *                              Default is FALSE.
+     *
+     *  @param boolean  $hourly     Should logs be also groupped by hours?
      * 
+     *                              Log files will have their name in the form of "log_ymd_h.txt", where "y", "m" and "d"
+     *                              represent two digit values for year, month and day, respectively, while "h" represents
+     *                              the two digit value for hour.
+     *
+     *                              Note that if this argument is set to TRUE, the $daily argument will be automatically
+     *                              set to TRUE.
+     *
+     *                              Default is FALSE.
+     *
      *  @return void
      */
     function write_log($daily = false, $hourly = false)
@@ -3805,13 +3823,24 @@ class Zebra_Database
         ) {
 		
             // daily/hourly file?
-            $file = 'log';
-            $file .= ($daily) ? '_' . date("ymd") : '';
-            $file .= ($hourly) ? '_' . date("H") : '';
-            $file .= '.txt';
+            $file_name = 'log';
+
+            // if $hourly is set to TRUE, $daily *must* be true
+            if ($hourly) $daily = true;
+
+            // are we writing daily logs?
+            // (suppress "strict standards" warning for PHP 5.4+)
+            $file_name .= ($daily ? '_' . @date('ymd') : '');
+
+            // are we writing hourly logs?
+            // (suppress "strict standards" warning for PHP 5.4+)
+            $file_name .= ($hourly ? '_' . @date('H') : '');
+
+            // log file's extension
+            $file_name .= '.txt';
 	
             // tries to create/open the 'log.txt' file
-            if ($handle = @fopen(rtrim($this->log_path, '/') . '/' . $file, 'ab')) {
+            if ($handle = @fopen(rtrim($this->log_path, '/') . '/' . $file_name, 'w')) {
 
                 // iterate through the debug information
                 foreach ($this->debug_info['successful-queries'] as $debug_info) {
@@ -3827,18 +3856,52 @@ class Zebra_Database
                         ' '
                     );
 
+                    // all the labels that may be used in a log entry
+                    $labels = array(
+                        strtoupper($this->language['date']),
+                        strtoupper('query'),
+                        strtoupper($this->language['execution_time']),
+                        strtoupper($this->language['warning']),
+                        strtoupper($this->language['error']),
+                        strtoupper($this->language['from_cache']),
+                        strtoupper($this->language['yes']),
+                        strtoupper($this->language['no']),
+                        strtoupper($this->language['backtrace']),
+                        strtoupper($this->language['file']),
+                        strtoupper($this->language['line']),
+                        strtoupper($this->language['function']),
+                    );
+
+                    // determine the longest label (for propper indenting)
+                    $longest_label_length = 0;
+
+                    // iterate through the labels
+                    foreach ($labels as $label)
+
+                        // if the label is longer than the longest label so far
+                        if (strlen($label) > $longest_label_length)
+
+                            // this is the longes label, so far
+                            // we use utf8_decode so that strlen counts correctly with accented chars
+                            $longest_label_length = strlen(utf8_decode($label));
+
                     // write to log file
                     fwrite($handle, print_r(
 
-                        '###################' . "\n" .
-                        '# DATE:           #: ' . date('Y M d H:i:s') . "\n" .
-                        '# QUERY:          #: ' . trim(preg_replace($pattern, $replace, $debug_info['query'])) . "\n" .
+                        // top border
+                        str_pad('', $longest_label_length + 4, '#', STR_PAD_RIGHT) . "\n" .
+
+                        // date
+                        '# ' . $labels[0] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[0])), ' ', STR_PAD_RIGHT) . '#: ' . @date('Y M d H:i:s') . "\n" .
+
+                        // query
+                        '# ' . $labels[1] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[1])), ' ', STR_PAD_RIGHT) . '#: ' . trim(preg_replace($pattern, $replace, $debug_info['query'])) . "\n" .
 
                         // if execution time is available
                         // (is not available for unsuccessful queries)
                         (isset($debug_info['execution_time']) ?
 
-                            '# ' . strtoupper($this->language['execution_time']) . ': #: ' .  $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['miliseconds'] . "\n"
+                            '# ' . $labels[2] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . '#: ' .  $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['miliseconds'] . "\n"
                              : ''
 
                         ) .
@@ -3846,7 +3909,7 @@ class Zebra_Database
                         // if there is a warning message
                         (isset($debug_info['warning']) && $debug_info['warning'] != '' ?
 
-                            '# WARNING:        #: ' . strip_tags($debug_info['warning']) . "\n"
+                            '# ' . $labels[3] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[3])), ' ', STR_PAD_RIGHT) . '#: ' . strip_tags($debug_info['warning']) . "\n"
                             : ''
 
                         ) .
@@ -3854,7 +3917,7 @@ class Zebra_Database
                         // if there is an error message
                         (isset($debug_info['error']) && $debug_info['error'] != '' ?
 
-                            '# ERROR:          #: ' . $debug_info['error'] . "\n"
+                            '# ' . $labels[4] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[4])), ' ', STR_PAD_RIGHT) . '#: ' . $debug_info['error'] . "\n"
                             : ''
 
                         ) .
@@ -3862,12 +3925,12 @@ class Zebra_Database
                         // if not an action query, show whether the query was returned from the cache or was executed
                         ($debug_info['affected_rows'] === false ?
 
-                            '# FROM CACHE:     #: ' .
+                            '# ' . $labels[5] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) .  '#: ' .
 
                             (isset($debug_info['from_cache']) && $debug_info['from_cache'] === true  ?
 
-                                'YES' :
-                                'NO'
+                                $labels[6] :
+                                $labels[7]
 
                             ) . "\n"
 
@@ -3875,7 +3938,7 @@ class Zebra_Database
 
                         ) .
 
-                        '# BACKTRACE:      #:' . "\n"
+                        '# ' . $labels[8] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . '#:' . "\n"
 
                     , true));
 
@@ -3884,15 +3947,15 @@ class Zebra_Database
 
                         fwrite($handle, print_r(
 
-                            '#                 #' . "\n" .
-                            '# FILE            #: ' . $backtrace[$this->language['file']] . "\n" .
-                            '# LINE            #: ' . $backtrace[$this->language['line']] . "\n" .
-                            '# FUNCTION        #: ' . $backtrace[$this->language['function']] . "\n"
+                            '# ' . str_pad('', ($longest_label_length + 1), ' ', STR_PAD_RIGHT) . '#' . "\n" .
+                            '# ' . $labels[9] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['file']] . "\n" .
+                            '# ' . $labels[10] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['line']] . "\n" .
+                            '# ' . $labels[11] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['function']] . "\n"
 
                         , true));
 
-                    // finish writing to the log file
-                    fwrite($handle, '###################' . "\n\n");
+                    // finish writing to the log file by adding a bottom border
+                    fwrite($handle, str_pad('', $longest_label_length + 4, '#', STR_PAD_RIGHT) . "\n\n");
 
                 }
 
