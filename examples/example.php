@@ -4,6 +4,8 @@
 
     <head>
 
+        <meta charset="utf-8">
+
         <title>Zebra_Database Example</title>
 
     </head>
