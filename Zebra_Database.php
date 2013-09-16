@@ -3774,10 +3774,13 @@ class Zebra_Database
      *  writing to the log file was successful or not.</i>
      *
      *  @since  1.1.0
-     *
+     * 
+     *  @param daily a flag whether for each day a new file should be used (log_ymd). by default all data is in one file.
+     *  @param hourly a flag whether for each hour of a day a new file should be used (log{_ymd}_H). by default this option is disabled.
+     * 
      *  @return void
      */
-    function write_log()
+    function write_log($daily = false, $hourly = false)
     {
 
           // if
@@ -3800,9 +3803,15 @@ class Zebra_Database
                 )
 
         ) {
-
+		
+            // daily/hourly file?
+            $file = 'log';
+            $file .= ($daily) ? '_' . date("ymd") : '';
+            $file .= ($hourly) ? '_' . date("H") : '';
+            $file .= '.txt';
+	
             // tries to create/open the 'log.txt' file
-            if ($handle = @fopen(rtrim($this->log_path, '/') . '/' . 'log.txt', 'ab')) {
+            if ($handle = @fopen(rtrim($this->log_path, '/') . '/' . $file, 'ab')) {
 
                 // iterate through the debug information
                 foreach ($this->debug_info['successful-queries'] as $debug_info) {
@@ -3876,9 +3885,9 @@ class Zebra_Database
                         fwrite($handle, print_r(
 
                             '#                 #' . "\n" .
-                            '# FILE            #: ' . $backtrace['file'] . "\n" .
-                            '# LINE            #: ' . $backtrace['line'] . "\n" .
-                            '# FUNCTION        #: ' . $backtrace['function'] . "\n"
+                            '# FILE            #: ' . $backtrace[$this->language['file']] . "\n" .
+                            '# LINE            #: ' . $backtrace[$this->language['line']] . "\n" .
+                            '# FUNCTION        #: ' . $backtrace[$this->language['function']] . "\n"
 
                         , true));
 
