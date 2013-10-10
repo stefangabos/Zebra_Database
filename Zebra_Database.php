@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.3 (last revision: September 16, 2013)
+ *  @version    2.8.3 (last revision: October 10, 2013)
  *  @copyright  (c) 2006 - 2013 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -417,6 +417,13 @@ class Zebra_Database
      *  @access private
      */
     private $cached_results;
+
+    /**
+     *  Array that will store the database connection credentials
+     *
+     *  @access private
+     */
+    private $credentials;
 
     /**
      *  All debugging information is stored in this array.
