@@ -332,6 +332,19 @@ class Zebra_Database
     public $memcache_port;
 
     /**
+     *  The prefix for the key that will be associated with the sql query.
+     *
+     *  <i>Set this property only if you are using "memcache" as {@link caching_method}.</i>
+     *
+     *  Default is FALSE.
+     *
+     *  @since  2.8.4
+     *
+     *  @var mixed
+     */
+    public $memcache_key_prefix;
+
+    /**
      *  By setting this property to TRUE a minimized version of the debugging console will be shown by default, instead
      *  of the full-sized one.
      *
@@ -2232,7 +2245,7 @@ class Zebra_Database
                 if ($this->caching_method == 'memcache') {
 
                     // the key to identify this particular information
-                    $memcache_key = md5($sql);
+                    $memcache_key = md5($this->memcache_key_prefix . $sql);
 
                     // if there is a cached version of what we're looking for, and data is valid
                     if (($result = $this->memcache->get($memcache_key)) && $this->cached_results[] = @unserialize(gzuncompress(base64_decode($result)))) {
