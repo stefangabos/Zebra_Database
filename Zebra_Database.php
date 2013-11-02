@@ -1771,7 +1771,7 @@ class Zebra_Database
         $values = array_values($data);
 
         // if $data is not an array of arrays
-        if (!is_array(array_pop($value)))
+        if (!is_array(array_pop($values)))
 
             // save debug information
             $this->_log('errors', array(
