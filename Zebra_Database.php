@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.3 (last revision: November 03, 2013)
+ *  @version    2.8.4 (last revision: November 03, 2013)
  *  @copyright  (c) 2006 - 2013 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -332,15 +332,17 @@ class Zebra_Database
     public $memcache_port;
 
     /**
-     *  The prefix for the key that will be associated with the sql query.
+     *  The prefix for the keys used to identify cached queries in memcache. This allows sepparate caching of the same
+     *  queries by multiple instances of the libraries, or the same instance handling multiple domains on the same
+     *  memcache server.
      *
      *  <i>Set this property only if you are using "memcache" as {@link caching_method}.</i>
      *
-     *  Default is FALSE.
+     *  Default is "" (an empty string).
      *
      *  @since  2.8.4
      *
-     *  @var mixed
+     *  @var string
      */
     public $memcache_key_prefix;
 
@@ -517,7 +519,7 @@ class Zebra_Database
 
         $this->max_query_time = 10;
 
-        $this->log_path = $this->notification_address = $this->notifier_domain = '';
+        $this->log_path = $this->notification_address = $this->notifier_domain = $this->memcache_key_prefix = '';
 
         $this->total_execution_time = $this->transaction_status = 0;
 
@@ -2244,7 +2246,7 @@ class Zebra_Database
                 // if caching method is "memcache"
                 if ($this->caching_method == 'memcache') {
 
-                    // the key to identify this particular information
+                    // the key to identify this particular information (prefix it if required)
                     $memcache_key = md5($this->memcache_key_prefix . $sql);
 
                     // if there is a cached version of what we're looking for, and data is valid
