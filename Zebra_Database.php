@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.3 (last revision: October 10, 2013)
+ *  @version    2.8.3 (last revision: November 03, 2013)
  *  @copyright  (c) 2006 - 2013 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -1758,7 +1758,7 @@ class Zebra_Database
         $values = array_values($data);
 
         // if $data is not an array of arrays
-        if (!is_array(array_pop($value)))
+        if (!is_array(array_pop($values)))
 
             // save debug information
             $this->_log('errors', array(
