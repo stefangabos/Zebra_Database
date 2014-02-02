@@ -1490,7 +1490,7 @@ class Zebra_Database
      *
      *  <code>
      *  // get column information for a table named "table_name"
-     *  $db->get_columns('table_name');
+     *  $db->get_table_columns('table_name');
      *  </code>
      *
      *  @param  string  $table  Name of table to return column information for.
