@@ -1564,7 +1564,7 @@ class Zebra_Database
     {
 
         // fetch all the tables in the database
-        $result = $this->fetch_assoc_all($this->query('
+        $result = $this->fetch_assoc_all('', $this->query('
             SHOW TABLES
         '));
 
