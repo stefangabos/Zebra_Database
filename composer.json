@@ -18,6 +18,8 @@
     },
     "version": "2.8.4",
     "autoload": {
-        "psr-0": { "Zebra_Database": "" }
+        "classmap": [
+            "Zebra_Database.php"
+        ]
     }
 }
