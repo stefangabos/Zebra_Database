@@ -21,11 +21,5 @@
         "classmap": [
             "Zebra_Database.php"
         ]
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/josephspurrier/Zebra_Database"
-        }
-    ]
+    }
 }
