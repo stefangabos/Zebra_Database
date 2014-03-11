@@ -2679,7 +2679,8 @@ class Zebra_Database
      *  );
      *  </code>
      *
-     *  @param  string  $columns        Any string representing valid column names as used in a SELECT statement.
+     *  @param  mixed  $columns         Any string (comma separated) or array representing valid column names as used
+     *                                  in a SELECT statement.
      *
      *  @param  string  $table          Table in which to search.
      *
@@ -2745,7 +2746,7 @@ class Zebra_Database
         return $this->query('
 
             SELECT
-                ' . $columns . '
+                ' . $this->_build_columns($columns) . '
             FROM
                 `' . $table . '`' .
 
@@ -4023,6 +4024,49 @@ class Zebra_Database
 
     }
 
+    /**
+     *  Given an indexed array or comma separated string where the values represent column names, this method will
+     *  enclose column names in grave accents " ` " (thus, allowing seamless usage of reserved words as column names) and
+     *  automatically {@link escape()} value.
+     *
+     *  @access private
+     */
+    private function _build_columns($columns)
+    {
+        $sql = '';
+        
+        // if array is passed
+        if (is_array($columns))
+        {
+            // loop through each column
+            foreach($columns as &$col)
+            {
+                // wrap in grave accents " ` "
+                $col = '`' . trim(trim($col), '`') . '`';
+            }
+        
+            // create string from array
+            $sql = join(', ', $columns);
+        }
+        // else string is passed
+        else
+        {
+            // separate by commas
+            $arrColumns = explode(',', $columns);
+        
+            foreach($arrColumns as &$col)
+            {
+                // wrap in grave accents " ` "
+                $col = '`' . trim(trim($col), '`') . '`';
+            }
+        
+            // create string from array
+            $sql = join(', ', $arrColumns);
+        }
+        
+        return $sql;
+    }
+    
     /**
      *  Given an associative array where the array's keys represent column names and the array's values represent the
      *  values to be associated with each respective column, this method will enclose column names in grave accents " ` "
