@@ -41,6 +41,7 @@
         'miliseconds'                           => 'ms',
         'mysql_error'                           => 'MySQL error',
         'no'                                    => 'No',
+        'no_active_session'                     => 'You have chosen to cache query results in sessions but there are no active session. Call <a href="http://php.net/manual/en/function.session-start.php" target="_blank">session_start()</a> before using the library!',
         'no_transaction_in_progress'            => 'No transaction in progress.',
         'not_a_valid_resource'                  => 'Not a valid resource (make sure you specify a resource as argument for fetch_assoc()/fetch_obj() if you are executing a query inside the loop)',
         'optimization_needed'                   => '<strong>WARNING</strong>: The first few results returned by this query are the same as returned by <strong>%s</strong> other queries!',

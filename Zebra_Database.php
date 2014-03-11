@@ -69,6 +69,9 @@ class Zebra_Database
      *  Can be either:
      *
      *  - <b>disk</b>     - query results are cached as files on the disk at the path specified by {@link cache_path}.
+     *  - <b>session</b>  - query results are cached in the session (use this only for small data sets). Note that when
+     *                      using this method for caching results, the library expects an active session, or will trigger
+     *                      a fatal error otherwise!
      *  - <b>memcache</b> - query results are cached using a {@link http://memcached.org/about memcache} server; when
      *                      using this method make sure to also set the appropriate values for {@link memcache_host},
      *                       {@link memcache_port} and optionally {@link memcache_compressed}.
@@ -2269,6 +2272,23 @@ class Zebra_Database
 
                     }
 
+                // if caching method is "session"
+                } elseif ($this->caching_method == 'session') {
+
+                    // unique identifier of the current query
+                    $key = md5($sql);
+
+                    // if a cached version of this query's result already exists and it is not expired
+                    if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && $_SESSION[$key . '_timestamp'] + $cache > time() && $this->cached_results[] = @unserialize(gzuncompress(base64_decode($_SESSION[$key])))) {
+
+                        // assign to the last_result property the pointer to the position where the array was added
+                        $this->last_result = count($this->cached_results) - 1;
+
+                        // reset the pointer of the array
+                        reset($this->cached_results[$this->last_result]);
+
+                    }
+
                 // if caching method is "disk"
                 } else
 
@@ -2397,14 +2417,39 @@ class Zebra_Database
 
                         ));
 
+                        // the content to be cached
+                        $content = base64_encode(gzcompress(serialize($cache_data)));
+
                         // if caching method is "memcache"
                         if ($this->caching_method == 'memcache')
 
                             // cache query data
-                            $this->memcache->set($memcache_key, base64_encode(gzcompress(serialize($cache_data))), false, $cache);
+                            $this->memcache->set($memcache_key, $content, false, $cache);
+
+                        // if caching method is "session"
+                        elseif ($this->caching_method == 'session') {
+
+                            // if there seems to be no active session
+                            if (!isset($_SESSION))
+
+                                // save debug information
+                                $this->_log('errors', array(
+
+                                    'message'   =>  $this->language['no_active_session'],
+
+                                ), true);
+
+                            // the unique identifier for the current query
+                            $key = md5($sql);
+
+                            // cache query data in current session
+                            $_SESSION[$key] = $content;
+
+                            // save also the current timestamp
+                            $_SESSION[$key . '_timestamp'] = time();
 
                         // if caching method is "disk" and cached folder was found and is writable
-                        elseif (isset($file_name)) {
+                        } elseif (isset($file_name)) {
 
                             // deletes (if exists) the previous cache file
                             @unlink($file_name);
@@ -2413,7 +2458,7 @@ class Zebra_Database
                             $handle = fopen($file_name, 'wb');
 
                             // saves the query's result in it
-                            fwrite($handle, base64_encode(gzcompress(serialize($cache_data))));
+                            fwrite($handle, $content);
 
                             // and close the file
                             fclose($handle);
@@ -2768,7 +2813,7 @@ class Zebra_Database
         return $this->query('
 
             SELECT
-                ' . (is_string($columns) && trim($columns) == '*' ? '*' : $this->_build_columns($columns)) . '
+                ' . (is_string($columns) ? $columns : $this->_build_columns($columns)) . '
             FROM
                 `' . $table . '`' .
 
@@ -3187,7 +3232,7 @@ class Zebra_Database
 
                                 $output .= '
                                     <li class="zdc-cache">
-                                        <strong>' . $this->language['from_cache'] . '</strong>
+                                        <strong>' . $this->language['from_cache'] . ' (' . $this->caching_method . ')</strong>
                                     </li>
                                 ';
 
