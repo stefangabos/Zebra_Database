@@ -3454,16 +3454,17 @@ class Zebra_Database
             // perform the tidying
             $output = preg_replace($pattern, $replacement, $output);
 
-            // this is the url that will be used for automatically including
-            // the CSS and the JavaScript files
-            $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen($_SERVER['DOCUMENT_ROOT']))), '/');
+	    // include the required CSS and JS inline
+            $css = "<style type='text/css'>";
+            $css .= file_get_contents(__DIR__."/public/css/database.css");
+            $css .= "</style>";
 
-            // link the required javascript
-            $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.src.js"></script>' . $output;
+            $js = "<script type='text/javascript'>";
+            $js .= file_get_contents(__DIR__."/public/javascript/database.src.js");
+            $js .= "</script>";
 
-            // link the required css file
-            $output = '<link rel="stylesheet" href="' . $path . '/public/css/database.css" type="text/css">' . $output;
-
+            $output = $css.$js.$output;
+            
             // if output is to be returned rather than printed to the screen
             if ($return) return $output;
 
