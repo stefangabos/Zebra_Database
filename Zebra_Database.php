@@ -24,8 +24,8 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.4 (last revision: December 22, 2013)
- *  @copyright  (c) 2006 - 2013 Stefan Gabos
+ *  @version    2.8.4 (last revision: March 11, 2013)
+ *  @copyright  (c) 2006 - 2014 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
  */
@@ -2677,10 +2677,32 @@ class Zebra_Database
      *      'criteria = ?',
      *      array($criteria)
      *  );
+     *
+     *  // or
+     *
+     *  $db->select(
+     *      array('column1', 'column2'),
+     *      'table',
+     *      'criteria = ?',
+     *      array($criteria)
+     *  );
+     *
+     *  // or
+     *
+     *  $db->select(
+     *      '*',
+     *      'table',
+     *      'criteria = ?',
+     *      array($criteria)
+     *  );
      *  </code>
      *
-     *  @param  mixed  $columns         Any string (comma separated) or array representing valid column names as used
-     *                                  in a SELECT statement.
+     *  @param  mixed  $columns         A string with comma separated values or an array representing valid column names
+     *                                  as used in a SELECT statement.
+     *
+     *                                  <samp>These will be enclosed in grave accents, so make sure you are only using
+     *                                  column names and not things like "tablename.*"! You may also use "*" instead
+     *                                  of column names to select all columns from a table.</samp>
      *
      *  @param  string  $table          Table in which to search.
      *
@@ -2746,7 +2768,7 @@ class Zebra_Database
         return $this->query('
 
             SELECT
-                ' . $this->_build_columns($columns) . '
+                ' . (is_string($columns) && trim($columns) == '*' ? '*' : $this->_build_columns($columns)) . '
             FROM
                 `' . $table . '`' .
 
@@ -2839,22 +2861,18 @@ class Zebra_Database
 
         ) {
 
-            // if disable_warning is set to true
-            if ($this->disable_warnings === true)
-            {
-                // disable warnings
-                $this->warnings = array();
-            }
-            
-            // if there are any warning messages iterate through them
-            foreach (array_keys($this->warnings) as $warning)
+            // if warnings are not disabled
+            if (!$this->disable_warnings)
 
-                // add them to the debugging console
-                $this->_log('warnings', array(
+                // if there are any warning messages iterate through them
+                foreach (array_keys($this->warnings) as $warning)
 
-                    'message'   =>  $this->language['warning_' . $warning],
+                    // add them to the debugging console
+                    $this->_log('warnings', array(
 
-                ), false);
+                        'message'   =>  $this->language['warning_' . $warning],
+
+                    ), false);
 
             // blocks to be shown in the debugging console
             $blocks = array(
@@ -3471,19 +3489,18 @@ class Zebra_Database
             // perform the tidying
             $output = preg_replace($pattern, $replacement, $output);
 
-            // use the provided resource path for stylesheets and javascript
+            // use the provided resource path for stylesheets and javascript (if any)
             if (!is_null($this->resource_path))
-            {
+
                 $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . DIRECTORY_SEPARATOR . $this->resource_path), '/');
-            }
-            // determine the path automatically
+
+            // if path not provided, determine the path automatically
             else 
-            {
+
                 // this is the url that will be used for automatically including
                 // the CSS and the JavaScript files
                 $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen($_SERVER['DOCUMENT_ROOT']))), '/');
-            }
-            
+
             // link the required javascript
             $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.src.js"></script>' . $output;
 
@@ -4025,46 +4042,33 @@ class Zebra_Database
     }
 
     /**
-     *  Given an indexed array or comma separated string where the values represent column names, this method will
-     *  enclose column names in grave accents " ` " (thus, allowing seamless usage of reserved words as column names) and
-     *  automatically {@link escape()} value.
+     *  Given an indexed array or a string with comma separated values where the values represent column names, this
+     *  method will enclose column names in grave accents " ` " (thus, allowing seamless usage of reserved words as column
+     *  names) and automatically {@link escape()} value.
      *
      *  @access private
      */
     private function _build_columns($columns)
     {
         $sql = '';
-        
-        // if array is passed
-        if (is_array($columns))
-        {
-            // loop through each column
-            foreach($columns as &$col)
-            {
-                // wrap in grave accents " ` "
-                $col = '`' . trim(trim($col), '`') . '`';
-            }
-        
-            // create string from array
-            $sql = join(', ', $columns);
-        }
-        // else string is passed
-        else
-        {
-            // separate by commas
-            $arrColumns = explode(',', $columns);
-        
-            foreach($arrColumns as &$col)
-            {
-                // wrap in grave accents " ` "
-                $col = '`' . trim(trim($col), '`') . '`';
-            }
-        
-            // create string from array
-            $sql = join(', ', $arrColumns);
-        }
-        
+
+        // if the argument is not an array
+        if (!is_array($columns))
+
+            // transform it to an array
+            $columns = explode(',', $columns);
+
+        // loop through each column
+        foreach($columns as &$col)
+
+            // wrap in grave accents " ` "
+            $col = '`' . trim(trim($col), '`') . '`';
+
+        // create string from array
+        $sql = join(', ', $columns);
+
         return $sql;
+
     }
     
     /**
