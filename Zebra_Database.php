@@ -2838,6 +2838,13 @@ class Zebra_Database
 
         ) {
 
+            // if disable_warning is set to true
+            if ($this->disable_warnings === true)
+            {
+                // disable warnings
+                $this->warnings = array();
+            }
+            
             // if there are any warning messages iterate through them
             foreach (array_keys($this->warnings) as $warning)
 
