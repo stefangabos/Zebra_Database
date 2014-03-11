@@ -425,6 +425,15 @@ class Zebra_Database
     public $returned_rows;
 
     /**
+     *  Path (without leading slash) to parent of public folder containing the css and javascript folders.
+     *
+     *  <i>The path must be relative to your $_SERVER['DOCUMENT_ROOT'] and not the class' path!</i>
+     *
+     *  @var string
+     */
+    public $resource_path;
+    
+    /**
      *  Array with cached results.
      *
      *  We will use this for fetching and seek
@@ -491,7 +500,7 @@ class Zebra_Database
      *  @access private
      */
     private $warnings;
-
+    
     /**
      *  Constructor of the class
      *
@@ -3454,10 +3463,19 @@ class Zebra_Database
             // perform the tidying
             $output = preg_replace($pattern, $replacement, $output);
 
-            // this is the url that will be used for automatically including
-            // the CSS and the JavaScript files
-            $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen($_SERVER['DOCUMENT_ROOT']))), '/');
-
+            // use the provided resource path for stylesheets and javascript
+            if (!is_null($this->resource_path))
+            {
+                $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . DIRECTORY_SEPARATOR . $this->resource_path), '/');
+            }
+            // determine the path automatically
+            else 
+            {
+                // this is the url that will be used for automatically including
+                // the CSS and the JavaScript files
+                $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen($_SERVER['DOCUMENT_ROOT']))), '/');
+            }
+            
             // link the required javascript
             $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.src.js"></script>' . $output;
 

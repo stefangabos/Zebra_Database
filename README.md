@@ -49,6 +49,11 @@ $db = new Zebra_Database();
 // turn debugging on
 $db->debug = true;
 
+// set relative path to parent of public folder from $_SERVER['DOCUMENT_ROOT'] (optional)
+// no leading slash
+// ie: http://example.com/vendor/stefangabos/zebra_database/public/css/database.css
+$db->resource_path = 'vendor/stefangabos/zebra_database';
+
 $db->connect('host', 'username', 'password', 'database');
 
 // code goes here
