@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.4 (last revision: March 11, 2014)
+ *  @version    2.8.4 (last revision: May 12, 2014)
  *  @copyright  (c) 2006 - 2014 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -3537,14 +3537,14 @@ class Zebra_Database
             // use the provided resource path for stylesheets and javascript (if any)
             if (!is_null($this->resource_path))
 
-                $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . DIRECTORY_SEPARATOR . $this->resource_path), '/');
+                $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . $this->resource_path), '/');
 
             // if path not provided, determine the path automatically
             else 
 
                 // this is the url that will be used for automatically including
                 // the CSS and the JavaScript files
-                $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen($_SERVER['DOCUMENT_ROOT']))), '/');
+                $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen($_SERVER['DOCUMENT_ROOT']))), '/');
 
             // link the required javascript
             $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.src.js"></script>' . $output;
