@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.4 (last revision: May 12, 2014)
+ *  @version    2.8.4 (last revision: July 15, 2014)
  *  @copyright  (c) 2006 - 2014 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -539,7 +539,7 @@ class Zebra_Database
 
         $this->cached_results = $this->debug_info = $this->debugger_ip = array();
 
-        $this->connection = $this->memcache = $this->memcache_host = $this->memcache_port = false;
+        $this->connection = $this->memcache = $this->memcache_host = $this->memcache_port = $this->memcache_compressed = false;
 
         // set default warnings:
         $this->warnings = array(
@@ -2424,7 +2424,7 @@ class Zebra_Database
                         if ($this->caching_method == 'memcache')
 
                             // cache query data
-                            $this->memcache->set($memcache_key, $content, false, $cache);
+                            $this->memcache->set($memcache_key, $content, ($this->memcache_compressed ? MEMCACHE_COMPRESSED : false), $cache);
 
                         // if caching method is "session"
                         elseif ($this->caching_method == 'session') {
