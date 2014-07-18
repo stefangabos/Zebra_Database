@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.4 (last revision: July 15, 2014)
+ *  @version    2.8.4 (last revision: July 18, 2014)
  *  @copyright  (c) 2006 - 2014 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -703,7 +703,7 @@ class Zebra_Database
         , $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result && $this->returned_rows > 0) {
+        if ($this->last_result !== false && $this->returned_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
@@ -838,7 +838,7 @@ class Zebra_Database
         ', $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result && $this->returned_rows > 0) {
+        if ($this->last_result !== false && $this->returned_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
@@ -920,7 +920,7 @@ class Zebra_Database
         , $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result && $this->returned_rows > 0) {
+        if ($this->last_result !== false && $this->returned_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
@@ -999,7 +999,7 @@ class Zebra_Database
         , $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result && $this->found_rows > 0) {
+        if ($this->last_result !== false && $this->found_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
