@@ -2215,7 +2215,7 @@ class Zebra_Database
                         // otherwise, mysqli_real_escape_string the items in replacements
                         // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
                         // it as references
-                        else $replacements2[$key] = '\'' . preg_replace('/\$([0-9]*)/', '\\\$$1', $this->escape($replacement)) . '\'';
+                        else $replacements2[$key] = '\'' . preg_replace(array('/\\\\/','/\$([0-9]*)/'), array('\\\\\\\\','\\\$$1'), $this->escape($replacement)) . '\'';
 
                         // and also, prepare the new pattern to be replaced afterwards
                         $pattern2[$key] = '/' . $randomstr . '/';
