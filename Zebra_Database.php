@@ -633,6 +633,8 @@ class Zebra_Database
             'user'      =>  $user,
             'password'  =>  $password,
             'database'  =>  $database,
+            'port'      =>  $port == '' ? ini_get('mysqli.default_port') : $port,
+            'socket'    =>  $socket == '' ? ini_get('mysqli.default_socket') : $socket,
         );
 
         // connect now, if we need to connect right away
@@ -4184,7 +4186,9 @@ class Zebra_Database
                 $this->credentials['host'],
                 $this->credentials['user'],
                 $this->credentials['password'],
-                $this->credentials['database']
+                $this->credentials['database'],
+                $this->credentials['port'],
+                $this->credentials['socket']
             );
 
             // tries to connect to the MySQL database
