@@ -3546,7 +3546,7 @@ class Zebra_Database
 
                 // this is the url that will be used for automatically including
                 // the CSS and the JavaScript files
-                $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen($_SERVER['DOCUMENT_ROOT']))), '/');
+                $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen(realpath($_SERVER['DOCUMENT_ROOT'])))), '/');
 
             // link the required javascript
             $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.src.js"></script>' . $output;
