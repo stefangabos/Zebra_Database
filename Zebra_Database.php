@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.4 (last revision: October 26, 2014)
+ *  @version    2.8.5 (last revision: Novemer 12, 2014)
  *  @copyright  (c) 2006 - 2014 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -4089,7 +4089,7 @@ class Zebra_Database
     }
 
     /**
-     *  Given an indexed array or a string with comma separated values where the values represent column names, this
+     *  Given an associative array or a string with comma separated values where the values represent column names, this
      *  method will enclose column names in grave accents " ` " (thus, allowing seamless usage of reserved words as column
      *  names) and automatically {@link escape()} value.
      *
