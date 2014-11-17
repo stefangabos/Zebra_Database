@@ -41,7 +41,7 @@
         'miliseconds'                           => 'ms',
         'mysql_error'                           => 'MySQL Fehler',
         'no'                                    => 'Nein',
-        'no_active_session'                     => 'You have chosen to cache query results in sessions but there are no active session. Call <a href="http://php.net/manual/en/function.session-start.php" target="_blank">session_start()</a> before using the library!',
+        'no_active_session'                     => 'Sie haben ausgewählt, dass die Abfrageresultate in der Session zwischengespeichert (gechached) werden sollen, aber es gibt keine aktive Session. Rufen Sie <a href="http://php.net/manual/en/function.session-start.php" target="_blank">session_start()</a> auf bevor Sie Funktionen dieser Bibliothek benutzen!',
         'no_transaction_in_progress'            => 'Keine Transaktion(en) aktiv.',
         'not_a_valid_resource'                  => 'Keine gültige Ressource (Stellen Sie sicher, dass sie eine Ressource als Argument für fetch_assoc()/fetch_obj() nutzen, sofern sie die Abfrage in einer Schleife/Loop ausführen.)',
         'optimization_needed'                   => '<strong>Warnung</strong>: Die ersten Ergebnisse dieser Abfrage sind identisch mit denen von <strong>%s</strong> anderen Abfragen!',
