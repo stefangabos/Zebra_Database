@@ -3342,7 +3342,15 @@ class Zebra_Database
                             ';
 
                             // print table headers
-                            foreach (array_keys($debug_info[$table][0]) as $header) $output .= '<th>' . $header . '</th>';
+                            if ($table == 'backtrace') {
+                                foreach (array_keys($debug_info[$table][0]) as $header) {
+                                    $output .= '<th>' . $this->language[$header] . '</th>';
+                                }
+                            }else {
+                                foreach (array_keys($debug_info[$table][0]) as $header) {
+                                    $output .= '<th>' . $header . '</th>';
+                                }
+                            }
 
                             $output .= '</tr>';
 
@@ -4307,9 +4315,9 @@ class Zebra_Database
                     // extract needed information
                     $data['backtrace'][] = array(
 
-                        $this->language['file']     =>  (isset($backtrace['file']) ? $backtrace['file'] : ''),
-                        $this->language['function'] =>  $backtrace['function'] . '()',
-                        $this->language['line']     =>  (isset($backtrace['line']) ? $backtrace['line'] : ''),
+                        'file'     =>  (isset($backtrace['file']) ? $backtrace['file'] : ''),
+                        'function' =>  $backtrace['function'] . '()',
+                        'line'     =>  (isset($backtrace['line']) ? $backtrace['line'] : ''),
 
                     );
 
