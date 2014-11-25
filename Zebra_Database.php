@@ -1632,28 +1632,14 @@ class Zebra_Database
      *  Works similarly to PHP's implode() function with the difference that the "glue" is always the comma, and that
      *  this method {@link escape()}'s arguments.
      *
-     *  <i>Useful for escaping an array's values used in SQL statements with the "IN" keyword.</i>
+     *  <i>This was useful for escaping an array's values used in SQL statements with the "IN" keyword, before adding
+     *  arrays directly in the replacement array became possible in version 2.8.6</i>
      *
      *  <code>
      *  $array = array(1,2,3,4);
      *
-     *  //  INCORRECT
-     *
-     *  //  this would not work as the WHERE clause in the SQL statement would become
-     *  //  WHERE column IN ('1,2,3,4')
-     *  $db->query('
-     *      SELECT
-     *          column
-     *      FROM
-     *          table
-     *      WHERE
-     *          column IN (?)
-     *  ', array($array));
-     *
-     *  //  CORRECT
-     *
      *  //  this would work as the WHERE clause in the SQL statement would become
-     *  //  WHERE column IN ('1','2','3','4') which is what we actually need
+     *  //  WHERE column IN ('1','2','3','4')
      *  $db->query('
      *      SELECT
      *          column
@@ -1662,6 +1648,17 @@ class Zebra_Database
      *      WHERE
      *          column IN (' . $db->implode($array) . ')
      *  ');
+     *
+     *  //  THE RECOMMENDED WAY OF DOING WHERE-IN CONDITIONS SINCE VERSION 2.8.6
+     *
+     *  $db->query('
+     *      SELECT
+     *          column
+     *      FROM
+     *          table
+     *      WHERE
+     *          column IN (?)
+     *  ', array($array));
      *  </code>
      *
      *
