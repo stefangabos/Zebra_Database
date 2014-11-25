@@ -2120,7 +2120,9 @@ class Zebra_Database
      *
      *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
      *                                  marks) in <i>$sql</i>. Each item will be automatically {@link escape()}-ed and
-     *                                  will replace the corresponding "?".
+     *                                  will replace the corresponding "?". Can also include an array as an item, in which
+     *                                  each value will be escaped and enclosed in (), such that it will replace the corresponding
+     *                                  "?" with ('?','?','?') where each ? is an escaped element value of the array item.
      *
      *                                  Default is "" (an empty string).
      *
@@ -2214,10 +2216,13 @@ class Zebra_Database
                         // if the replacement is NULL, leave it like it is
                         if ($replacement === NULL) $replacements2[$key] = 'NULL';
 
+                        // if the replacement is an array, implode and escape it for use in WHERE ? IN ? statement
+                        elseif (is_array($replacement)) $replacements2[$key] = '(\'' . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), implode('\',\'', array_map(array($this, 'escape'), $replacement))) . '\')';
+
                         // otherwise, mysqli_real_escape_string the items in replacements
                         // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
                         // it as references
-                        else $replacements2[$key] = '\'' . preg_replace(array('/\\\\/','/\$([0-9]*)/'), array('\\\\\\\\','\\\$$1'), $this->escape($replacement)) . '\'';
+                        else $replacements2[$key] = '\'' . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->escape($replacement)) . '\'';
 
                         // and also, prepare the new pattern to be replaced afterwards
                         $pattern2[$key] = '/' . $randomstr . '/';
@@ -3110,7 +3115,7 @@ class Zebra_Database
                                 foreach ($matches[2] as $match) {
 
                                     // save the strings
-                                    $query_strings['/' . md5($match[0]) . '/'] = preg_replace('/\$([0-9]*)/', '\\\$$1', $match[0]);
+                                    $query_strings['/' . md5($match[0]) . '/'] = preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $match[0]);
 
                                     // replace strings with their md5 hashed equivalent
                                     // (we do this because we don't have to highlight anything in strings)
