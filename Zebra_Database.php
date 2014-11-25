@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.5 (last revision: Novemer 12, 2014)
+ *  @version    2.8.6 (last revision: November 25, 2014)
  *  @copyright  (c) 2006 - 2014 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -663,8 +663,11 @@ class Zebra_Database
      *                                  Default is "" (an empty string).
      *
      *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$column</i>, <i>$table</i> and <i>$where</i>. Each item will be
-     *                                  automatically {@link escape()}-ed and will replace the corresponding "?".
+     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
+     *                                  will replace the corresponding "?". Can also include an array as an item, case in
+     *                                  which each value from the array will automatically {@link escape()}-ed and then
+     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
+     *                                  column IN (?)</i> conditions. See second example {@link query here}.
      *
      *                                  Default is "" (an empty string).
      *
@@ -739,8 +742,11 @@ class Zebra_Database
      *                                  Default is "" (an empty string).
      *
      *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$table</i> and <i>$where</i>. Each item will be automatically
-     *                                  {@link escape()}-ed and will replace the corresponding "?".
+     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
+     *                                  will replace the corresponding "?". Can also include an array as an item, case in
+     *                                  which each value from the array will automatically {@link escape()}-ed and then
+     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
+     *                                  column IN (?)</i> conditions. See second example {@link query here}.
      *
      *                                  Default is "" (an empty string).
      *
@@ -801,8 +807,11 @@ class Zebra_Database
      *                                  Default is "" (an empty string).
      *
      *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$column</i>, <i>$table</i> and <i>$where</i>. Each item will be
-     *                                  automatically {@link escape()}-ed and will replace the corresponding "?".
+     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
+     *                                  will replace the corresponding "?". Can also include an array as an item, case in
+     *                                  which each value from the array will automatically {@link escape()}-ed and then
+     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
+     *                                  column IN (?)</i> conditions. See second example {@link query here}.
      *
      *                                  Default is "" (an empty string).
      *
@@ -880,8 +889,11 @@ class Zebra_Database
      *                                  Default is "" (an empty string).
      *
      *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$column</i>, <i>$table</i> and <i>$where</i>. Each item will be
-     *                                  automatically {@link escape()}-ed and will replace the corresponding "?".
+     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
+     *                                  will replace the corresponding "?". Can also include an array as an item, case in
+     *                                  which each value from the array will automatically {@link escape()}-ed and then
+     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
+     *                                  column IN (?)</i> conditions. See second example {@link query here}.
      *
      *                                  Default is "" (an empty string).
      *
@@ -960,8 +972,11 @@ class Zebra_Database
      *                                  Default is "" (an empty string).
      *
      *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$column</i>, <i>$table</i> and <i>$where</i>. Each item will be
-     *                                  automatically {@link escape()}-ed and will replace the corresponding "?".
+     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
+     *                                  will replace the corresponding "?". Can also include an array as an item, case in
+     *                                  which each value from the array will automatically {@link escape()}-ed and then
+     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
+     *                                  column IN (?)</i> conditions. See second example {@link query here}.
      *
      *                                  Default is "" (an empty string).
      *
@@ -2114,15 +2129,27 @@ class Zebra_Database
      *      WHERE
      *          gender = ?
      *  ', array($gender));
+     *
+     *  // array as replacement, for use with WHERE-IN conditions
+     *  $db->query('
+     *      SELECT
+     *          *
+     *      FROM
+     *          users
+     *      WHERE
+     *          gender = ? AND
+     *          id IN (?)
+     *  ', array('f', array(1, 2, 3)));
      *  </code>
      *
      *  @param  string  $sql            MySQL statement to execute.
      *
      *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
      *                                  marks) in <i>$sql</i>. Each item will be automatically {@link escape()}-ed and
-     *                                  will replace the corresponding "?". Can also include an array as an item, in which
-     *                                  each value will be escaped and enclosed in (), such that it will replace the corresponding
-     *                                  "?" with ('?','?','?') where each ? is an escaped element value of the array item.
+     *                                  will replace the corresponding "?". Can also include an array as an item, case in
+     *                                  which each value from the array will automatically {@link escape()}-ed and then
+     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
+     *                                  column IN (?)</i> conditions.
      *
      *                                  Default is "" (an empty string).
      *
@@ -2217,7 +2244,7 @@ class Zebra_Database
                         if ($replacement === NULL) $replacements2[$key] = 'NULL';
 
                         // if the replacement is an array, implode and escape it for use in WHERE ? IN ? statement
-                        elseif (is_array($replacement)) $replacements2[$key] = '(\'' . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), implode('\',\'', array_map(array($this, 'escape'), $replacement))) . '\')';
+                        elseif (is_array($replacement)) $replacements2[$key] = preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->implode($replacement));
 
                         // otherwise, mysqli_real_escape_string the items in replacements
                         // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
@@ -2767,8 +2794,11 @@ class Zebra_Database
      *                                  Default is "" (an empty string).
      *
      *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$column</i>, <i>$table</i> and <i>$where</i>. Each item will be
-     *                                  automatically {@link escape()}-ed and will replace the corresponding "?".
+     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
+     *                                  will replace the corresponding "?". Can also include an array as an item, case in
+     *                                  which each value from the array will automatically {@link escape()}-ed and then
+     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
+     *                                  column IN (?)</i> conditions. See second example {@link query here}.
      *
      *                                  Default is "" (an empty string).
      *
@@ -3827,8 +3857,11 @@ class Zebra_Database
      *                                  Default is "" (an empty string).
      *
      *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$column</i>, <i>$table</i> and <i>$where</i>. Each item will be
-     *                                  automatically {@link escape()}-ed and will replace the corresponding "?".
+     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
+     *                                  will replace the corresponding "?". Can also include an array as an item, case in
+     *                                  which each value from the array will automatically {@link escape()}-ed and then
+     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
+     *                                  column IN (?)</i> conditions. See second example {@link query here}.
      *
      *                                  Default is "" (an empty string).
      *
