@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.6 (last revision: November 25, 2014)
+ *  @version    2.8.6 (last revision: December 15, 2014)
  *  @copyright  (c) 2006 - 2014 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -4388,8 +4388,11 @@ class Zebra_Database
     function __destruct()
     {
 
-        // frees the memory associated with the last result
-        @mysqli_free_result($this->last_result);
+        // if the last result is a mysqli result set (it can also be a boolean or not set)
+        if ($this->last_result instanceof mysqli_result)
+
+            // frees the memory associated with the last result
+            mysqli_free_result($this->last_result);
 
     }
 
