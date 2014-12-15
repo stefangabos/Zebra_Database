@@ -3977,17 +3977,17 @@ class Zebra_Database
 
             // are we writing daily logs?
             // (suppress "strict standards" warning for PHP 5.4+)
-            $file_name .= ($daily ? '_' . @date('ymd') : '');
+            $file_name .= ($daily ? '-' . @date('Ymd') : '');
 
             // are we writing hourly logs?
             // (suppress "strict standards" warning for PHP 5.4+)
-            $file_name .= ($hourly ? '_' . @date('H') : '');
+            $file_name .= ($hourly ? '-' . @date('H') : '');
 
             // log file's extension
             $file_name .= '.txt';
 	
             // tries to create/open the 'log.txt' file
-            if ($handle = @fopen(rtrim($this->log_path, '/') . '/' . $file_name, 'w')) {
+            if ($handle = @fopen(rtrim($this->log_path, '/') . '/' . $file_name, 'a+')) {
 
                 // iterate through the debug information
                 foreach ($this->debug_info['successful-queries'] as $debug_info) {
