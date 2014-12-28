@@ -1776,7 +1776,7 @@ class Zebra_Database
      *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
      *                                  usage of reserved words as column names).
      *
-     *  @param  arrays  $data           An array of an unlimited number of arrays containing values to be inserted.
+     *  @param  array  $data           An array of an unlimited number of arrays containing values to be inserted.
      *
      *                                  Values will be automatically {@link escape()}d in order to prevent SQL injections.
      *
@@ -2378,16 +2378,19 @@ class Zebra_Database
             // (we will use this in the debugging console)
             $this->total_execution_time += $stop_timer - $start_timer;
 
-            // if execution time exceeds max_query_time
-            if ($stop_timer - $start_timer > $this->max_query_time)
+			// if notification address and notifier domain is set
+            if (!(empty($this->notification_address) || empty($this->notifier_domain)))
 
-                // then send a notification mail
-                @mail(
-                    $this->notification_address,
-                    sprintf($this->language['email_subject'], $this->notifier_domain),
-                    sprintf($this->language['email_content'], $this->max_query_time, $stop_timer - $start_timer, $sql),
-                    'From: ' . $this->notifier_domain
-                );
+				// if execution time exceeds max_query_time
+				if ($stop_timer - $start_timer > $this->max_query_time )
+
+					// then send a notification mail
+					@mail(
+						$this->notification_address,
+						sprintf($this->language['email_subject'], $this->notifier_domain),
+						sprintf($this->language['email_content'], $this->max_query_time, $stop_timer - $start_timer, $sql),
+						'From: ' . $this->notifier_domain
+					);
 
             // if the query was successfully executed
             if ($this->last_result !== false) {
