@@ -3383,7 +3383,15 @@ class Zebra_Database
                             ';
 
                             // print table headers
-                            foreach (array_keys($debug_info[$table][0]) as $header) $output .= '<th>' . $header . '</th>';
+                            if ($table == 'backtrace') {
+                                foreach (array_keys($debug_info[$table][0]) as $header) {
+                                    $output .= '<th>' . $this->language[$header] . '</th>';
+                                }
+                            }else {
+                                foreach (array_keys($debug_info[$table][0]) as $header) {
+                                    $output .= '<th>' . $header . '</th>';
+                                }
+                            }
 
                             $output .= '</tr>';
 
@@ -4104,9 +4112,9 @@ class Zebra_Database
                         fwrite($handle, print_r(
 
                             '# ' . str_pad('', ($longest_label_length + 1), ' ', STR_PAD_RIGHT) . '#' . "\n" .
-                            '# ' . $labels[9] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['file']] . "\n" .
-                            '# ' . $labels[10] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['line']] . "\n" .
-                            '# ' . $labels[11] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['function']] . "\n"
+                            '# ' . $labels[9] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace['file'] . "\n" .
+                            '# ' . $labels[10] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace['line'] . "\n" .
+                            '# ' . $labels[11] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace['function'] . "\n"
 
                         , true));
 
@@ -4351,9 +4359,9 @@ class Zebra_Database
                     // extract needed information
                     $data['backtrace'][] = array(
 
-                        $this->language['file']     =>  (isset($backtrace['file']) ? $backtrace['file'] : ''),
-                        $this->language['function'] =>  $backtrace['function'] . '()',
-                        $this->language['line']     =>  (isset($backtrace['line']) ? $backtrace['line'] : ''),
+                        'file'     =>  (isset($backtrace['file']) ? $backtrace['file'] : ''),
+                        'function' =>  $backtrace['function'] . '()',
+                        'line'     =>  (isset($backtrace['line']) ? $backtrace['line'] : ''),
 
                     );
 
