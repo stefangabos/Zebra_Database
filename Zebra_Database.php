@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.6 (last revision: December 15, 2014)
+ *  @version    2.8.6 (last revision: December 28, 2014)
  *  @copyright  (c) 2006 - 2014 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -2378,19 +2378,25 @@ class Zebra_Database
             // (we will use this in the debugging console)
             $this->total_execution_time += $stop_timer - $start_timer;
 
-			// if notification address and notifier domain is set
-            if (!(empty($this->notification_address) || empty($this->notifier_domain)))
+			// if 
+            if (
 
-				// if execution time exceeds max_query_time
-				if ($stop_timer - $start_timer > $this->max_query_time )
+                // notification address and notifier domain are set
+                !empty($this->notification_address) &&
+                !empty($this->notifier_domain) &&
 
-					// then send a notification mail
-					@mail(
-						$this->notification_address,
-						sprintf($this->language['email_subject'], $this->notifier_domain),
-						sprintf($this->language['email_content'], $this->max_query_time, $stop_timer - $start_timer, $sql),
-						'From: ' . $this->notifier_domain
-					);
+				// and execution time exceeds max_query_time
+                ($stop_timer - $start_timer > $this->max_query_time)
+
+            )
+
+				// then send a notification mail
+				@mail(
+					$this->notification_address,
+					sprintf($this->language['email_subject'], $this->notifier_domain),
+					sprintf($this->language['email_content'], $this->max_query_time, $stop_timer - $start_timer, $sql),
+					'From: ' . $this->notifier_domain
+				);
 
             // if the query was successfully executed
             if ($this->last_result !== false) {
