@@ -1515,6 +1515,23 @@ class Zebra_Database
     }
 
     /**
+    *   Returns the name of the currently selected database.
+    *
+    *   @since 2.8.7
+    *
+    *   @return mixed   Returns the name of the currently selected database, or FALSE if there's no active connection.
+    */
+    public function get_selected_database() {
+
+        // if an active connection exists
+        if ($this->_connected()) return $this->credentials['database'];
+
+        // return false if there's no connection
+        return false;
+
+    }
+
+    /**
      *  Returns information about the columns of a given table, as an associative array.
      *
      *  <code>
