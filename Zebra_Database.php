@@ -398,6 +398,15 @@ class Zebra_Database
     public $notifier_domain;
 
     /**
+     *  Counter value, which store the number of queries made in current session
+     *
+     *  @since  2.8.6
+     *
+     *  @var integer
+     */
+    public $query_count;
+
+    /**
      *  After running a SELECT query through either {@link select()} or {@link query()} methods this property would
      *  contain the number of returned rows.
      *
@@ -533,7 +542,7 @@ class Zebra_Database
 
         $this->log_path = $this->notification_address = $this->notifier_domain = $this->memcache_key_prefix = '';
 
-        $this->total_execution_time = $this->transaction_status = 0;
+        $this->total_execution_time = $this->transaction_status = $this->query_count = 0;
 
         $this->caching_method = 'disk';
 
@@ -2395,6 +2404,9 @@ class Zebra_Database
             // (we will use this in the debugging console)
             $this->total_execution_time += $stop_timer - $start_timer;
 
+            // increase queries count
+            $this->query_count++;
+
 			// if 
             if (
 
@@ -2444,6 +2456,9 @@ class Zebra_Database
                             $found_rows = mysqli_fetch_assoc(mysqli_query($this->connection, 'SELECT FOUND_ROWS()'));
 
                             $this->found_rows = $found_rows['FOUND_ROWS()'];
+
+                            // increase queries count
+                            $this->query_count++;
 
                         }
 
@@ -2617,6 +2632,9 @@ class Zebra_Database
 
                             // ask the MySQL to EXPLAIN the query
                             $explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql);
+
+                            // increase queries count
+                            $this->query_count++;
 
                             // if query returned a result
                             // (as some queries cannot be EXPLAIN-ed like SHOW TABLE, DESCRIBE, etc)
