@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.7 (last revision: February 10, 2015)
+ *  @version    2.8.8 (last revision: February 13, 2015)
  *  @copyright  (c) 2006 - 2015 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -539,7 +539,7 @@ class Zebra_Database
 
         $this->cached_results = $this->debug_info = $this->debugger_ip = array();
 
-        $this->connection = $this->memcache = $this->memcache_host = $this->memcache_port = $this->memcache_compressed = false;
+        $this->connection = $this->memcache = $this->memcache_host = $this->memcache_port = $this->memcache_compressed = $this->last_result = false;
 
         // set default warnings:
         $this->warnings = array(
@@ -4015,122 +4015,125 @@ class Zebra_Database
             // tries to create/open the 'log.txt' file
             if ($handle = @fopen(rtrim($this->log_path, '/') . '/' . $file_name, 'a+')) {
 
-                // iterate through the debug information
-                foreach ($this->debug_info['successful-queries'] as $debug_info) {
+                // if there are any successful queries
+                if (isset($this->debug_info['successful-queries']))
 
-                    // the following regular expressions strips newlines and indenting from the MySQL string, so that
-                    // we have it in a single line
-                    $pattern = array(
-                        "/\s*(.*)\n|\r/",
-                        "/\n|\r/"
-                    );
-                    $replace = array(
-                        ' $1',
-                        ' '
-                    );
+                    // iterate through the debug information
+                    foreach ($this->debug_info['successful-queries'] as $debug_info) {
 
-                    // all the labels that may be used in a log entry
-                    $labels = array(
-                        strtoupper($this->language['date']),
-                        strtoupper('query'),
-                        strtoupper($this->language['execution_time']),
-                        strtoupper($this->language['warning']),
-                        strtoupper($this->language['error']),
-                        strtoupper($this->language['from_cache']),
-                        strtoupper($this->language['yes']),
-                        strtoupper($this->language['no']),
-                        strtoupper($this->language['backtrace']),
-                        strtoupper($this->language['file']),
-                        strtoupper($this->language['line']),
-                        strtoupper($this->language['function']),
-                    );
+                        // the following regular expressions strips newlines and indenting from the MySQL string, so that
+                        // we have it in a single line
+                        $pattern = array(
+                            "/\s*(.*)\n|\r/",
+                            "/\n|\r/"
+                        );
+                        $replace = array(
+                            ' $1',
+                            ' '
+                        );
 
-                    // determine the longest label (for propper indenting)
-                    $longest_label_length = 0;
+                        // all the labels that may be used in a log entry
+                        $labels = array(
+                            strtoupper($this->language['date']),
+                            strtoupper('query'),
+                            strtoupper($this->language['execution_time']),
+                            strtoupper($this->language['warning']),
+                            strtoupper($this->language['error']),
+                            strtoupper($this->language['from_cache']),
+                            strtoupper($this->language['yes']),
+                            strtoupper($this->language['no']),
+                            strtoupper($this->language['backtrace']),
+                            strtoupper($this->language['file']),
+                            strtoupper($this->language['line']),
+                            strtoupper($this->language['function']),
+                        );
 
-                    // iterate through the labels
-                    foreach ($labels as $label)
+                        // determine the longest label (for propper indenting)
+                        $longest_label_length = 0;
 
-                        // if the label is longer than the longest label so far
-                        if (strlen($label) > $longest_label_length)
+                        // iterate through the labels
+                        foreach ($labels as $label)
 
-                            // this is the longes label, so far
-                            // we use utf8_decode so that strlen counts correctly with accented chars
-                            $longest_label_length = strlen(utf8_decode($label));
+                            // if the label is longer than the longest label so far
+                            if (strlen($label) > $longest_label_length)
 
-                    // write to log file
-                    fwrite($handle, print_r(
+                                // this is the longes label, so far
+                                // we use utf8_decode so that strlen counts correctly with accented chars
+                                $longest_label_length = strlen(utf8_decode($label));
 
-                        // top border
-                        str_pad('', $longest_label_length + 4, '#', STR_PAD_RIGHT) . "\n" .
-
-                        // date
-                        '# ' . $labels[0] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[0])), ' ', STR_PAD_RIGHT) . '#: ' . @date('Y M d H:i:s') . "\n" .
-
-                        // query
-                        '# ' . $labels[1] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[1])), ' ', STR_PAD_RIGHT) . '#: ' . trim(preg_replace($pattern, $replace, $debug_info['query'])) . "\n" .
-
-                        // if execution time is available
-                        // (is not available for unsuccessful queries)
-                        (isset($debug_info['execution_time']) ?
-
-                            '# ' . $labels[2] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . '#: ' .  $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['miliseconds'] . "\n"
-                             : ''
-
-                        ) .
-
-                        // if there is a warning message
-                        (isset($debug_info['warning']) && $debug_info['warning'] != '' ?
-
-                            '# ' . $labels[3] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[3])), ' ', STR_PAD_RIGHT) . '#: ' . strip_tags($debug_info['warning']) . "\n"
-                            : ''
-
-                        ) .
-
-                        // if there is an error message
-                        (isset($debug_info['error']) && $debug_info['error'] != '' ?
-
-                            '# ' . $labels[4] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[4])), ' ', STR_PAD_RIGHT) . '#: ' . $debug_info['error'] . "\n"
-                            : ''
-
-                        ) .
-
-                        // if not an action query, show whether the query was returned from the cache or was executed
-                        ($debug_info['affected_rows'] === false ?
-
-                            '# ' . $labels[5] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) .  '#: ' .
-
-                            (isset($debug_info['from_cache']) && $debug_info['from_cache'] === true  ?
-
-                                $labels[6] :
-                                $labels[7]
-
-                            ) . "\n"
-
-                            : ''
-
-                        ) .
-
-                        '# ' . $labels[8] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . '#:' . "\n"
-
-                    , true));
-
-                    // write full backtrace info
-                    foreach ($debug_info['backtrace'] as $backtrace)
-
+                        // write to log file
                         fwrite($handle, print_r(
 
-                            '# ' . str_pad('', ($longest_label_length + 1), ' ', STR_PAD_RIGHT) . '#' . "\n" .
-                            '# ' . $labels[9] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['file']] . "\n" .
-                            '# ' . $labels[10] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['line']] . "\n" .
-                            '# ' . $labels[11] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['function']] . "\n"
+                            // top border
+                            str_pad('', $longest_label_length + 4, '#', STR_PAD_RIGHT) . "\n" .
+
+                            // date
+                            '# ' . $labels[0] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[0])), ' ', STR_PAD_RIGHT) . '#: ' . @date('Y M d H:i:s') . "\n" .
+
+                            // query
+                            '# ' . $labels[1] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[1])), ' ', STR_PAD_RIGHT) . '#: ' . trim(preg_replace($pattern, $replace, $debug_info['query'])) . "\n" .
+
+                            // if execution time is available
+                            // (is not available for unsuccessful queries)
+                            (isset($debug_info['execution_time']) ?
+
+                                '# ' . $labels[2] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . '#: ' .  $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['miliseconds'] . "\n"
+                                 : ''
+
+                            ) .
+
+                            // if there is a warning message
+                            (isset($debug_info['warning']) && $debug_info['warning'] != '' ?
+
+                                '# ' . $labels[3] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[3])), ' ', STR_PAD_RIGHT) . '#: ' . strip_tags($debug_info['warning']) . "\n"
+                                : ''
+
+                            ) .
+
+                            // if there is an error message
+                            (isset($debug_info['error']) && $debug_info['error'] != '' ?
+
+                                '# ' . $labels[4] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[4])), ' ', STR_PAD_RIGHT) . '#: ' . $debug_info['error'] . "\n"
+                                : ''
+
+                            ) .
+
+                            // if not an action query, show whether the query was returned from the cache or was executed
+                            ($debug_info['affected_rows'] === false ?
+
+                                '# ' . $labels[5] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) .  '#: ' .
+
+                                (isset($debug_info['from_cache']) && $debug_info['from_cache'] === true  ?
+
+                                    $labels[6] :
+                                    $labels[7]
+
+                                ) . "\n"
+
+                                : ''
+
+                            ) .
+
+                            '# ' . $labels[8] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . '#:' . "\n"
 
                         , true));
 
-                    // finish writing to the log file by adding a bottom border
-                    fwrite($handle, str_pad('', $longest_label_length + 4, '#', STR_PAD_RIGHT) . "\n\n");
+                        // write full backtrace info
+                        foreach ($debug_info['backtrace'] as $backtrace)
 
-                }
+                            fwrite($handle, print_r(
+
+                                '# ' . str_pad('', ($longest_label_length + 1), ' ', STR_PAD_RIGHT) . '#' . "\n" .
+                                '# ' . $labels[9] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['file']] . "\n" .
+                                '# ' . $labels[10] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['line']] . "\n" .
+                                '# ' . $labels[11] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['function']] . "\n"
+
+                            , true));
+
+                        // finish writing to the log file by adding a bottom border
+                        fwrite($handle, str_pad('', $longest_label_length + 4, '#', STR_PAD_RIGHT) . "\n\n");
+
+                    }
 
                 // close log file
                 fclose($handle);
@@ -4415,7 +4418,7 @@ class Zebra_Database
     {
 
         // if the last result is a mysqli result set (it can also be a boolean or not set)
-        if (isset($this->last_result) && $this->last_result instanceof mysqli_result)
+        if ($this->last_result instanceof mysqli_result)
 
             // frees the memory associated with the last result
             mysqli_free_result($this->last_result);
