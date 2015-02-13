@@ -2,7 +2,7 @@
     "name": "stefangabos/zebra_database",
     "type": "library",
     "description": "An advanced, compact and lightweight MySQL database wrapper library, built around PHP's MySQLi extension.",
-    "keywords": ["mysqli", "mysql", "wrapper", "database", "db"],
+    "keywords": ["mysqli", "mysql", "wrapper", "database", "db", "class", "library", "php"],
     "homepage": "http://stefangabos.ro/php-libraries/zebra-database/",
     "license": "LGPL-3.0",
     "authors": [
@@ -16,7 +16,7 @@
     "require": {
         "php": ">=5.0.0"
     },
-    "version": "2.8.7",
+    "version": "2.8.8",
     "autoload": {
         "classmap": [
             "Zebra_Database.php"
