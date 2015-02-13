@@ -539,7 +539,7 @@ class Zebra_Database
 
         $this->cached_results = $this->debug_info = $this->debugger_ip = array();
 
-        $this->connection = $this->memcache = $this->memcache_host = $this->memcache_port = $this->memcache_compressed = $this->last_result = false;
+        $this->connection = $this->memcache = $this->memcache_host = $this->memcache_port = $this->memcache_compressed = false;
 
         // set default warnings:
         $this->warnings = array(
@@ -2288,7 +2288,7 @@ class Zebra_Database
                 // add the 'SQL_CALC_FOUND_ROWS' parameter to the query
                 $sql = preg_replace('/SELECT/i', 'SELECT SQL_CALC_FOUND_ROWS', $sql, 1);
 
-            unset($this->last_result);
+            if (isset($this->last_result)) unset($this->last_result);
 
             // starts a timer
             list($usec, $sec) = explode(' ', microtime());
@@ -4418,7 +4418,7 @@ class Zebra_Database
     {
 
         // if the last result is a mysqli result set (it can also be a boolean or not set)
-        if ($this->last_result instanceof mysqli_result)
+        if (isset($this->last_result) && $this->last_result instanceof mysqli_result)
 
             // frees the memory associated with the last result
             mysqli_free_result($this->last_result);
