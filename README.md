@@ -36,6 +36,20 @@ For using **memcache** as caching method, PHP must be compiled with the [memcach
 
 ## How to use
 
+### Install    
+
+Composer way  
+
+      composer require "stefangabos/zebra_database": "dev-master"
+
+or edit *composer.json*    
+
+     "require": {    
+         ......    
+        "stefangabos/Zebra_Database": "dev-master"    
+         ......    
+      }
+
 Connect to a database
 
 ```php
