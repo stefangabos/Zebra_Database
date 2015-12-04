@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.8 (last revision: February 13, 2015)
+ *  @version    2.8.9 (last revision: December 05, 2015)
  *  @copyright  (c) 2006 - 2015 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -2310,10 +2310,10 @@ class Zebra_Database
                     $memcache_key = md5($this->memcache_key_prefix . $sql);
 
                     // if there is a cached version of what we're looking for, and data is valid
-                    if (($result = $this->memcache->get($memcache_key)) && $this->cached_results[] = @unserialize(gzuncompress(base64_decode($result)))) {
+                    if (($result = $this->memcache->get($memcache_key)) && $cached_result = @unserialize(gzuncompress(base64_decode($result)))) {
 
-                        // assign to the last_result property the pointer to the position where the array was added
-                        $this->last_result = count($this->cached_results) - 1;
+                        // cache the result and also assign to the last_result property
+                        $this->cached_results[] = $this->last_result = $cached_result;
 
                         // reset the pointer of the array
                         reset($this->cached_results[$this->last_result]);
