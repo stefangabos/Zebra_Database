@@ -446,6 +446,13 @@ class Zebra_Database
     private $cached_results;
 
     /**
+     *  MySQL link identifier.
+     *
+     *  @access private
+     */
+    private $connection;
+
+    /**
      *  Array that will store the database connection credentials
      *
      *  @access private
@@ -469,13 +476,6 @@ class Zebra_Database
     private $language;
 
     /**
-     *  MySQL link identifier.
-     *
-     *  @access private
-     */
-    private $connection;
-
-    /**
      *  Instance of an opened memcache server connection.
      *
      *  @since 2.7
@@ -483,6 +483,20 @@ class Zebra_Database
      *  @access private
      */
     private $memcache;
+
+    /**
+     *  Absolute path to the library, used for includes
+     *
+     *  @access private
+     */
+    private $path;
+
+    /**
+     *  Keeps track of the total time used to execute queries
+     *
+     *  @access private
+     */
+    private $total_execution_time;
 
     /**
      *  Tells whether a transaction is in progress or not.
