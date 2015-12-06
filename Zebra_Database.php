@@ -2327,10 +2327,10 @@ class Zebra_Database
                     $key = md5($sql);
 
                     // if a cached version of this query's result already exists and it is not expired
-                    if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && $_SESSION[$key . '_timestamp'] + $cache > time() && $this->cached_results[] = @unserialize(gzuncompress(base64_decode($_SESSION[$key])))) {
+                    if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && $_SESSION[$key . '_timestamp'] + $cache > time() && $cached_result = @unserialize(gzuncompress(base64_decode($_SESSION[$key])))) {
 
-                        // assign to the last_result property the pointer to the position where the array was added
-                        $this->last_result = count($this->cached_results) - 1;
+                        // cache the result and also assign to the last_result property
+                        $this->cached_results[] = $this->last_result = $cached_result;
 
                         // reset the pointer of the array
                         reset($this->cached_results[$this->last_result]);
@@ -2350,10 +2350,10 @@ class Zebra_Database
                         if (file_exists($file_name) && filemtime($file_name) + $cache > time())
 
                             // if cache file is valid
-                            if ($this->cached_results[] = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name))))) {
+                            if ($cached_result = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name))))) {
 
-                                // assign to the last_result property the pointer to the position where the array was added
-                                $this->last_result = count($this->cached_results) - 1;
+                                // cache the result and also assign to the last_result property
+                                $this->cached_results[] = $this->last_result = $cached_result;
 
                                 // reset the pointer of the array
                                 reset($this->cached_results[$this->last_result]);
