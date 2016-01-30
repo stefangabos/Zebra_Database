@@ -24,8 +24,8 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.0 (last revision: December 07, 2015)
- *  @copyright  (c) 2006 - 2015 Stefan Gabos
+ *  @version    2.9.1 (last revision: January 30, 2016)
+ *  @copyright  (c) 2006 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
  */
@@ -1046,6 +1046,20 @@ class Zebra_Database
     }
 
     /**
+     *  Returns a string description of the last error, or an empty string if no error occurred.
+     *
+     *  @since  2.9.1
+     *
+     *  @return void
+     */
+    function error() {
+
+        // a string description of the last error, or an empty string if no error occurred
+        return mysqli_error($this->connection);
+
+    }
+
+    /**
      *  Escapes special characters in a string that's to be used in an SQL statement in order to prevent SQL injections.
      *
      *  <i>This method also encloses given string in single quotes!</i>
@@ -1408,6 +1422,26 @@ class Zebra_Database
         // we don't have to report any error as either the _connected() method already did
         // or did so the checking for valid resource
         return false;
+
+    }
+
+    /**
+     *  Frees the memory associated with a result
+     *
+     *  <samp>You should always free your result with {@link free_result()}, when your result object is not needed anymore.</samp>
+     *
+     *  @param  resource    $resource   A resource returned by {@link query} or {@link select} methods.
+     *
+     *                                  The method will do nothing if the argument is not a valid resource.
+     *
+     *  @since  2.9.1
+     *
+     *  @return void
+     */
+    function free_result($resource) {
+
+        // if argument is a valid resource, free the result
+        if ($this->_is_result($resource)) mysqli_free_result($resource);
 
     }
 
@@ -4351,7 +4385,7 @@ class Zebra_Database
     {
 
         // check whether a value is a valid result set obtained from a query against the database
-        return is_object($value) && strtolower(get_class($value)) == 'mysqli_result';
+        return $value instanceof mysqli_result;
 
     }
 
@@ -4432,10 +4466,11 @@ class Zebra_Database
     {
 
         // if the last result is a mysqli result set (it can also be a boolean or not set)
-        if (isset($this->last_result) && $this->last_result instanceof mysqli_result)
+        if (isset($this->last_result) && $this->_is_result($this->last_result))
 
             // frees the memory associated with the last result
-            mysqli_free_result($this->last_result);
+            // (we mute it as it might have already been freed by a call to "free_result" method)
+            @mysqli_free_result($this->last_result);
 
     }
 
