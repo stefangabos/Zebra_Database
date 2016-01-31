@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.1 (last revision: January 30, 2016)
+ *  @version    2.9.1 (last revision: January 31, 2016)
  *  @copyright  (c) 2006 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -151,8 +151,8 @@ class Zebra_Database
      *  anything if <i>debug</i> is FALSE.
      *
      *  Remember that on a production server you will not be left in the dark by setting this property to FALSE, as the
-     *  library will try to write any errors to the system log, if PHP is
-     *  {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors configured so}!
+     *  library will try to write any errors to PHP's error log file, if your environment is
+     *  {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors configured to do so}!
      *
      *  <code>
      *  // disable the generation of debugging information
@@ -1047,6 +1047,24 @@ class Zebra_Database
 
     /**
      *  Returns a string description of the last error, or an empty string if no error occurred.
+     *
+     *  In most cases you should not need this method as any errors are reported to the {@link show_debug_console console}
+     *  when the {@link debug} property is set to TRUE, or to PHP's error log file (if your environment is
+     *  {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors configured to do so}) when set to
+     *  FALSE.
+     *
+     *  If, for some reasons, none of the above is available, you can use this method to catch errors.
+     *
+     *  <code>
+     *  $db->query('
+     *      SELECT
+     *          *
+     *      FROM
+     *          users
+     *      WHERE
+     *          invalid_column = ?
+     *  ', array($value)) or die($db->error());
+     *  </code>
      *
      *  @since  2.9.1
      *
