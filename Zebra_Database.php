@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.1 (last revision: February 01, 2016)
+ *  @version    2.9.1 (last revision: February 02, 2016)
  *  @copyright  (c) 2006 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -2425,8 +2425,12 @@ class Zebra_Database
                     // if there is a cached version of what we're looking for, and data is valid
                     if (($result = $this->memcache->get($memcache_key)) && $cached_result = @unserialize(gzuncompress(base64_decode($result)))) {
 
-                        // cache the result and also assign to the last_result property
-                        $this->cached_results[] = $this->last_result = $cached_result;
+                        // put results in the right place
+                        // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
+                        $this->cached_results[] = $cached_result;
+
+                        // assign to the last_result property the pointer to the position where the array was added
+                        $this->last_result = count($this->cached_results) - 1;
 
                         // reset the pointer of the array
                         reset($this->cached_results[$this->last_result]);
@@ -2442,8 +2446,12 @@ class Zebra_Database
                     // if a cached version of this query's result already exists and it is not expired
                     if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && $_SESSION[$key . '_timestamp'] + $cache > time() && $cached_result = @unserialize(gzuncompress(base64_decode($_SESSION[$key])))) {
 
-                        // cache the result and also assign to the last_result property
-                        $this->cached_results[] = $this->last_result = $cached_result;
+                        // put results in the right place
+                        // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
+                        $this->cached_results[] = $cached_result;
+
+                        // assign to the last_result property the pointer to the position where the array was added
+                        $this->last_result = count($this->cached_results) - 1;
 
                         // reset the pointer of the array
                         reset($this->cached_results[$this->last_result]);
@@ -2465,8 +2473,12 @@ class Zebra_Database
                             // if cache file is valid
                             if ($cached_result = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name))))) {
 
-                                // cache the result and also assign to the last_result property
-                                $this->cached_results[] = $this->last_result = $cached_result;
+                                // put results in the right place
+                                // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
+                                $this->cached_results[] = $cached_result;
+
+                                // assign to the last_result property the pointer to the position where the array was added
+                                $this->last_result = count($this->cached_results) - 1;
 
                                 // reset the pointer of the array
                                 reset($this->cached_results[$this->last_result]);
