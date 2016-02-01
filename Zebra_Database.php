@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.1 (last revision: January 31, 2016)
+ *  @version    2.9.1 (last revision: February 01, 2016)
  *  @copyright  (c) 2006 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -517,6 +517,24 @@ class Zebra_Database
      *  @access private
      */
     private $warnings;
+
+    /**
+     *  All MySQL functions
+     *
+     */
+    private $mysql_functions = array('ABS', 'ACOS', 'ADDDATE', 'ADDTIME', 'ASCII', 'ASIN', 'ATAN', 'ATAN2', 'AVG', 'BIN',
+    'BINARY', 'CASE', 'CAST', 'CEIL', 'CEILING', 'CHAR_LENGTH', 'CHARACTER_LENGTH', 'COALESCE', 'CONCAT', 'CONCAT_WS',
+    'CONNECTION_ID', 'CONV', 'CONVERT', 'COS', 'COT', 'COUNT', 'CURDATE', 'CURRENT_DATE', 'CURRENT_TIME', 'CURRENT_TIMESTAMP',
+    'CURRENT_USER', 'CURTIME', 'DATABASE', 'DATE', 'DATE_ADD', 'DATE_FORMAT', 'DATE_SUB', 'DATEDIFF', 'DAY', 'DAYNAME',
+    'DAYOFMONTH', 'DAYOFWEEK', 'DAYOFYEAR', 'DEGREES', 'DIV', 'ENCRYPT', 'EXP', 'EXTRACT', 'FIELD', 'FIND_IN_SET', 'FLOOR',
+    'FORMAT', 'FROM_DAYS', 'GREATEST', 'HOUR', 'IF', 'IFNULL', 'INSERT', 'INSTR', 'ISNULL', 'LAST_DAY', 'LAST_INSERT_ID',
+    'LCASE', 'LEAST', 'LEFT', 'LENGTH', 'LN', 'LOCALTIME', 'LOCALTIMESTAMP', 'LOCATE', 'LOG', 'LOG10', 'LOG2', 'LOWER',
+    'LPAD', 'LTRIM', 'MAKEDATE', 'MAKETIME', 'MAX', 'MD5', 'MICROSECOND', 'MID', 'MIN', 'MINUTE', 'MOD', 'MONTH', 'MONTHNAME',
+    'NOW', 'NULLIF', 'OLD_PASSWORD', 'PASSWORD', 'PERIOD_ADD', 'PERIOD_DIFF', 'PI', 'POSITION', 'POW', 'POWER', 'QUARTER',
+    'RADIANS', 'RAND', 'REPEAT', 'REPLACE', 'REVERSE', 'RIGHT', 'ROUND', 'RPAD', 'RTRIM', 'SEC_TO_TIME', 'SECOND',
+    'SESSION_USER', 'SIGN', 'SIN', 'SPACE', 'SQRT', 'STR_TO_DATE', 'STRCMP', 'SUBDATE', 'SUBSTR', 'SUBSTRING', 'SUBSTRING_INDEX',
+    'SUBTIME', 'SUM', 'SYSDATE', 'SYSTEM_USER', 'TAN', 'TIME', 'TIME_FORMAT', 'TIME_TO_SEC', 'TIMEDIFF', 'TIMESTAMP', 'TO_DAYS',
+    'TRIM', 'TRUNCATE', 'UCASE', 'UPPER', 'USER', 'VERSION', 'WEEK', 'WEEKDAY', 'WEEKOFYEAR', 'YEAR', 'YEARWEEK');
     
     /**
      *  Constructor of the class
@@ -1811,8 +1829,13 @@ class Zebra_Database
         // enclose the column names in grave accents
         $cols = '`' . implode('`,`', array_keys($columns)) . '`';
 
-        // parameter markers for escaping values later on
-        $values = rtrim(str_repeat('?,', count($columns)), ',');
+        $values = '';
+
+        // iterate through the given columns
+        foreach ($columns as $column_name => $value)
+
+            // separate values by comma
+            $values .= ($values != '' ? ', ' : '') . ($this->_is_mysql_function($value) ? $value : '?');
 
         // run the query
         $this->query('
@@ -1871,11 +1894,16 @@ class Zebra_Database
      *
      *                                  Default is FALSE.
      *
+     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
+     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *
+     *                                  Default is FALSE.
+     *
      *  @since  2.1
      *
      *  @return boolean                 Returns TRUE on success of FALSE on error.
      */
-    function insert_bulk($table, $columns, $data, $ignore = false)
+    function insert_bulk($table, $columns, $data, $ignore = false, $highlight = false)
     {
 
         // we can't do array_values(array_pop()) since PHP 5.3+ as will trigger a "strict standards" error
@@ -1902,11 +1930,30 @@ class Zebra_Database
                 VALUES
             ';
 
-            // iterate through the arrays and escape values
-            foreach ($data as $values) $sql .= '(' . $this->implode($values) . '),';
+            $sql_values = ''; $value_set = '';
+
+            // iterate through the value sets
+            foreach ($data as $values) {
+
+                $sql_values .= ($sql_values != '' ? ', ' : '') . '(';
+
+                $value_set = '';
+
+                // for each value in set
+                foreach ($values as $value)
+
+                    // if it represents one or more MySQL functions, do not enclose it in quotes, or do otherwise
+                    $value_set .= ($value_set != '' ? ', ' : '') . ($this->_is_mysql_function($value) ? $value : '"' . $this->escape($value) . '"');
+
+                $sql_values .= $value_set . ')';
+
+            }
+
+            // append the value sets to the query
+            $sql .= $sql_values;
 
             // run the query
-            $this->query(rtrim($sql, ','));
+            $this->query($sql, '', false, false, $highlight);
 
             // return true if query was executed successfully
             if ($this->last_result) return true;
@@ -4267,7 +4314,10 @@ class Zebra_Database
         $sql = '';
 
         // start creating the SQL string and enclose field names in `
-        foreach ($columns as $column_name => $value)
+        foreach ($columns as $column_name => $value) {
+
+            // separate values by comma
+            $sql .= ($sql != '' ? ', ' : '');
 
             // if value is just a parameter marker ("?", question mark)
             if (trim($value) == '?')
@@ -4283,7 +4333,7 @@ class Zebra_Database
             elseif (preg_match('/INC\((\-{1})?(.*?)\)/i', $value, $matches) > 0) {
 
                 // translate to SQL
-                $sql .= ($sql != '' ? ', ' : '') . '`' . $column_name . '` = `' . $column_name . '` ' . ($matches[1] == '-' ? '-' : '+') . ' ?';
+                $sql .= '`' . $column_name . '` = `' . $column_name . '` ' . ($matches[1] == '-' ? '-' : '+') . ' ?';
 
                 // if INC() contains an actual value and not a parameter marker ("?", question mark)
                 // add the actual value to the array with the replacement values
@@ -4293,11 +4343,50 @@ class Zebra_Database
                 // is already in the array with the replacement values, and that we don't need it here anymore
                 else unset($columns[$column_name]);
 
+            // if value looks like one or more nested functions
+            } elseif ($this->_is_mysql_function($value)) {
+
+                // build the string without enclosing this value in quotes
+                $sql .= '`' . $column_name . '` = ' . $value;
+
+                // we don't need this anymore
+                unset($columns[$column_name]);
+
             // the usual way
-            } else $sql .= ($sql != '' ? ', ' : '') . '`' . $column_name . '` = ?';
+            } else $sql .= '`' . $column_name . '` = ?';
+
+        }
 
         // return the built sql
         return $sql;
+
+    }
+
+    private function _is_mysql_function($value) {
+
+        $valid = false;
+
+        // if value looks like one or more nested functions
+        if (preg_match('/^[a-z]+\(/i', $value) && preg_match_all('/([a-z]+\()/i', $value, $matches)) {
+
+            $valid = true;
+
+            // iterate through what look like MySQL functions
+            foreach ($matches[0] as $match)
+
+                // if entry is not a MySQL function
+                if (!in_array(strtoupper(substr($match, 0, -1)), $this->mysql_functions)) {
+
+                    // it means we made a mistake, don't look further
+                    $valid = false;
+
+                    break;
+
+                }
+
+        }
+
+        return $valid;
 
     }
 
