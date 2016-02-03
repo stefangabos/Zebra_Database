@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.1 (last revision: February 02, 2016)
+ *  @version    2.9.1 (last revision: February 03, 2016)
  *  @copyright  (c) 2006 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -1930,7 +1930,7 @@ class Zebra_Database
                 VALUES
             ';
 
-            $sql_values = ''; $value_set = '';
+            $sql_values = $value_set = '';
 
             // iterate through the value sets
             foreach ($data as $values) {
@@ -2070,14 +2070,34 @@ class Zebra_Database
         // enclose the column names in grave accents
         $cols = '`' . implode('`,`', array_keys($columns)) . '`';
 
-        // parameter markers for escaping values later on
-        $values = rtrim(str_repeat('?,', count($columns)), ',');
+        $values = '';
+
+        // iterate through the given columns
+        foreach ($columns as $column_name => $value) {
+
+            // separate values by comma
+            $values .= ($values != '' ? ', ' : '');
+
+            // if value is a MySQL function
+            if ($this->_is_mysql_function($value)) {
+
+                // use it as it is
+                $values .= $value;
+
+                // we don't need this value in the replacements array
+                unset($columns[$column_name]);
+
+            // if not a MySQL function, use a marker
+            // that we'll replace with the value from the replacements array
+            } else $values .= '?';
+
+        }
 
         // if no $update specified
         if (empty($update)) {
 
             // use the columns specified in $columns
-            $update_cols = '`' . implode('` = ?,`', array_keys($columns)) . '` = ?';
+            $update_cols = $this->_build_sql($columns);
 
             // use the same column for update as for insert
             $update = $columns;
@@ -4374,6 +4394,11 @@ class Zebra_Database
 
     }
 
+    /**
+     *  Checks if a string is in fact a MySQL function call (or a bunch of nested MySQL functions)
+     *
+     *  @access private
+     */
     private function _is_mysql_function($value) {
 
         $valid = false;
@@ -4398,6 +4423,7 @@ class Zebra_Database
 
         }
 
+        // return the result
         return $valid;
 
     }
