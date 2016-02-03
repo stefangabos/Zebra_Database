@@ -1789,11 +1789,25 @@ class Zebra_Database
      *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
      *
      *  <code>
+     *  // notice that we're also using MySQL functions within values
      *  $db->insert(
      *      'table',
      *      array(
-     *          'column1'   =>  'value1',
-     *          'column2'   =>  'value2',
+     *          'column1'       =>  'value1',
+     *          'column2'       =>  'TRIM(UCASE("value2"))',
+     *          'date_updated'  =>  'NOW()',
+     *  ));
+     *
+     *  // when using MySQL functions, the value will be used as it is without being escaped!
+     *  // while this is ok when using a function without any arguments like NOW(), this may
+     *  // pose a security concern if the argument(s) come from user input.
+     *  // in this case we have to escape the value ourselves
+     *  $db->insert(
+     *      'table',
+     *      array(
+     *          'column1'       =>  'value1',
+     *          'column2'       =>  'TRIM(UCASE("' . $db->escape($value) . '"))',
+     *          'date_updated'  =>  'NOW()',
      *  ));
      *  </code>
      *
@@ -1805,6 +1819,14 @@ class Zebra_Database
      *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
      *                                  usage of reserved words as column names) and values will be automatically
      *                                  {@link escape()}d in order to prevent SQL injections.
+     *
+     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
+     *                                  as <i>values</i>.
+     *
+     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
+     *                                  without being escaped! While this is ok when using a function without any arguments
+     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
+     *                                  In this case make sure you {@link escape} the values yourself!</samp>
      *
      *  @param  boolean $ignore         (Optional) By default trying to insert a record that would cause a duplicate
      *                                  entry for a primary key would result in an error. If you want these errors to be
@@ -1877,17 +1899,28 @@ class Zebra_Database
      *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
      *
      *  <code>
+     *  // notice that we're also using MySQL functions within values
      *  $db->insert_bulk(
      *      'table',
-     *      array('column1', 'column2'),
+     *      array('column1', 'column2', 'date_updated'),
      *      array(
-     *          array('value1', 'value2'),
-     *          array('value3', 'value4'),
-     *          array('value5', 'value6'),
-     *          array('value7', 'value8'),
-     *          array('value9', 'value10')
+     *          array('value1', 'TRIM(UCASE("value2"))', 'NOW()'),
+     *          array('value3', 'TRIM(UCASE("value4"))', 'NOW()'),
      *      )
-     *  ));
+     *  );
+     *
+     *  // when using MySQL functions, the value will be used as it is without being escaped!
+     *  // while this is ok when using a function without any arguments like NOW(), this may
+     *  // pose a security concern if the argument(s) come from user input.
+     *  // in this case we have to escape the value ourselves
+     *  $db->insert_bulk(
+     *      'table',
+     *      array('column1', 'column2', 'date_updated'),
+     *      array(
+     *          array('value1', 'TRIM(UCASE("' . $db->escape($value2) . '"))', 'NOW()'),
+     *          array('value3', 'TRIM(UCASE("' . $db->escape($value4) . '"))', 'NOW()'),
+     *      )
+     *  );
      *  </code>
      *
      *  @param  string  $table          Table in which to insert.
@@ -1897,9 +1930,17 @@ class Zebra_Database
      *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
      *                                  usage of reserved words as column names).
      *
-     *  @param  array  $data           An array of an unlimited number of arrays containing values to be inserted.
+     *  @param  array  $data            An array of an unlimited number of arrays containing values to be inserted.
      *
      *                                  Values will be automatically {@link escape()}d in order to prevent SQL injections.
+     *
+     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
+     *                                  as <i>values</i>.
+     *
+     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
+     *                                  without being escaped! While this is ok when using a function without any arguments
+     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
+     *                                  In this case make sure you {@link escape} the values yourself!</samp>
      *
      *  @param  boolean $ignore         (Optional) By default, trying to insert a record that would cause a duplicate
      *                                  entry for a primary key would result in an error. If you want these errors to be
@@ -2018,7 +2059,7 @@ class Zebra_Database
      *  When using this method, if a row is inserted that would cause a duplicate value in a UNIQUE index or PRIMARY KEY,
      *  an UPDATE of the old row is performed.
      *
-     *  Read more at {@link http://dev.mysql.com/doc/refman/5.0/en/insert-on-duplicate.html}.
+     *  Read more {@link http://dev.mysql.com/doc/refman/5.0/en/insert-on-duplicate.html here}.
      *
      *  When using this method, column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
      *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
@@ -2027,11 +2068,29 @@ class Zebra_Database
      *  // presuming article_id is a UNIQUE index or PRIMARY KEY, the statement below will insert a new row for given
      *  // $article_id and set the "votes" to 0. But, if $article_id is already in the database, increment the votes'
      *  // numbers.
+     *  // also notice that we're using a MySQL function as a value
      *  $db->insert_update(
      *      'table',
      *      array(
      *          'article_id'    =>  $article_id,
      *          'votes'         =>  0,
+     *          'date_updated'  =>  'NOW()',
+     *      ),
+     *      array(
+     *          'votes'         =>  'INC(1)',
+     *      )
+     *  );
+     *
+     *  // when using MySQL functions, the value will be used as it is without being escaped!
+     *  // while this is ok when using a function without any arguments like NOW(), this may
+     *  // pose a security concern if the argument(s) come from user input.
+     *  // in this case we have to escape the value ourselves
+     *  $db->insert_update(
+     *      'table',
+     *      array(
+     *          'article_id'    =>  'CEIL("' . $db->escape($article_id) . '")',
+     *          'votes'         =>  0,
+     *          'date_updated'  =>  'NOW()',
      *      ),
      *      array(
      *          'votes'         =>  'INC(1)',
@@ -2047,6 +2106,14 @@ class Zebra_Database
      *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
      *                                  usage of reserved words as column names) and values will be automatically
      *                                  {@link escape()}d.
+     *
+     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
+     *                                  as <i>values</i>.
+     *
+     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
+     *                                  without being escaped! While this is ok when using a function without any arguments
+     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
+     *                                  In this case make sure you {@link escape} the values yourself!</samp>
      *
      *  @param  array   $update         (Optional) An associative array where the array's keys represent the columns names
      *                                  and the array's values represent the values to update the columns' values to.
@@ -2064,6 +2131,14 @@ class Zebra_Database
      *                                  incremented or decremented. In this case, use <i>INC(value)</i> where <i>value</i>
      *                                  is the value to increase the column's value with. Use <i>INC(-value)</i> to decrease
      *                                  the column's value. See {@link update()} for an example.
+     *
+     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
+     *                                  as <i>values</i>.
+     *
+     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
+     *                                  without being escaped! While this is ok when using a function without any arguments
+     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
+     *                                  In this case make sure you {@link escape} the values yourself!</samp>
      *
      *                                  Default is an empty array.
      *
@@ -2330,8 +2405,8 @@ class Zebra_Database
      *                                  returned if there was no LIMIT applied to the query.
      *
      *                                  This is very useful for creating pagination or computing averages. Also, note
-     *                                  that this information will be available without running an extra query. Here's
-     *                                  how {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows}
+     *                                  that this information will be available without running an extra query. 
+     *                                  {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows Here's how}
      *
      *                                  Default is FALSE.
      *
@@ -3008,8 +3083,8 @@ class Zebra_Database
      *                                  returned if there was no LIMIT applied to the query.
      *
      *                                  This is very useful for creating pagination or computing averages. Also, note
-     *                                  that this information will be available without running an extra query. Here's
-     *                                  how {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows}
+     *                                  that this information will be available without running an extra query.
+     *                                  {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows Here's how}
      *
      *                                  Default is FALSE.
      *
@@ -3061,15 +3136,13 @@ class Zebra_Database
      *
      *                              Default is 'utf8'.
      *
-     *                              For a list of possible values see:
-     *                              {@link http://dev.mysql.com/doc/refman/5.1/en/charset-charsets.html}
+     *                              See the {@link http://dev.mysql.com/doc/refman/5.1/en/charset-charsets.html list of possible values}
      *
      *  @param  string  $collation  (Optional) The collation to be used by the database.
      *
      *                              Default is 'utf8_general_ci'.
      *
-     *                              For a list of possible values see:
-     *                              {@link http://dev.mysql.com/doc/refman/5.1/en/charset-charsets.html}
+     *                              See the {@link http://dev.mysql.com/doc/refman/5.1/en/charset-charsets.html list of possible values}
      *
      *  @since  2.0
      *
@@ -3860,7 +3933,7 @@ class Zebra_Database
      *  BDB table types. Working with MyISAM tables will not raise any errors but statements will be executed
      *  automatically as soon as they are called (just like if there was no transaction).
      *
-     *  If you are not familiar with transactions, have a look at {@link http://dev.mysql.com/doc/refman/5.0/en/commit.html}
+     *  If you are not familiar with transactions, have a look at {@link http://dev.mysql.com/doc/refman/5.0/en/commit.html here}
      *  and try to find a good online resource for more specific information.
      *
      *  <code>
@@ -3944,9 +4017,9 @@ class Zebra_Database
     /**
      *  Shorthand for truncating tables.
      *
-     *  <i>Truncating a table is quicker then deleting all rows, as stated in the MySQL documentation at
-     *  {@link http://dev.mysql.com/doc/refman/4.1/en/truncate-table.html}. Truncating a table also resets the value of
-     *  the AUTO INCREMENT column.</i>
+     *  <i>Truncating a table is quicker then deleting all rows, as stated in the
+     *  {@link http://dev.mysql.com/doc/refman/4.1/en/truncate-table.html MySQL documentation}. Truncating a table also
+     *  resets the value of the AUTO INCREMENT column.</i>
      *
      *  <code>
      *  $db->truncate('table');
@@ -3990,11 +4063,28 @@ class Zebra_Database
      *  After an update check {@link affected_rows} to find out how many rows were affected.
      *
      *  <code>
+     *  // notice that we're using a MySQL function as a value
      *  $db->update(
      *      'table',
      *      array(
-     *          'column1'   =>  'value1',
-     *          'column2'   =>  'value2',
+     *          'column1'       =>  'value1',
+     *          'column2'       =>  'value2',
+     *          'date_updated'  =>  'NOW()',
+     *      ),
+     *      'criteria = ?',
+     *      array($criteria)
+     *  );
+     *
+     *  // when using MySQL functions, the value will be used as it is without being escaped!
+     *  // while this is ok when using a function without any arguments like NOW(), this may
+     *  // pose a security concern if the argument(s) come from user input.
+     *  // in this case we have to escape the value ourselves
+     *  $db->update(
+     *      'table',
+     *      array(
+     *          'column1'       =>  'TRIM(UCASE("' . $db->escape($value1) . '"))',
+     *          'column2'       =>  'value2',
+     *          'date_updated'  =>  'NOW()',
      *      ),
      *      'criteria = ?',
      *      array($criteria)
@@ -4034,6 +4124,14 @@ class Zebra_Database
      *                                  <code>
      *                                  $db->query('UPDATE table SET column = colum + ? WHERE criteria = ?', array($value, $criteria));
      *                                  </code>
+     *
+     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
+     *                                  as <i>values</i>.
+     *
+     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
+     *                                  without being escaped! While this is ok when using a function without any arguments
+     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
+     *                                  In this case make sure you {@link escape} the values yourself!</samp>
      *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
