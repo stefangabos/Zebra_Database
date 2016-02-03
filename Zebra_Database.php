@@ -1832,10 +1832,25 @@ class Zebra_Database
         $values = '';
 
         // iterate through the given columns
-        foreach ($columns as $column_name => $value)
+        foreach ($columns as $column_name => $value) {
 
             // separate values by comma
-            $values .= ($values != '' ? ', ' : '') . ($this->_is_mysql_function($value) ? $value : '?');
+            $values .= ($values != '' ? ', ' : '');
+
+            // if value is a MySQL function
+            if ($this->_is_mysql_function($value)) {
+
+                // use it as it is
+                $values .= $value;
+
+                // we don't need this value in the replacements array
+                unset($columns[$column_name]);
+
+            // if not a MySQL function, use a marker
+            // that we'll replace with the value from the replacements array
+            } else $values .= '?';
+
+        }
 
         // run the query
         $this->query('
