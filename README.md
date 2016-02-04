@@ -2,31 +2,31 @@
 
 ####An advanced, compact and lightweight MySQL database wrapper library, built around PHP's mysqli extension
 
-It provides methods for interacting with MySQL databases that are more powerful and intuitive than PHP’s default ones.
+It provides methods for interacting with MySQL databases that are more powerful and intuitive than PHP's default ones.
 
-It supports transactions and provides ways for caching query results either by saving cached data on the disk, or by using memcache.
+It supports transactions and provides ways for caching query results either by saving cached data to the **disk**, in the **session**, or by using **[memcache](http://memcached.org/)**.
 
-The class provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically EXPLAIN‘s each SELECT query (so you don’t miss those keys again!).
+The class provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically [EXPLAIN](http://dev.mysql.com/doc/refman/5.7/en/explain.html)s each SELECT query (so you don't miss those keys again!).
 
-It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of prepared statements, where parameters are automatically escaped.
+It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of prepared statements, where parameters are automatically [escaped](http://www.php.net/manual/en/mysqli.real-escape-string.php).
 
-Zebra_Database‘s code is heavily commented and generates no warnings/errors/notices when PHP’s error reporting level is set to E_ALL.
+Zebra_Database‘s code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to [E_ALL](http://www.php.net/manual/en/function.error-reporting.php).
 
 ##Features
 
-- it uses the **mysqli** extension for communicating with the database instead of the old **mysql** extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; again, this is not a wrapper for the PDO extension which is already a wrapper in itself
+- it uses the **[mysqli extension](http://www.php.net/manual/en/book.mysqli.php)** extension for communicating with the database instead of the old **mysql** extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; again, this is not a wrapper for the PDO extension which is already a wrapper in itself
 
 - offers lots of powerful methods for easier interaction with MySQL
 
 - provides a better security layer by encouraging the use of prepared statements, where parameters are automatically escaped
 
-- provides a very detailed debugging interface with lots of useful information about executed queries; it also automatically EXAPLAIN’s each SELECT query
+- provides a very detailed debugging interface with lots of useful information about executed queries; it also automatically [EXAPLAIN](http://dev.mysql.com/doc/refman/5.7/en/explain.html)s each SELECT query
 
-- supports caching of query results to disk or to a **memcache** server
+- supports caching of query results to the disk, in the session, or to a **memcache** server
 
 - has comprehensive documentation
 
-- code is heavily commented and generates no warnings/errors/notices when PHP’s error reporting level is set to **E_ALL**
+- code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to **E_ALL**
 
 ## Requirements
 
@@ -96,11 +96,13 @@ An INSERT statement
 ```php
 <?php
 
+// notice that you can use MySQL functions in values
 $db->insert(
     'table',
     array(
-        'column1' => $value1,
-        'column2' => $value2,
+        'column1'      => $value1,
+        'column2'      => $value2,
+        'date_updated' => 'NOW()'
     )
 );
 
@@ -114,11 +116,18 @@ An UPDATE statement
 
 // $criteria will be escaped and enclosed in grave accents, and will
 // replace the corresponding ? (question mark) automatically
+// also, notice that you can use MySQL functions in values
+// when using MySQL functions, the value will be used as it is without being escaped!
+// while this is ok when using a function without any arguments like NOW(), this may
+// pose a security concern if the argument(s) come from user input.
+// in this case we have to escape the value ourselves
 $db->update(
     'table',
     array(
-        'column1' => $value1,
-        'column2' => $value2,
+        'column1'      => $value1,
+        'column2'      => 'TRIM(UCASE("value2"))',
+        'column3'      => 'TRIM(UCASE("'' . $db->escape($value3) . "))',
+        'date_updated' => 'NOW()'
     ),
     'criteria = ?',
     array($criteria)
