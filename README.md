@@ -8,7 +8,7 @@ It provides methods for interacting with MySQL databases that are more powerful 
 
 It supports transactions and provides ways for caching query results either by saving cached data to the **disk**, in the **session**, or by using **[memcache](http://memcached.org/)**.
 
-The class provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically [EXPLAIN](http://dev.mysql.com/doc/refman/5.7/en/explain.html)s each SELECT query (so you don't miss those keys again!).
+The class provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically [EXPLAIN](http://dev.mysql.com/doc/refman/5.7/en/explain.html)s each SELECT query (*so you don't miss those keys again!*).
 
 It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of prepared statements, where parameters are automatically [escaped](http://www.php.net/manual/en/mysqli.real-escape-string.php).
 
