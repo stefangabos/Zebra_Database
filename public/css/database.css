@@ -5,10 +5,10 @@
 #zdc a              { text-decoration: none }
 #zdc .zdc-hidden    { display: none }
 #zdc .zdc-visible   { display: block }
-#zdc table          { border-collapse: collapse; border-color: #888; border: 1px solid #888 }
+#zdc table          {  }
 #zdc table tr.even  { background: #DEDEDE }
 #zdc table td,
-#zdc table th       { padding: 4px }
+#zdc table th       { padding: 4px; border: none }
 #zdc table th       { background: #73705D; color: #FFF }
 #zdc .clear         { clear: both }
 
@@ -27,22 +27,22 @@
 #zdc-globals-submenu ul li a:hover  { background: #73705D }
 
 /* ENTRIES */
-#zdc .zdc-entry                 { margin: 4px 4px 0 4px; border: 1px solid #666; background: #9CA68F; width: 99% }
-#zdc .zdc-box                   { background: #EEE; padding: 5px; border: 1px solid #151C24; margin-bottom: 2px }
+#zdc .zdc-entry                 { margin: 4px 4px 0 4px; background: #9CA68F; width: 99% }
+#zdc .zdc-box                   { background: #EEE; padding: 10px }
 #zdc .zdc-transaction           { background: #FFFFCC }
-#zdc .zdc-counter               { background: #73705D; padding: 5px; border-right: 1px solid #000; color: #DDD }
+#zdc .zdc-counter               { background: #73705D; padding: 5px; color: #DDD }
 #zdc .zdc-even .zdc-counter     { background: #252626 }
 #zdc .zdc-data                  { width: 100%; padding: 5px }
 #zdc .zdc-error                 { background: #CC3333; color: #FFF; font-weight: bold }
 #zdc .zdc-error pre,
 #zdc .zdc-error span,
-#zdc .zdc-error em,  
+#zdc .zdc-error em,
 #zdc .zdc-error a               { font-weight: normal; color: #FFF }
 #zdc .zdc-error a               { text-decoration: underline }
 #zdc .zdc-error strong          { color: #FFF }
 #zdc .zdc-highlight             { background: orange }
 
-#zdc .zdc-actions           { padding: 2px; background: #CDD8BF; color: #151C24 }
+#zdc .zdc-actions           { padding: 2px; background: #CDD8BF; color: #151C24; margin-top: 5px; }
 #zdc .zdc-actions ul        { list-style-type: none; margin: 0; padding: 0 }
 #zdc .zdc-actions ul li     { float: left; display: block; margin-right: 0px; background-repeat: no-repeat; background-position: 5px center; padding: 5px 5px 5px 28px }
 #zdc .zdc-actions ul li a   { color: #151C24 !important; text-decoration: underline }
@@ -70,3 +70,5 @@
 #zdc-mini { position: absolute; top: 0; right: 1px; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 12px; text-align: left; display: block }
 #zdc-mini a { background: #151C24 url('db.gif') no-repeat 10px center; display: block; padding: 10px 10px 10px 30px; color: #FFF; text-decoration: none }
 #zdc-mini a span { font-weight: bold; background-color: #c40000; padding: 0 5px 0 5px; margin: 0px 4px 0 4px }
+
+#zdc pre { background: #EEE !important }
