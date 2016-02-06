@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.1 (last revision: February 03, 2016)
+ *  @version    2.9.1 (last revision: February 06, 2016)
  *  @copyright  (c) 2006 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -3199,6 +3199,9 @@ class Zebra_Database
 
         ) {
 
+            // include the SqlFormatter library
+            require 'includes/SqlFormatter.php';
+
             // if warnings are not disabled
             if (!$this->disable_warnings)
 
@@ -3259,204 +3262,14 @@ class Zebra_Database
                         $identifier = $blocks[$block]['identifier'];
 
                         // if block is about queries
-                        if ($block == 'successful-queries' || $block == 'unsuccessful-queries') {
+                        if ($block == 'successful-queries' || $block == 'unsuccessful-queries')
 
-                            // symbols in MySQL query
-                            $symbols = array(
-                                '=',
-                                '>',
-                                '<',
-                                '*',
-                                '+',
-                                '-',
-                                ',',
-                                '.',
-                                '(',
-                                ')',
-                            );
-
-                            // escape special characters and prepare them to be used to regular expressions
-                            array_walk($symbols, create_function('&$value', '$value="/(" . quotemeta($value) . ")/";'));
-
-                            // strings in MySQL queries
-                            $strings = array(
-                                "/\'([^\']*)\'/",
-                                "/\"([^\"]*)\"/",
-                            );
-
-                            // keywords in MySQL queries
-                            $keywords = array(
-                                'ADD',
-                                'ALTER',
-                                'ANALYZE',
-                                'BETWEEN',
-                                'CHANGE',
-                                'COMMIT',
-                                'CREATE',
-                                'DELETE',
-                                'DROP',
-                                'EXPLAIN',
-                                'FROM',
-                                'GROUP BY',
-                                'HAVING',
-                                'INNER JOIN',
-                                'INSERT INTO',
-                                'LEFT JOIN',
-                                'LIMIT',
-                                'ON DUPLICATE KEY',
-                                'OPTIMIZE',
-                                'ORDER BY',
-                                'RENAME',
-                                'REPAIR',
-                                'REPLACE INTO',
-                                'RIGHT JOIN',
-                                'ROLLBACK',
-                                'SELECT',
-                                'SET',
-                                'SHOW',
-                                'START TRANSACTION',
-                                'STATUS',
-                                'TABLE',
-                                'TABLES',
-                                'TRUNCATE',
-                                'UPDATE',
-                                'UNION',
-                                'VALUES',
-                                'WHERE'
-                            );
-
-                            // escape special characters and prepare them to be used to regular expressions
-                            array_walk($keywords, create_function('&$value', '$value="/(\b" . quotemeta($value) . "\b)/i";'));
-
-                            // more keywords (these are the keywords that we don't put a line break after in the debugging console
-                            // when showing queries formatted and highlighted)
-                            $keywords2 = array(
-                                'AGAINST',
-                                'ALL',
-                                'AND',
-                                'AS',
-                                'ASC',
-                                'AUTO INCREMENT',
-                                'AVG',
-                                'BINARY',
-                                'BOOLEAN',
-                                'BOTH',
-                                'CASE',
-                                'COLLATE',
-                                'COUNT',
-                                'DESC',
-                                'DOUBLE',
-                                'ELSE',
-                                'END',
-                                'ENUM',
-                                'FIND_IN_SET',
-                                'IN',
-                                'INT',
-                                'IS',
-                                'KEY',
-                                'LIKE',
-                                'MATCH',
-                                'MAX',
-                                'MIN',
-                                'MODE',
-                                'NAMES',
-                                'NOT',
-                                'NULL',
-                                'ON',
-                                'OR',
-                                'SQL_CALC_FOUND_ROWS',
-                                'SUM',
-                                'TEXT',
-                                'THEN',
-                                'TO',
-                                'VARCHAR',
-                                'WHEN',
-                                'XOR',
-                            );
-
-                            // escape special characters and prepare them to be used to regular expressions
-                            array_walk($keywords2, create_function('&$value', '$value="/(\b" . quotemeta($value) . "\b)/i";'));
-
-                            $query_strings = array();
-
-                            // if there are any strings in the query, store the offset where they start and the actual string
-                            // in the $matches var
-                            if (preg_match_all(
-
-                                '/(\'|\"|\`)([^\1\\\]*?(?:\\\.[^\1\\\]*?)*)\\1/',
-
-                                $debug_info['query'],
-
-                                $matches,
-
-                                PREG_OFFSET_CAPTURE
-
-                            ) > 0) {
-
-                                // reverse the order in which strings will be replaced so that we replace strings starting with
-                                // the last one or else we scramble up the offsets...
-                                $matches[2] = array_reverse($matches[2], true);
-
-                                // iterate through the strings
-                                foreach ($matches[2] as $match) {
-
-                                    // save the strings
-                                    $query_strings['/' . md5($match[0]) . '/'] = preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $match[0]);
-
-                                    // replace strings with their md5 hashed equivalent
-                                    // (we do this because we don't have to highlight anything in strings)
-                                    $debug_info['query'] = substr_replace(
-
-                                        $debug_info['query'],
-
-                                        md5($match[0]),
-
-                                        $match[1],
-
-                                        strlen($match[0])
-
-                                    );
-
-                                }
-
-                            }
-
-                            // highlight symbols
-                            $debug_info['query'] =
-
-                                preg_replace($symbols, htmlentities('<span class="symbol">$1</span>'), $debug_info['query']);
-
-                            // highlight strings
-                            $replacement = htmlentities('<span class="string">\'$1\'</span>');
-
-                            $debug_info['query'] = preg_replace($strings, $replacement, $debug_info['query']);
-
-                            // highlight keywords
-                            $debug_info['query'] =
-
-                                preg_replace(
-
-                                    $keywords,
-
-                                    htmlentities('<br><span class="keyword">$1</span><br><span class="indent"></span>'),
-
-                                    $debug_info['query']
-
-                                );
-
-                            // highlight more keywords
-                            $debug_info['query'] =
-
-                                preg_replace($keywords2, htmlentities('<span class="keyword">$1</span>'), $debug_info['query']);
-
-                            // convert strings back to their original values
-                            $debug_info['query'] = preg_replace(array_keys($query_strings), $query_strings, $debug_info['query']);
-
-                        }
+                            // format and highlight query
+                            $debug_info['query'] = SqlFormatter::format($debug_info['query']);
 
                         // all blocks are enclosed in tables
                         $output .= '
-                            <table cellspacing="0" cellpadding="0" border="1" class="zdc-entry' .
+                            <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry' .
 
                                 // apply a class for even rows
                                 ($counter % 2 == 0 ? ' even' : '') .
@@ -3805,27 +3618,6 @@ class Zebra_Database
                     </a>
                 </div>
             ';
-
-            // tidy the output
-            $pattern = array(
-
-                // remove blank lines
-                "/[\r\n]+\s*[\r\n]+/",
-
-                // remove spaces used for indentation
-                "/^\s+/m",
-
-            );
-
-            $replacement = array(
-
-                "\r\n",
-                "",
-
-            );
-
-            // perform the tidying
-            $output = preg_replace($pattern, $replacement, $output);
 
             // use the provided resource path for stylesheets and javascript (if any)
             if (!is_null($this->resource_path))
