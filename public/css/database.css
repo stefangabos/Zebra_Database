@@ -56,7 +56,18 @@
 #zdc .zdc-explain   { background-image: url('explain.png') }
 #zdc .zdc-backtrace { background-image: url('backtrace.png') }
 
+/* TABLES */
+#zdc .zdc-records-table th,
+#zdc .zdc-records-table td,
+#zdc .zdc-explain-table th,
+#zdc .zdc-explain-table td,
+#zdc .zdc-backtrace-table th,
+#zdc .zdc-backtrace-table td {
+    border: 1px solid #CDD8BF;
+}
+
 /* HIGHLIGHTING */
+#zdc pre { background: #EEE !important; border: transparent !important }
 #zdc .keyword { font-weight: bold; color: #990099; text-transform: uppercase }
 #zdc .string { font-weight: bold; color: #008000 }
 #zdc .symbol { font-weight: bold; color: #FF00FF }
@@ -70,5 +81,3 @@
 #zdc-mini { position: absolute; top: 0; right: 1px; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 12px; text-align: left; display: block }
 #zdc-mini a { background: #151C24 url('db.gif') no-repeat 10px center; display: block; padding: 10px 10px 10px 30px; color: #FFF; text-decoration: none }
 #zdc-mini a span { font-weight: bold; background-color: #c40000; padding: 0 5px 0 5px; margin: 0px 4px 0 4px }
-
-#zdc pre { background: #EEE !important }
