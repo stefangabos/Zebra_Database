@@ -3447,7 +3447,7 @@ class Zebra_Database
                             // start generating output
                             $output .= '
                                 <div id="zdc-' . $table . '-' . $identifier . $counter . '" class="zdc-box zdc-' . $table . '-table">
-                                    <table cellspacing="0" cellpadding="0" border="1">
+                                    <table cellspacing="0" cellpadding="0" border="0">
                                         <tr>
                             ';
 
@@ -3526,7 +3526,7 @@ class Zebra_Database
 
                         // add to the generated output
                         $output .= '
-                            <table cellspacing="0" cellpadding="0" border="1" id="zdc-globals-' . strtolower($global) . '" class="zdc-entry">
+                            <table cellspacing="0" cellpadding="0" border="0" id="zdc-globals-' . strtolower($global) . '" class="zdc-entry">
                                 <tr>
                                     <td class="zdc-counter" valign="top">001</td>
                                     <td class="zdc-data">
