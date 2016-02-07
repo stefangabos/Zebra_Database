@@ -406,7 +406,7 @@ registerOnLoad(function () {
         zdc_setDisplay(highlight, 'block');
 
         // set the "successful queries" tab's display property to "block"
-        successful.style.display = 'block';
+        //successful.style.display = 'block';
 
     }
 
