@@ -3638,7 +3638,7 @@ class Zebra_Database
                 $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen(realpath($_SERVER['DOCUMENT_ROOT'])))), '/');
 
             // link the required javascript
-            $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.src.js"></script>' . $output;
+            $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.js"></script>' . $output;
 
             // link the required css file
             $output = '<link rel="stylesheet" href="' . $path . '/public/css/database.css" type="text/css">' . $output;
