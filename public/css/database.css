@@ -15,9 +15,9 @@
 /* MAIN MENU */
 #zdc .zdc-main              { list-style-type: none; margin: 0; padding: 0; background: #151C24; display: block; float: left; width: 100% }
 #zdc .zdc-main li           { float: left; border-right: 1px solid #9CA68F }
-#zdc .zdc-main li a         { color: #FFF; padding: 10px; display: block; float: left }
+#zdc .zdc-main li a         { color: #FFF; padding: 16px; display: block; float: left }
 #zdc .zdc-main li a:hover   { background: #403D32 }
-#zdc .zdc-main li span      { background: orange; padding: 0 4px; font-weight: bold; color: #000 }
+#zdc .zdc-main li span      { background: orange; padding: 2px 5px; font-weight: bold; color: #000; margin: 0 4px }
 
 /* GLOBALS SUBMENU */
 #zdc-globals-submenu                { border:1px solid #403D32 }
@@ -79,5 +79,5 @@
 
 /* MINI CONSOLE */
 #zdc-mini { position: absolute; top: 0; right: 1px; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 12px; text-align: left; display: block }
-#zdc-mini a { background: #151C24 url('db.gif') no-repeat 10px center; display: block; padding: 10px 10px 10px 30px; color: #FFF; text-decoration: none }
+#zdc-mini a { background: #151C24 url('db.gif') no-repeat 16px center; display: block; padding: 16px 16px 16px 40px; color: #FFF; text-decoration: none }
 #zdc-mini a span { font-weight: bold; background-color: #c40000; padding: 0 5px 0 5px; margin: 0px 4px 0 4px }
