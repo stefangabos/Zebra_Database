@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.2 (last revision: February 07, 2016)
+ *  @version    2.9.2 (last revision: February 11, 2016)
  *  @copyright  (c) 2006 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -4315,7 +4315,7 @@ class Zebra_Database
         $valid = false;
 
         // if value looks like one or more nested functions
-        if (preg_match('/^[a-z]+\(/i', $value) && preg_match_all('/([a-z]+\()/i', $value, $matches)) {
+        if (!is_array($value) && preg_match('/^[a-z]+\(/i', $value) && preg_match_all('/([a-z]+\()/i', $value, $matches)) {
 
             $valid = true;
 
