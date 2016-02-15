@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.2 (last revision: February 11, 2016)
+ *  @version    2.9.3 (last revision: February 15, 2016)
  *  @copyright  (c) 2006 - 2016 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -1435,7 +1435,7 @@ class Zebra_Database
                     while ($row = $this->fetch_obj($resource))
 
                         // if $index was specified and exists in the returned row, add data to the result
-                        if (trim($index) != '' && isset($row[$index])) $result[$row[$index]] = $row;
+                        if (trim($index) != '' && property_exists($row, $index)) $result[$row->{$index}] = $row;
 
                         // if $index was not specified or does not exists in the returned row, add data to the result
                         else $result[] = $row;
