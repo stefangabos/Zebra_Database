@@ -652,7 +652,7 @@ class Zebra_Database
     {
 
         // if the "memcache" extension is loaded and the caching method is set to "memcache"
-        if (extension_loaded('memcache') && $this->caching_method == 'memcache')
+        if (!extension_loaded('memcache') || $this->caching_method == 'memcache')
 
             // suppress the warning telling the developer to use memcache for caching query results
             unset($this->warnings['memcache']);
