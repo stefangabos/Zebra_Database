@@ -1,6 +1,6 @@
 # Zebra_Database
 
-####An advanced, compact and lightweight MySQL database wrapper library, built around PHP's mysqli extension
+#### An advanced, compact and lightweight MySQL database wrapper library, built around PHP's mysqli extension
 
 ----
 
@@ -18,7 +18,7 @@ It encourages developers to write maintainable code and provides a better defaul
 
 Zebra_Database‘s code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to [E_ALL](http://www.php.net/manual/en/function.error-reporting.php).
 
-##Features
+## Features
 
 - it uses the **[mysqli extension](http://www.php.net/manual/en/book.mysqli.php)** extension for communicating with the database instead of the old **mysql** extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; again, this is not a wrapper for the PDO extension which is already a wrapper in itself
 
