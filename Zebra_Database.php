@@ -30,8 +30,7 @@
  *  @package    Zebra_Database
  */
 
-class Zebra_Database
-{
+class Zebra_Database {
 
     /**
      *  After an INSERT, UPDATE, REPLACE or DELETE query this property will hold the number of rows that were affected by
@@ -900,7 +899,7 @@ class Zebra_Database
             if (count($row) == 1) return array_pop($row);
 
             // if more than one columns, return as an array
-            else return $row;
+            return $row;
 
         }
 
@@ -1201,15 +1200,15 @@ class Zebra_Database
                 // return as an associative array
                 return @$result[1];
 
+            }
+
             // if $resource is invalid
-            } else
+            // save debug information
+            $this->_log('errors', array(
 
-                // save debug information
-                $this->_log('errors', array(
+                'message'   =>  $this->language['not_a_valid_resource'],
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
-
-                ));
+            ));
 
         }
 
@@ -1285,15 +1284,15 @@ class Zebra_Database
                 // return the results
                 return $result;
 
+            }
+
             // if $resource is invalid
-            } else
+            // save debug information
+            $this->_log('errors', array(
 
-                // save debug information
-                $this->_log('errors', array(
+                'message'   =>  $this->language['not_a_valid_resource'],
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
-
-                ));
+            ));
 
         }
 
@@ -1361,15 +1360,15 @@ class Zebra_Database
                 // return as object
                 return $obj;
 
+            }
+
             // if $resource is invalid
-            } else
+            // save debug information
+            $this->_log('errors', array(
 
-                // save debug information
-                $this->_log('errors', array(
+                'message'   =>  $this->language['not_a_valid_resource'],
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
-
-                ));
+            ));
 
         }
 
@@ -1445,15 +1444,15 @@ class Zebra_Database
                 // return the results
                 return $result;
 
+            }
+
             // if $resource is invalid
-            } else
+            // save debug information
+            $this->_log('errors', array(
 
-                // save debug information
-                $this->_log('errors', array(
+                'message'   =>  $this->language['not_a_valid_resource'],
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
-
-                ));
+            ));
 
         }
 
@@ -1549,14 +1548,12 @@ class Zebra_Database
             } elseif (is_integer($resource) && isset($this->cached_results[$resource])) return $this->column_info;
 
             // if $resource is invalid
-            else
+            // save debug information
+            $this->_log('errors', array(
 
-                // save debug information
-                $this->_log('errors', array(
+                'message'   =>  $this->language['not_a_valid_resource'],
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
-
-                ));
+            ));
 
         }
 
@@ -2026,20 +2023,20 @@ class Zebra_Database
     function insert_id() {
 
         // if an active connection exists
-        if ($this->_connected())
+        if ($this->_connected()) {
 
             // if a query was run before, return the AUTO_INCREMENT value
             if (isset($this->last_result)) return mysqli_insert_id($this->connection);
 
             // if no query was run before
-            else
+            // save debug information
+            $this->_log('errors', array(
 
-                // save debug information
-                $this->_log('errors', array(
+                'message'   =>  $this->language['not_a_valid_resource'],
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
+            ));
 
-                ));
+        }
 
         // upon error, we don't have to report anything as _connected() method already did
         // just return FALSE
@@ -2315,15 +2312,15 @@ class Zebra_Database
 
                 return true;
 
+            }
+
             // if file could not be opened
-            } else
+            // save debug info
+            $this->_log('errors', array(
 
-                // save debug info
-                $this->_log('errors', array(
+                'message'   =>  $this->language['file_could_not_be_opened'],
 
-                    'message'   =>  $this->language['file_could_not_be_opened'],
-
-                ));
+            ));
 
         }
 
@@ -2990,15 +2987,15 @@ class Zebra_Database
 
                 }
 
+            }
+
             // if not a valid resource
-            } else
+            // save debug information
+            $this->_log('errors', array(
 
-                // save debug information
-                $this->_log('errors', array(
+                'message'   =>  $this->language['not_a_valid_resource'],
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
-
-                ));
+            ));
 
         }
 
