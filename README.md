@@ -67,14 +67,14 @@ $db->show_debug_console();
 // question marks will re replaced automatically with the escaped values from the array
 // I ENCOURAGE YOU TO WRITE YOUR QUERIES IN A READABLE FORMAT, LIKE BELOW
 $db->query('
-	SELECT
+    SELECT
     	column1,
         column2,
         column3
-	FROM
+    FROM
     	tablename1
-        LEFT JOIN tablename2 ON tablename1.column1 = tablename2.column1
-	WHERE
+    	LEFT JOIN tablename2 ON tablename1.column1 = tablename2.column1
+    WHERE
     	somecriteria = ? AND
         someothercriteria = ?
 ', array($somevalue, $someothervalue));
