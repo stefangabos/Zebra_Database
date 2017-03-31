@@ -632,7 +632,9 @@ class Zebra_Database
      *
      *  @param  string  $password   The password used for authentication when connecting to the MySQL server.
      *
-     *  @param  string  $database   The database to be selected after the connection is established.
+     *  @param  string  $database   (Optional) The database to be selected after the connection is established.
+     *
+     *                              This can also be set later with the {@link select_database()} method.
      *
      *  @param  string  $port       (Optional) The port number to attempt to connect to the MySQL server.
      *
@@ -654,7 +656,7 @@ class Zebra_Database
      *
      *  @return void
      */
-    function connect($host, $user, $password, $database, $port = '', $socket = '', $connect = false)
+    function connect($host, $user, $password, $database = '', $port = '', $socket = '', $connect = false)
     {
 
         // if the "memcache" extension is loaded and the caching method is set to "memcache"
