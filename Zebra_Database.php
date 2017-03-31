@@ -3129,6 +3129,41 @@ class Zebra_Database
     }
 
     /**
+     *  Selects the default database for queries.
+     *
+     *  <code>
+     *  // set the default database for queries
+     *  $db->select_database('database_name');
+     *  </code>
+     *
+     *  @param  string  $database   Name of database to select as the default database for queries.
+     *
+     *  @since 2.9.4
+     *
+     *  @return boolean     Returns TRUE on success or FALSE on failure.
+     */
+    function select_database($database)
+    {
+
+        // if an active connection exists
+        if ($this->_connected()) {
+
+            // update the value in the credentials
+            $this->credentials['database'] = $database;
+
+            // select the database
+            mysqli_select_db($this->connection, $database);
+
+        }
+
+        // upon error, we don't have to report anything as _connected() method already did
+        // just return FALSE
+        return false;
+
+
+    }
+
+    /**
      *  Sets MySQL character set and collation.
      *
      *  The ensure that data is both properly saved and retrieved from the database you should call this method first
