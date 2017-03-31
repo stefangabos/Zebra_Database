@@ -1,6 +1,6 @@
 # Zebra_Database
 
-#### An advanced, compact and lightweight MySQL database wrapper library, built around PHP's mysqli extension
+#### An advanced, compact and lightweight MySQL database wrapper library, built around PHP's mysqli extension and using prepared statements.
 
 ----
 
@@ -20,7 +20,7 @@ Zebra_Database‘s code is heavily commented and generates no warnings/errors/no
 
 ## Features
 
-- it uses the **[mysqli extension](http://www.php.net/manual/en/book.mysqli.php)** extension for communicating with the database instead of the old **mysql** extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; again, this is not a wrapper for the PDO extension which is already a wrapper in itself
+- it uses the **[mysqli extension](http://www.php.net/manual/en/book.mysqli.php)** extension for communicating with the database instead of the old **mysql** extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; **this is not a wrapper for the PDO extension which is already a wrapper in itself!**
 
 - offers lots of powerful methods for easier interaction with MySQL
 
@@ -30,7 +30,7 @@ Zebra_Database‘s code is heavily commented and generates no warnings/errors/no
 
 - supports caching of query results to the disk, in the session, or to a **memcache** server
 
-- has comprehensive documentation
+- has really good documentation
 
 - code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to **E_ALL**
 
@@ -42,84 +42,76 @@ For using **memcache** as caching method, PHP must be compiled with the [memcach
 
 ## How to use
 
-Connect to a database
+##### Connecting to a database
 
 ```php
-
-<?php
-
+// include the library
 require 'path/to/Zebra_Database.php';
 
+// instantiate it
 $db = new Zebra_Database();
 
-// turn debugging on
-$db->debug = true;
-
-// set relative path to parent of public folder from $_SERVER['DOCUMENT_ROOT'] (optional)
-// no leading slash
-// ie: http://example.com/vendor/stefangabos/zebra_database/public/css/database.css
-$db->resource_path = 'vendor/stefangabos/zebra_database';
-
+// connect to a database
 $db->connect('host', 'username', 'password', 'database');
 
 // code goes here
 
 // this should always be present at the end of your scripts;
-// whether it should output anything should be controlled by the $debug property
+// whether it outputs anything or not is controlled by the $debug property
 $db->show_debug_console();
-
-?>
 ```
 
-A SELECT statement
+##### Running queries
 
 ```php
-<?php
+// question marks will re replaced automatically with the escaped values from the array
+// I ENCOURAGE YOU TO WRITE YOUR QUERIES IN A READABLE FORMAT, LIKE BELOW
+$db->query('
+	SELECT
+    	column1,
+        column2,
+        column3
+	FROM
+    	tablename1
+        LEFT JOIN tablename2 ON tablename1.column1 = tablename2.column1
+	WHERE
+    	somecriteria = ? AND
+        someothercriteria = ?
+', array($somevalue, $someothervalue));
 
-// $criteria will be escaped and enclosed in grave accents, and will
-// replace the corresponding ? (question mark) automatically
-$db->select(
-    'column1, column2',
-    'table',
-    'criteria = ?',
-    array($criteria)
-);
+// any fetch method will work with the last result so
+// there's no need to explicitly pass that around
 
-// after this, one of the "fetch" methods can be run:
-
-// to fetch all records to one associative array
+// you could fetch all records to one associative array...
 $records = $db->fetch_assoc_all();
+
+// you could fetch all records to one associative array
+// using a the values in a specific column as keys
+$records = $db->fetch_assoc_all('column1');
 
 // or fetch records one by one, as associative arrays
 while ($row = $db->fetch_assoc()) {
     // do stuff
 }
-?>
 ```
 
-An INSERT statement
+##### An INSERT statement
 
 ```php
-<?php
-
 // notice that you can use MySQL functions in values
 $db->insert(
-    'table',
+    'tablename',
     array(
         'column1'      => $value1,
         'column2'      => $value2,
         'date_updated' => 'NOW()'
     )
 );
-
-?>
 ```
 
-An UPDATE statement
+##### An UPDATE statement
 
 ```php
-<?php
-
 // $criteria will be escaped and enclosed in grave accents, and will
 // replace the corresponding ? (question mark) automatically
 // also, notice that you can use MySQL functions in values
@@ -128,7 +120,7 @@ An UPDATE statement
 // pose a security concern if the argument(s) come from user input.
 // in this case we have to escape the value ourselves
 $db->update(
-    'table',
+    'tablename',
     array(
         'column1'      => $value1,
         'column2'      => 'TRIM(UCASE("value2"))',
@@ -138,8 +130,8 @@ $db->update(
     'criteria = ?',
     array($criteria)
 );
-
-?>
 ```
+
+> There are over **40 methods** and 20 properties that you can use and **lots** of things you can do with this library. I've prepared an [awesome documentation](http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html) so that you can easily get an overview of what can be done. Go ahead, [check it out](http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html)!
 
 Visit the **[project's homepage](http://stefangabos.ro/php-libraries/zebra-database/)** for more information.
