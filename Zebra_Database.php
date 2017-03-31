@@ -548,8 +548,7 @@ class Zebra_Database
      *
      *  @return void
      */
-    function __construct()
-    {
+    function __construct() {
 
         // if the mysqli extension is not loded, stop execution
         if (!extension_loaded('mysqli')) trigger_error('Zebra_Database: mysqli extension is not enabled!', E_USER_ERROR);
@@ -595,8 +594,7 @@ class Zebra_Database
      *
      *  @return boolean     Returns TRUE on success or FALSE on failure.
      */
-    function close()
-    {
+    function close() {
 
         // close the last open connection, if any
         $result = @mysqli_close($this->connection);
@@ -663,8 +661,7 @@ class Zebra_Database
      *
      *  @return void
      */
-    function connect($host, $user, $password, $database = '', $port = '', $socket = '', $connect = false)
-    {
+    function connect($host, $user, $password, $database = '', $port = '', $socket = '', $connect = false) {
 
         // if the "memcache" extension is loaded and the caching method is set to "memcache"
         if (!extension_loaded('memcache') || $this->caching_method == 'memcache')
@@ -740,8 +737,7 @@ class Zebra_Database
      *                                  which evaluates to FALSE, such as 0. Use the === operator for testing the return
      *                                  value of this method.</i>
      */
-    function dcount($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false)
-    {
+    function dcount($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
         // run the query
         $this->query('
@@ -806,8 +802,7 @@ class Zebra_Database
      *
      *  @return boolean                 Returns TRUE on success or FALSE on error.
      */
-    function delete($table, $where = '', $replacements = '', $highlight = false)
-    {
+    function delete($table, $where = '', $replacements = '', $highlight = false) {
 
         // run the query
         $this->query('
@@ -880,8 +875,7 @@ class Zebra_Database
      *                                  were found. It also returns FALSE if there are no records in the table or if there
      *                                  was an error.
      */
-    function dlookup($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false)
-    {
+    function dlookup($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
         // run the query
         $this->query('
@@ -966,8 +960,7 @@ class Zebra_Database
      *                                  which evaluates to FALSE, such as 0. Use the === operator for testing the return
      *                                  value of this method.</i>
      */
-    function dmax($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false)
-    {
+    function dmax($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
         // run the query
          $this->query('
@@ -1048,8 +1041,7 @@ class Zebra_Database
      *                                  which evaluates to FALSE, such as 0. Use the === operator for testing the return
      *                                  value of this method.</i>
      */
-    function dsum($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false)
-    {
+    function dsum($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
         // run the query
         $this->query('
@@ -1147,8 +1139,7 @@ class Zebra_Database
      *  @return string              Returns the quoted string with special characters escaped in order to prevent SQL
      *                              injections.     .
      */
-    function escape($string)
-    {
+    function escape($string) {
 
         // if an active connection exists
         if ($this->_connected()) {
@@ -1190,8 +1181,7 @@ class Zebra_Database
      *  @return mixed                   Returns an associative array that corresponds to the fetched row and moves the
      *                                  internal data pointer ahead, or FALSE if there are no more rows.
      */
-    function fetch_assoc($resource = '')
-    {
+    function fetch_assoc($resource = '') {
 
         // if an active connection exists
         if ($this->_connected()) {
@@ -1258,8 +1248,7 @@ class Zebra_Database
      *                                  by the previous query or from the resource given as argument and moves the
      *                                  internal pointer to the end. Returns FALSE on error.
      */
-    function fetch_assoc_all($index = '', $resource = '')
-    {
+    function fetch_assoc_all($index = '', $resource = '') {
 
         // if an active connection exists
         if ($this->_connected()) {
@@ -1339,8 +1328,7 @@ class Zebra_Database
      *  @return mixed                   Returns an object with properties that correspond to the fetched row and moves
      *                                  the internal data pointer ahead, or FALSE if there are no more rows.
      */
-    function fetch_obj($resource = '')
-    {
+    function fetch_obj($resource = '') {
 
         // if an active connection exists
         if ($this->_connected()) {
@@ -1420,8 +1408,7 @@ class Zebra_Database
      *                                  created by the previous query or from the resource given as argument and moves
      *                                  the internal pointer to the end. Returns FALSE on error.
      */
-    function fetch_obj_all($index = '', $resource = '')
-    {
+    function fetch_obj_all($index = '', $resource = '') {
 
         // if an active connection exists
         if ($this->_connected()) {
@@ -1534,8 +1521,7 @@ class Zebra_Database
      *  @return mixed                   Returns an associative array with information about the columns in the MySQL
      *                                  result associated with the specified result identifier, or FALSE on error.
      */
-    function get_columns($resource = '')
-    {
+    function get_columns($resource = '') {
 
         // if an active connection exists
         if ($this->_connected()) {
@@ -1601,8 +1587,7 @@ class Zebra_Database
      *
      *  @return identifier  Returns the MySQL link identifier associated with the current connection to the MySQL server.
      */
-    function get_link()
-    {
+    function get_link() {
 
         // if an active connection exists
         // return the MySQL link identifier associated with the current connection to the MySQL server
@@ -1644,8 +1629,7 @@ class Zebra_Database
      *
      *  @return array           Returns information about the columns of a given table as an associative array.
      */
-    function get_table_columns($table)
-    {
+    function get_table_columns($table) {
 
         // run the query
         $this->query('
@@ -1677,8 +1661,7 @@ class Zebra_Database
      *  @return array               Returns an associative array with a lot of useful information on all or specific
      *                              tables only.
      */
-    function get_table_status($pattern = '')
-    {
+    function get_table_status($pattern = '') {
 
         // run the query
         $this->query('
@@ -1705,8 +1688,7 @@ class Zebra_Database
      *
      *  @return array   An array with all the tables in the current database.
      */
-    function get_tables()
-    {
+    function get_tables() {
 
         // fetch all the tables in the database
         $result = $this->fetch_assoc_all('', $this->query('
@@ -1733,8 +1715,7 @@ class Zebra_Database
      *
      *  @return void
      */
-    function halt()
-    {
+    function halt() {
 
         // show the debugging console
         $this->show_debug_console();
@@ -1785,8 +1766,7 @@ class Zebra_Database
      *  @return string              Returns the string representation of all the array elements in the same order,
      *                              escaped and with commas between each element.
      */
-    function implode($pieces)
-    {
+    function implode($pieces) {
 
         $result = '';
 
@@ -1860,8 +1840,7 @@ class Zebra_Database
      *
      *  @return boolean                 Returns TRUE on success of FALSE on error.
      */
-    function insert($table, $columns, $ignore = false, $highlight = false)
-    {
+    function insert($table, $columns, $ignore = false, $highlight = false) {
 
         // enclose the column names in grave accents
         $cols = '`' . implode('`,`', array_keys($columns)) . '`';
@@ -1974,8 +1953,7 @@ class Zebra_Database
      *
      *  @return boolean                 Returns TRUE on success of FALSE on error.
      */
-    function insert_bulk($table, $columns, $data, $ignore = false, $highlight = false)
-    {
+    function insert_bulk($table, $columns, $data, $ignore = false, $highlight = false) {
 
         // we can't do array_values(array_pop()) since PHP 5.3+ as will trigger a "strict standards" error
         $values = array_values($data);
@@ -2045,8 +2023,7 @@ class Zebra_Database
      *                  '0' if the previous query does not generate an AUTO_INCREMENT value, or FALSE if there was
      *                  no MySQL connection.
      */
-    function insert_id()
-    {
+    function insert_id() {
 
         // if an active connection exists
         if ($this->_connected())
@@ -2166,8 +2143,7 @@ class Zebra_Database
      *
      *  @return boolean                 Returns TRUE on success of FALSE on error.
      */
-    function insert_update($table, $columns, $update = array(), $highlight = false)
-    {
+    function insert_update($table, $columns, $update = array(), $highlight = false) {
 
         // if $update is not given as an array, make it an empty array
         if (!is_array($update)) $update = array();
@@ -2250,8 +2226,7 @@ class Zebra_Database
      *
      *  @return void
      */
-    function language($language)
-    {
+    function language($language) {
 
         // include the language file
         require $this->path . '/languages/' . $language . '.php';
@@ -2270,8 +2245,7 @@ class Zebra_Database
      *
      *  @return void
      */
-    function optimize()
-    {
+    function optimize() {
 
         // fetch information on all the tables in the database
         $tables = $this->get_table_status();
@@ -2299,8 +2273,7 @@ class Zebra_Database
      *
      *  @return boolean         Returns TRUE on success or FALSE on failure.
      */
-    function parse_file($path)
-    {
+    function parse_file($path) {
 
         // if an active connection exists
         if ($this->_connected()) {
@@ -2436,8 +2409,7 @@ class Zebra_Database
      *                                  <i>If query results are taken from cache, the returned result will be a pointer to
      *                                  the actual results of the query!</i>
      */
-    function query($sql, $replacements = '', $cache = false, $calc_rows = false, $highlight= false)
-    {
+    function query($sql, $replacements = '', $cache = false, $calc_rows = false, $highlight= false) {
 
         // if an active connection exists
         if ($this->_connected()) {
@@ -2963,8 +2935,7 @@ class Zebra_Database
      *
      *  @return boolean                 Returns TRUE on success or FALSE on failure.
      */
-    function seek($row, $resource = '')
-    {
+    function seek($row, $resource = '') {
 
         // if an active connection exists
         if ($this->_connected()) {
@@ -3138,8 +3109,7 @@ class Zebra_Database
      *                                  <i>If query results are taken from cache, the returned result will be a pointer to
      *                                  the actual results of the query!</i>
      */
-    function select($columns, $table, $where = '', $replacements = '', $order = '', $limit = '', $cache = false, $calc_rows = false, $highlight = false)
-    {
+    function select($columns, $table, $where = '', $replacements = '', $order = '', $limit = '', $cache = false, $calc_rows = false, $highlight = false) {
 
         // run the query
         return $this->query('
@@ -3173,8 +3143,7 @@ class Zebra_Database
      *
      *  @return boolean     Returns TRUE on success or FALSE on failure.
      */
-    function select_database($database)
-    {
+    function select_database($database) {
 
         // if an active connection exists
         if ($this->_connected()) {
@@ -3220,8 +3189,7 @@ class Zebra_Database
      *
      *  @return void
      */
-    function set_charset($charset = 'utf8', $collation = 'utf8_general_ci')
-    {
+    function set_charset($charset = 'utf8', $collation = 'utf8_general_ci') {
 
         // do not show the warning that this method has not been called
         unset($this->warnings['charset']);
@@ -3247,8 +3215,7 @@ class Zebra_Database
      *
      *  @return void
      */
-    function show_debug_console($return = false)
-    {
+    function show_debug_console($return = false) {
 
         // if
         if (
@@ -3745,8 +3712,7 @@ class Zebra_Database
      *
      *  @return boolean                     Returns TRUE on success or FALSE on error.
      */
-    function transaction_complete()
-    {
+    function transaction_complete() {
 
         $sql = 'COMMIT';
 
@@ -3827,8 +3793,7 @@ class Zebra_Database
      *
      *  @return boolean                     Returns TRUE on success or FALSE on error.
      */
-    function transaction_start($test_only = false)
-    {
+    function transaction_start($test_only = false) {
 
         $sql = 'START TRANSACTION';
 
@@ -3876,8 +3841,7 @@ class Zebra_Database
      *
      *
      */
-    function table_exists($table)
-    {
+    function table_exists($table) {
 
         // check if table exists in the database
         return $this->fetch_assoc($this->query('SHOW TABLES LIKE ?', array($table))) !== false ? true : false;
@@ -3906,8 +3870,7 @@ class Zebra_Database
      *
      *  @return boolean                 Returns TRUE on success of FALSE on error.
      */
-    function truncate($table, $highlight = false)
-    {
+    function truncate($table, $highlight = false) {
 
         // run the query
         $this->query('
@@ -4025,8 +3988,7 @@ class Zebra_Database
      *
      *  @return boolean                 Returns TRUE on success of FALSE on error
      */
-    function update($table, $columns, $where = '', $replacements = '', $highlight = false)
-    {
+    function update($table, $columns, $where = '', $replacements = '', $highlight = false) {
 
         // if $replacements is specified but it's not an array
         if ($replacements != '' && !is_array($replacements)) {
@@ -4099,8 +4061,7 @@ class Zebra_Database
      *
      *  @return void
      */
-    function write_log($daily = false, $hourly = false)
-    {
+    function write_log($daily = false, $hourly = false) {
 
           // if
         if (
@@ -4287,8 +4248,7 @@ class Zebra_Database
      *
      *  @access private
      */
-    private function _build_columns($columns)
-    {
+    private function _build_columns($columns) {
         $sql = '';
 
         // if the argument is not an array
@@ -4323,8 +4283,7 @@ class Zebra_Database
      *
      *  @access private
      */
-    private function _build_sql(&$columns)
-    {
+    private function _build_sql(&$columns) {
 
         $sql = '';
 
@@ -4416,8 +4375,7 @@ class Zebra_Database
      *
      *  @access private
      */
-    private function _connected()
-    {
+    private function _connected() {
 
         // if there's no connection to a MySQL database
         if (!$this->connection) {
@@ -4487,8 +4445,7 @@ class Zebra_Database
      *
      *  @access private
      */
-    private function _fix_pow($value)
-    {
+    private function _fix_pow($value) {
 
         // use value as literal
         $value = (string)$value;
@@ -4509,8 +4466,7 @@ class Zebra_Database
      *
      *  @access private
      */
-    private function _is_result($value)
-    {
+    private function _is_result($value) {
 
         // check whether a value is a valid result set obtained from a query against the database
         return $value instanceof mysqli_result;
@@ -4523,8 +4479,7 @@ class Zebra_Database
      *
      *  @access private
      */
-    private function _log($category, $data, $fatal = true)
-    {
+    private function _log($category, $data, $fatal = true) {
 
         // if debugging is on
         if ($this->debug) {
@@ -4590,8 +4545,7 @@ class Zebra_Database
      *
      *  @access private
      */
-    function __destruct()
-    {
+    function __destruct() {
 
         // if the last result is a mysqli result set (it can also be a boolean or not set)
         if (isset($this->last_result) && $this->_is_result($this->last_result))
