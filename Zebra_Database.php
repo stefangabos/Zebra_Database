@@ -24,8 +24,8 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.3 (last revision: February 19, 2016)
- *  @copyright  (c) 2006 - 2016 Stefan Gabos
+ *  @version    2.9.3 (last revision: March 31, 2017)
+ *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
  */
@@ -591,8 +591,14 @@ class Zebra_Database
     function close()
     {
 
-        // close the last one open
-        return @mysqli_close($this->connection);
+        // close the last open connection, if any
+        $result = @mysqli_close($this->connection);
+
+        // set this flag to FALSE so that other connection can be opened
+        $this->connection = false;
+
+        // return the result
+        return $result;
 
     }
 
