@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.4b (last revision: April 01, 2017)
+ *  @version    2.9.5 (last revision: April 02, 2017)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -484,6 +484,15 @@ class Zebra_Database {
     private $memcache;
 
     /**
+     *  Stores extra connect options that affect behavior for a connection.
+     *
+     *  @since 2.9.5
+     *
+     *  @access private
+     */
+    private $options;
+
+    /**
      *  Absolute path to the library, used for includes
      *
      *  @access private
@@ -574,7 +583,7 @@ class Zebra_Database {
 
         $this->caching_method = 'disk';
 
-        $this->cached_results = $this->debug_info = $this->debugger_ip = array();
+        $this->cached_results = $this->debug_info = $this->debugger_ip = $this->options = array();
 
         $this->connection = $this->memcache = $this->memcache_host = $this->memcache_port = $this->memcache_compressed = $this->unbuffered = false;
 
@@ -587,19 +596,34 @@ class Zebra_Database {
     }
 
     /**
-     *  Closes the MySQL connection.
+     *  Closes the MySQL connection and optionally unsets the connection options previously set with the {@link option()}
+     *  method.
+     *
+     *  @param  boolean $reset_options  If set to TRUE the library will also unsets the connection options previously
+     *                                  set with the {@link option()} method.
+     *
+     *                                  Default is FALSE.
+     *
+     *                                  <i>This option was added in 2.9.5</i>
      *
      *  @since  1.1.0
      *
      *  @return boolean     Returns TRUE on success or FALSE on failure.
      */
-    function close() {
+    function close($reset_options = false) {
 
         // close the last open connection, if any
         $result = @mysqli_close($this->connection);
 
         // set this flag to FALSE so that other connection can be opened
         $this->connection = false;
+
+        // unset previously set credentials
+        // or otherwise running a query after close will simply reuse those credentials to connect again
+        $this->credentials = array();
+
+        // if options need to be unset, unset them now
+        if ($reset_options) $this->options = array();
 
         // return the result
         return $result;
@@ -2249,6 +2273,73 @@ class Zebra_Database {
 
         // iterate through the database's tables, and if it has overhead (unused, lost space), optimize it
         foreach ($tables as $table) if ($table['Data_free'] > 0) $this->query('OPTIMIZE TABLE `' . $table['Name'] . '`');
+
+    }
+
+    /**
+     *  Sets one or more options that affect the behavior of a connection.
+     *
+     *  See {@link http://php.net/manual/en/mysqli.options.php the options} that can be set.
+     *
+     *  <samp>This method must to be called before connecting to a MySQL server. Keep in mind that because the library
+     *  uses "lazy connection", it will not actually connect to the given MySQL server until the first query is run, unless
+     *  the {@link connect()} method is called with the "connect" argument set to TRUE. Therefore, you can call it after
+     *  the {@link connect()} method but only if you run no queries until calling this method.</samp>
+     *
+     *  <i>This method may be called multiple times to set several options.</i>
+     *
+     *  <code>
+     *  // instantiate the library
+     *  $db = new Zebra_Database();
+     *
+     *  // set a single option
+     *  $db->option(MYSQLI_OPT_CONNECT_TIMEOUT, 5);
+     *
+     *  // set an array of options
+     *  $db->option(array(
+     *      MYSQLI_OPT_CONNECT_TIMEOUT  =>  5,
+     *      MYSQLI_INIT_COMMAND         =>  'SET AUTOCOMMIT = 0',
+     *  ));
+     *
+     *  // connect to a MySQL server using the options set above
+     *  $db->connect(...)
+     *
+     *  </code>
+     *
+     *  @param  mixed   $option     One of the valid values described {@link http://php.net/manual/en/mysqli.options.php here},
+     *                              or an array of key/value pairs where the keys are valid values described in the previous
+     *                              link.
+     *
+     *  @param  mixed   $value      (Optional) When setting a single option this is the value to be associated with that
+     *                              option. When setting an array of options this argument is ignored.
+     *
+     *  @since  2.9.5
+     *
+     *  @return void
+     */
+    function option($option, $value = '') {
+
+        // if a connection was already made
+        if ($this->connection)
+
+            // inform the user that options can only be set before connecting
+            $this->_log('errors', array(
+
+                'message'   =>  $this->language['options_before_connect'],
+
+            ));
+
+        // if option is given as an array
+        if (is_array($option))
+
+            // iterate over the options
+            foreach ($option as $property => $value)
+
+                // save them to a private property
+                $this->options[$property] = $value;
+
+        // if option is not given as an array
+        else $this->options[$option] = $value;
 
     }
 
@@ -4377,7 +4468,28 @@ class Zebra_Database {
         // if there's no connection to a MySQL database
         if (!$this->connection) {
 
-            $this->connection = @mysqli_connect(
+            // we need this because it is the only way we can set the connection options (if any)
+            $this->connection = mysqli_init();
+
+            // if we have any options set
+            if (!empty($this->options))
+
+                // iterate over the set options
+                foreach ($this->options as $option => $value)
+
+                    // set each option
+                    $this->connection->options($option, $value) ||
+
+                        // log if there's a bogus option/value
+                        $this->_log('errors', array(
+
+                            'message'   =>  sprintf($this->language['invalid_option'], $option),
+
+                        ));
+
+            // connect to the MySQL server
+            @mysqli_real_connect(
+                $this->connection,
                 $this->credentials['host'],
                 $this->credentials['user'],
                 $this->credentials['password'],
