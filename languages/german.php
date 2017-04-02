@@ -33,6 +33,7 @@
         'from_cache'                            => 'aus dem Cache',
         'function'                              => 'Funktion',
         'globals'                               => 'globale Variablen',
+        'invalid_option'                        => '%s is an invalid connection option',
         'line'                                  => 'Zeile',
         'memcache_extension_not_installed'      => 'Die Memcache Erweiterung wurde nicht gefunden.<br><span>
                                                     Um memcache als Caching Methode zu nutzen ist PHP Version 4.3.3+ notwendig, PHP muss mit der
@@ -45,6 +46,7 @@
         'no_transaction_in_progress'            => 'Keine Transaktion(en) aktiv.',
         'not_a_valid_resource'                  => 'Keine gültige Ressource (Stellen Sie sicher, dass sie eine Ressource als Argument für fetch_assoc()/fetch_obj() nutzen, sofern sie die Abfrage in einer Schleife/Loop ausführen.)',
         'optimization_needed'                   => '<strong>Warnung</strong>: Die ersten Ergebnisse dieser Abfrage sind identisch mit denen von <strong>%s</strong> anderen Abfragen!',
+        'options_before_connect'                => 'The "option" method must be called before connecting to a MySQL server',
         'returned_rows'                         => 'Abgefragte Zeilen',
         'successful_queries'                    => 'erfolgreiche Abfragen',
         'to_top'                                => 'nach oben',

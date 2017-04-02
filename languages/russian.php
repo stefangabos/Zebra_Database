@@ -33,6 +33,7 @@
         'from_cache'                            => 'из кеша',
         'function'                              => 'функция',
         'globals'                               => 'глобальные переменные',
+        'invalid_option'                        => '%s is an invalid connection option',
         'line'                                  => 'строка',
         'memcache_extension_not_installed'      => 'расширение Memcache не найдено.<br><span>
                                                     Для использования memcache в качестве кеширующего средства, PHP должен быть не ниже 4.3.3, скомпилирован
@@ -44,6 +45,7 @@
         'no_transaction_in_progress'            => 'Нет активных транзакций.',
         'not_a_valid_resource'                  => 'Недопустимый ресурс (убедитесь что вы указали ресурс в качестве аргумента для fetch_assoc()/fetch_obj() если вы выполняете запрос внутри цикла)',
         'optimization_needed'                   => '<strong>ВНИМАНИЕ</strong>: Несколько первых результатов текущего запроса такие же как у <strong>%s</strong> других запросов!',
+        'options_before_connect'                => 'The "option" method must be called before connecting to a MySQL server',
         'returned_rows'                         => 'строк возвращено',
         'successful_queries'                    => 'успешных запросов',
         'to_top'                                => 'в начало',
