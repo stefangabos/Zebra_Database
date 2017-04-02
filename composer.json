@@ -16,7 +16,6 @@
     "require": {
         "php": ">=5.2.0"
     },
-    "version": "2.9.5",
     "autoload": {
         "classmap": [
             "Zebra_Database.php"
