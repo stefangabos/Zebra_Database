@@ -768,7 +768,7 @@ class Zebra_Database {
             SELECT
                 COUNT(' . $column . ') AS counted
             FROM
-                `'. $table . '`' .
+                ' . $this->_escape($table) .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, $cache, false, $highlight);
@@ -831,7 +831,7 @@ class Zebra_Database {
         $this->query('
 
             DELETE FROM
-                `'. $table . '`' .
+                ' . $this->_escape($table) .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, false, false, $highlight);
@@ -906,7 +906,7 @@ class Zebra_Database {
             SELECT
                 ' . $column . '
             FROM
-                `'. $table . '`' .
+                ' . $this->_escape($table) .
             ($where != '' ? ' WHERE ' . $where : '') . '
             LIMIT 1
 
@@ -991,7 +991,7 @@ class Zebra_Database {
             SELECT
                 MAX(' . $column . ') AS maximum
             FROM
-                `'. $table . '`' .
+                ' . $this->_escape($table) .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, $cache, false, $highlight);
@@ -1072,7 +1072,7 @@ class Zebra_Database {
             SELECT
                 SUM(' . $column . ') AS total
             FROM
-                `'. $table . '`' .
+                ' . $this->_escape($table) .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, $cache, false, $highlight);
@@ -1660,7 +1660,7 @@ class Zebra_Database {
         // run the query
         $this->query('
 
-            SHOW COLUMNS FROM `' . $this->escape($table) . '`
+            SHOW COLUMNS FROM ' . $this->_escape($table) . '
 
         ');
 
@@ -1898,7 +1898,7 @@ class Zebra_Database {
         $this->query('
 
             INSERT' . ($ignore ? ' IGNORE' : '') . ' INTO
-                `' . $table . '`
+                ' . $this->_escape($table) . '
                 (' . $cols . ')
             VALUES
                 (' . $values . ')'
@@ -2000,7 +2000,7 @@ class Zebra_Database {
             // start preparing the INSERT statement
             $sql = '
                 INSERT' . ($ignore ? ' IGNORE' : '') . ' INTO
-                    `' . $table . '`
+                    ' . $this->_escape($table) . '
                     (' . '`' . implode('`,`', $columns) . '`' . ')
                 VALUES
             ';
@@ -2217,7 +2217,7 @@ class Zebra_Database {
         $this->query('
 
             INSERT INTO
-                `' . $table . '`
+                ' . $this->_escape($table) . '
                 (' . $cols . ')
             VALUES
                 (' . $values . ')
@@ -2277,7 +2277,7 @@ class Zebra_Database {
         $tables = $this->get_table_status();
 
         // iterate through the database's tables, and if it has overhead (unused, lost space), optimize it
-        foreach ($tables as $table) if ($table['Data_free'] > 0) $this->query('OPTIMIZE TABLE `' . $table['Name'] . '`');
+        foreach ($tables as $table) if ($table['Data_free'] > 0) $this->query('OPTIMIZE TABLE ' . $this->_escape($table['Name']));
 
     }
 
@@ -3210,7 +3210,7 @@ class Zebra_Database {
             SELECT
                 ' . (is_string($columns) ? $columns : $this->_build_columns($columns)) . '
             FROM
-                `' . $table . '`' .
+                ' . $this->_escape($table) .
 
             ($where != '' ? ' WHERE ' . $where : '') .
 
@@ -3969,7 +3969,7 @@ class Zebra_Database {
         $this->query('
 
             TRUNCATE
-                `' . $table . '`'
+                ' . $this->_escape($table) .
 
         , '', false, false, $highlight);
 
@@ -4105,7 +4105,7 @@ class Zebra_Database {
         $this->query('
 
             UPDATE
-                `' . $table . '`
+                ' . $this->_escape($table) . '
             SET
                 ' . $cols .
 
@@ -4427,6 +4427,27 @@ class Zebra_Database {
 
         // return the built sql
         return $sql;
+
+    }
+
+    /**
+     *  Encloses segments of a database.table.column construction in grave accents.
+     *
+     *  @return string  Returns a string with the segments of a database.table.column construction enclosed in grave
+     *                  accents.
+     *
+     *  @access private
+     */
+    private function _escape($string) {
+
+        // explode string by dots
+        $string = explode('.', $string);
+
+        // enclose each segment in grave accents
+        $string = array_map(function($value) { return '`' . $value . '`'; }, $string);
+
+        // recompose the string and return it
+        return implode('.', $string);
 
     }
 
