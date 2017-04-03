@@ -3969,7 +3969,7 @@ class Zebra_Database {
         $this->query('
 
             TRUNCATE
-                ' . $this->_escape($table) .
+                ' . $this->_escape($table)
 
         , '', false, false, $highlight);
 
