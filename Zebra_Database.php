@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.5 (last revision: April 02, 2017)
+ *  @version    2.9.5 (last revision: April 03, 2017)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -434,7 +434,7 @@ class Zebra_Database {
      *  @var string
      */
     public $resource_path;
-    
+
     /**
      *  Array with cached results.
      *
@@ -550,7 +550,7 @@ class Zebra_Database {
     'SESSION_USER', 'SIGN', 'SIN', 'SPACE', 'SQRT', 'STR_TO_DATE', 'STRCMP', 'SUBDATE', 'SUBSTR', 'SUBSTRING', 'SUBSTRING_INDEX',
     'SUBTIME', 'SUM', 'SYSDATE', 'SYSTEM_USER', 'TAN', 'TIME', 'TIME_FORMAT', 'TIME_TO_SEC', 'TIMEDIFF', 'TIMESTAMP', 'TO_DAYS',
     'TRIM', 'TRUNCATE', 'UCASE', 'UPPER', 'USER', 'VERSION', 'WEEK', 'WEEKDAY', 'WEEKOFYEAR', 'YEAR', 'YEARWEEK');
-    
+
     /**
      *  Constructor of the class
      *
@@ -1218,11 +1218,17 @@ class Zebra_Database {
             // if $resource is a pointer to an array taken from cache
             elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
 
-                // get the current entry from the array and advance the pointer
-                $result = each($this->cached_results[$resource]);
+                // get the current entry from the array
+                $result = current($this->cached_results[$resource]);
 
-                // return as an associative array
-                return @$result[1];
+                // advance the pointer
+                next($this->cached_results[$resource]);
+
+                // note that the above could've been done in a single step, using PHP's each() function
+                // but it has been deprecated starting with PHP 7.2.0
+
+                // return the value
+                return $result;
 
             }
 
@@ -1365,24 +1371,23 @@ class Zebra_Database {
             // if $resource is a pointer to an array taken from cache
             elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
 
-                // get the current entry from the array and advance the pointer
-                $result = each($this->cached_results[$resource]);
+                // get the current entry from the array
+                $result = current($this->cached_results[$resource]);
+
+                // advance the pointer
+                next($this->cached_results[$resource]);
+
+                // note that the above could've been done in a single step, using PHP's each() function
+                // but it has been deprecated starting with PHP 7.2.0
 
                 // if we're not past the end of the array
-                if ($result !== false) {
+                if ($result !== false)
 
-                    // create a new generic object -> similar with $obj = new stdClass() but i like this one better ;)
-                    $obj = (object) NULL;
+                    // cast the resulting array as an object
+                    $result = (object)$result;
 
-                    // populate the object's properties
-                    foreach ($result[1] as $key=>$value) $obj->$key = $value;
-
-                // if we're past the end of the array
-                // make sure we return FALSE
-                } else $obj = false;
-
-                // return as object
-                return $obj;
+                // return result
+                return $result;
 
             }
 
@@ -2481,7 +2486,7 @@ class Zebra_Database {
      *                                  returned if there was no LIMIT applied to the query.
      *
      *                                  This is very useful for creating pagination or computing averages. Also, note
-     *                                  that this information will be available without running an extra query. 
+     *                                  that this information will be available without running an extra query.
      *                                  {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows Here's how}
      *
      *                                  Default is FALSE.
@@ -2705,7 +2710,7 @@ class Zebra_Database {
             // (we will use this in the debugging console)
             $this->total_execution_time += $stop_timer - $start_timer;
 
-			// if 
+			// if
             if (
 
                 // notification address and notifier domain are set
@@ -3064,10 +3069,10 @@ class Zebra_Database {
                 elseif ($row > 0) {
 
                     // get the current info from the array and advance the pointer
-                    while (list($key, $value) = each($this->cached_results[$resource]))
+                    while (next($this->cached_results[$resource]))
 
-                        // we check it like this because elseways we'll have the pointer moved one entry too far
-                        if ($key == $row - 1) return true;
+                        // if we've found what we were looking for
+                        if ($row == key($this->cached_results[$resource])) return true;
 
                     // save debug information
                     $this->_log('errors', array(
@@ -3758,7 +3763,7 @@ class Zebra_Database {
                 $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . $this->resource_path), '/');
 
             // if path not provided, determine the path automatically
-            else 
+            else
 
                 // this is the url that will be used for automatically including
                 // the CSS and the JavaScript files
@@ -4128,7 +4133,7 @@ class Zebra_Database {
      *  days and/or hours.
      *
      *  @since  1.1.0
-     * 
+     *
      *  @param boolean  $daily      Should logs be grouped by days?
      *
      *                              Log files will have their name in the form of "log_ymd.txt", where "y", "m" and "d"
@@ -4137,7 +4142,7 @@ class Zebra_Database {
      *                              Default is FALSE.
      *
      *  @param boolean  $hourly     Should logs be also groupped by hours?
-     * 
+     *
      *                              Log files will have their name in the form of "log_ymd_h.txt", where "y", "m" and "d"
      *                              represent two digit values for year, month and day, respectively, while "h" represents
      *                              the two digit value for hour.
@@ -4171,7 +4176,7 @@ class Zebra_Database {
                 )
 
         ) {
-		
+
             // daily/hourly file?
             $file_name = 'log';
 
@@ -4188,7 +4193,7 @@ class Zebra_Database {
 
             // log file's extension
             $file_name .= '.txt';
-	
+
             // tries to create/open the 'log.txt' file
             if ($handle = @fopen(rtrim($this->log_path, '/') . '/' . $file_name, 'a+')) {
 
@@ -4337,6 +4342,7 @@ class Zebra_Database {
      *  @access private
      */
     private function _build_columns($columns) {
+
         $sql = '';
 
         // if the argument is not an array
@@ -4357,7 +4363,7 @@ class Zebra_Database {
         return $sql;
 
     }
-    
+
     /**
      *  Given an associative array where the array's keys represent column names and the array's values represent the
      *  values to be associated with each respective column, this method will enclose column names in grave accents " ` "
