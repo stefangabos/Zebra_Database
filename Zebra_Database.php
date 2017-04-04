@@ -1868,8 +1868,8 @@ class Zebra_Database {
      */
     public function insert($table, $columns, $ignore = false, $highlight = false) {
 
-        // enclose the column names in grave accents
-        $cols = '`' . implode('`,`', array_keys($columns)) . '`';
+        // get string of comma separated column names, enclosed in grave accents
+        $cols = $this->_escape(array_keys($columns));
 
         $values = '';
 
@@ -2174,8 +2174,8 @@ class Zebra_Database {
         // if $update is not given as an array, make it an empty array
         if (!is_array($update)) $update = array();
 
-        // enclose the column names in grave accents
-        $cols = '`' . implode('`,`', array_keys($columns)) . '`';
+        // get string of comma separated column names, enclosed in grave accents
+        $cols = $this->_escape(array_keys($columns));
 
         $values = '';
 
@@ -3208,7 +3208,7 @@ class Zebra_Database {
         return $this->query('
 
             SELECT
-                ' . (is_string($columns) ? $columns : $this->_build_columns($columns)) . '
+                ' . $this->_escape($columns) . '
             FROM
                 ' . $this->_escape($table) .
 
