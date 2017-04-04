@@ -4335,36 +4335,6 @@ class Zebra_Database {
     }
 
     /**
-     *  Given an associative array or a string with comma separated values where the values represent column names, this
-     *  method will enclose column names in grave accents " ` " (thus, allowing seamless usage of reserved words as column
-     *  names) and automatically {@link escape()} value.
-     *
-     *  @access private
-     */
-    private function _build_columns($columns) {
-
-        $sql = '';
-
-        // if the argument is not an array
-        if (!is_array($columns))
-
-            // transform it to an array
-            $columns = explode(',', $columns);
-
-        // loop through each column
-        foreach($columns as &$col)
-
-            // wrap in grave accents " ` "
-            $col = '`' . trim(trim($col), '`') . '`';
-
-        // create string from array
-        $sql = join(', ', $columns);
-
-        return $sql;
-
-    }
-
-    /**
      *  Given an associative array where the array's keys represent column names and the array's values represent the
      *  values to be associated with each respective column, this method will enclose column names in grave accents " ` "
      *  (thus, allowing seamless usage of reserved words as column names) and automatically {@link escape()} value.
