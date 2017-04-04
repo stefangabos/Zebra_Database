@@ -4433,21 +4433,36 @@ class Zebra_Database {
     /**
      *  Encloses segments of a database.table.column construction in grave accents.
      *
+     *  @param  mixed   A string or an array to escape.
+     *
      *  @return string  Returns a string with the segments of a database.table.column construction enclosed in grave
      *                  accents.
      *
      *  @access private
      */
-    private function _escape($string) {
+    private function _escape($entries) {
 
-        // explode string by dots
-        $string = explode('.', $string);
+        // treat argument as an array
+        $entries = (array)$entries;
 
-        // enclose each segment in grave accents
-        $string = array_map(function($value) { return '`' . $value . '`'; }, $string);
+        $result = array();
+
+        // iterate over the entries given as argument
+        foreach ($entries as $entry) {
+
+            // explode string by dots
+            $entry = explode('.', $entry);
+
+            // enclose each segment in grave accents
+            $entry = array_map(function($value) { return '`' . trim(trim($value, '`')) . '`'; }, $entry);
+
+            // concatenate the string back and add it to the result
+            $result[] = implode('.', $entry);
+
+        }
 
         // recompose the string and return it
-        return implode('.', $string);
+        return implode(', ', $result);
 
     }
 
