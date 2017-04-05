@@ -3522,7 +3522,7 @@ class Zebra_Database {
                                 $output .= '
                                     <li class="zdc-records">
                                         <a href="javascript:zdc_toggle(\'zdc-records-sq' . $counter . '\')">' .
-                                            $this->language['returned_rows'] . ': <strong>' . $debug_info['returned_rows'] . '</strong>
+                                            $this->language['returned_rows'] . ': <strong>' . ($debug_info['unbuffered'] ? '?' : $debug_info['returned_rows']) . '</strong>
                                         </a>
                                     </li>
                                 ';
