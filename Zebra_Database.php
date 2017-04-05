@@ -34,7 +34,7 @@ class Zebra_Database {
 
     /**
      *  After an INSERT, UPDATE, REPLACE or DELETE query this property will hold the number of rows that were affected by
-     *  its execution.     .
+     *  its execution.
      *
      *  For the number of rows returned by SELECT queries see the {@link $returned_rows} property.
      *
@@ -205,6 +205,8 @@ class Zebra_Database {
      *
      *  If <i>calc_rows</i> is FALSE or is TRUE but there is no LIMIT applied to the query, this property's value will
      *  be the same as the value of the {@link returned_rows} property.
+     *
+     *  <i>For unbuffered queries the value of this property is always 0!</i>
      *
      *  <code>
      *  // let's assume that "table" has 100 rows
@@ -399,6 +401,8 @@ class Zebra_Database {
     /**
      *  After running a SELECT query through either {@link select()} or {@link query()} methods this property would
      *  contain the number of returned rows.
+     *
+     *  <i>For unbuffered queries the value of this property is always 0!</i>
      *
      *  See {@link found_rows} also.
      *
@@ -2478,6 +2482,8 @@ class Zebra_Database {
      *
      *                                  The caching method is specified by the value of the {@link caching_method} property.
      *
+     *                                  <i>For {@link query_unbuffered unbuffered} queries this argument is always FALSE!</i>
+     *
      *                                  Default is FALSE.
      *
      *  @param  boolean $calc_rows      (Optional) If query is a SELECT query, this argument is set to TRUE, and there is
@@ -2488,6 +2494,8 @@ class Zebra_Database {
      *                                  This is very useful for creating pagination or computing averages. Also, note
      *                                  that this information will be available without running an extra query.
      *                                  {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows Here's how}
+     *
+     *                                  <i>For {@link query_unbuffered unbuffered} queries this argument is always FALSE!</i>
      *
      *                                  Default is FALSE.
      *
@@ -2580,6 +2588,9 @@ class Zebra_Database {
                 }
 
             }
+
+            // unbuffered queries cannot be cached nor can we get the total number of records
+            if ($this->unbuffered) $cache = $calc_rows = false;
 
             // $calc_rows is TRUE, we have a SELECT query and the SQL_CALC_FOUND_ROWS string is not in it
             // (we do this trick to get the numbers of records that would've been returned if there was no LIMIT applied)
@@ -2744,10 +2755,13 @@ class Zebra_Database {
                     $this->returned_rows = $this->found_rows = 0;
 
                     // if query was a SELECT query
-                    if ($is_select) {
+                    if ($is_selec) {
 
-                        // the returned_rows property holds the number of records returned by a SELECT query
-                        $this->returned_rows = $this->found_rows = @mysqli_num_rows($this->last_result);
+                        // for unbuffered queries
+                        if (!$this->unbuffered)
+
+                            // the returned_rows property holds the number of records returned by a SELECT query
+                            $this->returned_rows = $this->found_rows = @mysqli_num_rows($this->last_result);
 
                         // if we need the number of rows that would have been returned if there was no LIMIT
                         if ($calc_rows) {
@@ -2988,8 +3002,10 @@ class Zebra_Database {
      *
      *  The method's arguments are the same as for the {@link query()} method.
      *
-     *  <samp>Note that untill you iterate over all the results, all queries will return a "Commands out of sync" error
-     *  unless you call the {@link free_result()} method.</samp>
+     *  <i>For unbuffered queries the values returned by {@link returned_rows} and {@link found_rows} is always 0.</i>
+     *
+     *  <samp>Note that untill you iterate over all the results, all subsequent queries will return a "Commands out of
+     *  sync" error unless you call the {@link free_result()} method.</samp>
      *
      *  @since 2.9.4
      */
