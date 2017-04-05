@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.5 (last revision: April 03, 2017)
+ *  @version    2.9.5 (last revision: April 05, 2017)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -3482,7 +3482,7 @@ class Zebra_Database {
                                 <li class="zdc-time">' .
                                     $this->language['execution_time'] . ': ' .
                                     $this->_fix_pow($debug_info['execution_time']) . ' ' .
-                                    $this->language['miliseconds'] . ' (<strong>' .
+                                    $this->language['seconds'] . ' (<strong>' .
                                     number_format(
                                         ($this->total_execution_time != 0 ? $debug_info['execution_time'] * 100 / $this->total_execution_time : 0),
                                         2, '.', ',') . '</strong>%)
@@ -3706,7 +3706,7 @@ class Zebra_Database {
                 <li>
                     <a href="javascript:zdc_toggle(\'zdc-successful-queries\')">' .
                         $this->language['successful_queries'] . ': <span>' . $blocks['successful-queries']['counter'] . '</span>&nbsp;(' .
-                        $this->_fix_pow($this->total_execution_time) . ' ' . $this->language['miliseconds'] . ')
+                        $this->_fix_pow($this->total_execution_time) . ' ' . $this->language['seconds'] . ')
                     </a>
                 </li>
                 <li>
@@ -4256,7 +4256,7 @@ class Zebra_Database {
                             // (is not available for unsuccessful queries)
                             (isset($debug_info['execution_time']) ?
 
-                                '# ' . $labels[2] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . '#: ' .  $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['miliseconds'] . "\n"
+                                '# ' . $labels[2] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . '#: ' .  $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['seconds'] . "\n"
                                  : ''
 
                             ) .
@@ -4575,7 +4575,7 @@ class Zebra_Database {
             $value = '0.' . str_repeat('0', $matches[1] - 1) . preg_replace('/\./', '', substr($value, 0, -strlen($matches[0])));
 
         // return the value
-        return number_format($value * 1000, 3);
+        return number_format($value, 3);
 
     }
 
