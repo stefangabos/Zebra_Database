@@ -47,6 +47,7 @@
         'optimization_needed'                   => '<strong>ВНИМАНИЕ</strong>: Несколько первых результатов текущего запроса такие же как у <strong>%s</strong> других запросов!',
         'options_before_connect'                => 'The "option" method must be called before connecting to a MySQL server',
         'returned_rows'                         => 'строк возвращено',
+        'seconds'                               => 'seconds',
         'successful_queries'                    => 'успешных запросов',
         'to_top'                                => 'в начало',
         'transaction_in_progress'               => 'Транзакция не может быть запущена, пока выполняется другая.',

@@ -48,6 +48,7 @@
         'optimization_needed'                   => '<strong>Warnung</strong>: Die ersten Ergebnisse dieser Abfrage sind identisch mit denen von <strong>%s</strong> anderen Abfragen!',
         'options_before_connect'                => 'The "option" method must be called before connecting to a MySQL server',
         'returned_rows'                         => 'Abgefragte Zeilen',
+        'seconds'                               => 'seconds',
         'successful_queries'                    => 'erfolgreiche Abfragen',
         'to_top'                                => 'nach oben',
         'transaction_in_progress'               => 'Die Transaktion konnte nicht durchgeführt werden, weil noch eine andere Transaktion in Arbeit ist.',

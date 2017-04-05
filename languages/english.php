@@ -48,6 +48,7 @@
         'optimization_needed'                   => '<strong>WARNING</strong>: The first few results returned by this query are the same as returned by <strong>%s</strong> other queries!',
         'options_before_connect'                => 'The "option" method must be called before connecting to a MySQL server',
         'returned_rows'                         => 'returned rows',
+        'seconds'                               => 'seconds',
         'successful_queries'                    => 'successful queries',
         'to_top'                                => 'to the top',
         'transaction_in_progress'               => 'Transaction could not be started as another transaction is in progress.',
