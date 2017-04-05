@@ -2507,9 +2507,6 @@ class Zebra_Database {
         // if an active connection exists
         if ($this->_connected()) {
 
-            // remove spaces used for indentation (if any)
-            $sql = preg_replace(array("/^\s+/m", "/\r\n/"), array('', ' '), $sql);
-
             unset($this->affected_rows);
 
             // if $replacements is specified but it's not an array
