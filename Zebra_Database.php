@@ -2967,6 +2967,7 @@ class Zebra_Database {
                         'warning'       =>  $warning,
                         'highlight'     =>  $highlight,
                         'from_cache'    =>  $refreshed_cache,
+                        'unbuffered'    =>  $this->unbuffered,
                         'transaction'   =>  ($this->transaction_status !== 0 ? true : false),
 
                     ), false);
@@ -3490,6 +3491,15 @@ class Zebra_Database {
                                 $output .= '
                                     <li class="zdc-cache">
                                         <strong>' . $this->language['from_cache'] . ' (' . $this->caching_method . ')</strong>
+                                    </li>
+                                ';
+
+                            // info about whether the query results were taken from cache or not
+                            elseif ($debug_info['unbuffered'])
+
+                                $output .= '
+                                    <li class="zdc-unbuffered">
+                                        <strong>' . $this->language['unbuffered'] . '</strong>
                                     </li>
                                 ';
 
@@ -4241,6 +4251,7 @@ class Zebra_Database {
                             strtoupper($this->language['file']),
                             strtoupper($this->language['line']),
                             strtoupper($this->language['function']),
+                            strtoupper($this->language['unbuffered']),
                         );
 
                         // determine the longest label (for propper indenting)
@@ -4294,22 +4305,22 @@ class Zebra_Database {
                             ) .
 
                             // if not an action query, show whether the query was returned from the cache or was executed
-                            ($debug_info['affected_rows'] === false ?
+                            ($debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] != 'nocache' ?
 
-                                '# ' . $labels[5] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) .  '#: ' .
-
-                                (isset($debug_info['from_cache']) && $debug_info['from_cache'] != 'nocache' ?
-
-                                    $labels[6] :
-                                    $labels[7]
-
-                                ) . "\n"
-
+                                '# ' . $labels[5] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) .  '#: ' . $labels[6] . "\n"
                                 : ''
 
                             ) .
 
-                            '# ' . $labels[8] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . '#:' . "\n"
+                            // if there is an error message
+                            (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ?
+
+                                '# ' . $labels[12] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . '#: ' . $labels[6] . "\n"
+                                : ''
+
+                            ) .
+
+                            "\n" . '# ' . $labels[8] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . '#:' . "\n"
 
                         , true));
 
