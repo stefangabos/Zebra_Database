@@ -4298,7 +4298,7 @@ class Zebra_Database {
 
                                 '# ' . $labels[5] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) .  '#: ' .
 
-                                (isset($debug_info['from_cache']) && $debug_info['from_cache'] === true  ?
+                                (isset($debug_info['from_cache']) && $debug_info['from_cache'] != 'nocache' ?
 
                                     $labels[6] :
                                     $labels[7]
