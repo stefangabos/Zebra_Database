@@ -4322,7 +4322,7 @@ class Zebra_Database {
 
                             ) .
 
-                            // if there is an error message
+                            // if query was an unbuffered one
                             (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ?
 
                                 '# ' . $labels[12] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . '#: ' . $labels[6] . "\n"
