@@ -51,6 +51,7 @@
         'successful_queries'                    => 'успешных запросов',
         'to_top'                                => 'в начало',
         'transaction_in_progress'               => 'Транзакция не может быть запущена, пока выполняется другая.',
+        'unbuffered'                            => 'unbuffered',
         'unsuccessful_queries'                  => 'неуспешных запросов',
         'warning_charset'                       => 'Значения по умолчанию для charset и collections небыли установлены. Вызовите set_charset() после подключения к базе.',
         'warning_memcache'                      => 'Расширение "memcache" доступно на вашем сервере, рассмотрите возможность использования memcache для кеширования результатов ваших запросов.<br>Подробности в <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#var$caching_method">документации</a>.',

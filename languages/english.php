@@ -52,6 +52,7 @@
         'successful_queries'                    => 'successful queries',
         'to_top'                                => 'to the top',
         'transaction_in_progress'               => 'Transaction could not be started as another transaction is in progress.',
+        'unbuffered'                            => 'unbuffered',
         'unsuccessful_queries'                  => 'unsuccessful queries',
         'warning_charset'                       => 'No default charset and collation were set. Call <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#methodset_charset">set_charset()</a> after connecting to the database.',
         'warning_memcache'                      => 'The "memcache" extension is available on you server - consider using memcache for caching query results.<br>See <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#var$caching_method">the documentation</a> for more information.',

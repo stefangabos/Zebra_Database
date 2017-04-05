@@ -52,6 +52,7 @@
         'successful_queries'                    => 'erfolgreiche Abfragen',
         'to_top'                                => 'nach oben',
         'transaction_in_progress'               => 'Die Transaktion konnte nicht durchgeführt werden, weil noch eine andere Transaktion in Arbeit ist.',
+        'unbuffered'                            => 'unbuffered',
         'unsuccessful_queries'                  => 'Fehlerhafte Abfragen',
         'warning_charset'                       => 'Standard Charset und Collection wurde nicht gesetzt. Bitte rufen Sie set_charset() nach dem Verbindungsaufbau auf.',
         'warning_memcache'                      => 'Die "memcache" Erweiterung ist auf diesem Server nicht verfügbar. überlegen Sie, memcache fürs Caching von Ergebnissen zu nutzen.<br>Weitere Informationen in <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#var$caching_method">der Dokumentation</a>.',
