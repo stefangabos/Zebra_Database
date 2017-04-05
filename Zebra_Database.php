@@ -4164,6 +4164,8 @@ class Zebra_Database {
      *
      *                              Default is FALSE.
      *
+     *                              <i>This option was added in 2.8.3</i>
+     *
      *  @param boolean  $hourly     Should logs be also groupped by hours?
      *
      *                              Log files will have their name in the form of "log_ymd_h.txt", where "y", "m" and "d"
@@ -4175,9 +4177,13 @@ class Zebra_Database {
      *
      *                              Default is FALSE.
      *
+     *                              <i>This option was added in 2.8.3</i>
+     *
      *  @param boolean  $backtrace  Should backtrace information be also written to the log file?
      *
      *                              Default is FALSE.
+     *
+     *                              <i>This option was added in 2.9.5</i>
      *
      *  @return void
      */
