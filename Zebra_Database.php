@@ -258,9 +258,12 @@ class Zebra_Database {
     public $halt_on_errors;
 
     /**
-     *  Path (with trailing slash) where to store the log file.
+     *  Path where to store the log file.
      *
      *  <b>The path is relative to your working directory.</b>
+     *
+     *  <b>Use "." (dot) for the current directory instead of an empty string or the log file will be written to the
+     *  server's root.</b>
      *
      *  Data is written to the log file when calling the {@link write_log()} method.
      *
