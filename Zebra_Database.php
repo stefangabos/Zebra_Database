@@ -2583,10 +2583,10 @@ class Zebra_Database {
 
             // $calc_rows is TRUE, we have a SELECT query and the SQL_CALC_FOUND_ROWS string is not in it
             // (we do this trick to get the numbers of records that would've been returned if there was no LIMIT applied)
-            if ($calc_rows && strtolower(substr(ltrim($sql), 0, 6)) == 'select' && strpos($sql, 'SQL_CALC_FOUND_ROWS') === false)
+            if ($calc_rows && strpos($sql, 'SQL_CALC_FOUND_ROWS') === false)
 
                 // add the 'SQL_CALC_FOUND_ROWS' parameter to the query
-                $sql = preg_replace('/SELECT/i', 'SELECT SQL_CALC_FOUND_ROWS', $sql, 1);
+                $sql = preg_replace('/^(.*?)SELECT/is', '$1SELECT SQL_CALC_FOUND_ROWS', $sql, 1);
 
             if (isset($this->last_result)) unset($this->last_result);
 
