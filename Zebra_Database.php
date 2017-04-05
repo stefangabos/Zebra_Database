@@ -2718,25 +2718,25 @@ class Zebra_Database {
             // (we will use this in the debugging console)
             $this->total_execution_time += $stop_timer - $start_timer;
 
-			// if
+            // if
             if (
 
                 // notification address and notifier domain are set
                 !empty($this->notification_address) &&
                 !empty($this->notifier_domain) &&
 
-				// and execution time exceeds max_query_time
+                // and execution time exceeds max_query_time
                 ($stop_timer - $start_timer > $this->max_query_time)
 
             )
 
-				// then send a notification mail
-				@mail(
-					$this->notification_address,
-					sprintf($this->language['email_subject'], $this->notifier_domain),
-					sprintf($this->language['email_content'], $this->max_query_time, $stop_timer - $start_timer, $sql),
-					'From: ' . $this->notifier_domain
-				);
+                // then send a notification mail
+                @mail(
+                    $this->notification_address,
+                    sprintf($this->language['email_subject'], $this->notifier_domain),
+                    sprintf($this->language['email_content'], $this->max_query_time, $stop_timer - $start_timer, $sql),
+                    'From: ' . $this->notifier_domain
+                );
 
             // if the query was successfully executed
             if ($this->last_result !== false) {
@@ -3302,7 +3302,7 @@ class Zebra_Database {
         unset($this->warnings['charset']);
 
         // set MySQL character set
-		$this->query('SET NAMES "' . $this->escape($charset) . '" COLLATE "' . $this->escape($collation) . '"');
+        $this->query('SET NAMES "' . $this->escape($charset) . '" COLLATE "' . $this->escape($collation) . '"');
 
     }
 
@@ -4175,11 +4175,15 @@ class Zebra_Database {
      *
      *                              Default is FALSE.
      *
+     *  @param boolean  $backtrace  Should backtrace information be also written to the log file?
+     *
+     *                              Default is FALSE.
+     *
      *  @return void
      */
-    public function write_log($daily = false, $hourly = false) {
+    public function write_log($daily = false, $hourly = false, $backtrace = false) {
 
-          // if
+        // if
         if (
 
             // debug is enabled AND
@@ -4318,23 +4322,35 @@ class Zebra_Database {
                                 '# ' . $labels[12] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . '#: ' . $labels[6] . "\n"
                                 : ''
 
-                            ) .
-
-                            "\n" . '# ' . $labels[8] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . '#:' . "\n"
+                            )
 
                         , true));
 
-                        // write full backtrace info
-                        foreach ($debug_info['backtrace'] as $backtrace)
+                        // if backtrace information should be written to the log file
+                        if ($backtrace) {
 
+                            // write to log file
                             fwrite($handle, print_r(
 
                                 '# ' . str_pad('', ($longest_label_length + 1), ' ', STR_PAD_RIGHT) . '#' . "\n" .
-                                '# ' . $labels[9] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['file']] . "\n" .
-                                '# ' . $labels[10] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['line']] . "\n" .
-                                '# ' . $labels[11] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['function']] . "\n"
+
+                                '# ' . $labels[8] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . '#:' . "\n"
 
                             , true));
+
+                            // write full backtrace info
+                            foreach ($debug_info['backtrace'] as $backtrace)
+
+                                fwrite($handle, print_r(
+
+                                    '# ' . str_pad('', ($longest_label_length + 1), ' ', STR_PAD_RIGHT) . '#' . "\n" .
+                                    '# ' . $labels[9] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['file']] . "\n" .
+                                    '# ' . $labels[10] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['line']] . "\n" .
+                                    '# ' . $labels[11] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['function']] . "\n"
+
+                                , true));
+
+                        }
 
                         // finish writing to the log file by adding a bottom border
                         fwrite($handle, str_pad('', $longest_label_length + 4, '#', STR_PAD_RIGHT) . "\n\n");
