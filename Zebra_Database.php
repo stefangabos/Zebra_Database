@@ -2755,7 +2755,7 @@ class Zebra_Database {
                     $this->returned_rows = $this->found_rows = 0;
 
                     // if query was a SELECT query
-                    if ($is_selec) {
+                    if ($is_select) {
 
                         // for unbuffered queries
                         if (!$this->unbuffered)
