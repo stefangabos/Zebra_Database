@@ -3298,7 +3298,7 @@ class Zebra_Database {
      *
      *  @return void
      */
-    public function show_debugging_console() {
+    function show_debugging_console() {
 
         // if
         if (
