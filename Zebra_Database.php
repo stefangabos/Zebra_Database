@@ -3774,9 +3774,6 @@ class Zebra_Database {
             // link the required css file
             $output = '<link rel="stylesheet" href="' . $path . '/public/css/database.css" type="text/css">' . $output;
 
-            // if output is to be returned rather than printed to the screen
-            if ($return) return $output;
-
             // show generated output
             echo $output;
 
