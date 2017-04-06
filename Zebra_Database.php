@@ -166,7 +166,33 @@ class Zebra_Database {
     public $debug;
 
     /**
+     *  Indicates {@link http://php.net/manual/en/function.debug-backtrace.php backtrace} information should be shown
+     *  in the debugging console.
+     *
+     *  Default is TRUE.
+     *
+     *  @since  2.5.9
+     *
+     *  @var boolean
+     */
+    public $debug_show_backtrace;
+
+    /**
+     *  Indicates whether queries should be {@link http://dev.mysql.com/doc/refman/5.0/en/explain.html EXPLAIN}ed in the
+     *  debugging console.
+     *
+     *  Default is TRUE.
+     *
+     *  @since  2.5.9
+     *
+     *  @var boolean
+     */
+    public $debug_show_explain;
+
+    /**
      *  Sets the number records returned by SELECT queries to be shown in the debugging console.
+     *
+     *  Setting this to 0 or FALSE will disable this feature.
      *
      *  <code>
      *  // show 50 records
@@ -599,7 +625,7 @@ class Zebra_Database {
 
         $this->debug_show_records = 20;
 
-        $this->debug = $this->halt_on_errors = $this->minimize_console = true;
+        $this->debug = $this->debug_show_backtrace = $this->debug_show_explain = $this->halt_on_errors = $this->minimize_console = true;
 
         $this->language('english');
 
@@ -2950,7 +2976,7 @@ class Zebra_Database {
                         }
 
                         // if it's a SELECT query and query is not read from cache...
-                        if ($is_select && $this->_is_result($this->last_result)) {
+                        if ($this->debug_show_explain && $is_select && $this->_is_result($this->last_result)) {
 
                             // ask the MySQL to EXPLAIN the query
                             $explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql);
@@ -4418,7 +4444,7 @@ class Zebra_Database {
 
             // if category is different than "warnings"
             // (warnings are generated internally)
-            if ($category != 'warnings') {
+            if ($category != 'warnings' && $this->debug_show_backtrace) {
 
                 // get backtrace information
                 $backtrace_data = debug_backtrace();
