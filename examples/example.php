@@ -30,9 +30,6 @@
         // create a new database wrapper object
         $db = new Zebra_Database();
 
-        // turn debugging on
-        $db->debug = true;
-
         // connect to the MySQL server and select the database
         $db->connect(
             '',     // host
