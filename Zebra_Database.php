@@ -1503,18 +1503,26 @@ class Zebra_Database {
      *
      *  <samp>You should always free your result with {@link free_result()}, when your result object is not needed anymore.</samp>
      *
-     *  @param  resource    $resource   A resource returned by {@link query} or {@link select} methods.
+     *  @param  resource    $resource   (Optional) A valid resource.
      *
-     *                                  The method will do nothing if the argument is not a valid resource.
+     *                                  <i>If not specified, the resource returned by the last run query is used.</i>
      *
      *  @since  2.9.1
      *
      *  @return void
      */
-    public function free_result($resource) {
+    public function free_result($resource = '') {
 
-        // if argument is a valid resource, free the result
-        if ($this->_is_result($resource)) mysqli_free_result($resource);
+        // if an active connection exists
+        if ($this->_connected()) {
+
+            // if no resource was specified, and a query was run before, assign the last resource
+            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+
+            // if argument is a valid resource, free the result
+            if ($this->_is_result($resource)) mysqli_free_result($resource);
+
+        }
 
     }
 
