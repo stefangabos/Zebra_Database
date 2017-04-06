@@ -4439,76 +4439,6 @@ class Zebra_Database {
     }
 
     /**
-     *  Encloses segments of a database.table.column construction in grave accents.
-     *
-     *  @param  mixed   A string or an array to escape.
-     *
-     *  @return string  Returns a string with the segments of a database.table.column construction enclosed in grave
-     *                  accents.
-     *
-     *  @access private
-     */
-    private function _escape($entries) {
-
-        // treat argument as an array
-        $entries = (array)$entries;
-
-        $result = array();
-
-        // iterate over the entries given as argument
-        foreach ($entries as $entry) {
-
-            // explode string by dots
-            $entry = explode('.', $entry);
-
-            // enclose each segment in grave accents
-            $entry = array_map(function($value) { return '`' . trim(trim($value, '`')) . '`'; }, $entry);
-
-            // concatenate the string back and add it to the result
-            $result[] = implode('.', $entry);
-
-        }
-
-        // recompose the string and return it
-        return implode(', ', $result);
-
-    }
-
-    /**
-     *  Checks if a string is in fact a MySQL function call (or a bunch of nested MySQL functions)
-     *
-     *  @access private
-     */
-    private function _is_mysql_function($value) {
-
-        $valid = false;
-
-        // if value looks like one or more nested functions
-        if (!is_array($value) && preg_match('/^[a-z]+\(/i', $value) && preg_match_all('/([a-z]+\()/i', $value, $matches)) {
-
-            $valid = true;
-
-            // iterate through what look like MySQL functions
-            foreach ($matches[0] as $match)
-
-                // if entry is not a MySQL function
-                if (!in_array(strtoupper(substr($match, 0, -1)), $this->mysql_functions)) {
-
-                    // it means we made a mistake, don't look further
-                    $valid = false;
-
-                    break;
-
-                }
-
-        }
-
-        // return the result
-        return $valid;
-
-    }
-
-    /**
      *  Checks if the connection to the MySQL server has been previously established by the connect() method.
      *
      *  @access private
@@ -4598,6 +4528,42 @@ class Zebra_Database {
     }
 
     /**
+     *  Encloses segments of a database.table.column construction in grave accents.
+     *
+     *  @param  mixed   A string or an array to escape.
+     *
+     *  @return string  Returns a string with the segments of a database.table.column construction enclosed in grave
+     *                  accents.
+     *
+     *  @access private
+     */
+    private function _escape($entries) {
+
+        // treat argument as an array
+        $entries = (array)$entries;
+
+        $result = array();
+
+        // iterate over the entries given as argument
+        foreach ($entries as $entry) {
+
+            // explode string by dots
+            $entry = explode('.', $entry);
+
+            // enclose each segment in grave accents
+            $entry = array_map(function($value) { return '`' . trim(trim($value, '`')) . '`'; }, $entry);
+
+            // concatenate the string back and add it to the result
+            $result[] = implode('.', $entry);
+
+        }
+
+        // recompose the string and return it
+        return implode(', ', $result);
+
+    }
+
+    /**
      *  PHP's microtime() will return elapsed time as something like 9.79900360107E-5 when the elapsed time is too short.
      *
      *  This function takes care of that and returns the number in the human readable format.
@@ -4617,6 +4583,40 @@ class Zebra_Database {
 
         // return the value
         return number_format($value, 3);
+
+    }
+
+    /**
+     *  Checks if a string is in fact a MySQL function call (or a bunch of nested MySQL functions)
+     *
+     *  @access private
+     */
+    private function _is_mysql_function($value) {
+
+        $valid = false;
+
+        // if value looks like one or more nested functions
+        if (!is_array($value) && preg_match('/^[a-z]+\(/i', $value) && preg_match_all('/([a-z]+\()/i', $value, $matches)) {
+
+            $valid = true;
+
+            // iterate through what look like MySQL functions
+            foreach ($matches[0] as $match)
+
+                // if entry is not a MySQL function
+                if (!in_array(strtoupper(substr($match, 0, -1)), $this->mysql_functions)) {
+
+                    // it means we made a mistake, don't look further
+                    $valid = false;
+
+                    break;
+
+                }
+
+        }
+
+        // return the result
+        return $valid;
 
     }
 
