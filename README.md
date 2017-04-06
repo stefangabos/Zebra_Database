@@ -53,12 +53,6 @@ $db = new Zebra_Database();
 
 // connect to a database
 $db->connect('host', 'username', 'password', 'database');
-
-// code goes here
-
-// this should always be present at the end of your scripts;
-// whether it outputs anything or not is controlled by the $debug property
-$db->show_debug_console();
 ```
 
 ##### Running queries
