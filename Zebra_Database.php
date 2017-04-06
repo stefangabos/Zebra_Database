@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.5 (last revision: April 05, 2017)
+ *  @version    2.9.5 (last revision: April 06, 2017)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -138,16 +138,11 @@ class Zebra_Database {
     public $console_show_records;
 
     /**
-     *  Setting this property to TRUE will instruct the library to generate debugging information for each query it executes.
-     *
-     *  Debugging information can later be reviewed by calling the {@link show_debug_console()} method.
+     *  Setting this property to TRUE will instruct the library to generate debugging information for each query it executes
+     *  and show it on the screen or log it in a file when script execution ends.
      *
      *  <b>Don't forget to set this to FALSE on the production environment. Generating the debugging information consumes
      *  a lot of resources and is meant to be used *only* in the development process!</b>.
-     *
-     *  I recommend always calling the {@link show_debug_console()} method at the end of your scripts, and simply changing
-     *  the value of the <i>debug</i> property to suit your needs, as {@link show_debug_console()} will not display
-     *  anything if <i>debug</i> is FALSE.
      *
      *  Remember that on a production server you will not be left in the dark by setting this property to FALSE, as the
      *  library will try to write any errors to PHP's error log file, if your environment is
@@ -165,10 +160,9 @@ class Zebra_Database {
     public $debug;
 
     /**
-     *  An array of IP addresses for which, if the {@link debug} property is set to TRUE, the {@link show_debug_console()}
-     *  method should produce output.
+     *  An array of IP addresses for which to show the debugging console, if the {@link debug} property is set to TRUE.
      *
-     *  An empty array would display the debugging console for everybody.
+     *  An empty array would show the debugging console to everybody as long as the {@link debug} property is set to TRUE.
      *
      *  <code>
      *  // show the debugging console only to specific IPs
@@ -600,6 +594,9 @@ class Zebra_Database {
             'memcache'      =>  true,   // memcache is available but it is not used
         );
 
+        // show the debug console when script execution ends
+        register_shutdown_function(array($this, 'show_debugging_console'));
+
     }
 
     /**
@@ -640,7 +637,7 @@ class Zebra_Database {
     /**
      *  Opens a connection to a MySQL Server and selects a database.
      *
-     *  Since the library is using <i>lazy connection</i>    (it is not actually connecting to the database until the first
+     *  Since the library is using <i>lazy connection</i> (it is not actually connecting to the database until the first
      *  query is executed), the object representing the connection to the MySQL server is not available at this time. If
      *  you need it, use the {@link get_link()} method.
      *
@@ -652,11 +649,6 @@ class Zebra_Database {
      *
      *  // notice that we're not doing any error checking. errors will be shown in the debugging console
      *  $db->connect('host', 'username', 'password', 'database');
-     *
-     *  //  code goes here
-     *
-     *  // show the debugging console (if enabled)
-     *  $db->show_debug_console();
      *  </code>
      *
      *  @param  string  $host       The address of the MySQL server to connect to (i.e. localhost).
@@ -1103,12 +1095,12 @@ class Zebra_Database {
     /**
      *  Returns a string description of the last error, or an empty string if no error occurred.
      *
-     *  In most cases you should not need this method as any errors are reported to the {@link show_debug_console console}
-     *  when the {@link debug} property is set to TRUE, or to PHP's error log file (if your environment is
+     *  In most cases you should not need this method as any errors are shown in the debugging console as long as the
+     *  {@link debug} property is set to TRUE, or available in PHP's error log file (if your environment is
      *  {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors configured to do so}) when set to
-     *  FALSE.
+     *  FALSE. Alternatively, debugging information can be found in the log file.
      *
-     *  If, for some reasons, none of the above is available, you can use this method to catch errors.
+     *  If, for some reasons, none of the above is available, you can use this method to see errors.
      *
      *  <code>
      *  $db->query('
@@ -3299,22 +3291,14 @@ class Zebra_Database {
     }
 
     /**
-     *  Shows the debugging console, <i>if</i> {@link debug} is TRUE and the viewer's IP address is in the
-     *  {@link debugger_ip} array (or <i>$debugger_ip</i> is an empty array).
+     *  Shows the debugging console when the script ends, <i>if</i> {@link debug} is TRUE and the viewer's IP address is
+     *  in the {@link debugger_ip} array (or <i>$debugger_ip</i> is an empty array).
      *
-     *  <i>This method must be called after all the queries in a script, preferably before </body>!</i>
-     *
-     *  <b>You should ALWAYS have this method called at the end of your scripts and control whether the debugging console
-     *  will show or not with the {@link debug} property.</b>
-     *
-     *  @param  boolean $return         (Optional) If set to TRUE, the output will be returned instead of being printed
-     *                                  to the screen.
-     *
-     *                                  Default is FALSE.
+     *  @access private
      *
      *  @return void
      */
-    public function show_debug_console($return = false) {
+    public function show_debugging_console() {
 
         // if
         if (
@@ -4139,11 +4123,6 @@ class Zebra_Database {
      *  Writes debug information to a <i>log.txt</i> log file at {@link log_path} <i>if</i> {@link debug} is TRUE and the
      *  viewer's IP address is in the {@link debugger_ip} array (or <i>$debugger_ip</i> is an empty array).
      *
-     *  <i>This method must be called after all the queries in a script!</i>
-     *
-     *  <i>Make sure you're calling it BEFORE {@link show_debug_console()} so that you can see in the debugging console if
-     *  writing to the log file was successful or not.</i>
-     *
      *  Note that by default all logs are written to a single file. Refer to the method's arguments for grouping logs by
      *  days and/or hours.
      *
@@ -4674,15 +4653,7 @@ class Zebra_Database {
 
             // if the saved debug info is about a fatal error
             // and execution is to be stopped on fatal errors
-            if ($fatal && $this->halt_on_errors) {
-
-                // show the debugging window
-                $this->show_debug_console();
-
-                // halt execution
-                die();
-
-            }
+            if ($fatal && $this->halt_on_errors) die();
 
         // if there are any unsuccessful queries or other errors and no debugging
         } elseif (($category == 'unsuccessful-queries' || $category == 'errors') && !$this->debug) {
