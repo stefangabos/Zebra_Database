@@ -4016,9 +4016,9 @@ class Zebra_Database {
                                 // button for reviewing returned rows
                                 $output .= '
                                     <li class="zdc-records">
-                                        ' . (!empty($debugInfo['records']) ? '<a href="javascript:zdc_toggle(\'zdc-records-sq' . $counter . '\')">' : '') .
+                                        ' . (!empty($debug_info['records']) ? '<a href="javascript:zdc_toggle(\'zdc-records-sq' . $counter . '\')">' : '') .
                                             $this->language['returned_rows'] . ': <strong>' . ($debug_info['unbuffered'] ? '?' : $debug_info['returned_rows']) . '</strong>
-                                        ' . (!empty($debugInfo['records']) ? '</a>' : '') . '
+                                        ' . (!empty($debug_info['records']) ? '</a>' : '') . '
                                     </li>
                                 ';
 
