@@ -75,11 +75,6 @@
                 Percentage DESC
         ', array($country_code));
 
-        // show debug console.
-        // THIS SHOULD ALWAYS BE PRESENT AT THE END OF YOUR SCRIPTS!
-        // debugging should be controlled by setting the "debug" property to TRUE/FALSE
-        $db->show_debug_console();
-
     ?>
 
     </body>
