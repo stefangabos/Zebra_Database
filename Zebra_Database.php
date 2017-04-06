@@ -1748,25 +1748,6 @@ class Zebra_Database {
     }
 
     /**
-     *  Stops the execution of the script at the line where this method is called and, if {@link debug} is set to TRUE and
-     *  the viewer's IP address is in the {@link debugger_ip} array (or <i>debugger_ip</i> is an empty array), shows the
-     *  debugging console.
-     *
-     *  @since  1.0.7
-     *
-     *  @return void
-     */
-    public function halt() {
-
-        // show the debugging console
-        $this->show_debug_console();
-
-        // stop further execution of the script
-        die();
-
-    }
-
-    /**
      *  Works similarly to PHP's implode() function with the difference that the "glue" is always the comma, and that
      *  this method {@link escape()}'s arguments.
      *
