@@ -2893,7 +2893,7 @@ class Zebra_Database {
                         // put the first rows, as defined by debug_show_records, in an array to show them in the
                         // debugging console
                         // if query was not read from cache
-                        if ($this->_is_result($this->last_result)) {
+                        if ($this->_is_result($this->last_result) && $this->debug_show_records) {
 
                             // iterate through the records until we displayed enough records
                             while ($row_counter++ < $this->debug_show_records && $row = mysqli_fetch_assoc($this->last_result))
@@ -2908,7 +2908,7 @@ class Zebra_Database {
                         // if query was read from the cache
                         // put the first rows, as defined by debug_show_records, in an array to show them in the
                         // debugging console
-                        } else $result = array_slice($this->cached_results[$this->last_result], 0, $this->debug_show_records);
+                        } elseif ($this->debug_show_records) $result = array_slice($this->cached_results[$this->last_result], 0, $this->debug_show_records);
 
                         // if there were queries run already
                         if (isset($this->debug_info['successful-queries'])) {
@@ -4016,9 +4016,9 @@ class Zebra_Database {
                                 // button for reviewing returned rows
                                 $output .= '
                                     <li class="zdc-records">
-                                        <a href="javascript:zdc_toggle(\'zdc-records-sq' . $counter . '\')">' .
+                                        ' . (!empty($debugInfo['records']) ? '<a href="javascript:zdc_toggle(\'zdc-records-sq' . $counter . '\')">' : '') .
                                             $this->language['returned_rows'] . ': <strong>' . ($debug_info['unbuffered'] ? '?' : $debug_info['returned_rows']) . '</strong>
-                                        </a>
+                                        ' . (!empty($debugInfo['records']) ? '</a>' : '') . '
                                     </li>
                                 ';
 
