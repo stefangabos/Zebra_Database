@@ -2351,9 +2351,6 @@ class Zebra_Database {
      */
     public function parse_file($path) {
 
-        // if no active connection exists, return false
-        if (!$this->_connected()) return false;
-
         // read file into an array
         $file_content = file($path);
 
