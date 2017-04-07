@@ -3910,8 +3910,8 @@ class Zebra_Database {
 
                         $identifier = $blocks[$block]['identifier'];
 
-                        // if block is about queries
-                        if ($block == 'successful-queries' || $block == 'unsuccessful-queries')
+                        // if there are any queries, pretty-print them
+                        if (isset($debug_info['query']))
 
                             // format and highlight query
                             $debug_info['query'] = SqlFormatter::format($debug_info['query']);
