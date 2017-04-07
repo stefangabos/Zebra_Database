@@ -777,6 +777,10 @@ class Zebra_Database {
      *
      *  @param  string  $table          Name of the table containing the column.
      *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
+     *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
      *                                  Default is "" (an empty string).
@@ -855,6 +859,10 @@ class Zebra_Database {
      *
      *  @param  string  $table          Table from which to delete.
      *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
+     *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
      *                                  Default is "" (an empty string).
@@ -915,6 +923,10 @@ class Zebra_Database {
      *                                  row.</i>
      *
      *  @param  string  $table          Name of the table in which to search.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
      *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
@@ -997,6 +1009,10 @@ class Zebra_Database {
      *
      *  @param  string  $table          Name of table in which to search.
      *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
+     *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
      *                                  Default is "" (an empty string).
@@ -1078,6 +1094,10 @@ class Zebra_Database {
      *  @param  string  $column         Name of the column in which to sum values.
      *
      *  @param  string  $table          Name of the table in which to search.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
      *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
@@ -1671,6 +1691,10 @@ class Zebra_Database {
      *
      *  @param  string  $table  Name of table to return column information for.
      *
+     *                          <i>May also be given like databasename.tablename if a database was not explicitly selected
+     *                          with the {@link connect()} or {@link select_database()} methods prior to calling this
+     *                          method.</i>
+     *
      *  @since  2.6
      *
      *  @return array           Returns information about the columns of a given table as an associative array.
@@ -1835,6 +1859,10 @@ class Zebra_Database {
      *
      *  @param  string  $table          Table in which to insert.
      *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
+     *
      *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
      *                                  array's values represent the values to be inserted in each respective column.
      *
@@ -1943,6 +1971,10 @@ class Zebra_Database {
      *  </code>
      *
      *  @param  string  $table          Table in which to insert.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
      *
      *  @param  array   $columns        An array with columns to insert values into.
      *
@@ -2102,6 +2134,10 @@ class Zebra_Database {
      *  </code>
      *
      *  @param  string  $table          Table in which to insert/update.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
      *
      *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
      *                                  array's values represent the values to be inserted in each respective column.
@@ -3163,9 +3199,13 @@ class Zebra_Database {
      *
      *  @param  string  $table          Table in which to search.
      *
-     *                                  <i>Note that table name will be enclosed in grave accents " ` " and thus only
-     *                                  one table name should be used! For anything but a simple select query use the
-     *                                  {@link query()} method.</i>
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
+     *
+     *                                  <i>Note that table name (and database name, if provided) will be enclosed in grave
+     *                                  accents " ` " and thus only one table name should be used! For anything but a
+     *                                  simple select query use the {@link query()} method.</i>
      *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
@@ -3438,9 +3478,9 @@ class Zebra_Database {
      *
      *  @param  string  $table      The name of the table to check if it exists in the database.
      *
-     *                              <i>May also be given like databasename.tablename if a connection to a database was
-     *                              not explicitly made with the {@link connect()} or {@link select_database()} methods
-     *                              prior to calling this method.</i>
+     *                              <i>May also be given like databasename.tablename if a database was not explicitly
+     *                              selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                              calling this method.</i>
      *
      *  @since  2.3
      *
@@ -3468,6 +3508,10 @@ class Zebra_Database {
      *  </code>
      *
      *  @param  string  $table          Table to truncate.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
      *
      *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
      *                                  and the query will be shown - really useful for quick and easy debugging.
@@ -3531,6 +3575,10 @@ class Zebra_Database {
      *  </code>
      *
      *  @param  string  $table          Table in which to update.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
      *
      *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
      *                                  array's values represent the values to be inserted in each respective column.
