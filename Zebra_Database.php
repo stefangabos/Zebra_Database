@@ -2731,23 +2731,23 @@ class Zebra_Database {
                     // the cache file's name
                     $file_name = rtrim($this->cache_path, '/') . '/' . md5($sql);
 
-                    // if a cached version of this query's result already exists and it is not expired
-                    if (file_exists($file_name) && filemtime($file_name) + $cache > time())
+                    // if a cached version of this query's result already exists, it is not expired and is valid
+                    if (
+                        file_exists($file_name) && filemtime($file_name) + $cache > time() &&
+                        ($cached_result = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name)))))
+                    ) {
 
-                        // if cache file is valid
-                        if ($cached_result = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name))))) {
+                        // put results in the right place
+                        // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
+                        $this->cached_results[] = $cached_result;
 
-                            // put results in the right place
-                            // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
-                            $this->cached_results[] = $cached_result;
+                        // assign to the last_result property the pointer to the position where the array was added
+                        $this->last_result = count($this->cached_results) - 1;
 
-                            // assign to the last_result property the pointer to the position where the array was added
-                            $this->last_result = count($this->cached_results) - 1;
+                        // reset the pointer of the array
+                        reset($this->cached_results[$this->last_result]);
 
-                            // reset the pointer of the array
-                            reset($this->cached_results[$this->last_result]);
-
-                        }
+                    }
 
                 // if folder doesn't exist
                 } else
@@ -2811,11 +2811,8 @@ class Zebra_Database {
             // TRUE - as queries like UPDATE, DELETE, DROP return boolean TRUE on success rather than a result resource)
             if ($this->_is_result($this->last_result) || $this->last_result === true) {
 
-                // by default, consider this not to be a SELECT query
-                $is_select = false;
-
                 // if returned resource is a valid resource, consider query to be a SELECT query
-                if ($this->_is_result($this->last_result)) $is_select = true;
+                $is_select = $this->_is_result($this->last_result);
 
                 // reset these values for each query
                 $this->returned_rows = $this->found_rows = 0;
@@ -2948,9 +2945,9 @@ class Zebra_Database {
                     // if there are any number of rows to be shown
                     if ($this->debug_show_records) {
 
+                        // if query was not read from cache
                         // put the first rows, as defined by debug_show_records, in an array to show them in the
                         // debugging console
-                        // if query was not read from cache
                         if ($this->_is_result($this->last_result)) {
 
                             // if there are any rows
@@ -2982,15 +2979,13 @@ class Zebra_Database {
 
                         // iterate through the run queries
                         // to find out if this query was already run
-                        foreach ($this->debug_info['successful-queries'] as $key=>$query_data)
+                        foreach ($this->debug_info['successful-queries'] as $key => $query_data)
 
                             // if this query was run before
                             if (
 
                                 isset($query_data['records']) &&
-
                                 !empty($query_data['records']) &&
-
                                 $query_data['records'] == $result
 
                             // save the pointer to the query in an array
@@ -3014,20 +3009,16 @@ class Zebra_Database {
 
                     }
 
-                    // if it's a SELECT query and query is not read from cache...
-                    if ($this->debug_show_explain && $is_select && $this->_is_result($this->last_result)) {
+                    // if it's a SELECT query, query is not read from cache, it needs EXPLAINing and MySQL can explain it
+                    if (
+                        $this->debug_show_explain &&
+                        $is_select &&
+                        $this->_is_result($this->last_result) &&
+                        ($explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql))
+                    )
 
-                        // ask the MySQL to EXPLAIN the query
-                        $explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql);
-
-                        // if query returned a result
-                        // (as some queries cannot be EXPLAIN-ed like SHOW TABLE, DESCRIBE, etc)
-                        if ($explain_resource)
-
-                            // put all the records returned by the explain query in an array
-                            while ($row = mysqli_fetch_assoc($explain_resource)) $explain[] = $row;
-
-                    }
+                        // put all the records returned by the explain query in an array
+                        while ($row = mysqli_fetch_assoc($explain_resource)) $explain[] = $row;
 
                 }
 
