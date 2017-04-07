@@ -41,7 +41,7 @@
         $db->set_charset();
 
         // let's work with a country
-        $country = 'Romania';
+        $country = 'United States';
 
         // get the country's code
         $country_code = $db->dlookup('Code', 'country', 'Name = ?', array($country));
