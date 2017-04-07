@@ -889,7 +889,7 @@ class Zebra_Database {
         , $replacements, false, false, $highlight);
 
         // return TRUE if query was successful, or FALSE if it wasn't
-        return isset($this->last_result) && $this->last_result !== false
+        return isset($this->last_result) && $this->last_result !== false;
 
     }
 
