@@ -4461,7 +4461,7 @@ class Zebra_Database {
             if ($fatal && $this->halt_on_errors) die();
 
         // if there are any unsuccessful queries or other errors and no debugging
-        } elseif (($category == 'unsuccessful-queries' || $category == 'errors') && !$this->debug) {
+        } elseif (($category == 'unsuccessful-queries' || $category == 'errors') && $this->debug === false) {
 
             // get backtrace information
             $backtraceInfo = debug_backtrace();
