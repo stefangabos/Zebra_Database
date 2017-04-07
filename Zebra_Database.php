@@ -1565,7 +1565,8 @@ class Zebra_Database {
             if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
 
             // if argument is a valid resource, free the result
-            if ($this->_is_result($resource)) mysqli_free_result($resource);
+            // (we mute it as it might have already been freed by a previous call to this method)
+            if ($this->_is_result($resource)) @mysqli_free_result($resource);
 
         }
 
@@ -4669,12 +4670,8 @@ class Zebra_Database {
      */
     function __destruct() {
 
-        // if the last result is a mysqli result set (it can also be a boolean or not set)
-        if (isset($this->last_result) && $this->_is_result($this->last_result))
-
-            // frees the memory associated with the last result
-            // (we mute it as it might have already been freed by a call to "free_result" method)
-            @mysqli_free_result($this->last_result);
+        // frees the memory associated with the last result
+        $this->free_result();
 
     }
 
