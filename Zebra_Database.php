@@ -2608,8 +2608,37 @@ class Zebra_Database {
 
             }
 
-            // unbuffered queries cannot be cached nor can we get the total number of records
-            if ($this->unbuffered) $cache = $calc_rows = false;
+            // unbuffered queries cannot be cached
+            if ($this->unbuffered && $cache) {
+
+                // save debug information
+                $this->_log('errors', array(
+
+                    'query'     =>  $sql,
+                    'message'   =>  $this->language['unbuffered_queries_cannot_be_cached'],
+
+                ), false);
+
+                // set this flag to false
+                $cache = false;
+
+            }
+
+            // for unbuffered queries we cannot get the total number of records
+            if ($this->unbuffered && $calc_rows) {
+
+                // save debug information
+                $this->_log('errors', array(
+
+                    'query'     =>  $sql,
+                    'message'   =>  $this->language['unbuffered_queries_no_total_records'],
+
+                ), false);
+
+                // set this flag to false
+                $calc_rows = false;
+
+            }
 
             // $calc_rows is TRUE, we have a SELECT query and the SQL_CALC_FOUND_ROWS string is not in it
             // (we do this trick to get the numbers of records that would've been returned if there was no LIMIT applied)
@@ -2907,7 +2936,7 @@ class Zebra_Database {
                             if ($this->_is_result($this->last_result)) {
 
                                 // if there are any rows
-                                if  (mysqli_num_rows($this->last_result)) {
+                                if  (!$this->unbuffered && mysqli_num_rows($this->last_result)) {
 
                                     // iterate through the records until we displayed enough records
                                     while ($row_counter++ < $this->debug_show_records && $row = mysqli_fetch_assoc($this->last_result))
@@ -3081,6 +3110,16 @@ class Zebra_Database {
 
             // check if given resource is valid
             if ($this->_is_result($resource)) {
+
+                // if query was an unbuffered one
+                if ($resource->type == 1)
+
+                    // save debug information
+                    return $this->_log('errors', array(
+
+                        'message'   => sprintf($this->language['unusable_method_unbuffered_queries'], substr(__METHOD__, strpos(__METHOD__, '::') + 2)),
+
+                    ));
 
                 // return the fetched row
                 if (mysqli_num_rows($resource) == 0 || mysqli_data_seek($resource, $row)) return true;
