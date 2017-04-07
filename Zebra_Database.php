@@ -1213,20 +1213,14 @@ class Zebra_Database {
      */
     public function escape($string) {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if "magic quotes" are on, strip slashes
-            if (get_magic_quotes_gpc()) $string = stripslashes($string);
+        // if "magic quotes" are on, strip slashes
+        if (get_magic_quotes_gpc()) $string = stripslashes($string);
 
-            // escape and return the string
-            return mysqli_real_escape_string($this->connection, $string);
-
-        }
-
-        // upon error, we don't have to report anything as _connected() method already did
-        // just return FALSE
-        return false;
+        // escape and return the string
+        return mysqli_real_escape_string($this->connection, $string);
 
     }
 
@@ -1255,45 +1249,39 @@ class Zebra_Database {
      */
     public function fetch_assoc($resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            // if $resource is a valid resource, fetch and return next row from the result set
-            if ($this->_is_result($resource)) return mysqli_fetch_assoc($resource);
+        // if $resource is a valid resource, fetch and return next row from the result set
+        if ($this->_is_result($resource)) return mysqli_fetch_assoc($resource);
 
-            // if $resource is a pointer to an array taken from cache
-            elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
+        // if $resource is a pointer to an array taken from cache
+        elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
 
-                // get the current entry from the array
-                $result = current($this->cached_results[$resource]);
+            // get the current entry from the array
+            $result = current($this->cached_results[$resource]);
 
-                // advance the pointer
-                next($this->cached_results[$resource]);
+            // advance the pointer
+            next($this->cached_results[$resource]);
 
-                // note that the above could've been done in a single step, using PHP's each() function
-                // but it has been deprecated starting with PHP 7.2.0
+            // note that the above could've been done in a single step, using PHP's each() function
+            // but it has been deprecated starting with PHP 7.2.0
 
-                // return the value
-                return $result;
-
-            }
-
-            // if $resource is invalid
-            // save debug information
-            return $this->_log('errors', array(
-
-                'message'   =>  $this->language['not_a_valid_resource'],
-
-            ));
+            // return the value
+            return $result;
 
         }
 
-        // we don't have to report any error as either the _connected() method already did
-        // or did so the checking for valid resource
-        return false;
+        // if $resource is invalid
+        // save debug information
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['not_a_valid_resource'],
+
+        ));
 
     }
 
@@ -1328,56 +1316,50 @@ class Zebra_Database {
      */
     public function fetch_assoc_all($index = '', $resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            if (
+        if (
 
-                // if $resource is a valid resource OR
-                $this->_is_result($resource) ||
+            // if $resource is a valid resource OR
+            $this->_is_result($resource) ||
 
-                // $resource is a pointer to an array taken from cache
-                (is_integer($resource) && isset($this->cached_results[$resource]))
+            // $resource is a pointer to an array taken from cache
+            (is_integer($resource) && isset($this->cached_results[$resource]))
 
-            ) {
+        ) {
 
-                // this is the array that will contain the results
-                $result = array();
+            // this is the array that will contain the results
+            $result = array();
 
-                // move the pointer to the start of $resource
-                // if there are any rows available (notice the @)
-                if (@$this->seek(0, $resource))
+            // move the pointer to the start of $resource
+            // if there are any rows available (notice the @)
+            if (@$this->seek(0, $resource))
 
-                    // iterate through the records
-                    while ($row = $this->fetch_assoc($resource))
+                // iterate through the records
+                while ($row = $this->fetch_assoc($resource))
 
-                        // if $index was specified and exists in the returned row, add data to the result
-                        if (trim($index) != '' && isset($row[$index])) $result[$row[$index]] = $row;
+                    // if $index was specified and exists in the returned row, add data to the result
+                    if (trim($index) != '' && isset($row[$index])) $result[$row[$index]] = $row;
 
-                        // if $index was not specified or does not exists in the returned row, add data to the result
-                        else $result[] = $row;
+                    // if $index was not specified or does not exists in the returned row, add data to the result
+                    else $result[] = $row;
 
-                // return the results
-                return $result;
-
-            }
-
-            // if $resource is invalid
-            // save debug information
-            return $this->_log('errors', array(
-
-                'message'   =>  $this->language['not_a_valid_resource'],
-
-            ));
+            // return the results
+            return $result;
 
         }
 
-        // we don't have to report any error as either the _connected() method already did
-        // or did so the checking for valid resource
-        return false;
+        // if $resource is invalid
+        // save debug information
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['not_a_valid_resource'],
+
+        ));
 
     }
 
@@ -1408,51 +1390,45 @@ class Zebra_Database {
      */
     public function fetch_obj($resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            // if $resource is a valid resource, fetch and return next row from the result set
-            if ($this->_is_result($resource)) return mysqli_fetch_object($resource);
+        // if $resource is a valid resource, fetch and return next row from the result set
+        if ($this->_is_result($resource)) return mysqli_fetch_object($resource);
 
-            // if $resource is a pointer to an array taken from cache
-            elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
+        // if $resource is a pointer to an array taken from cache
+        elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
 
-                // get the current entry from the array
-                $result = current($this->cached_results[$resource]);
+            // get the current entry from the array
+            $result = current($this->cached_results[$resource]);
 
-                // advance the pointer
-                next($this->cached_results[$resource]);
+            // advance the pointer
+            next($this->cached_results[$resource]);
 
-                // note that the above could've been done in a single step, using PHP's each() function
-                // but it has been deprecated starting with PHP 7.2.0
+            // note that the above could've been done in a single step, using PHP's each() function
+            // but it has been deprecated starting with PHP 7.2.0
 
-                // if we're not past the end of the array
-                if ($result !== false)
+            // if we're not past the end of the array
+            if ($result !== false)
 
-                    // cast the resulting array as an object
-                    $result = (object)$result;
+                // cast the resulting array as an object
+                $result = (object)$result;
 
-                // return result
-                return $result;
-
-            }
-
-            // if $resource is invalid
-            // save debug information
-            return $this->_log('errors', array(
-
-                'message'   =>  $this->language['not_a_valid_resource'],
-
-            ));
+            // return result
+            return $result;
 
         }
 
-        // we don't have to report any error as either the _connected() method already did
-        // or did so the checking for valid resource
-        return false;
+        // if $resource is invalid
+        // save debug information
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['not_a_valid_resource'],
+
+        ));
 
     }
 
@@ -1487,56 +1463,50 @@ class Zebra_Database {
      */
     public function fetch_obj_all($index = '', $resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            if (
+        if (
 
-                // if $resource is a valid resource OR
-                $this->_is_result($resource) ||
+            // if $resource is a valid resource OR
+            $this->_is_result($resource) ||
 
-                // $resource is a pointer to an array taken from cache
-                (is_integer($resource) && isset($this->cached_results[$resource]))
+            // $resource is a pointer to an array taken from cache
+            (is_integer($resource) && isset($this->cached_results[$resource]))
 
-            ) {
+        ) {
 
-                // this is the array that will contain the results
-                $result = array();
+            // this is the array that will contain the results
+            $result = array();
 
-                // move the pointer to the start of $resource
-                // if there are any rows available (notice the @)
-                if (@$this->seek(0, $resource))
+            // move the pointer to the start of $resource
+            // if there are any rows available (notice the @)
+            if (@$this->seek(0, $resource))
 
-                    // iterate through the resource data
-                    while ($row = $this->fetch_obj($resource))
+                // iterate through the resource data
+                while ($row = $this->fetch_obj($resource))
 
-                        // if $index was specified and exists in the returned row, add data to the result
-                        if (trim($index) != '' && property_exists($row, $index)) $result[$row->{$index}] = $row;
+                    // if $index was specified and exists in the returned row, add data to the result
+                    if (trim($index) != '' && property_exists($row, $index)) $result[$row->{$index}] = $row;
 
-                        // if $index was not specified or does not exists in the returned row, add data to the result
-                        else $result[] = $row;
+                    // if $index was not specified or does not exists in the returned row, add data to the result
+                    else $result[] = $row;
 
-                // return the results
-                return $result;
-
-            }
-
-            // if $resource is invalid
-            // save debug information
-            return $this->_log('errors', array(
-
-                'message'   =>  $this->language['not_a_valid_resource'],
-
-            ));
+            // return the results
+            return $result;
 
         }
 
-        // we don't have to report any error as either the _connected() method already did
-        // or did so the checking for valid resource
-        return false;
+        // if $resource is invalid
+        // save debug information
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['not_a_valid_resource'],
+
+        ));
 
     }
 
@@ -1555,17 +1525,15 @@ class Zebra_Database {
      */
     public function free_result($resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            // if argument is a valid resource, free the result
-            // (we mute it as it might have already been freed by a previous call to this method)
-            if ($this->_is_result($resource)) @mysqli_free_result($resource);
-
-        }
+        // if argument is a valid resource, free the result
+        // (we mute it as it might have already been freed by a previous call to this method)
+        if ($this->_is_result($resource)) @mysqli_free_result($resource);
 
     }
 
@@ -1609,44 +1577,38 @@ class Zebra_Database {
      */
     public function get_columns($resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            // if $resource is a valid resource
-            if ($this->_is_result($resource)) {
+        // if $resource is a valid resource
+        if ($this->_is_result($resource)) {
 
-                $result = array();
+            $result = array();
 
-                // iterate through all the columns
-                while ($column_info = mysqli_fetch_field($resource))
+            // iterate through all the columns
+            while ($column_info = mysqli_fetch_field($resource))
 
-                    // add information to the array of results
-                    // converting it first to an associative array
-                    $result[$column_info->name] = get_object_vars($column_info);
+                // add information to the array of results
+                // converting it first to an associative array
+                $result[$column_info->name] = get_object_vars($column_info);
 
-                // return information
-                return $result;
+            // return information
+            return $result;
 
-            // if $resource is a pointer to an array taken from cache
-            // return information that was stored in the cached file
-            } elseif (is_integer($resource) && isset($this->cached_results[$resource])) return $this->column_info;
+        // if $resource is a pointer to an array taken from cache
+        // return information that was stored in the cached file
+        } elseif (is_integer($resource) && isset($this->cached_results[$resource])) return $this->column_info;
 
-            // if $resource is invalid
-            // save debug information
-            return $this->_log('errors', array(
+        // if $resource is invalid
+        // save debug information
+        return $this->_log('errors', array(
 
-                'message'   =>  $this->language['not_a_valid_resource'],
+            'message'   =>  $this->language['not_a_valid_resource'],
 
-            ));
-
-        }
-
-        // we don't have to report any error as either the _connected() method already did
-        // or did so the checking for valid resource
-        return false;
+        ));
 
     }
 
@@ -2080,25 +2042,19 @@ class Zebra_Database {
      */
     public function insert_id() {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if a query was run before, return the AUTO_INCREMENT value
-            if (isset($this->last_result) && $this->last_result !== false) return mysqli_insert_id($this->connection);
+        // if a query was run before, return the AUTO_INCREMENT value
+        if (isset($this->last_result) && $this->last_result !== false) return mysqli_insert_id($this->connection);
 
-            // if no query was run before
-            // save debug information
-            return $this->_log('errors', array(
+        // if no query was run before
+        // save debug information
+        return $this->_log('errors', array(
 
-                'message'   =>  $this->language['not_a_valid_resource'],
+            'message'   =>  $this->language['not_a_valid_resource'],
 
-            ));
-
-        }
-
-        // upon error, we don't have to report anything as _connected() method already did
-        // just return FALSE
-        return false;
+        ));
 
     }
 
@@ -2395,60 +2351,56 @@ class Zebra_Database {
      */
     public function parse_file($path) {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // read file into an array
-            $file_content = file($path);
+        // read file into an array
+        $file_content = file($path);
 
-            // if file was successfully opened
-            if ($file_content) {
+        // if file was successfully opened
+        if ($file_content) {
 
-                $query = '';
+            $query = '';
 
-                // iterates through every line of the file
-                foreach ($file_content as $sql_line) {
+            // iterates through every line of the file
+            foreach ($file_content as $sql_line) {
 
-                    // trims whitespace from both beginning and end of line
-                    $tsql = trim($sql_line);
+                // trims whitespace from both beginning and end of line
+                $tsql = trim($sql_line);
 
-                    // if line content is not empty and is the line does not represent a comment
-                    if ($tsql != '' && substr($tsql, 0, 2) != '--' && substr($tsql, 0, 1) != '#') {
+                // if line content is not empty and is the line does not represent a comment
+                if ($tsql != '' && substr($tsql, 0, 2) != '--' && substr($tsql, 0, 1) != '#') {
 
-                        // add to query string
-                        $query .= $sql_line;
+                    // add to query string
+                    $query .= $sql_line;
 
-                        // if line ends with ';'
-                        if (preg_match('/;\s*$/', $sql_line)) {
+                    // if line ends with ';'
+                    if (preg_match('/;\s*$/', $sql_line)) {
 
-                            // run the query
-                            $this->query($query);
+                        // run the query
+                        $this->query($query);
 
-                            // empties the query string
-                            $query = '';
-
-                        }
+                        // empties the query string
+                        $query = '';
 
                     }
 
                 }
 
-                return true;
-
             }
 
-            // if file could not be opened
-            // save debug info
-            return $this->_log('errors', array(
-
-                'message'   =>  $this->language['file_could_not_be_opened'],
-
-            ));
+            return true;
 
         }
 
-        // we don't have to report any error as _connected() method already did or checking for file returned FALSE
-        return false;
+        // if file could not be opened
+        // save debug info
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['file_could_not_be_opened'],
+
+        ));
+
 
     }
 
@@ -2535,524 +2487,519 @@ class Zebra_Database {
      */
     public function query($sql, $replacements = '', $cache = false, $calc_rows = false, $highlight= false) {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            unset($this->affected_rows);
+        unset($this->affected_rows);
 
-            // if $replacements is specified but it's not an array
-            if ($replacements != '' && !is_array($replacements))
+        // if $replacements is specified but it's not an array
+        if ($replacements != '' && !is_array($replacements))
 
-                // save debug information
-                return $this->_log('unsuccessful-queries',  array(
-
-                    'query' =>  $sql,
-                    'error' =>  $this->language['warning_replacements_not_array']
-
-                ));
-
-            // if $replacements is specified and is an array
-            if ($replacements != '' && is_array($replacements) && !empty($replacements)) {
-
-                // found how many items to replace are there in the query string
-                preg_match_all('/\?/', $sql, $matches, PREG_OFFSET_CAPTURE);
-
-                // if the number of items to replace is different than the number of items specified in $replacements
-                if (!empty($matches[0]) && count($matches[0]) != count($replacements))
-
-                    // save debug information
-                    return $this->_log('unsuccessful-queries', array(
-
-                        'query' => $sql,
-                        'error' => $this->language['warning_replacements_wrong_number']
-
-                    ));
-
-                // if the number of items to replace is the same as the number of items specified in $replacements
-                // make preparations for the replacement
-                $pattern1 = $pattern2 = $replacements1 = $replacements2 = array();
-
-                // prepare parameter markers for replacement
-                foreach ($matches[0] as $match) $pattern1[] = '/\\' . $match[0] . '/';
-
-                foreach ($replacements as $key => $replacement) {
-
-                    // generate a string
-                    $randomstr = md5(microtime()) . $key;
-
-                    // prepare the replacements for the parameter markers
-                    $replacements1[] = $randomstr;
-
-                    // if the replacement is NULL, leave it like it is
-                    if ($replacement === NULL) $replacements2[$key] = 'NULL';
-
-                    // if the replacement is an array, implode and escape it for use in WHERE ? IN ? statement
-                    elseif (is_array($replacement)) $replacements2[$key] = preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->implode($replacement));
-
-                    // otherwise, mysqli_real_escape_string the items in replacements
-                    // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
-                    // it as references
-                    else $replacements2[$key] = '\'' . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->escape($replacement)) . '\'';
-
-                    // and also, prepare the new pattern to be replaced afterwards
-                    $pattern2[$key] = '/' . $randomstr . '/';
-
-                }
-
-                // replace each question mark with something new
-                // (we do this intermediary step so that we can actually have question marks in the replacements)
-                $sql = preg_replace($pattern1, $replacements1, $sql, 1);
-
-                // perform the actual replacement
-                $sql = preg_replace($pattern2, $replacements2, $sql, 1);
-
-            }
-
-            // unbuffered queries cannot be cached
-            if ($this->unbuffered && $cache) {
-
-                // save debug information
-                $this->_log('errors', array(
-
-                    'query'     =>  $sql,
-                    'message'   =>  $this->language['unbuffered_queries_cannot_be_cached'],
-
-                ), false);
-
-                // set this flag to false
-                $cache = false;
-
-            }
-
-            // for unbuffered queries we cannot get the total number of records
-            if ($this->unbuffered && $calc_rows) {
-
-                // save debug information
-                $this->_log('errors', array(
-
-                    'query'     =>  $sql,
-                    'message'   =>  $this->language['unbuffered_queries_no_total_records'],
-
-                ), false);
-
-                // set this flag to false
-                $calc_rows = false;
-
-            }
-
-            // $calc_rows is TRUE, we have a SELECT query and the SQL_CALC_FOUND_ROWS string is not in it
-            // (we do this trick to get the numbers of records that would've been returned if there was no LIMIT applied)
-            if ($calc_rows && strpos($sql, 'SQL_CALC_FOUND_ROWS') === false)
-
-                // add the 'SQL_CALC_FOUND_ROWS' parameter to the query
-                $sql = preg_replace('/^(.*?)SELECT/is', '$1SELECT SQL_CALC_FOUND_ROWS', $sql, 1);
-
-            if (isset($this->last_result)) unset($this->last_result);
-
-            // starts a timer
-            list($usec, $sec) = explode(' ', microtime());
-
-            $start_timer = (float)$usec + (float)$sec;
-
-            $refreshed_cache = 'nocache';
-
-            // if we need to look for a cached version of the query's results
-            if ($cache !== false && (int)$cache > 0) {
-
-                // by default, we assume that the cache exists and is not expired
-                $refreshed_cache = false;
-
-                // if caching method is "memcache"
-                if ($this->caching_method == 'memcache') {
-
-                    // the key to identify this particular information (prefix it if required)
-                    $memcache_key = md5($this->memcache_key_prefix . $sql);
-
-                    // if there is a cached version of what we're looking for, and data is valid
-                    if (($result = $this->memcache->get($memcache_key)) && $cached_result = @unserialize(gzuncompress(base64_decode($result)))) {
-
-                        // put results in the right place
-                        // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
-                        $this->cached_results[] = $cached_result;
-
-                        // assign to the last_result property the pointer to the position where the array was added
-                        $this->last_result = count($this->cached_results) - 1;
-
-                        // reset the pointer of the array
-                        reset($this->cached_results[$this->last_result]);
-
-                    }
-
-                // if caching method is "session"
-                } elseif ($this->caching_method == 'session') {
-
-                    // unique identifier of the current query
-                    $key = md5($sql);
-
-                    // if a cached version of this query's result already exists and it is not expired
-                    if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && $_SESSION[$key . '_timestamp'] + $cache > time() && $cached_result = @unserialize(gzuncompress(base64_decode($_SESSION[$key])))) {
-
-                        // put results in the right place
-                        // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
-                        $this->cached_results[] = $cached_result;
-
-                        // assign to the last_result property the pointer to the position where the array was added
-                        $this->last_result = count($this->cached_results) - 1;
-
-                        // reset the pointer of the array
-                        reset($this->cached_results[$this->last_result]);
-
-                    }
-
-                // if caching method is "disk"
-                } else
-
-                    // if cache folder exists and is writable
-                    if (file_exists($this->cache_path) && is_dir($this->cache_path) && is_writable($this->cache_path)) {
-
-                        // the cache file's name
-                        $file_name = rtrim($this->cache_path, '/') . '/' . md5($sql);
-
-                        // if a cached version of this query's result already exists and it is not expired
-                        if (file_exists($file_name) && filemtime($file_name) + $cache > time())
-
-                            // if cache file is valid
-                            if ($cached_result = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name))))) {
-
-                                // put results in the right place
-                                // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
-                                $this->cached_results[] = $cached_result;
-
-                                // assign to the last_result property the pointer to the position where the array was added
-                                $this->last_result = count($this->cached_results) - 1;
-
-                                // reset the pointer of the array
-                                reset($this->cached_results[$this->last_result]);
-
-                            }
-
-                    // if folder doesn't exist
-                    } else
-
-                        // save debug information
-                        return $this->_log('errors', array(
-
-                            'message'   =>  $this->language['cache_path_not_writable'],
-
-                        ), false);
-
-            }
-
-            // if query was not read from the cache
-            if (!isset($this->last_result)) {
-
-                // run the query
-                $this->last_result = @mysqli_query($this->connection, $sql, $this->unbuffered ? MYSQLI_USE_RESULT : MYSQLI_STORE_RESULT);
-
-                // if no test transaction, query was unsuccessful and a transaction is in progress
-                if ($this->transaction_status !== 3 && !$this->last_result && $this->transaction_status !== 0)
-
-                    // set transaction_status to 2 so that the transaction_commit know that it has to rollback
-                    $this->transaction_status = 2;
-
-            }
-
-            // stops timer
-            list($usec, $sec) = explode(' ', microtime());
-
-            $stop_timer = (float)$usec + (float)$sec;
-
-            // add the execution time to the total execution time
-            // (we will use this in the debugging console)
-            $this->total_execution_time += $stop_timer - $start_timer;
-
-            // if
-            if (
-
-                // notification address and notifier domain are set
-                !empty($this->notification_address) &&
-                !empty($this->notifier_domain) &&
-
-                // and execution time exceeds max_query_time
-                ($stop_timer - $start_timer > $this->max_query_time)
-
-            )
-
-                // then send a notification mail
-                @mail(
-                    $this->notification_address,
-                    sprintf($this->language['email_subject'], $this->notifier_domain),
-                    sprintf($this->language['email_content'], $this->max_query_time, $stop_timer - $start_timer, $sql),
-                    'From: ' . $this->notifier_domain
-                );
-
-            // if the query was successfully executed
-            if ($this->last_result !== false) {
-
-                // if query's result was not read from cache (meaning $this->last_result is a result resource or boolean
-                // TRUE - as queries like UPDATE, DELETE, DROP return boolean TRUE on success rather than a result resource)
-                if ($this->_is_result($this->last_result) || $this->last_result === true) {
-
-                    // by default, consider this not to be a SELECT query
-                    $is_select = false;
-
-                    // if returned resource is a valid resource, consider query to be a SELECT query
-                    if ($this->_is_result($this->last_result)) $is_select = true;
-
-                    // reset these values for each query
-                    $this->returned_rows = $this->found_rows = 0;
-
-                    // if query was a SELECT query
-                    if ($is_select) {
-
-                        // for unbuffered queries
-                        if (!$this->unbuffered)
-
-                            // the returned_rows property holds the number of records returned by a SELECT query
-                            $this->returned_rows = $this->found_rows = @mysqli_num_rows($this->last_result);
-
-                        // if we need the number of rows that would have been returned if there was no LIMIT
-                        if ($calc_rows) {
-
-                            // get the number of records that would've been returned if there was no LIMIT
-                            $found_rows = mysqli_fetch_assoc(mysqli_query($this->connection, 'SELECT FOUND_ROWS()'));
-
-                            $this->found_rows = $found_rows['FOUND_ROWS()'];
-
-                        }
-
-                    // if query was an action query, the affected_rows property holds the number of affected rows by
-                    // action queries (DELETE, INSERT, UPDATE)
-                    } else $this->affected_rows = @mysqli_affected_rows($this->connection);
-
-                    // if query's results need to be cached
-                    if ($is_select && $cache !== false && (int)$cache > 0) {
-
-                        // flag that we have refreshed the cache
-                        $refreshed_cache = true;
-
-                        $cache_data = array();
-
-                        // iterate though the query's records and save the results in a temporary variable
-                        while ($row = mysqli_fetch_assoc($this->last_result)) $cache_data[] = $row;
-
-                        // if there were any records fetched, resets the internal pointer of the result resource
-                        if (!empty($cache_data)) $this->seek(0, $this->last_result);
-
-                        // we'll also be saving the found_rows, returned_rows and columns information
-                        array_push($cache_data, array(
-
-                            'returned_rows' =>  $this->returned_rows,
-                            'found_rows'    =>  $this->found_rows,
-                            'column_info'   =>  $this->get_columns(),
-
-                        ));
-
-                        // the content to be cached
-                        $content = base64_encode(gzcompress(serialize($cache_data)));
-
-                        // if caching method is "memcache"
-                        if ($this->caching_method == 'memcache')
-
-                            // cache query data
-                            $this->memcache->set($memcache_key, $content, ($this->memcache_compressed ? MEMCACHE_COMPRESSED : false), $cache);
-
-                        // if caching method is "session"
-                        elseif ($this->caching_method == 'session') {
-
-                            // if there seems to be no active session
-                            if (!isset($_SESSION))
-
-                                // save debug information
-                                return $this->_log('errors', array(
-
-                                    'message'   =>  $this->language['no_active_session'],
-
-                                ));
-
-                            // the unique identifier for the current query
-                            $key = md5($sql);
-
-                            // cache query data in current session
-                            $_SESSION[$key] = $content;
-
-                            // save also the current timestamp
-                            $_SESSION[$key . '_timestamp'] = time();
-
-                        // if caching method is "disk" and cached folder was found and is writable
-                        } elseif (isset($file_name)) {
-
-                            // deletes (if exists) the previous cache file
-                            @unlink($file_name);
-
-                            // creates the new cache file
-                            $handle = fopen($file_name, 'wb');
-
-                            // saves the query's result in it
-                            fwrite($handle, $content);
-
-                            // and close the file
-                            fclose($handle);
-
-                        }
-
-                    }
-
-                // if query was read from cache
-                } else {
-
-                    // if read from cache this must be a SELECT query
-                    $is_select = true;
-
-                    // the last entry in the cache file contains the returned_rows, found_rows and column_info properties
-                    // we need to take them off the array
-                    $counts = array_pop($this->cached_results[$this->last_result]);
-
-                    // set extract these properties from the values in the cached file
-                    $this->returned_rows    = $counts['returned_rows'];
-                    $this->found_rows       = $counts['found_rows'];
-                    $this->column_info      = $counts['column_info'];
-
-                }
-
-                // if debugging is on
-                if ($this->debug !== false) {
-
-                    $warning = '';
-
-                    $result = array();
-
-                    // if rows were returned
-                    if ($is_select) {
-
-                        $row_counter = 0;
-
-                        // if there are any number of rows to be shown
-                        if ($this->debug_show_records) {
-
-                            // put the first rows, as defined by debug_show_records, in an array to show them in the
-                            // debugging console
-                            // if query was not read from cache
-                            if ($this->_is_result($this->last_result)) {
-
-                                // if there are any rows
-                                if  (!$this->unbuffered && mysqli_num_rows($this->last_result)) {
-
-                                    // iterate through the records until we displayed enough records
-                                    while ($row_counter++ < $this->debug_show_records && $row = mysqli_fetch_assoc($this->last_result))
-
-                                        $result[] = $row;
-
-                                    // reset the pointer in the result afterwards
-                                    // we have to mute error reporting because if the result set is empty (mysqli_num_rows() == 0),
-                                    // a seek to 0 will fail with a E_WARNING!
-                                    mysqli_data_seek($this->last_result, 0);
-
-                                }
-
-                            // if query was read from the cache and there are any records
-                            // put the first rows, as defined by debug_show_records, in an array to show them in the
-                            // debugging console
-                            } else if (!empty($this->cached_results[$this->last_result])) $result = array_slice($this->cached_results[$this->last_result], 0, $this->debug_show_records);
-
-                        }
-
-                        // if there were queries run already
-                        if (isset($this->debug_info['successful-queries'])) {
-
-                            $keys = array();
-
-                            // iterate through the run queries
-                            // to find out if this query was already run
-                            foreach ($this->debug_info['successful-queries'] as $key=>$query_data)
-
-                                // if this query was run before
-                                if (
-
-                                    isset($query_data['records']) &&
-
-                                    !empty($query_data['records']) &&
-
-                                    $query_data['records'] == $result
-
-                                // save the pointer to the query in an array
-                                ) $keys[] = $key;
-
-                            // if the query was run before
-                            if (!empty($keys))
-
-                                // issue a warning for all the queries that were found to be the same as the current one
-                                // iterate through the queries that are the same
-                                foreach ($keys as $key) {
-
-                                    // we create the variable as we will also use it later when adding the
-                                    // debug information for this query
-                                    $warning = sprintf($this->language['optimization_needed'], count($keys));
-
-                                    // add the warning to the query's debug information
-                                    $this->debug_info['successful-queries'][$key]['warning'] = $warning;
-
-                                }
-
-                        }
-
-                        // if it's a SELECT query and query is not read from cache...
-                        if ($this->debug_show_explain && $is_select && $this->_is_result($this->last_result)) {
-
-                            // ask the MySQL to EXPLAIN the query
-                            $explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql);
-
-                            // if query returned a result
-                            // (as some queries cannot be EXPLAIN-ed like SHOW TABLE, DESCRIBE, etc)
-                            if ($explain_resource)
-
-                                // put all the records returned by the explain query in an array
-                                while ($row = mysqli_fetch_assoc($explain_resource)) $explain[] = $row;
-
-                        }
-
-                    }
-
-                    // save debug information
-                    $this->_log('successful-queries', array(
-
-                        'query'         =>  $sql,
-                        'records'       =>  $result,
-                        'returned_rows' =>  $this->returned_rows,
-                        'explain'       =>  (isset($explain) ? $explain : ''),
-                        'affected_rows' =>  (isset($this->affected_rows) ? $this->affected_rows : false),
-                        'execution_time'=>  $stop_timer - $start_timer,
-                        'warning'       =>  $warning,
-                        'highlight'     =>  $highlight,
-                        'from_cache'    =>  $refreshed_cache,
-                        'unbuffered'    =>  $this->unbuffered,
-                        'transaction'   =>  ($this->transaction_status !== 0 ? true : false),
-
-                    ), false);
-
-                    // if at least one query is to be highlighted, set the "minimize_console" property to FALSE
-                    if ($highlight) $this->minimize_console = false;
-
-                }
-
-                // return result resource
-                return $this->last_result;
-
-            }
-
-            // in case of error
             // save debug information
-            return $this->_log('unsuccessful-queries', array(
+            return $this->_log('unsuccessful-queries',  array(
 
-                'query'     =>  $sql,
-                'error'     =>  mysqli_error($this->connection)
+                'query' =>  $sql,
+                'error' =>  $this->language['warning_replacements_not_array']
 
             ));
 
+        // if $replacements is specified and is an array
+        if ($replacements != '' && is_array($replacements) && !empty($replacements)) {
+
+            // found how many items to replace are there in the query string
+            preg_match_all('/\?/', $sql, $matches, PREG_OFFSET_CAPTURE);
+
+            // if the number of items to replace is different than the number of items specified in $replacements
+            if (!empty($matches[0]) && count($matches[0]) != count($replacements))
+
+                // save debug information
+                return $this->_log('unsuccessful-queries', array(
+
+                    'query' => $sql,
+                    'error' => $this->language['warning_replacements_wrong_number']
+
+                ));
+
+            // if the number of items to replace is the same as the number of items specified in $replacements
+            // make preparations for the replacement
+            $pattern1 = $pattern2 = $replacements1 = $replacements2 = array();
+
+            // prepare parameter markers for replacement
+            foreach ($matches[0] as $match) $pattern1[] = '/\\' . $match[0] . '/';
+
+            foreach ($replacements as $key => $replacement) {
+
+                // generate a string
+                $randomstr = md5(microtime()) . $key;
+
+                // prepare the replacements for the parameter markers
+                $replacements1[] = $randomstr;
+
+                // if the replacement is NULL, leave it like it is
+                if ($replacement === NULL) $replacements2[$key] = 'NULL';
+
+                // if the replacement is an array, implode and escape it for use in WHERE ? IN ? statement
+                elseif (is_array($replacement)) $replacements2[$key] = preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->implode($replacement));
+
+                // otherwise, mysqli_real_escape_string the items in replacements
+                // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
+                // it as references
+                else $replacements2[$key] = '\'' . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->escape($replacement)) . '\'';
+
+                // and also, prepare the new pattern to be replaced afterwards
+                $pattern2[$key] = '/' . $randomstr . '/';
+
+            }
+
+            // replace each question mark with something new
+            // (we do this intermediary step so that we can actually have question marks in the replacements)
+            $sql = preg_replace($pattern1, $replacements1, $sql, 1);
+
+            // perform the actual replacement
+            $sql = preg_replace($pattern2, $replacements2, $sql, 1);
+
         }
 
-        // we don't have to report any error as _connected() method already did or any of the previous checks
-        return false;
+        // unbuffered queries cannot be cached
+        if ($this->unbuffered && $cache) {
+
+            // save debug information
+            $this->_log('errors', array(
+
+                'query'     =>  $sql,
+                'message'   =>  $this->language['unbuffered_queries_cannot_be_cached'],
+
+            ), false);
+
+            // set this flag to false
+            $cache = false;
+
+        }
+
+        // for unbuffered queries we cannot get the total number of records
+        if ($this->unbuffered && $calc_rows) {
+
+            // save debug information
+            $this->_log('errors', array(
+
+                'query'     =>  $sql,
+                'message'   =>  $this->language['unbuffered_queries_no_total_records'],
+
+            ), false);
+
+            // set this flag to false
+            $calc_rows = false;
+
+        }
+
+        // $calc_rows is TRUE, we have a SELECT query and the SQL_CALC_FOUND_ROWS string is not in it
+        // (we do this trick to get the numbers of records that would've been returned if there was no LIMIT applied)
+        if ($calc_rows && strpos($sql, 'SQL_CALC_FOUND_ROWS') === false)
+
+            // add the 'SQL_CALC_FOUND_ROWS' parameter to the query
+            $sql = preg_replace('/^(.*?)SELECT/is', '$1SELECT SQL_CALC_FOUND_ROWS', $sql, 1);
+
+        if (isset($this->last_result)) unset($this->last_result);
+
+        // starts a timer
+        list($usec, $sec) = explode(' ', microtime());
+
+        $start_timer = (float)$usec + (float)$sec;
+
+        $refreshed_cache = 'nocache';
+
+        // if we need to look for a cached version of the query's results
+        if ($cache !== false && (int)$cache > 0) {
+
+            // by default, we assume that the cache exists and is not expired
+            $refreshed_cache = false;
+
+            // if caching method is "memcache"
+            if ($this->caching_method == 'memcache') {
+
+                // the key to identify this particular information (prefix it if required)
+                $memcache_key = md5($this->memcache_key_prefix . $sql);
+
+                // if there is a cached version of what we're looking for, and data is valid
+                if (($result = $this->memcache->get($memcache_key)) && $cached_result = @unserialize(gzuncompress(base64_decode($result)))) {
+
+                    // put results in the right place
+                    // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
+                    $this->cached_results[] = $cached_result;
+
+                    // assign to the last_result property the pointer to the position where the array was added
+                    $this->last_result = count($this->cached_results) - 1;
+
+                    // reset the pointer of the array
+                    reset($this->cached_results[$this->last_result]);
+
+                }
+
+            // if caching method is "session"
+            } elseif ($this->caching_method == 'session') {
+
+                // unique identifier of the current query
+                $key = md5($sql);
+
+                // if a cached version of this query's result already exists and it is not expired
+                if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && $_SESSION[$key . '_timestamp'] + $cache > time() && $cached_result = @unserialize(gzuncompress(base64_decode($_SESSION[$key])))) {
+
+                    // put results in the right place
+                    // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
+                    $this->cached_results[] = $cached_result;
+
+                    // assign to the last_result property the pointer to the position where the array was added
+                    $this->last_result = count($this->cached_results) - 1;
+
+                    // reset the pointer of the array
+                    reset($this->cached_results[$this->last_result]);
+
+                }
+
+            // if caching method is "disk"
+            } else
+
+                // if cache folder exists and is writable
+                if (file_exists($this->cache_path) && is_dir($this->cache_path) && is_writable($this->cache_path)) {
+
+                    // the cache file's name
+                    $file_name = rtrim($this->cache_path, '/') . '/' . md5($sql);
+
+                    // if a cached version of this query's result already exists and it is not expired
+                    if (file_exists($file_name) && filemtime($file_name) + $cache > time())
+
+                        // if cache file is valid
+                        if ($cached_result = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name))))) {
+
+                            // put results in the right place
+                            // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
+                            $this->cached_results[] = $cached_result;
+
+                            // assign to the last_result property the pointer to the position where the array was added
+                            $this->last_result = count($this->cached_results) - 1;
+
+                            // reset the pointer of the array
+                            reset($this->cached_results[$this->last_result]);
+
+                        }
+
+                // if folder doesn't exist
+                } else
+
+                    // save debug information
+                    return $this->_log('errors', array(
+
+                        'message'   =>  $this->language['cache_path_not_writable'],
+
+                    ), false);
+
+        }
+
+        // if query was not read from the cache
+        if (!isset($this->last_result)) {
+
+            // run the query
+            $this->last_result = @mysqli_query($this->connection, $sql, $this->unbuffered ? MYSQLI_USE_RESULT : MYSQLI_STORE_RESULT);
+
+            // if no test transaction, query was unsuccessful and a transaction is in progress
+            if ($this->transaction_status !== 3 && !$this->last_result && $this->transaction_status !== 0)
+
+                // set transaction_status to 2 so that the transaction_commit know that it has to rollback
+                $this->transaction_status = 2;
+
+        }
+
+        // stops timer
+        list($usec, $sec) = explode(' ', microtime());
+
+        $stop_timer = (float)$usec + (float)$sec;
+
+        // add the execution time to the total execution time
+        // (we will use this in the debugging console)
+        $this->total_execution_time += $stop_timer - $start_timer;
+
+        // if
+        if (
+
+            // notification address and notifier domain are set
+            !empty($this->notification_address) &&
+            !empty($this->notifier_domain) &&
+
+            // and execution time exceeds max_query_time
+            ($stop_timer - $start_timer > $this->max_query_time)
+
+        )
+
+            // then send a notification mail
+            @mail(
+                $this->notification_address,
+                sprintf($this->language['email_subject'], $this->notifier_domain),
+                sprintf($this->language['email_content'], $this->max_query_time, $stop_timer - $start_timer, $sql),
+                'From: ' . $this->notifier_domain
+            );
+
+        // if the query was successfully executed
+        if ($this->last_result !== false) {
+
+            // if query's result was not read from cache (meaning $this->last_result is a result resource or boolean
+            // TRUE - as queries like UPDATE, DELETE, DROP return boolean TRUE on success rather than a result resource)
+            if ($this->_is_result($this->last_result) || $this->last_result === true) {
+
+                // by default, consider this not to be a SELECT query
+                $is_select = false;
+
+                // if returned resource is a valid resource, consider query to be a SELECT query
+                if ($this->_is_result($this->last_result)) $is_select = true;
+
+                // reset these values for each query
+                $this->returned_rows = $this->found_rows = 0;
+
+                // if query was a SELECT query
+                if ($is_select) {
+
+                    // for unbuffered queries
+                    if (!$this->unbuffered)
+
+                        // the returned_rows property holds the number of records returned by a SELECT query
+                        $this->returned_rows = $this->found_rows = @mysqli_num_rows($this->last_result);
+
+                    // if we need the number of rows that would have been returned if there was no LIMIT
+                    if ($calc_rows) {
+
+                        // get the number of records that would've been returned if there was no LIMIT
+                        $found_rows = mysqli_fetch_assoc(mysqli_query($this->connection, 'SELECT FOUND_ROWS()'));
+
+                        $this->found_rows = $found_rows['FOUND_ROWS()'];
+
+                    }
+
+                // if query was an action query, the affected_rows property holds the number of affected rows by
+                // action queries (DELETE, INSERT, UPDATE)
+                } else $this->affected_rows = @mysqli_affected_rows($this->connection);
+
+                // if query's results need to be cached
+                if ($is_select && $cache !== false && (int)$cache > 0) {
+
+                    // flag that we have refreshed the cache
+                    $refreshed_cache = true;
+
+                    $cache_data = array();
+
+                    // iterate though the query's records and save the results in a temporary variable
+                    while ($row = mysqli_fetch_assoc($this->last_result)) $cache_data[] = $row;
+
+                    // if there were any records fetched, resets the internal pointer of the result resource
+                    if (!empty($cache_data)) $this->seek(0, $this->last_result);
+
+                    // we'll also be saving the found_rows, returned_rows and columns information
+                    array_push($cache_data, array(
+
+                        'returned_rows' =>  $this->returned_rows,
+                        'found_rows'    =>  $this->found_rows,
+                        'column_info'   =>  $this->get_columns(),
+
+                    ));
+
+                    // the content to be cached
+                    $content = base64_encode(gzcompress(serialize($cache_data)));
+
+                    // if caching method is "memcache"
+                    if ($this->caching_method == 'memcache')
+
+                        // cache query data
+                        $this->memcache->set($memcache_key, $content, ($this->memcache_compressed ? MEMCACHE_COMPRESSED : false), $cache);
+
+                    // if caching method is "session"
+                    elseif ($this->caching_method == 'session') {
+
+                        // if there seems to be no active session
+                        if (!isset($_SESSION))
+
+                            // save debug information
+                            return $this->_log('errors', array(
+
+                                'message'   =>  $this->language['no_active_session'],
+
+                            ));
+
+                        // the unique identifier for the current query
+                        $key = md5($sql);
+
+                        // cache query data in current session
+                        $_SESSION[$key] = $content;
+
+                        // save also the current timestamp
+                        $_SESSION[$key . '_timestamp'] = time();
+
+                    // if caching method is "disk" and cached folder was found and is writable
+                    } elseif (isset($file_name)) {
+
+                        // deletes (if exists) the previous cache file
+                        @unlink($file_name);
+
+                        // creates the new cache file
+                        $handle = fopen($file_name, 'wb');
+
+                        // saves the query's result in it
+                        fwrite($handle, $content);
+
+                        // and close the file
+                        fclose($handle);
+
+                    }
+
+                }
+
+            // if query was read from cache
+            } else {
+
+                // if read from cache this must be a SELECT query
+                $is_select = true;
+
+                // the last entry in the cache file contains the returned_rows, found_rows and column_info properties
+                // we need to take them off the array
+                $counts = array_pop($this->cached_results[$this->last_result]);
+
+                // set extract these properties from the values in the cached file
+                $this->returned_rows    = $counts['returned_rows'];
+                $this->found_rows       = $counts['found_rows'];
+                $this->column_info      = $counts['column_info'];
+
+            }
+
+            // if debugging is on
+            if ($this->debug !== false) {
+
+                $warning = '';
+
+                $result = array();
+
+                // if rows were returned
+                if ($is_select) {
+
+                    $row_counter = 0;
+
+                    // if there are any number of rows to be shown
+                    if ($this->debug_show_records) {
+
+                        // put the first rows, as defined by debug_show_records, in an array to show them in the
+                        // debugging console
+                        // if query was not read from cache
+                        if ($this->_is_result($this->last_result)) {
+
+                            // if there are any rows
+                            if  (!$this->unbuffered && mysqli_num_rows($this->last_result)) {
+
+                                // iterate through the records until we displayed enough records
+                                while ($row_counter++ < $this->debug_show_records && $row = mysqli_fetch_assoc($this->last_result))
+
+                                    $result[] = $row;
+
+                                // reset the pointer in the result afterwards
+                                // we have to mute error reporting because if the result set is empty (mysqli_num_rows() == 0),
+                                // a seek to 0 will fail with a E_WARNING!
+                                mysqli_data_seek($this->last_result, 0);
+
+                            }
+
+                        // if query was read from the cache and there are any records
+                        // put the first rows, as defined by debug_show_records, in an array to show them in the
+                        // debugging console
+                        } else if (!empty($this->cached_results[$this->last_result])) $result = array_slice($this->cached_results[$this->last_result], 0, $this->debug_show_records);
+
+                    }
+
+                    // if there were queries run already
+                    if (isset($this->debug_info['successful-queries'])) {
+
+                        $keys = array();
+
+                        // iterate through the run queries
+                        // to find out if this query was already run
+                        foreach ($this->debug_info['successful-queries'] as $key=>$query_data)
+
+                            // if this query was run before
+                            if (
+
+                                isset($query_data['records']) &&
+
+                                !empty($query_data['records']) &&
+
+                                $query_data['records'] == $result
+
+                            // save the pointer to the query in an array
+                            ) $keys[] = $key;
+
+                        // if the query was run before
+                        if (!empty($keys))
+
+                            // issue a warning for all the queries that were found to be the same as the current one
+                            // iterate through the queries that are the same
+                            foreach ($keys as $key) {
+
+                                // we create the variable as we will also use it later when adding the
+                                // debug information for this query
+                                $warning = sprintf($this->language['optimization_needed'], count($keys));
+
+                                // add the warning to the query's debug information
+                                $this->debug_info['successful-queries'][$key]['warning'] = $warning;
+
+                            }
+
+                    }
+
+                    // if it's a SELECT query and query is not read from cache...
+                    if ($this->debug_show_explain && $is_select && $this->_is_result($this->last_result)) {
+
+                        // ask the MySQL to EXPLAIN the query
+                        $explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql);
+
+                        // if query returned a result
+                        // (as some queries cannot be EXPLAIN-ed like SHOW TABLE, DESCRIBE, etc)
+                        if ($explain_resource)
+
+                            // put all the records returned by the explain query in an array
+                            while ($row = mysqli_fetch_assoc($explain_resource)) $explain[] = $row;
+
+                    }
+
+                }
+
+                // save debug information
+                $this->_log('successful-queries', array(
+
+                    'query'         =>  $sql,
+                    'records'       =>  $result,
+                    'returned_rows' =>  $this->returned_rows,
+                    'explain'       =>  (isset($explain) ? $explain : ''),
+                    'affected_rows' =>  (isset($this->affected_rows) ? $this->affected_rows : false),
+                    'execution_time'=>  $stop_timer - $start_timer,
+                    'warning'       =>  $warning,
+                    'highlight'     =>  $highlight,
+                    'from_cache'    =>  $refreshed_cache,
+                    'unbuffered'    =>  $this->unbuffered,
+                    'transaction'   =>  ($this->transaction_status !== 0 ? true : false),
+
+                ), false);
+
+                // if at least one query is to be highlighted, set the "minimize_console" property to FALSE
+                if ($highlight) $this->minimize_console = false;
+
+            }
+
+            // return result resource
+            return $this->last_result;
+
+        }
+
+        // in case of error
+        // save debug information
+        return $this->_log('unsuccessful-queries', array(
+
+            'query'     =>  $sql,
+            'error'     =>  mysqli_error($this->connection)
+
+        ));
 
     }
 
@@ -3102,81 +3049,76 @@ class Zebra_Database {
      */
     public function seek($row, $resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and there was a previous call to the "query" method, assign the last resource
-            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        // if no resource was specified, and there was a previous call to the "query" method, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            // check if given resource is valid
-            if ($this->_is_result($resource)) {
+        // check if given resource is valid
+        if ($this->_is_result($resource)) {
 
-                // if query was an unbuffered one
-                if ($resource->type == 1)
+            // if query was an unbuffered one
+            if ($resource->type == 1)
 
-                    // save debug information
-                    return $this->_log('errors', array(
+                // save debug information
+                return $this->_log('errors', array(
 
-                        'message'   => sprintf($this->language['unusable_method_unbuffered_queries'], substr(__METHOD__, strpos(__METHOD__, '::') + 2)),
+                    'message'   => sprintf($this->language['unusable_method_unbuffered_queries'], substr(__METHOD__, strpos(__METHOD__, '::') + 2)),
 
-                    ));
+                ));
 
-                // return the fetched row
-                if (mysqli_num_rows($resource) == 0 || mysqli_data_seek($resource, $row)) return true;
+            // return the fetched row
+            if (mysqli_num_rows($resource) == 0 || mysqli_data_seek($resource, $row)) return true;
 
-                // if error reporting was not supressed with @
-                elseif (error_reporting() != 0)
+            // if error reporting was not supressed with @
+            elseif (error_reporting() != 0)
 
-                    // save debug information
-                    return $this->_log('errors', array(
+                // save debug information
+                return $this->_log('errors', array(
 
-                        'message'   =>  $this->language['could_not_seek'],
+                    'message'   =>  $this->language['could_not_seek'],
 
-                    ));
+                ));
 
-            // if $resource is actually a pointer to an array taken from cache
-            } elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
+        // if $resource is actually a pointer to an array taken from cache
+        } elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
 
-                // move the pointer to the start of the array
-                reset($this->cached_results[$resource]);
+            // move the pointer to the start of the array
+            reset($this->cached_results[$resource]);
 
-                // if the pointer needs to be moved to the very first records then we don't need to do anything
-                // as by resetting the array we already have that
-                // simply return true
-                if ($row == 0) return true;
+            // if the pointer needs to be moved to the very first records then we don't need to do anything
+            // as by resetting the array we already have that
+            // simply return true
+            if ($row == 0) return true;
 
-                // if $row > 0
-                elseif ($row > 0) {
+            // if $row > 0
+            elseif ($row > 0) {
 
-                    // get the current info from the array and advance the pointer
-                    while (next($this->cached_results[$resource]))
+                // get the current info from the array and advance the pointer
+                while (next($this->cached_results[$resource]))
 
-                        // if we've found what we were looking for
-                        if ($row == key($this->cached_results[$resource])) return true;
+                    // if we've found what we were looking for
+                    if ($row == key($this->cached_results[$resource])) return true;
 
-                    // save debug information
-                    return $this->_log('errors', array(
+                // save debug information
+                return $this->_log('errors', array(
 
-                        'message'   =>  $this->language['could_not_seek'],
+                    'message'   =>  $this->language['could_not_seek'],
 
-                    ));
-
-                }
+                ));
 
             }
 
-            // if not a valid resource
-            // save debug information
-            return $this->_log('errors', array(
-
-                'message'   =>  $this->language['not_a_valid_resource'],
-
-            ));
-
         }
 
-        // we don't have to report any error as _connected() method already did or checking for valid resource failed
-        return false;
+        // if not a valid resource
+        // save debug information
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['not_a_valid_resource'],
+
+        ));
 
     }
 
@@ -3318,21 +3260,14 @@ class Zebra_Database {
      */
     public function select_database($database) {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // update the value in the credentials
-            $this->credentials['database'] = $database;
+        // update the value in the credentials
+        $this->credentials['database'] = $database;
 
-            // select the database
-            mysqli_select_db($this->connection, $database);
-
-        }
-
-        // upon error, we don't have to report anything as _connected() method already did
-        // just return FALSE
-        return false;
-
+        // select the database
+        mysqli_select_db($this->connection, $database);
 
     }
 
