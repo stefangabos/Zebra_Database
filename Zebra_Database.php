@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.5 (last revision: April 06, 2017)
+ *  @version    2.9.5 (last revision: April 07, 2017)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -826,7 +826,7 @@ class Zebra_Database {
         , $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result !== false && $this->returned_rows > 0) {
+        if (isset($this->last_result) && $this->last_result !== false && $this->returned_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
@@ -888,11 +888,8 @@ class Zebra_Database {
 
         , $replacements, false, false, $highlight);
 
-        // if query was successful
-        if ($this->last_result) return true;
-
-        // if query was unsuccessful
-        return false;
+        // return TRUE if query was successful, or FALSE if it wasn't
+        return isset($this->last_result) && $this->last_result !== false
 
     }
 
@@ -965,7 +962,7 @@ class Zebra_Database {
         ', $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result !== false && $this->returned_rows > 0) {
+        if (isset($this->last_result) && $this->last_result !== false && $this->returned_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
@@ -1049,7 +1046,7 @@ class Zebra_Database {
         , $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result !== false && $this->returned_rows > 0) {
+        if (isset($this->last_result) && $this->last_result !== false && $this->returned_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
@@ -1130,7 +1127,7 @@ class Zebra_Database {
         , $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result !== false && $this->found_rows > 0) {
+        if (isset($this->last_result) && $this->last_result !== false && $this->found_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
@@ -1262,7 +1259,7 @@ class Zebra_Database {
         if ($this->_connected()) {
 
             // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
             // if $resource is a valid resource, fetch and return next row from the result set
             if ($this->_is_result($resource)) return mysqli_fetch_assoc($resource);
@@ -1335,7 +1332,7 @@ class Zebra_Database {
         if ($this->_connected()) {
 
             // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
             if (
 
@@ -1415,7 +1412,7 @@ class Zebra_Database {
         if ($this->_connected()) {
 
             // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
             // if $resource is a valid resource, fetch and return next row from the result set
             if ($this->_is_result($resource)) return mysqli_fetch_object($resource);
@@ -1494,7 +1491,7 @@ class Zebra_Database {
         if ($this->_connected()) {
 
             // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
             if (
 
@@ -1562,7 +1559,7 @@ class Zebra_Database {
         if ($this->_connected()) {
 
             // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
             // if argument is a valid resource, free the result
             // (we mute it as it might have already been freed by a previous call to this method)
@@ -1616,7 +1613,7 @@ class Zebra_Database {
         if ($this->_connected()) {
 
             // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
             // if $resource is a valid resource
             if ($this->_is_result($resource)) {
@@ -1947,10 +1944,8 @@ class Zebra_Database {
 
         , array_values($columns), false, false, $highlight);
 
-        // return true if query was executed successfully
-        if ($this->last_result) return true;
-
-        return false;
+        // return TRUE if query was successful, or FALSE if it wasn't
+        return isset($this->last_result) && $this->last_result !== false;
 
     }
 
@@ -2073,7 +2068,7 @@ class Zebra_Database {
             $this->query($sql, '', false, false, $highlight);
 
             // return true if query was executed successfully
-            if ($this->last_result) return true;
+            return isset($this->last_result) && $this->last_result !== false;
 
         }
 
@@ -2097,7 +2092,7 @@ class Zebra_Database {
         if ($this->_connected()) {
 
             // if a query was run before, return the AUTO_INCREMENT value
-            if (isset($this->last_result)) return mysqli_insert_id($this->connection);
+            if (isset($this->last_result) && $this->last_result !== false) return mysqli_insert_id($this->connection);
 
             // if no query was run before
             // save debug information
@@ -2268,10 +2263,8 @@ class Zebra_Database {
 
         , array_merge(array_values($columns), array_values($update)), false, false, $highlight);
 
-        // return true if query was executed successfully
-        if ($this->last_result) return true;
-
-        return false;
+        // return TRUE if query was successful, or FALSE if it wasn't
+        return isset($this->last_result) && $this->last_result !== false;
 
     }
 
@@ -3086,7 +3079,7 @@ class Zebra_Database {
         if ($this->_connected()) {
 
             // if no resource was specified, and there was a previous call to the "query" method, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+            if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
             // check if given resource is valid
             if ($this->_is_result($resource)) {
@@ -3393,11 +3386,8 @@ class Zebra_Database {
             // set flag so that the query method will know that no transaction is in progress
             $this->transaction_status = 0;
 
-            // if query was successful
-            if ($this->last_result) return true;
-
-            // if query was unsuccessful
-            return false;
+            // return TRUE if query was successful, or FALSE if it wasn't
+            return isset($this->last_result) && $this->last_result !== false;
 
         }
 
@@ -3458,10 +3448,8 @@ class Zebra_Database {
             // try to start transaction
             $this->query($sql);
 
-            // returns TRUE, if query was executed successfully
-            if ($this->last_result) return true;
-
-            return false;
+            // return TRUE if query was successful, or FALSE if it wasn't
+            return isset($this->last_result) && $this->last_result !== false;
 
         }
 
@@ -3532,10 +3520,8 @@ class Zebra_Database {
 
         , '', false, false, $highlight);
 
-        // returns TRUE, if query was executed successfully
-        if ($this->last_result) return true;
-
-        return false;
+        // return TRUE if query was successful, or FALSE if it wasn't
+        return isset($this->last_result) && $this->last_result !== false;
 
     }
 
@@ -3672,10 +3658,8 @@ class Zebra_Database {
 
         , array_merge(array_values($columns), $replacements == '' ? array() : $replacements), false, false, $highlight);
 
-        // returns TRUE if query was executed successfully
-        if ($this->last_result) return true;
-
-        return false;
+        // return TRUE if query was successful, or FALSE if it wasn't
+        return isset($this->last_result) && $this->last_result !== false;
 
     }
 
