@@ -1717,29 +1717,41 @@ class Zebra_Database {
      *  Returns an associative array with a lot of useful information on all or specific tables only.
      *
      *  <code>
-     *  // return status information on tables having their name starting with "users"
+     *  // return status information on tables in the currently 
+     *  // selected database having their name starting with "users"
      *  $tables = get_table_status('users%');
      *  </code>
      *
-     *  @param  string  $pattern    (Optional) Instructs the method to return information only on tables whose name matches
-     *                              the given pattern.
+     *  @param  string  $table      (Optional) Table for which to return information for.
      *
-     *                              Can be a table name or a pattern with "%" as wildcard.
+     *                              <i>May also be given like databasename.tablename if a database was not explicitly
+     *                              selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                              calling this method.</i>
+     *
+     *                              % may be used as a wildcard in table's name to get information about all the tables
+     *                              matching the pattern.
+     *
+     *                              If not specified, information will be returned for all the tables in the currently
+     *                              selected database.
      *
      *  @since  1.1.2
      *
      *  @return array               Returns an associative array with a lot of useful information on all or specific
      *                              tables only.
      */
-    public function get_table_status($pattern = '') {
+    public function get_table_status($table = '') {
+
+        // if table argument contains the database name, extract it
+        if (strpos($table, '.') !== false) list($database, $table) = explode('.', $table, 2);
 
         // run the query
         $this->query('
             SHOW
             TABLE
             STATUS
-            ' . (trim($pattern) != '' ? 'LIKE ?' : '') . '
-        ', array($pattern));
+            ' . (isset($database) ? ' IN ' . $this->_escape($database) : '') . '
+            ' . (trim($table) != '' ? 'LIKE ?' : '') . '
+        ', array($table));
 
         // fetch and return data
         return $this->fetch_assoc_all('Name');
@@ -1747,23 +1759,28 @@ class Zebra_Database {
     }
 
     /**
-     *  Returns an array with all the tables in the current database.
+     *  Returns an array with all the tables in a database.
      *
      *  <code>
-     *  // get all tables from database
+     *  // get all tables from the currently selected database
      *  $tables = get_tables();
      *  </code>
+     *
+     *  @param  string  $database   (Optional) The name of the database from which to return the names of existing tables.
+     *
+     *                              If not specified, the tables from the currently selected database will be returned.
+     *
+     *                              <i>This option was added in 2.9.5</i>
      *
      *  @since  1.1.2
      *
      *  @return array   An array with all the tables in the current database.
      */
-    public function get_tables() {
+    public function get_tables($database = '') {
 
         // fetch all the tables in the database
         $result = $this->fetch_assoc_all('', $this->query('
-            SHOW TABLES
-        '));
+            SHOW TABLES' . ($database != '' ? ' IN ' . $this->_escape($database) : '')));
 
         $tables = array();
 
@@ -2279,24 +2296,40 @@ class Zebra_Database {
     }
 
     /**
-     *  Optimizes all tables that have overhead (unused, lost space)
+     *  Optimizes all tables that have overhead (unused, lost space) in a database.
      *
      *  <code>
-     *  // optimize all tables in the database
+     *  // optimize all tables in the currently selected database
      *  $db->optimize();
      *  </code>
+     *
+     *  @param  string  $table      (Optional) Table to optimize.
+     *
+     *                              <i>May also be given like databasename.tablename if a database was not explicitly
+     *                              selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                              calling this method.</i>
+     *
+     *                              % may be used as a wildcard in table's name to optimize only the tables matching the
+     *                              pattern.
+     *
+     *                              If not specified, all the tables in the currently selected database will be optimized.
+     *
+     *                              <i>This option was added in 2.9.5</i>
      *
      *  @since  1.1.2
      *
      *  @return void
      */
-    public function optimize() {
+    public function optimize($table = '') {
+
+        // if table argument contains the database name, extract it
+        if (strpos($table, '.') !== false) $database = substr($table, 0, strpos($table, '.'));
 
         // fetch information on all the tables in the database
-        $tables = $this->get_table_status();
+        $tables = $this->get_table_status($table);
 
         // iterate through the database's tables, and if it has overhead (unused, lost space), optimize it
-        foreach ($tables as $table) if ($table['Data_free'] > 0) $this->query('OPTIMIZE TABLE ' . $this->_escape($table['Name']));
+        foreach ($tables as $table) $this->query('OPTIMIZE TABLE ' . (isset($database) ? $this->_escape($database) . '.' : '') . $this->_escape($table['Name']));
 
     }
 
