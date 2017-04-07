@@ -1283,7 +1283,7 @@ class Zebra_Database {
 
             // if $resource is invalid
             // save debug information
-            $this->_log('errors', array(
+            return $this->_log('errors', array(
 
                 'message'   =>  $this->language['not_a_valid_resource'],
 
@@ -1367,7 +1367,7 @@ class Zebra_Database {
 
             // if $resource is invalid
             // save debug information
-            $this->_log('errors', array(
+            return $this->_log('errors', array(
 
                 'message'   =>  $this->language['not_a_valid_resource'],
 
@@ -1442,7 +1442,7 @@ class Zebra_Database {
 
             // if $resource is invalid
             // save debug information
-            $this->_log('errors', array(
+            return $this->_log('errors', array(
 
                 'message'   =>  $this->language['not_a_valid_resource'],
 
@@ -1526,7 +1526,7 @@ class Zebra_Database {
 
             // if $resource is invalid
             // save debug information
-            $this->_log('errors', array(
+            return $this->_log('errors', array(
 
                 'message'   =>  $this->language['not_a_valid_resource'],
 
@@ -1636,7 +1636,7 @@ class Zebra_Database {
 
             // if $resource is invalid
             // save debug information
-            $this->_log('errors', array(
+            return $this->_log('errors', array(
 
                 'message'   =>  $this->language['not_a_valid_resource'],
 
@@ -2025,55 +2025,47 @@ class Zebra_Database {
         if (!is_array(array_pop($values)))
 
             // save debug information
-            $this->_log('errors', array(
+            return $this->_log('errors', array(
 
                 'message'   =>  $this->language['data_not_an_array'],
 
             ));
 
-        // if arguments are ok
-        else {
+        // start preparing the INSERT statement
+        $sql = '
+            INSERT' . ($ignore ? ' IGNORE' : '') . ' INTO
+                ' . $this->_escape($table) . '
+                (' . '`' . implode('`,`', $columns) . '`' . ')
+            VALUES
+        ';
 
-            // start preparing the INSERT statement
-            $sql = '
-                INSERT' . ($ignore ? ' IGNORE' : '') . ' INTO
-                    ' . $this->_escape($table) . '
-                    (' . '`' . implode('`,`', $columns) . '`' . ')
-                VALUES
-            ';
+        $sql_values = $value_set = '';
 
-            $sql_values = $value_set = '';
+        // iterate through the value sets
+        foreach ($data as $values) {
 
-            // iterate through the value sets
-            foreach ($data as $values) {
+            $sql_values .= ($sql_values != '' ? ', ' : '') . '(';
 
-                $sql_values .= ($sql_values != '' ? ', ' : '') . '(';
+            $value_set = '';
 
-                $value_set = '';
+            // for each value in set
+            foreach ($values as $value)
 
-                // for each value in set
-                foreach ($values as $value)
+                // if it represents one or more MySQL functions, do not enclose it in quotes, or do otherwise
+                $value_set .= ($value_set != '' ? ', ' : '') . ($this->_is_mysql_function($value) ? $value : '"' . $this->escape($value) . '"');
 
-                    // if it represents one or more MySQL functions, do not enclose it in quotes, or do otherwise
-                    $value_set .= ($value_set != '' ? ', ' : '') . ($this->_is_mysql_function($value) ? $value : '"' . $this->escape($value) . '"');
-
-                $sql_values .= $value_set . ')';
-
-            }
-
-            // append the value sets to the query
-            $sql .= $sql_values;
-
-            // run the query
-            $this->query($sql, '', false, false, $highlight);
-
-            // return true if query was executed successfully
-            return isset($this->last_result) && $this->last_result !== false;
+            $sql_values .= $value_set . ')';
 
         }
 
-        // if script gets this far, return false as something must've been wrong
-        return false;
+        // append the value sets to the query
+        $sql .= $sql_values;
+
+        // run the query
+        $this->query($sql, '', false, false, $highlight);
+
+        // return true if query was executed successfully
+        return isset($this->last_result) && $this->last_result !== false;
 
     }
 
@@ -2096,7 +2088,7 @@ class Zebra_Database {
 
             // if no query was run before
             // save debug information
-            $this->_log('errors', array(
+            return $this->_log('errors', array(
 
                 'message'   =>  $this->language['not_a_valid_resource'],
 
@@ -2363,7 +2355,7 @@ class Zebra_Database {
         if ($this->connection)
 
             // inform the user that options can only be set before connecting
-            $this->_log('errors', array(
+            return $this->_log('errors', array(
 
                 'message'   =>  $this->language['options_before_connect'],
 
@@ -2447,7 +2439,7 @@ class Zebra_Database {
 
             // if file could not be opened
             // save debug info
-            $this->_log('errors', array(
+            return $this->_log('errors', array(
 
                 'message'   =>  $this->language['file_could_not_be_opened'],
 
@@ -2552,7 +2544,7 @@ class Zebra_Database {
             if ($replacements != '' && !is_array($replacements))
 
                 // save debug information
-                $this->_log('unsuccessful-queries',  array(
+                return $this->_log('unsuccessful-queries',  array(
 
                     'query' =>  $sql,
                     'error' =>  $this->language['warning_replacements_not_array']
@@ -2560,7 +2552,7 @@ class Zebra_Database {
                 ));
 
             // if $replacements is specified and is an array
-            elseif ($replacements != '' && is_array($replacements) && !empty($replacements)) {
+            if ($replacements != '' && is_array($replacements) && !empty($replacements)) {
 
                 // found how many items to replace are there in the query string
                 preg_match_all('/\?/', $sql, $matches, PREG_OFFSET_CAPTURE);
@@ -2569,7 +2561,7 @@ class Zebra_Database {
                 if (!empty($matches[0]) && count($matches[0]) != count($replacements))
 
                     // save debug information
-                    $this->_log('unsuccessful-queries', array(
+                    return $this->_log('unsuccessful-queries', array(
 
                         'query' => $sql,
                         'error' => $this->language['warning_replacements_wrong_number']
@@ -2577,46 +2569,42 @@ class Zebra_Database {
                     ));
 
                 // if the number of items to replace is the same as the number of items specified in $replacements
-                else {
+                // make preparations for the replacement
+                $pattern1 = $pattern2 = $replacements1 = $replacements2 = array();
 
-                    // make preparations for the replacement
-                    $pattern1 = $pattern2 = $replacements1 = $replacements2 = array();
+                // prepare parameter markers for replacement
+                foreach ($matches[0] as $match) $pattern1[] = '/\\' . $match[0] . '/';
 
-                    // prepare parameter markers for replacement
-                    foreach ($matches[0] as $match) $pattern1[] = '/\\' . $match[0] . '/';
+                foreach ($replacements as $key => $replacement) {
 
-                    foreach ($replacements as $key => $replacement) {
+                    // generate a string
+                    $randomstr = md5(microtime()) . $key;
 
-                        // generate a string
-                        $randomstr = md5(microtime()) . $key;
+                    // prepare the replacements for the parameter markers
+                    $replacements1[] = $randomstr;
 
-                        // prepare the replacements for the parameter markers
-                        $replacements1[] = $randomstr;
+                    // if the replacement is NULL, leave it like it is
+                    if ($replacement === NULL) $replacements2[$key] = 'NULL';
 
-                        // if the replacement is NULL, leave it like it is
-                        if ($replacement === NULL) $replacements2[$key] = 'NULL';
+                    // if the replacement is an array, implode and escape it for use in WHERE ? IN ? statement
+                    elseif (is_array($replacement)) $replacements2[$key] = preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->implode($replacement));
 
-                        // if the replacement is an array, implode and escape it for use in WHERE ? IN ? statement
-                        elseif (is_array($replacement)) $replacements2[$key] = preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->implode($replacement));
+                    // otherwise, mysqli_real_escape_string the items in replacements
+                    // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
+                    // it as references
+                    else $replacements2[$key] = '\'' . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->escape($replacement)) . '\'';
 
-                        // otherwise, mysqli_real_escape_string the items in replacements
-                        // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
-                        // it as references
-                        else $replacements2[$key] = '\'' . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->escape($replacement)) . '\'';
-
-                        // and also, prepare the new pattern to be replaced afterwards
-                        $pattern2[$key] = '/' . $randomstr . '/';
-
-                    }
-
-                    // replace each question mark with something new
-                    // (we do this intermediary step so that we can actually have question marks in the replacements)
-                    $sql = preg_replace($pattern1, $replacements1, $sql, 1);
-
-                    // perform the actual replacement
-                    $sql = preg_replace($pattern2, $replacements2, $sql, 1);
+                    // and also, prepare the new pattern to be replaced afterwards
+                    $pattern2[$key] = '/' . $randomstr . '/';
 
                 }
+
+                // replace each question mark with something new
+                // (we do this intermediary step so that we can actually have question marks in the replacements)
+                $sql = preg_replace($pattern1, $replacements1, $sql, 1);
+
+                // perform the actual replacement
+                $sql = preg_replace($pattern2, $replacements2, $sql, 1);
 
             }
 
@@ -2718,7 +2706,7 @@ class Zebra_Database {
                     } else
 
                         // save debug information
-                        $this->_log('errors', array(
+                        return $this->_log('errors', array(
 
                             'message'   =>  $this->language['cache_path_not_writable'],
 
@@ -2847,11 +2835,11 @@ class Zebra_Database {
                             if (!isset($_SESSION))
 
                                 // save debug information
-                                $this->_log('errors', array(
+                                return $this->_log('errors', array(
 
                                     'message'   =>  $this->language['no_active_session'],
 
-                                ), true);
+                                ));
 
                             // the unique identifier for the current query
                             $key = md5($sql);
@@ -3015,7 +3003,7 @@ class Zebra_Database {
 
             // in case of error
             // save debug information
-            $this->_log('unsuccessful-queries', array(
+            return $this->_log('unsuccessful-queries', array(
 
                 'query'     =>  $sql,
                 'error'     =>  mysqli_error($this->connection)
@@ -3093,7 +3081,7 @@ class Zebra_Database {
                 elseif (error_reporting() != 0)
 
                     // save debug information
-                    $this->_log('errors', array(
+                    return $this->_log('errors', array(
 
                         'message'   =>  $this->language['could_not_seek'],
 
@@ -3120,7 +3108,7 @@ class Zebra_Database {
                         if ($row == key($this->cached_results[$resource])) return true;
 
                     // save debug information
-                    $this->_log('errors', array(
+                    return $this->_log('errors', array(
 
                         'message'   =>  $this->language['could_not_seek'],
 
@@ -3132,7 +3120,7 @@ class Zebra_Database {
 
             // if not a valid resource
             // save debug information
-            $this->_log('errors', array(
+            return $this->_log('errors', array(
 
                 'message'   =>  $this->language['not_a_valid_resource'],
 
@@ -3393,14 +3381,12 @@ class Zebra_Database {
 
         // if no transaction was in progress
         // save debug information
-        $this->_log('unsuccessful-queries', array(
+        return $this->_log('unsuccessful-queries', array(
 
             'query' =>  $sql,
             'error' =>  $this->language['no_transaction_in_progress'],
 
         ), false);
-
-        return false;
 
     }
 
@@ -3454,14 +3440,12 @@ class Zebra_Database {
         }
 
         // save debug information
-        $this->_log('unsuccessful-queries', array(
+        return $this->_log('unsuccessful-queries', array(
 
             'query' =>  $sql,
             'error' =>  $this->language['transaction_in_progress'],
 
         ), false);
-
-        return false;
 
     }
 
@@ -3629,19 +3613,15 @@ class Zebra_Database {
     public function update($table, $columns, $where = '', $replacements = '', $highlight = false) {
 
         // if $replacements is specified but it's not an array
-        if ($replacements != '' && !is_array($replacements)) {
+        if ($replacements != '' && !is_array($replacements))
 
             // save debug information
-            $this->_log('unsuccessful-queries',  array(
+            return $this->_log('unsuccessful-queries',  array(
 
                 'query' =>  '',
                 'error' =>  $this->language['warning_replacements_not_array']
 
             ));
-
-            return false;
-
-        }
 
         // generate the SQL from the $columns array
         $cols = $this->_build_sql($columns);
@@ -3690,14 +3670,14 @@ class Zebra_Database {
             if (trim($value) == '?')
 
                 // throw an error
-                $this->_log('unsuccessful-queries',  array(
+                return $this->_log('unsuccessful-queries',  array(
 
                     'error' =>  sprintf($this->language['cannot_use_parameter_marker'], print_r($columns, true)),
 
                 ));
 
             // if special INC() keyword is used
-            elseif (preg_match('/INC\((\-{1})?(.*?)\)/i', $value, $matches) > 0) {
+            if (preg_match('/INC\((\-{1})?(.*?)\)/i', $value, $matches) > 0) {
 
                 // translate to SQL
                 $sql .= '`' . $column_name . '` = `' . $column_name . '` ' . ($matches[1] == '-' ? '-' : '+') . ' ?';
@@ -3770,21 +3750,16 @@ class Zebra_Database {
             );
 
             // tries to connect to the MySQL database
-            if (mysqli_connect_errno()) {
+            if (mysqli_connect_errno())
 
                 // if connection could not be established
                 // save debug information
-                $this->_log('errors', array(
+                return $this->_log('errors', array(
 
                     'message'   =>  $this->language['could_not_connect_to_database'],
                     'error'     =>  mysqli_connect_error(),
 
                 ));
-
-                // return FALSE
-                return false;
-
-            }
 
             // if caching is to be done to a memcache server and we don't yet have a connection
             if (!$this->memcache && $this->memcache_host !== false && $this->memcache_port !== false) {
@@ -3799,7 +3774,11 @@ class Zebra_Database {
                     if (!$memcache->connect($this->memcache_host, $this->memcache_port))
 
                         // if connection could not be established, save debug information
-                        $this->_log('errors', array('message'   =>  $this->language['could_not_connect_to_memcache_server']));
+                        $this->_log('errors', array(
+
+                            'message'   =>  $this->language['could_not_connect_to_memcache_server'])
+
+                        );
 
                     else $this->memcache = $memcache;
 
@@ -3807,7 +3786,11 @@ class Zebra_Database {
                 } else
 
                     // if connection could not be established, save debug information
-                    $this->_log('errors', array('message'   =>  $this->language['memcache_extension_not_installed']));
+                    $this->_log('errors', array(
+
+                        'message'   =>  $this->language['memcache_extension_not_installed'])
+
+                    );
 
             }
 
@@ -4459,6 +4442,8 @@ class Zebra_Database {
             // if the saved debug info is about a fatal error
             // and execution is to be stopped on fatal errors
             if ($fatal && $this->halt_on_errors) die();
+
+            return false;
 
         // if there are any unsuccessful queries or other errors and no debugging
         } elseif (($category == 'unsuccessful-queries' || $category == 'errors') && $this->debug === false) {
