@@ -2898,25 +2898,35 @@ class Zebra_Database {
 
                         $row_counter = 0;
 
-                        // put the first rows, as defined by debug_show_records, in an array to show them in the
-                        // debugging console
-                        // if query was not read from cache
-                        if ($this->_is_result($this->last_result) && $this->debug_show_records) {
+                        // if there are any number of rows to be shown
+                        if ($this->debug_show_records) {
 
-                            // iterate through the records until we displayed enough records
-                            while ($row_counter++ < $this->debug_show_records && $row = mysqli_fetch_assoc($this->last_result))
+                            // put the first rows, as defined by debug_show_records, in an array to show them in the
+                            // debugging console
+                            // if query was not read from cache
+                            if ($this->_is_result($this->last_result)) {
 
-                                $result[] = $row;
+                                // if there are any rows
+                                if  (mysqli_num_rows($this->last_result)) {
 
-                            // reset the pointer in the result afterwards
-                            // we have to mute error reporting because if the result set is empty (mysqli_num_rows() == 0),
-                            // a seek to 0 will fail with a E_WARNING!
-                            @mysqli_data_seek($this->last_result, 0);
+                                    // iterate through the records until we displayed enough records
+                                    while ($row_counter++ < $this->debug_show_records && $row = mysqli_fetch_assoc($this->last_result))
 
-                        // if query was read from the cache
-                        // put the first rows, as defined by debug_show_records, in an array to show them in the
-                        // debugging console
-                        } elseif ($this->debug_show_records) $result = array_slice($this->cached_results[$this->last_result], 0, $this->debug_show_records);
+                                        $result[] = $row;
+
+                                    // reset the pointer in the result afterwards
+                                    // we have to mute error reporting because if the result set is empty (mysqli_num_rows() == 0),
+                                    // a seek to 0 will fail with a E_WARNING!
+                                    mysqli_data_seek($this->last_result, 0);
+
+                                }
+
+                            // if query was read from the cache and there are any records
+                            // put the first rows, as defined by debug_show_records, in an array to show them in the
+                            // debugging console
+                            } else if (!empty($this->cached_results[$this->last_result])) $result = array_slice($this->cached_results[$this->last_result], 0, $this->debug_show_records);
+
+                        }
 
                         // if there were queries run already
                         if (isset($this->debug_info['successful-queries'])) {
@@ -3073,9 +3083,7 @@ class Zebra_Database {
             if ($this->_is_result($resource)) {
 
                 // return the fetched row
-                // we have to mute error reporting because if the result set is empty (mysqli_num_rows() == 0),
-                // a seek to 0 will fail with a E_WARNING!
-                if (@mysqli_data_seek($resource, $row)) return true;
+                if (mysqli_num_rows($resource) == 0 || mysqli_data_seek($resource, $row)) return true;
 
                 // if error reporting was not supressed with @
                 elseif (error_reporting() != 0)
