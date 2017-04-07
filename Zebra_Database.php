@@ -3438,26 +3438,21 @@ class Zebra_Database {
      *
      *  @param  string  $table      The name of the table to check if it exists in the database.
      *
-     *                              You may also specify it like databasename.tablename if you are not connected to a
-     *                              database when calling this method.
-     *
-     *  @param  string  $database   (Optional) The name of the database in which to look for the table.
-     *
-     *                              You may also specify the database name directly in the "table" argument.
-     *
-     *                              <i>This option was added in 2.9.5</i>
+     *                              <i>May also be given like databasename.tablename if a connection to a database was
+     *                              not explicitly made with the {@link connect()} or {@link select_database()} methods
+     *                              prior to calling this method.</i>
      *
      *  @since  2.3
      *
      *  @return boolean             Returns TRUE if table given as argument exists in the database or FALSE if not.
      */
-    public function table_exists($table, $database = '') {
+    public function table_exists($table) {
 
         // if table argument contains the database name, extract it
         if (strpos($table, '.') !== false) list($database, $table) = explode('.', $table);
 
         // check if table exists in the database
-        return $this->fetch_assoc($this->query('SHOW TABLES' . ($database != '' ? ' IN ' . $database : '') . ' LIKE ?', array($table))) !== false ? true : false;
+        return $this->fetch_assoc($this->query('SHOW TABLES' . (isset($database) ? ' IN ' . $database : '') . ' LIKE ?', array($table))) !== false ? true : false;
 
     }
 
