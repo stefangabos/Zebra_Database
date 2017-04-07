@@ -4244,7 +4244,7 @@ class Zebra_Database {
                 $output .= '
                     <li>
                         <a href="javascript:zdc_toggle(\'zdc-warnings\')">' .
-                            $this->language['warnings'] . ': <span>' . count($this->warnings) . '</span>
+                            $this->language['warnings'] . ': <span>' . $blocks['warnings']['counter'] . '</span>
                         </a>
                     </li>
                 ';
