@@ -56,7 +56,7 @@
         'unbuffered_queries_cannot_be_cached'   => 'Unbuffered queries cannot be cached',
         'unbuffered_queries_no_total_records'   => 'Total number of records cannot be obtained for unbuffered queries',
         'unsuccessful_queries'                  => 'Fehlerhafte Abfragen',
-        'unusable_method_unbuffered_queries'    => '%1() method cannot be used with unbuffered queries',
+        'unusable_method_unbuffered_queries'    => '%s() method cannot be used with unbuffered queries',
         'warning_charset'                       => 'Standard Charset und Collection wurde nicht gesetzt. Bitte rufen Sie set_charset() nach dem Verbindungsaufbau auf.',
         'warning_memcache'                      => 'Die "memcache" Erweiterung ist auf diesem Server nicht verfügbar. überlegen Sie, memcache fürs Caching von Ergebnissen zu nutzen.<br>Weitere Informationen in <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#var$caching_method">der Dokumentation</a>.',
         'warning_replacements_not_array'        => '<em>$replacements</em> muss ein Array mit Werten enthalten.',
