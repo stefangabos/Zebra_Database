@@ -386,7 +386,7 @@ class Zebra_Database {
     public $memcache_port;
 
     /**
-     *  The prefix for the keys used to identify cached queries in memcache. This allows sepparate caching of the same
+     *  The prefix for the keys used to identify cached queries in memcache. This allows separate caching of the same
      *  queries by multiple instances of the libraries, or the same instance handling multiple domains on the same
      *  memcache server.
      *
