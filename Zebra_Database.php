@@ -614,7 +614,7 @@ class Zebra_Database {
      *
      *  @return void
      */
-    function __construct() {
+    public function __construct() {
 
         // if the mysqli extension is not loaded, stop execution
         if (!extension_loaded('mysqli')) trigger_error('Zebra_Database: mysqli extension is not enabled!', E_USER_ERROR);
@@ -4813,7 +4813,7 @@ class Zebra_Database {
      *
      *  @access private
      */
-    function __destruct() {
+    public function __destruct() {
 
         // frees the memory associated with the last result
         $this->free_result();
