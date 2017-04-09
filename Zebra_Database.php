@@ -3925,6 +3925,8 @@ class Zebra_Database {
      *  Shows the debugging console when the script ends, <i>if</i> {@link debug} is TRUE and the viewer's IP address is
      *  in the {@link debugger_ip} array (or <i>$debugger_ip</i> is an empty array).
      *
+     *  <i>This is a public method because it's used with register_shutdown_function.</i>
+     *
      *  @access private
      *
      *  @return void
