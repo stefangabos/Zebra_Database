@@ -36,7 +36,7 @@ class Zebra_Database {
      *  After an INSERT, UPDATE, REPLACE or DELETE query this property will hold the number of rows that were affected by
      *  its execution.
      *
-     *  For the number of rows returned by SELECT queries see the {@link $returned_rows} property.
+     *  For the number of rows returned by SELECT queries see the {@link returned_rows} property.
      *
      *  <code>
      *  // update some columns in a table
@@ -612,7 +612,7 @@ class Zebra_Database {
      */
     function __construct() {
 
-        // if the mysqli extension is not loded, stop execution
+        // if the mysqli extension is not loaded, stop execution
         if (!extension_loaded('mysqli')) trigger_error('Zebra_Database: mysqli extension is not enabled!', E_USER_ERROR);
 
         // get path of class and replace (on a windows machine) \ with /
