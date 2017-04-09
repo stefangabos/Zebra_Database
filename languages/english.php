@@ -54,7 +54,6 @@
         'transaction_in_progress'               => 'Transaction could not be started as another transaction is in progress.',
         'unbuffered'                            => 'unbuffered',
         'unbuffered_queries_cannot_be_cached'   => 'Unbuffered queries cannot be cached',
-        'unbuffered_queries_no_total_records'   => 'Total number of records cannot be obtained for unbuffered queries',
         'unsuccessful_queries'                  => 'unsuccessful queries',
         'unusable_method_unbuffered_queries'    => '%s() method cannot be used with unbuffered queries',
         'warning_charset'                       => 'No default charset and collation were set. Call <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#methodset_charset">set_charset()</a> after connecting to the database.',

@@ -53,7 +53,6 @@
         'transaction_in_progress'               => 'Транзакция не может быть запущена, пока выполняется другая.',
         'unbuffered'                            => 'unbuffered',
         'unbuffered_queries_cannot_be_cached'   => 'Unbuffered queries cannot be cached',
-        'unbuffered_queries_no_total_records'   => 'Total number of records cannot be obtained for unbuffered queries',
         'unsuccessful_queries'                  => 'неуспешных запросов',
         'unusable_method_unbuffered_queries'    => '%s() method cannot be used with unbuffered queries',
         'warning_charset'                       => 'Значения по умолчанию для charset и collections небыли установлены. Вызовите set_charset() после подключения к базе.',

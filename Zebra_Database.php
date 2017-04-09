@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.5 (last revision: April 07, 2017)
+ *  @version    2.9.5 (last revision: April 10, 2017)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -249,14 +249,16 @@ class Zebra_Database {
     public $disable_warnings;
 
     /**
-     *  After running a SELECT query through either {@link select()} or {@link query()} methods, and having set the
-     *  <i>calc_rows</i> argument to TRUE, this property would contain the number of records that <b>would</b> have been
-     *  returned <b>if</b> there was no LIMIT applied to the query.
+     *  After running a SELECT query through {@link select()}, {@link query()} or {@link query_unbuffered()} methods and
+     *  having the <i>calc_rows</i> argument set to TRUE, this property will contain the number of records that <b>would</b>
+     *  have been returned <b>if</b> there was no LIMIT applied to the query.
      *
      *  If <i>calc_rows</i> is FALSE or is TRUE but there is no LIMIT applied to the query, this property's value will
      *  be the same as the value of the {@link returned_rows} property.
      *
-     *  <i>For unbuffered queries the value of this property is always 0!</i>
+     *  <i>For {@link query_unbuffered unbuffered} queries the value of this property will be available only after
+     *  iterating over all the records with either {@link fetch_assoc()} or {@link fetch_obj()} methods. Until then, the
+     *  value will be 0!</i>
      *
      *  <code>
      *  // let's assume that "table" has 100 rows
@@ -449,10 +451,12 @@ class Zebra_Database {
     public $notifier_domain;
 
     /**
-     *  After running a SELECT query through either {@link select()} or {@link query()} methods this property would
-     *  contain the number of returned rows.
+     *  After running a SELECT query through {@link select()}, {@link query()} or {@link query_unbuffered()} methods, this
+     *  property will contain the number returned rows.
      *
-     *  <i>For unbuffered queries the value of this property is always 0!</i>
+     *  <i>For {@link query_unbuffered unbuffered} queries the value of this property will be available only after iterating
+     *  over all the records with either {@link fetch_assoc()} or {@link fetch_obj()} methods. Until then, the value will
+     *  be 0!</i>
      *
      *  See {@link found_rows} also.
      *
@@ -1275,11 +1279,20 @@ class Zebra_Database {
         // if no resource was specified, and a query was run before, assign the last resource
         if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-        // if $resource is a valid resource, fetch and return next row from the result set
-        if ($this->_is_result($resource)) return mysqli_fetch_assoc($resource);
+        // if $resource is a valid resource
+        if ($this->_is_result($resource)) {
+
+            // fetch next row from the result set
+            $result = mysqli_fetch_assoc($resource);
+
+            // if this was an unbuffered query manage setting the value for $returned_rows and some other things
+            if ($resource->type == 1) $this->_manage_unbuffered_query_info($resource, $result);
+
+            // return next row, or FALSE if no more rows available
+            return $result;
 
         // if $resource is a pointer to an array taken from cache
-        elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
+        } elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
 
             // get the current entry from the array
             $result = current($this->cached_results[$resource]);
@@ -1417,10 +1430,19 @@ class Zebra_Database {
         if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         // if $resource is a valid resource, fetch and return next row from the result set
-        if ($this->_is_result($resource)) return mysqli_fetch_object($resource);
+        if ($this->_is_result($resource)) {
+
+            // fetch next row from the result set
+            $result = mysqli_fetch_object($resource);
+
+            // if this was an unbuffered query manage setting the value for $returned_rows and some other things
+            if ($resource->type == 1) $this->_manage_unbuffered_query_info($resource, $result);
+
+            // return next row, or FALSE if no more rows available
+            return $result;
 
         // if $resource is a pointer to an array taken from cache
-        elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
+        } elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
 
             // get the current entry from the array
             $result = current($this->cached_results[$resource]);
@@ -2536,7 +2558,10 @@ class Zebra_Database {
      *                                  that this information will be available without running an extra query.
      *                                  {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows Here's how}
      *
-     *                                  <i>For {@link query_unbuffered unbuffered} queries this argument is always FALSE!</i>
+     *                                  <i>For {@link query_unbuffered unbuffered} queries the value of this property
+     *                                  will be available only after iterating over all the records with either
+     *                                  {@link fetch_assoc()} or {@link fetch_obj()} methods. Until then, the value will
+     *                                  be 0!</i>
      *
      *                                  Default is FALSE.
      *
@@ -2639,22 +2664,6 @@ class Zebra_Database {
 
             // set this flag to false
             $cache = false;
-
-        }
-
-        // for unbuffered queries we cannot get the total number of records
-        if ($this->unbuffered && $calc_rows) {
-
-            // save debug information
-            $this->_log('errors', array(
-
-                'query'     =>  $sql,
-                'message'   =>  $this->language['unbuffered_queries_no_total_records'],
-
-            ), false);
-
-            // set this flag to false
-            $calc_rows = false;
 
         }
 
@@ -2820,14 +2829,19 @@ class Zebra_Database {
                 // if query was a SELECT query
                 if ($is_select) {
 
-                    // for unbuffered queries
+                    // for buffered queries
                     if (!$this->unbuffered)
 
                         // the returned_rows property holds the number of records returned by a SELECT query
                         $this->returned_rows = $this->found_rows = @mysqli_num_rows($this->last_result);
 
+                    // for unbuffered queries set this property of the result set so that once all the rows have iterated
+                    // over, we can get some extra iformation (see the _manage_unbuffered_query_info method for more info)
+                    else $this->last_result->query = $sql;
+
                     // if we need the number of rows that would have been returned if there was no LIMIT
-                    if ($calc_rows) {
+                    // and the query was not an unbuffered one
+                    if ($calc_rows && !$this->unbuffered) {
 
                         // get the number of records that would've been returned if there was no LIMIT
                         $found_rows = mysqli_fetch_assoc(mysqli_query($this->connection, 'SELECT FOUND_ROWS()'));
@@ -2930,6 +2944,13 @@ class Zebra_Database {
 
             }
 
+            // if we need the number of rows that would have been returned if there was no LIMIT, the query was an
+            // unbuffered one and it was a successful query
+            if ($calc_rows && $this->unbuffered && $this->_is_result($this->last_result))
+
+                // set a flag telling the script to do this once all the rows are fetched
+                $this->last_result->calc_rows = true;
+
             // if debugging is on
             if ($this->debug !== false) {
 
@@ -3009,16 +3030,42 @@ class Zebra_Database {
 
                     }
 
-                    // if it's a SELECT query, query is not read from cache, it needs EXPLAINing and MySQL can explain it
+                    // if
                     if (
+
+                        // if we need to EXPLAIN the last executed query
                         $this->debug_show_explain &&
-                        $is_select &&
+                        // it was not an unbuffered one
+                        !$this->unbuffered &&
+                        // query was successful
                         $this->_is_result($this->last_result) &&
+                        // MySQL could explain it
                         ($explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql))
+
                     )
 
                         // put all the records returned by the explain query in an array
                         while ($row = mysqli_fetch_assoc($explain_resource)) $explain[] = $row;
+
+                    // if 
+                    if (
+
+                        // we need to EXPLAIN the last executed query
+                        $this->debug_show_explain &&
+                        // it was an unbuffered one
+                        $this->unbuffered &&
+                        // query was successful
+                        $this->_is_result($this->last_result)
+
+                    ) {
+
+                        // set a flag telling the script to EXPLAIN the query once all the rows are fetched
+                        $this->last_result->explain = true;
+
+                        // the SQL to explain
+                        $this->last_result->query = $sql;
+
+                    }
 
                 }
 
@@ -3038,6 +3085,12 @@ class Zebra_Database {
                     'transaction'   =>  ($this->transaction_status !== 0 ? true : false),
 
                 ), false);
+
+                // if this was an unbuffered query and a valid select query
+                if ($this->unbuffered && $is_select && $this->_is_result($this->last_result))
+
+                    // save the index of the entry in the debug_info array
+                    $this->last_result->log_index = count($this->debug_info['successful-queries']) - 1;
 
                 // if at least one query is to be highlighted, set the "minimize_console" property to FALSE
                 if ($highlight) $this->minimize_console = false;
@@ -3115,15 +3168,26 @@ class Zebra_Database {
         // check if given resource is valid
         if ($this->_is_result($resource)) {
 
-            // if query was an unbuffered one
-            if ($resource->type == 1)
+            // if this is an unbuffered query
+            if ($resource->type == 1) {
+
+                // get backtrace information
+                $debug = debug_backtrace();
+
+                // if method was called by another internal method (like fetch_assoc_all, for example) report that method
+                if (isset($debug[1]) && isset($debug[1]['function']) && $debug[1]['class'] == 'Zebra_Database') $method = $debug[1]['function'];
+
+                // if this (seek) method was called, report this method
+                else $method = $debug[0]['function'];
 
                 // save debug information
                 return $this->_log('errors', array(
 
-                    'message'   => sprintf($this->language['unusable_method_unbuffered_queries'], substr(__METHOD__, strpos(__METHOD__, '::') + 2)),
+                    'message'   => sprintf($this->language['unusable_method_unbuffered_queries'], $method),
 
                 ));
+
+            }
 
             // return the fetched row
             if (mysqli_num_rows($resource) == 0 || mysqli_data_seek($resource, $row)) return true;
@@ -3261,10 +3325,10 @@ class Zebra_Database {
      *
      *                                  Default is FALSE.
      *
-     *  @param  boolean $calc_rows      (Optional) If query is a SELECT query, this argument is set to TRUE, and there is
-     *                                  a LIMIT applied to the query, the value of the {@link found_rows} property (after
-     *                                  the query was run) will represent the number of records that would have been
-     *                                  returned if there was no LIMIT applied to the query.
+     *  @param  boolean $calc_rows      (Optional) If this argument is set to TRUE, and there is a LIMIT applied to the
+     *                                  query, the value of the {@link found_rows} property (after the query was run)
+     *                                  will represent the number of records that would have been returned if there was
+     *                                  no LIMIT applied to the query.
      *
      *                                  This is very useful for creating pagination or computing averages. Also, note
      *                                  that this information will be available without running an extra query.
@@ -4067,7 +4131,7 @@ class Zebra_Database {
                                 $output .= '
                                     <li class="zdc-records">
                                         ' . (!empty($debug_info['records']) ? '<a href="javascript:zdc_toggle(\'zdc-records-sq' . $counter . '\')">' : '') .
-                                            $this->language['returned_rows'] . ': <strong>' . ($debug_info['unbuffered'] ? '?' : $debug_info['returned_rows']) . '</strong>
+                                            $this->language['returned_rows'] . ': <strong>' . $debug_info['returned_rows'] . '</strong>
                                         ' . (!empty($debug_info['records']) ? '</a>' : '') . '
                                     </li>
                                 ';
@@ -4515,7 +4579,63 @@ class Zebra_Database {
     }
 
     /**
-     *  See the {@link $debug} property for more information.
+     *  For unbuffered queries, this method manages setting the value of the {@link returned_rows} property once all the
+     *  records have been iterating over with either {@link fetch_assoc()} or {@link fetch_obj()} methods.
+     *
+     *  If requested so, this method will also set the value for the {@link found_rows} property, will EXPLAIN the query
+     *  and will populate the debugging console with the first few records, as set by the {@link debug_show_records}
+     *  property.
+     *
+     *  @access private
+     */
+    private function _manage_unbuffered_query_info(&$resource, &$result) {
+
+        // if it was the last row
+        if (!$result) {
+
+            // set the number of returned rows
+            $this->found_rows = $this->returned_rows = $resource->num_rows;
+
+            // if debugging to the console is turned on
+            if ($this->debug === true) {
+
+                // update the number of returned rows in the debugging console
+                $this->debug_info['successful-queries'][$resource->log_index]['returned_rows'] = $resource->num_rows;
+
+                // if we need to get the total number of rows in the table
+                if ($resource->calc_rows) {
+
+                    // run that query now
+                    $found_rows = mysqli_fetch_assoc(mysqli_query($this->connection, 'SELECT FOUND_ROWS()'));
+
+                    // update the found_rows property
+                    $this->found_rows = $found_rows['FOUND_ROWS()'];
+
+                }
+
+                // if we need to EXPLAIN the query
+                if ($resource->explain) {
+
+                    // do that now
+                    $explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $resource->query);
+
+                    // update information in the debugging console
+                    while ($row = mysqli_fetch_assoc($explain_resource)) $this->debug_info['successful-queries'][$resource->log_index]['explain'][] = $row;
+
+                }
+
+            }
+
+        // if it was not the last row, debugging to the console is turned on and we've not yet reached the limit imposed by debug_show_records
+        } elseif ($this->debug === true && count($this->debug_info['successful-queries'][$resource->log_index]['records']) < $this->debug_show_records)
+
+            // add row data to the debugging console
+            $this->debug_info['successful-queries'][$resource->log_index]['records'][] = $result;
+
+    }
+
+    /**
+     *  See the {@link debug} property for more information.
      *
      *  @access private
      *

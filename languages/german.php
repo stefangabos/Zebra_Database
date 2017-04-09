@@ -54,7 +54,6 @@
         'transaction_in_progress'               => 'Die Transaktion konnte nicht durchgeführt werden, weil noch eine andere Transaktion in Arbeit ist.',
         'unbuffered'                            => 'unbuffered',
         'unbuffered_queries_cannot_be_cached'   => 'Unbuffered queries cannot be cached',
-        'unbuffered_queries_no_total_records'   => 'Total number of records cannot be obtained for unbuffered queries',
         'unsuccessful_queries'                  => 'Fehlerhafte Abfragen',
         'unusable_method_unbuffered_queries'    => '%s() method cannot be used with unbuffered queries',
         'warning_charset'                       => 'Standard Charset und Collection wurde nicht gesetzt. Bitte rufen Sie set_charset() nach dem Verbindungsaufbau auf.',
