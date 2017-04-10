@@ -1,6 +1,6 @@
 # Zebra_Database
 
-#### An advanced, compact and lightweight MySQL database wrapper library, built around PHP's mysqli extension and using prepared statements.
+#### An advanced, compact and lightweight MySQLi database wrapper library, built around PHP's mysqli extension and using prepared statements.
 
 ----
 
@@ -20,9 +20,11 @@ Zebra_Database‘s code is heavily commented and generates no warnings/errors/no
 
 ## Features
 
-- it uses the **[mysqli extension](http://www.php.net/manual/en/book.mysqli.php)** extension for communicating with the database instead of the old **mysql** extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; **this is not a wrapper for the PDO extension which is already a wrapper in itself!**
+- it uses the [mysqli extension](http://www.php.net/manual/en/book.mysqli.php) extension for communicating with the database instead of the old *mysql* extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; **this is not a wrapper for the PDO extension which is already a wrapper in itself!**
 
-- offers lots of powerful methods for easier interaction with MySQL
+- offers [lots of powerful methods](http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html) for easier interaction with MySQL
+
+- can handle [unbuffered queries](http://php.net/manual/en/mysqlinfo.concepts.buffering.php)
 
 - provides a better security layer by encouraging the use of prepared statements, where parameters are automatically escaped
 
