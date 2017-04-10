@@ -651,8 +651,11 @@ class Zebra_Database {
             'memcache'      =>  true,   // memcache is available but it is not used
         );
 
-        // show the debug console when script execution ends
-        register_shutdown_function(array($this, '_debug'));
+        // don't show debug console for AJAX requests
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest')
+
+            // show the debug console when script execution ends
+            register_shutdown_function(array($this, '_debug'));
 
     }
 
