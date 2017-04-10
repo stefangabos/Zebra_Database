@@ -24,7 +24,7 @@ Zebra_Database‘s code is heavily commented and generates no warnings/errors/no
 
 - offers [lots of powerful methods](http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html) for easier interaction with MySQL
 
-- can handle [unbuffered queries](http://php.net/manual/en/mysqlinfo.concepts.buffering.php)
+- supports [unbuffered queries](http://php.net/manual/en/mysqlinfo.concepts.buffering.php)
 
 - provides a better security layer by encouraging the use of prepared statements, where parameters are automatically escaped
 
