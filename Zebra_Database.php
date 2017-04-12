@@ -24,7 +24,7 @@
  *  For more resources visit {@link http://stefangabos.ro/}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.5 (last revision: April 10, 2017)
+ *  @version    2.9.5 (last revision: April 12, 2017)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -4608,7 +4608,7 @@ class Zebra_Database {
                 $this->debug_info['successful-queries'][$resource->log_index]['returned_rows'] = $resource->num_rows;
 
                 // if we need to get the total number of rows in the table
-                if ($resource->calc_rows) {
+                if (isset($resource->calc_rows) && $resource->calc_rows) {
 
                     // run that query now
                     $found_rows = mysqli_fetch_assoc(mysqli_query($this->connection, 'SELECT FOUND_ROWS()'));
@@ -4619,7 +4619,7 @@ class Zebra_Database {
                 }
 
                 // if we need to EXPLAIN the query
-                if ($resource->explain) {
+                if (isset($resource->explain) && $resource->explain) {
 
                     // do that now
                     $explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $resource->query);
