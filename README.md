@@ -28,7 +28,7 @@ Zebra_Database‘s code is heavily commented and generates no warnings/errors/no
 
 - provides a better security layer by encouraging the use of prepared statements, where parameters are automatically escaped
 
-- provides a very detailed debugging interface with lots of useful information about executed queries; it also automatically [EXAPLAIN](http://dev.mysql.com/doc/refman/5.7/en/explain.html)s each SELECT query
+- provides a very detailed debugging interface with lots of useful information about executed queries; it also automatically [EXPLAIN](http://dev.mysql.com/doc/refman/5.7/en/explain.html)s each SELECT query
 
 - supports caching of query results to the disk, in the session, or to a **memcache** server
 
