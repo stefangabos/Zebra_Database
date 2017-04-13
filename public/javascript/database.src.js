@@ -315,7 +315,7 @@ var startStack = function() { },
 
             return;
 
-        }
+        };
 
     },
 
@@ -411,9 +411,7 @@ registerOnLoad(function() {
     // close everything when pressing ESC
     document.addEventListener('keydown', function(e) {
         e = e || window.event;
-        if (e.keyCode === 27) {
-            zdc_closeAll('');
-        }
+        if (e.keyCode === 27) zdc_closeAll('');
     });
 
 });
