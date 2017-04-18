@@ -4533,7 +4533,7 @@ class Zebra_Database {
         $valid = false;
 
         // if value looks like one or more nested functions
-        if (!is_array($value) && preg_match('/^\s*[a-z\_]+\(/i', $value) && preg_match_all('/([a-z\_]+\()/i', $value, $matches)) {
+        if (!is_array($value) && preg_match('/[a-z\_]+\(/i', $value) && preg_match_all('/([a-z\_]+\()/i', $value, $matches)) {
 
             $valid = true;
 
