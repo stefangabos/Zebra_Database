@@ -4487,8 +4487,22 @@ class Zebra_Database {
             // explode string by dots
             $entry = explode('.', $entry);
 
-            // enclose each segment in grave accents
-            $entry = array_map(function($value) { return '`' . trim(trim($value, '`')) . '`'; }, $entry);
+            // iterate over the segments
+            $entry = array_map(function($value) {
+
+                // trim ticks and whitespace
+                $value = trim(trim($value, '`'));
+
+                // if not * or a MySQL function
+                if ($value !== '*' && !$this->_is_mysql_function($value))
+
+                    // enclose value in grave accents
+                    return '`' . $value . '`';
+
+                // return the value as it is otherwise
+                return $value;
+
+            }, $entry);
 
             // concatenate the string back and add it to the result
             $result[] = implode('.', $entry);
