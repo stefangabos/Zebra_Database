@@ -1,17 +1,5 @@
 [![Latest Stable Version](https://poser.pugx.org/stefangabos/zebra_database/v/stable)](https://packagist.org/packages/stefangabos/zebra_database) [![Total Downloads](https://poser.pugx.org/stefangabos/zebra_database/downloads)](https://packagist.org/packages/stefangabos/zebra_database) [![Monthly Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/monthly)](https://packagist.org/packages/stefangabos/zebra_database) [![Daily Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/daily)](https://packagist.org/packages/stefangabos/zebra_database) [![License](https://poser.pugx.org/stefangabos/zebra_database/license)](https://packagist.org/packages/stefangabos/zebra_database)
 
-# Zebra_Database
-
-#### A compact, lightweight and feature-rich MySQLi database wrapper library, built around PHP's mysqli extension and using prepared statements.
-
-----
-
-## Support the development of this library
-
-This library is developed during my free time and a lot of time and effort has been put into it.
-
-[![Donate](https://img.shields.io/badge/Be%20kind%20%7C%20Donate%203$%20with%20-%20PayPal%20-brightgreen.svg)](https://www.paypal.com/webapps/hermes?token=4CK06693SF449411L&useraction=commit&mfid=1493666027665_d61d7f5640630)
-
 **Zebra_Database** is a compact (one-file only), lightweight yet feature-rich database wrapper built around PHP’s [MySQLi extension](http://www.php.net/manual/en/book.mysqli.php). It provides methods for interacting with MySQL databases that are more secure, powerful and intuitive than PHP’s default ones.
 
 It supports transactions and provides ways for caching query results either by saving cached data to the disk, in the session, or by using [memcache](http://memcached.org/).
@@ -21,6 +9,12 @@ The library provides a comprehensive debugging interface with detailed informati
 It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of *prepared statements*, where parameters are automatically [escaped](http://www.php.net/manual/en/mysqli.real-escape-string.php).
 
 The code is heavily commented and generates no warnings/errors/notices when PHP’s error reporting level is set to E_ALL.
+
+## Support the development of this library
+
+This library is developed during my free time and a lot of time and effort has been put into it.
+
+[![Donate](https://img.shields.io/badge/Be%20kind%20%7C%20Donate%203$%20with%20-%20PayPal%20-brightgreen.svg)](https://www.paypal.com/webapps/hermes?token=4CK06693SF449411L&useraction=commit&mfid=1493666027665_d61d7f5640630)
 
 ## Features
 
