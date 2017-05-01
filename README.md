@@ -1,6 +1,6 @@
 # Zebra_Database
 
-#### An advanced, compact and lightweight MySQLi database wrapper library, built around PHP's mysqli extension and using prepared statements.
+#### A compact, lightweight and feature-rich MySQLi database wrapper library, built around PHP's mysqli extension and using prepared statements.
 
 ----
 
@@ -8,15 +8,15 @@
 
 [![Latest Stable Version](https://poser.pugx.org/stefangabos/zebra_database/v/stable)](https://packagist.org/packages/stefangabos/zebra_database) [![Total Downloads](https://poser.pugx.org/stefangabos/zebra_database/downloads)](https://packagist.org/packages/stefangabos/zebra_database) [![Monthly Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/monthly)](https://packagist.org/packages/stefangabos/zebra_database) [![Daily Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/daily)](https://packagist.org/packages/stefangabos/zebra_database) [![License](https://poser.pugx.org/stefangabos/zebra_database/license)](https://packagist.org/packages/stefangabos/zebra_database)
 
-**Zebra_Database** it is a compact (one-file only), lightweight yet feature-rich database wrapper built around PHP’s [MySQLi extension](http://www.php.net/manual/en/book.mysqli.php). It provides methods for interacting with MySQL databases that are more secure, powerful and intuitive than PHP’s default ones.
+**Zebra_Database** is a compact (one-file only), lightweight yet feature-rich database wrapper built around PHP’s [MySQLi extension](http://www.php.net/manual/en/book.mysqli.php). It provides methods for interacting with MySQL databases that are more secure, powerful and intuitive than PHP’s default ones.
 
 It supports transactions and provides ways for caching query results either by saving cached data to the disk, in the session, or by using [memcache](http://memcached.org/).
 
-The class provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically [EXPLAIN](http://dev.mysql.com/doc/refman/5.0/en/explain.html)'s each SELECT query *(so you don’t miss those keys again!)*.
+The library provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically [EXPLAIN](http://dev.mysql.com/doc/refman/5.0/en/explain.html)'s each SELECT query *(so you don’t miss those keys again!)*.
 
 It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of *prepared statements*, where parameters are automatically [escaped](http://www.php.net/manual/en/mysqli.real-escape-string.php).
 
-**Zebra_Database**'s code is heavily commented and generates no warnings/errors/notices when PHP’s error reporting level is set to E_ALL.
+The code is heavily commented and generates no warnings/errors/notices when PHP’s error reporting level is set to E_ALL.
 
 ## Features
 
@@ -32,7 +32,7 @@ It encourages developers to write maintainable code and provides a better defaul
 
 - supports caching of query results to the disk, in the session, or to a **memcache** server
 
-- has [really good documentation](http://stefangabos.github.io/Zebra_Database/)
+- has [really good documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)
 
 - code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to **E_ALL**
 
@@ -138,5 +138,3 @@ $db->update(
     array($criteria)
 );
 ```
-
-> There are over **40 methods** and 20 properties that you can use and **lots** of things you can do with this library. I've prepared an [awesome documentation](http://stefangabos.github.io/Zebra_Database/) so that you can easily get an overview of what can be done. Go ahead, [check it out](http://stefangabos.github.io/Zebra_Database/)!
