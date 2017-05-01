@@ -4871,5 +4871,3 @@ class Zebra_Database {
     }
 
 }
-
-?>
