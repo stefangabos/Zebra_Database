@@ -14,6 +14,8 @@ It encourages developers to write maintainable code and provides a better defaul
 
 The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to E_ALL.
 
+:books: <a href="https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html" align="left">Documentation</a>
+
 ## Support the development of this library
 
 [![Donate](https://img.shields.io/badge/Be%20kind%20%7C%20Donate%203$%20with%20-%20PayPal%20-brightgreen.svg)](https://www.paypal.com/webapps/hermes?token=4CK06693SF449411L&useraction=commit&mfid=1493666027665_d61d7f5640630)
