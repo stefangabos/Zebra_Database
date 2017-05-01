@@ -1,6 +1,8 @@
+# Zebra_Database
+
 [![Latest Stable Version](https://poser.pugx.org/stefangabos/zebra_database/v/stable)](https://packagist.org/packages/stefangabos/zebra_database) [![Total Downloads](https://poser.pugx.org/stefangabos/zebra_database/downloads)](https://packagist.org/packages/stefangabos/zebra_database) [![Monthly Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/monthly)](https://packagist.org/packages/stefangabos/zebra_database) [![Daily Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/daily)](https://packagist.org/packages/stefangabos/zebra_database) [![License](https://poser.pugx.org/stefangabos/zebra_database/license)](https://packagist.org/packages/stefangabos/zebra_database)
 
-**Zebra_Database** is a compact (one-file only), lightweight yet feature-rich database wrapper built around PHP’s [MySQLi extension](http://www.php.net/manual/en/book.mysqli.php). It provides methods for interacting with MySQL databases that are more secure, powerful and intuitive than PHP’s default ones.
+A compact (one-file only), lightweight yet feature-rich database wrapper built around PHP’s [MySQLi extension](http://www.php.net/manual/en/book.mysqli.php). It provides methods for interacting with MySQL databases that are more secure, powerful and intuitive than PHP’s default ones.
 
 It supports transactions and provides ways for caching query results either by saving cached data to the disk, in the session, or by using [memcache](http://memcached.org/).
 
@@ -26,7 +28,7 @@ The code is heavily commented and generates no warnings/errors/notices when PHP�
 
 - provides a very detailed debugging interface with lots of useful information about executed queries; it also automatically [EXPLAIN](http://dev.mysql.com/doc/refman/5.7/en/explain.html)s each SELECT query
 
-- supports caching of query results to the disk, in the session, or to a **memcache** server
+- supports caching of query results to the disk, in the session, or to a [memcache](http://memcached.org/) server
 
 - has [really good documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)
 
