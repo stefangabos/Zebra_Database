@@ -1,0 +1,142 @@
+body { font-size: 80% }
+pre { margin-bottom: .8em }
+
+/* HEADER */
+#header             { background:#4D544E }
+#header h5          { margin: 0; padding: 10px; font-size: 29px }
+#header h5 a        { color: #FFF }
+#header h5 a:hover  { text-decoration: none }
+#header h5 span     { font-size: 50%; color: #9CA68F }
+
+/* GLOBALS */
+#phpdoc             { text-align: left }
+#phpdoc a           { color: #004080; text-decoration: none; font-weight: bold }
+#phpdoc a:hover     { text-decoration: underline }
+#phpdoc a.top       { background-color: #F2EBC9; padding: 2px 4px; display: block; float: left; text-decoration: none; border: 1px solid #666; text-transform: capitalize }
+#phpdoc a.top:hover { background-color: #222; color: #FFF }
+#phpdoc ul          { list-style-type: square; margin: 1em 0 1em 15px }
+#phpdoc dt          { font-weight: bold }
+#phpdoc dd          { margin-left: 20px; font-size: 90% }
+#phpdoc pre         { font-family: inherit; font-size: 100% }
+#phpdoc table td    { padding: 0 }
+#phpdoc table       { margin-bottom: 0 }
+
+/* HEADER */
+#doc_header         { background-color: #000; padding: 10px; color: #FFF }
+#doc_header ul      { float: right; margin: 0; list-style-type: none; *margin-top: -18px }
+#doc_header li      { padding-right: 10px; margin-right: 10px; border-right: 1px solid #FFF }
+#doc_header li.last { border-right: none }
+#doc_header a       { color: #FFF }
+
+/* SIDEBAR */
+td.sidebar              { background-color: #A4A680; border-right: 1px solid #666 }
+#doc_sidebar            { padding: 10px; white-space: nowrap }
+#doc_sidebar li         { color: #A66B38; line-height: 1.2 }
+#doc_sidebar li.indent  { margin-left: 20px }
+#doc_sidebar a          { color: #004080; font-size: 90% }
+
+/* CONTENT */
+#doc_content { padding: 10px }
+#doc_content h2 { margin-top: 0 }
+#doc_content h4 { font-size: 140% }
+#doc_content h6 { margin: 0; top: -10px; font-weight: normal; color: #666; font-size: 90% }
+#doc_content div span p { width: 600px }
+#doc_content div span p.h3 { font-weight: bold; font-size: 120%; margin: 0 }
+#doc_content div span p img { display: block; border: 1px solid #A66B38; margin: 20px 0 }
+#doc_content div span ol { background: #EFEFEF; border: 1px solid #A66B38; padding: 10px; margin: 20px 0 }
+
+    /* INDEX PAGES */
+    .doc_index                      { background-color: #EFEFEF; padding: 10px; border: 1px solid #DEDEDE; margin-top: 10px; margin-bottom: 20px }
+    .doc_index h3                   { margin: 0 0 10px; background-color: #D9B166; color: #FFF; padding: 0 10px; border:1px solid #666; float: left; text-transform: uppercase }
+    .doc_index dl                   { clear: both }
+    .doc_index dl span              { display: block; margin-left: 0px }
+    #phpdoc .doc_index dl a         { background-color: #FFF; padding: 0 5px; border:1px solid #666 }
+    #phpdoc .doc_index dl a:hover   { background-color: #222; color: #FFF; text-decoration: none }
+    #doc_index a.top                { margin: -33px 0 0 10px }
+
+    /* CLASSES */
+    #phpdoc .doc_block td       { padding: 10px }
+    h4.method                   { background-color: #271F2E; color: #FFF; padding: 6px 10px; border-bottom: 2px solid #D9B166; margin: 0; font-size: 140% }
+    h4.method span,
+    h4.variable span            { font-size: 70%; margin-right: 10px }
+    h4.variable                 { background-color: #A4A680; color: #FFF; padding: 6px 10px; border-bottom: 2px solid #D9B166; margin: 0; font-size: 140% }
+    .doc_toc                    { padding: 10px; background-color: #F2EBC9; border: 1px solid #271F2E; margin-top: 10px }
+    .doc_toc .left              { margin-right: 10px }
+    .doc_toc li                 { color: #A66B38 }
+    .doc_block                  { margin: 0 0 20px 20px; background-color: #EFEFEF; padding: 10px; border: 1px solid #DEDEDE }
+    .doc_block a                { text-decoration: none; font-weight: bold; background-color: #FFF; padding: 0 5px; border:1px solid #AAA }
+    #phpdoc .doc_block a:hover  { background-color: #222; color: #FFF; text-decoration: none }
+    .doc_block p                { margin-top: 0 }
+    .doc_block p.code           { margin: 0 0 1em 0; background-color: #FFF; border: 2px solid #666; padding: 4px; font-weight: normal; color: #000; *border-top: 4px solid #666 }
+    .doc_block ol               { background-color: #FFF; padding: 10px; margin: 1em 0px; border: 1px solid #DEDEDE }
+    .doc_block ol li            { margin: 0; padding: 0 }
+
+.doc_block p:before,
+.doc_block p:after  { content: "\0020"; display: block; height: 0; visibility: hidden; font-size: 0 }
+.doc_block p:after  { clear: both }
+.doc_block p        { *zoom: 1 } /* for IE only */
+
+/* FOOTER */
+#doc_footer { padding: 10px; background-color: #000; color: #FFF; font-size: 90% }
+#doc_footer span { color: #D9B166 }
+#doc_footer a { color: #D9B166; font-weight: bold }
+
+/* SYNTAX HIGHLIGHTING */
+.src-code { background-color: #F5F5F5; border: 1px solid #ccc9a4; padding: 0 0 0 1em; margin : 0px;
+            font-family: 'Courier New', Courier, monospace; font-weight: normal; }
+.src-line {  font-family: 'Courier New', Courier, monospace; font-weight: normal; line-height: 1.4 }
+
+.src-comm,
+.src-doc { color: #FF8000 }
+.src-id {  }
+.src-inc { color: #0000BB; }
+.src-key { color: #007700; }
+.src-num { color: #0000BB; }
+.src-str { color: #DD0000; }
+.src-sym { font-weight: bold; }
+.src-var { color: #0000BB}
+
+.src-php { font-weight: bold; }
+
+.src-doc-close-template { color: #0000FF }
+.src-doc-coretag { color: #0099FF; font-weight: bold }
+.src-doc-inlinetag { color: #0099FF }
+.src-doc-internal { color: #6699cc }
+.src-doc-tag { color: #0080CC }
+.src-doc-template { color: #0000FF }
+.src-doc-type { font-style: italic }
+.src-doc-var { font-style: italic }
+
+.tute-tag { color: #800080 }
+.tute-attribute-name { color: #000 }
+.tute-attribute-value { color: #0000FF }
+.tute-entity { font-weight: bold }
+.tute-comment { font-style: italic; color: #FF8000 }
+.tute-inline-tag { color: #636311; font-weight: bold }
+
+.highlight { margin: 25px 0; border: 2px solid black; padding: 10px 10px 10px 80px; color: #000; font-style: normal; line-height: 1.4; background: #FFCCCE url('warning.png') no-repeat 10px 10px; min-height: 50px; height:auto !important; height: 50px }
+
+img.graphic-left { float: left; margin: 0 10px 10px 0 }
+img.graphic-right { float: right; margin: 0 0 10px 10px }
+img.graphic { margin: 10px 0 }
+
+/* = MISCELLANEOUS
+----------------------------------------------------------------------------------------------------------------------*/
+.align-center   { text-align: center }
+.align-left     { text-align: left }
+.align-right    { text-align: right }
+.block          { display: block }
+.bottom         { margin-bottom: 0; padding-bottom: 0 }
+.center         { text-align: center }
+.clear          { clear: both }
+.first          { margin-left: 0; padding-left: 0 }
+.hidden         { visibility: hidden }
+.inline         { display: inline }
+.last           { margin-right: 0; padding-right: 0 }
+.left           { float: left }
+.none           { display: none }
+.nowrap         { white-space: nowrap }
+.right          { float: right }
+.stretch        { width: 100% }
+.top            { margin-top: 0; padding-top: 0 }
+.visible        { visibility: visible }
