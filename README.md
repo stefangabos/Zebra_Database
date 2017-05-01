@@ -8,15 +8,15 @@
 
 [![Latest Stable Version](https://poser.pugx.org/stefangabos/zebra_database/v/stable)](https://packagist.org/packages/stefangabos/zebra_database) [![Total Downloads](https://poser.pugx.org/stefangabos/zebra_database/downloads)](https://packagist.org/packages/stefangabos/zebra_database) [![Monthly Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/monthly)](https://packagist.org/packages/stefangabos/zebra_database) [![Daily Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/daily)](https://packagist.org/packages/stefangabos/zebra_database) [![License](https://poser.pugx.org/stefangabos/zebra_database/license)](https://packagist.org/packages/stefangabos/zebra_database)
 
-It provides methods for interacting with MySQL databases that are more powerful and intuitive than PHP's default ones.
+**Zebra_Database** it is a compact (one-file only), lightweight yet feature-rich database wrapper built around PHP’s [MySQLi extension](http://www.php.net/manual/en/book.mysqli.php). It provides methods for interacting with MySQL databases that are more secure, powerful and intuitive than PHP’s default ones.
 
-It supports transactions and provides ways for caching query results either by saving cached data to the **disk**, in the **session**, or by using **[memcache](http://memcached.org/)**.
+It supports transactions and provides ways for caching query results either by saving cached data to the disk, in the session, or by using [memcache](http://memcached.org/).
 
-The class provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically [EXPLAIN](http://dev.mysql.com/doc/refman/5.7/en/explain.html)s each SELECT query (*so you don't miss those keys again!*).
+The class provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically [EXPLAIN](http://dev.mysql.com/doc/refman/5.0/en/explain.html)'s each SELECT query *(so you don’t miss those keys again!)*.
 
-It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of prepared statements, where parameters are automatically [escaped](http://www.php.net/manual/en/mysqli.real-escape-string.php).
+It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of *prepared statements*, where parameters are automatically [escaped](http://www.php.net/manual/en/mysqli.real-escape-string.php).
 
-Zebra_Database‘s code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to [E_ALL](http://www.php.net/manual/en/function.error-reporting.php).
+**Zebra_Database**'s code is heavily commented and generates no warnings/errors/notices when PHP’s error reporting level is set to E_ALL.
 
 ## Features
 
@@ -32,7 +32,7 @@ Zebra_Database‘s code is heavily commented and generates no warnings/errors/no
 
 - supports caching of query results to the disk, in the session, or to a **memcache** server
 
-- has really good documentation
+- has [really good documentation](http://stefangabos.github.io/Zebra_Database/)
 
 - code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to **E_ALL**
 
@@ -40,20 +40,31 @@ Zebra_Database‘s code is heavily commented and generates no warnings/errors/no
 
 PHP 5.2.0+ with the **mysqli extension** activated, MySQL 4.1.22+
 
-For using **memcache** as caching method, PHP must be compiled with the [memcache](http://pecl.php.net/package/memcache) extension and, if [memcache_compressed](http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#var$memcache_compressed) property is set to TRUE, needs to be configured with –with-zlib[=DIR]
+For using **memcache** as caching method, PHP must be compiled with the [memcache](http://pecl.php.net/package/memcache) extension and, if [memcache_compressed](http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#var$memcache_compressed) property is set to TRUE, needs to be configured with `–with-zlib[=DIR]`
+
+## Installation
+
+Download the latest version, unpack it, and load it in your project
+
+```php
+require_once ('Zebra_Database.php');
+```
+
+### Installation with Composer
+You can install Zebra_Database via [Composer](https://packagist.org/packages/stefangabos/zebra_database)
+```
+composer require stefangabos/zebra_database:dev-master
+```
 
 ## How to use
 
 ##### Connecting to a database
 
 ```php
-// include the library
-require 'path/to/Zebra_Database.php';
-
-// instantiate it
+// instantiate the library
 $db = new Zebra_Database();
 
-// connect to a database
+// connect to a server and select a database
 $db->connect('host', 'username', 'password', 'database');
 ```
 
@@ -82,7 +93,7 @@ $db->query('
 $records = $db->fetch_assoc_all();
 
 // you could fetch all records to one associative array
-// using a the values in a specific column as keys
+// using the values in a specific column as keys
 $records = $db->fetch_assoc_all('column1');
 
 // or fetch records one by one, as associative arrays
