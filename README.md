@@ -128,6 +128,4 @@ $db->update(
 );
 ```
 
-> There are over **40 methods** and 20 properties that you can use and **lots** of things you can do with this library. I've prepared an [awesome documentation](http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html) so that you can easily get an overview of what can be done. Go ahead, [check it out](http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html)!
-
-Visit the **[project's homepage](http://stefangabos.ro/php-libraries/zebra-database/)** for more information.
+> There are over **40 methods** and 20 properties that you can use and **lots** of things you can do with this library. I've prepared an [awesome documentation](http://stefangabos.github.io/Zebra_Database/) so that you can easily get an overview of what can be done. Go ahead, [check it out](http://stefangabos.github.io/Zebra_Database/)!
