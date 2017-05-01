@@ -19,10 +19,6 @@
  *  The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to
  *  E_ALL.
  *
- *  Visit {@link http://stefangabos.ro/php-libraries/zebra-database/} for more information.
- *
- *  For more resources visit {@link http://stefangabos.ro/}
- *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
  *  @version    2.9.6 (last revision: May 01, 2017)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
