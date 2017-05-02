@@ -38,6 +38,8 @@ The code is heavily commented and generates no warnings/errors/notices when PHP'
 
 - code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to **E_ALL**
 
+![Zebra_Database's debugging console](http://stefangabos.ro/zebra-database-debug-console.png)
+
 ## Requirements
 
 PHP 5.2.0+ with the **mysqli extension** activated, MySQL 4.1.22+
