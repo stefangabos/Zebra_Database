@@ -142,3 +142,4 @@ $db->update(
     array($criteria)
 );
 ```
+> There are over **40 methods** and 20 properties that you can use and **lots** of things you can do with this library. I've prepared an [awesome documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html) so that you can easily get an overview of what can be done. Go ahead, [check it out](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)!
