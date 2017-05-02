@@ -18,7 +18,7 @@ The code is heavily commented and generates no warnings/errors/notices when PHP'
 
 ## Support the development of this library
 
-[![Donate](https://img.shields.io/badge/Be%20kind%20%7C%20Donate%203$%20with%20-%20PayPal%20-brightgreen.svg)](https://www.paypal.com/webapps/hermes?token=4CK06693SF449411L&useraction=commit&mfid=1493666027665_d61d7f5640630)
+[![Donate](https://img.shields.io/badge/Be%20kind%20%7C%20Donate%20$3%20with%20-%20PayPal%20-brightgreen.svg)](https://www.paypal.com/webapps/hermes?token=4CK06693SF449411L&useraction=commit&mfid=1493666027665_d61d7f5640630)
 
 ## Features
 
