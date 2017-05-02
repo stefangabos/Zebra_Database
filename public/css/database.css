@@ -5,17 +5,17 @@
 #zdc a              { text-decoration: none }
 #zdc .zdc-hidden    { display: none }
 #zdc .zdc-visible   { display: block }
-#zdc table          {  }
+#zdc table          { border-collapse: collapse; }
 #zdc table tr.even  { background: #DEDEDE }
 #zdc table td,
 #zdc table th       { padding: 4px; border: none }
-#zdc table th       { background: #73705D; color: #FFF }
+#zdc table th       { background: #9ca68f; color: #f0f0f0 }
 #zdc .clear         { clear: both }
 
 /* MAIN MENU */
 #zdc .zdc-main              { list-style-type: none; margin: 0; padding: 0; background: #151C24; display: block; float: left; width: 100% }
 #zdc .zdc-main li           { float: left; border-right: 1px solid #9CA68F }
-#zdc .zdc-main li a         { color: #FFF; padding: 16px; display: block; float: left }
+#zdc .zdc-main li a         { color: #FFF; padding: 10px; display: block; float: left }
 #zdc .zdc-main li a:hover   { background: #403D32 }
 #zdc .zdc-main li span      { background: orange; padding: 2px 5px; font-weight: bold; color: #000; margin: 0 4px }
 
@@ -27,7 +27,7 @@
 #zdc-globals-submenu ul li a:hover  { background: #73705D }
 
 /* ENTRIES */
-#zdc .zdc-entry                 { margin: 4px 4px 0 4px; background: #9CA68F; width: 99% }
+#zdc .zdc-entry                 { margin: 1px; background: #9CA68F; width: 99.9% }
 #zdc .zdc-box                   { background: #EEE; padding: 10px }
 #zdc .zdc-transaction           { background: #FFFFCC }
 #zdc .zdc-counter               { background: #73705D; padding: 5px; color: #DDD }
@@ -42,7 +42,7 @@
 #zdc .zdc-error strong          { color: #FFF }
 #zdc .zdc-highlight             { background: orange }
 
-#zdc .zdc-actions           { padding: 2px; background: #CDD8BF; color: #151C24; margin-top: 5px; }
+#zdc .zdc-actions           { padding: 2px; background: #CDD8BF; color: #151C24; margin-top: 1px; }
 #zdc .zdc-actions ul        { list-style-type: none; margin: 0; padding: 0 }
 #zdc .zdc-actions ul li     { float: left; display: block; margin-right: 0px; background-repeat: no-repeat; background-position: 5px center; padding: 5px 5px 5px 28px }
 #zdc .zdc-actions ul li a   { color: #151C24 !important; text-decoration: underline }
@@ -64,7 +64,7 @@
 #zdc .zdc-explain-table td,
 #zdc .zdc-backtrace-table th,
 #zdc .zdc-backtrace-table td {
-    border: 1px solid #CDD8BF;
+    border: 1px solid #888;
 }
 
 /* HIGHLIGHTING */
@@ -76,9 +76,9 @@
 
 #zdc-successful-queries, #zdc-unsuccessful-queries, #zdc-globals, #zdc-globals-submenu,
 .zdc-entry, .zdc-records-table, .zdc-explain-table, .zdc-backtrace-table
-{ display: none }
+{ display: none; overflow: auto }
 
 /* MINI CONSOLE */
-#zdc-mini { position: absolute; top: 0; right: 1px; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 12px; text-align: left; display: block }
-#zdc-mini a { background: #151C24 url('db.gif') no-repeat 16px center; display: block; padding: 16px 16px 16px 40px; color: #FFF; text-decoration: none }
+#zdc-mini { position: absolute; top: 0; right: 0; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 12px; text-align: left; display: block }
+#zdc-mini a { background: #151C24 url('db.gif') no-repeat 6px 9px; display: block; padding: 10px 10px 10px 30px; color: #FFF; text-decoration: none }
 #zdc-mini a span { font-weight: bold; background-color: #c40000; padding: 0 5px 0 5px; margin: 0px 4px 0 4px }
