@@ -1,20 +1,20 @@
 <?php
 
 /**
- *  An advanced, compact and lightweight MySQL database wrapper library, built around PHP's
+ *  A compact (one-file only), lightweight yet feature-rich MySQL database wrapper built around PHP's
  *  {@link http://www.php.net/manual/en/book.mysqli.php MySQLi extension}. It provides methods for interacting with MySQL
  *  databases that are more secure, powerful and intuitive than PHP's default ones.
  *
  *  It supports {@link http://dev.mysql.com/doc/refman/5.0/en/commit.html transactions} and provides ways for caching
- *  query results either by saving cached data on the disk, or by using {@link http://memcached.org/about memcache}.
+ *  query results either by saving cached to the disk, in the session, or by using {@link http://memcached.org/about memcache}.
  *
- *  Provides a comprehensive debugging interface with detailed information about the executed queries: execution time,
- *  returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically
- *  {@link http://dev.mysql.com/doc/refman/5.0/en/explain.html EXPLAIN}'s each SELECT query (so you don't miss those keys
- *  again!).
+ *  The librry provides a comprehensive debugging interface with detailed information about the executed queries: execution
+ *  time, returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically
+ *  {@link http://dev.mysql.com/doc/refman/5.0/en/explain.html EXPLAIN}s each SELECT query <i>(so you don't miss those keys
+ *  again!).</i>
  *
  *  It encourages developers to write maintainable code and provides a better default security layer by encouraging the
- *  use of prepared statements, where arguments are escaped automatically.
+ *  use of <i>prepared statements</i>, where parameters are automatically escaped.
  *
  *  The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to
  *  E_ALL.
@@ -25,7 +25,6 @@
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
  */
-
 class Zebra_Database {
 
     /**
