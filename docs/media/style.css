@@ -1,90 +1,208 @@
-body { font-size: 80% }
-pre { margin-bottom: .8em }
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
-/* HEADER */
-#header             { background:#4D544E }
-#header h5          { margin: 0; padding: 10px; font-size: 29px }
-#header h5 a        { color: #FFF }
-#header h5 a:hover  { text-decoration: none }
-#header h5 span     { font-size: 50%; color: #9CA68F }
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #24292e;
+    text-align: left;
+}
 
-/* GLOBALS */
-#phpdoc             { text-align: left }
-#phpdoc a           { color: #004080; text-decoration: none; font-weight: bold }
-#phpdoc a:hover     { text-decoration: underline }
-#phpdoc a.top       { background-color: #F2EBC9; padding: 2px 4px; display: block; float: left; text-decoration: none; border: 1px solid #666; text-transform: capitalize }
-#phpdoc a.top:hover { background-color: #222; color: #FFF }
-#phpdoc ul          { list-style-type: square; margin: 1em 0 1em 15px }
-#phpdoc dt          { font-weight: bold }
-#phpdoc dd          { margin-left: 20px; font-size: 90% }
-#phpdoc pre         { font-family: inherit; font-size: 100% }
-#phpdoc table td    { padding: 0 }
-#phpdoc table       { margin-bottom: 0 }
+a {
+    color: #0366d6;
+    text-decoration: none;
+}
 
-/* HEADER */
-#doc_header         { background-color: #000; padding: 10px; color: #FFF }
-#doc_header ul      { float: right; margin: 0; list-style-type: none; *margin-top: -18px }
-#doc_header li      { padding-right: 10px; margin-right: 10px; border-right: 1px solid #FFF }
-#doc_header li.last { border-right: none }
-#doc_header a       { color: #FFF }
+a:hover {
+    text-decoration: underline;
+}
 
-/* SIDEBAR */
-td.sidebar              { background-color: #A4A680; border-right: 1px solid #666 }
-#doc_sidebar            { padding: 10px; white-space: nowrap }
-#doc_sidebar li         { color: #A66B38; line-height: 1.2 }
-#doc_sidebar li.indent  { margin-left: 20px }
-#doc_sidebar a          { color: #004080; font-size: 90% }
+h6 {
+    margin: -2em 0 2em;
+    font-size: 90%;
+}
 
-/* CONTENT */
-#doc_content { padding: 10px }
-#doc_content h2 { margin-top: 0 }
-#doc_content h4 { font-size: 140% }
-#doc_content h6 { margin: 0; top: -10px; font-weight: normal; color: #666; font-size: 90% }
-#doc_content div span p { width: 600px }
-#doc_content div span p.h3 { font-weight: bold; font-size: 120%; margin: 0 }
-#doc_content div span p img { display: block; border: 1px solid #A66B38; margin: 20px 0 }
-#doc_content div span ol { background: #EFEFEF; border: 1px solid #A66B38; padding: 10px; margin: 20px 0 }
+#phpdoc {
+    min-height: calc(100% - 95px);
+    height: calc(100% - 95px);
+}
 
-    /* INDEX PAGES */
-    .doc_index                      { background-color: #EFEFEF; padding: 10px; border: 1px solid #DEDEDE; margin-top: 10px; margin-bottom: 20px }
-    .doc_index h3                   { margin: 0 0 10px; background-color: #D9B166; color: #FFF; padding: 0 10px; border:1px solid #666; float: left; text-transform: uppercase }
-    .doc_index dl                   { clear: both }
-    .doc_index dl span              { display: block; margin-left: 0px }
-    #phpdoc .doc_index dl a         { background-color: #FFF; padding: 0 5px; border:1px solid #666 }
-    #phpdoc .doc_index dl a:hover   { background-color: #222; color: #FFF; text-decoration: none }
-    #doc_index a.top                { margin: -33px 0 0 10px }
+#phpdoc > table {
+    height: 100%;
+}
 
-    /* CLASSES */
-    #phpdoc .doc_block td       { padding: 10px }
-    h4.method                   { background-color: #271F2E; color: #FFF; padding: 6px 10px; border-bottom: 2px solid #D9B166; margin: 0; font-size: 140% }
-    h4.method span,
-    h4.variable span            { font-size: 70%; margin-right: 10px }
-    h4.variable                 { background-color: #A4A680; color: #FFF; padding: 6px 10px; border-bottom: 2px solid #D9B166; margin: 0; font-size: 140% }
-    .doc_toc                    { padding: 10px; background-color: #F2EBC9; border: 1px solid #271F2E; margin-top: 10px }
-    .doc_toc .left              { margin-right: 10px }
-    .doc_toc li                 { color: #A66B38 }
-    .doc_block                  { margin: 0 0 20px 20px; background-color: #EFEFEF; padding: 10px; border: 1px solid #DEDEDE }
-    .doc_block a                { text-decoration: none; font-weight: bold; background-color: #FFF; padding: 0 5px; border:1px solid #AAA }
-    #phpdoc .doc_block a:hover  { background-color: #222; color: #FFF; text-decoration: none }
-    .doc_block p                { margin-top: 0 }
-    .doc_block p.code           { margin: 0 0 1em 0; background-color: #FFF; border: 2px solid #666; padding: 4px; font-weight: normal; color: #000; *border-top: 4px solid #666 }
-    .doc_block ol               { background-color: #FFF; padding: 10px; margin: 1em 0px; border: 1px solid #DEDEDE }
-    .doc_block ol li            { margin: 0; padding: 0 }
+#doc_header {
+    color: #fff;
+    background: #24292e;
+    padding: 1em;
+}
 
-.doc_block p:before,
-.doc_block p:after  { content: "\0020"; display: block; height: 0; visibility: hidden; font-size: 0 }
-.doc_block p:after  { clear: both }
-.doc_block p        { *zoom: 1 } /* for IE only */
+#doc_header ul {
+    float: right;
+    list-style-type: none;
+    margin-bottom: 0;
+}
 
-/* FOOTER */
-#doc_footer { padding: 10px; background-color: #000; color: #FFF; font-size: 90% }
-#doc_footer span { color: #D9B166 }
-#doc_footer a { color: #D9B166; font-weight: bold }
+#doc_header ul li {
+    margin-left: 1em;
+    padding-right: 1em;
+    border-right: 1px solid #FFF;
+}
+
+#doc_header ul li:last-child {
+    padding-right: 0;
+    border-right: none;
+}
+
+#doc_header ul a {
+    color: #fff;
+}
+
+#doc_content,
+#doc_sidebar {
+    padding: 1em 1em 0;
+}
+
+.sidebar {
+    background: #fafbfc;
+    border-right: 1px solid #e1e4e8;
+    border-bottom: 1px solid #e1e4e8;
+    white-space: nowrap;
+}
+
+.doc_toc {
+    background: #fafbfc;
+    border: 1px solid #e1e4e8;
+    padding: 1em;
+    margin-bottom: 1.5em;
+}
+
+.doc_toc ul {
+    margin-right: 2em;
+}
+
+.doc_index h3,
+h4.variable,
+h4.method {
+    background: #f6f8fa;
+    padding: 1em;
+    border: 1px solid #e1e4e8;
+    border-bottom-width: 4px;
+    font-size: 100%;
+    margin-bottom: 0;
+}
+
+h4.variable span,
+h4.method span {
+    font-size: 80%;
+    font-weight: normal;
+    margin-right: .5em;
+}
+
+.doc_block,
+.doc_index {
+    padding: 1em;
+    background: #fafbfc;
+    margin-bottom: 1em;
+    border: 1px solid #e1e4e8;
+}
+
+.doc_block:last-of-type {
+    margin-bottom: 0;
+}
+
+.doc_block li {
+    margin-bottom: 1em;
+}
+
+.doc_block table td {
+    padding: .5em;
+}
+
+.doc_index {
+    padding: 0;
+    margin-top: 1em;
+}
+
+.doc_index:last-of-type {
+    margin-bottom: 0;
+}
+
+.doc_index dl {
+    padding: 1em;
+}
+
+.doc_index dd {
+    padding-left: 1em;
+}
+
+.doc_index dd:last-child {
+    margin-bottom: 0;
+}
+
+.doc_index dd span {
+    display: block;
+}
+
+.code {
+    background: #FFF;
+    border: 1px solid #e1e4e8;
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    font-size: 90%;
+    list-style-type: none;
+    margin: 0 0 1em;
+    padding: 1em;
+    line-height: 1.4;
+}
+
+.code li {
+    margin-bottom: 0;
+}
+
+.code a {
+    text-decoration: underline;
+}
+
+h5 {
+    font-size: 100%;
+    margin: 1em 0 .5em;
+    font-weight: 600;
+    border-bottom: 1px dotted #e1e4e8;
+    padding-bottom: 1em;
+}
+
+a.top {
+    display: block;
+    margin-top: 1em;
+}
+
+#doc_footer {
+    padding: 1em;
+    text-align: center;
+    font-size: 80%;
+}
+
+.highlight {
+    border-left: 0.5em solid #dfe2e5;
+    padding: 1em;
+    background: #ffecec;
+}
+
+.left {
+    float: left;
+}
+
+.clear { clear: both }
 
 /* SYNTAX HIGHLIGHTING */
-.src-code { background-color: #F5F5F5; border: 1px solid #ccc9a4; padding: 0 0 0 1em; margin : 0px;
-            font-family: 'Courier New', Courier, monospace; font-weight: normal; }
-.src-line {  font-family: 'Courier New', Courier, monospace; font-weight: normal; line-height: 1.4 }
+.src-code {
+        background-color: #F5F5F5;
+        border: 1px solid #ccc9a4;
+        padding: 0 0 0 1em;
+        margin : 0px
+}
+
+.src-line {  }
 
 .src-comm,
 .src-doc { color: #FF8000 }
@@ -106,37 +224,3 @@ td.sidebar              { background-color: #A4A680; border-right: 1px solid #66
 .src-doc-template { color: #0000FF }
 .src-doc-type { font-style: italic }
 .src-doc-var { font-style: italic }
-
-.tute-tag { color: #800080 }
-.tute-attribute-name { color: #000 }
-.tute-attribute-value { color: #0000FF }
-.tute-entity { font-weight: bold }
-.tute-comment { font-style: italic; color: #FF8000 }
-.tute-inline-tag { color: #636311; font-weight: bold }
-
-.highlight { margin: 25px 0; border: 2px solid black; padding: 10px 10px 10px 80px; color: #000; font-style: normal; line-height: 1.4; background: #FFCCCE url('warning.png') no-repeat 10px 10px; min-height: 50px; height:auto !important; height: 50px }
-
-img.graphic-left { float: left; margin: 0 10px 10px 0 }
-img.graphic-right { float: right; margin: 0 0 10px 10px }
-img.graphic { margin: 10px 0 }
-
-/* = MISCELLANEOUS
-----------------------------------------------------------------------------------------------------------------------*/
-.align-center   { text-align: center }
-.align-left     { text-align: left }
-.align-right    { text-align: right }
-.block          { display: block }
-.bottom         { margin-bottom: 0; padding-bottom: 0 }
-.center         { text-align: center }
-.clear          { clear: both }
-.first          { margin-left: 0; padding-left: 0 }
-.hidden         { visibility: hidden }
-.inline         { display: inline }
-.last           { margin-right: 0; padding-right: 0 }
-.left           { float: left }
-.none           { display: none }
-.nowrap         { white-space: nowrap }
-.right          { float: right }
-.stretch        { width: 100% }
-.top            { margin-top: 0; padding-top: 0 }
-.visible        { visibility: visible }

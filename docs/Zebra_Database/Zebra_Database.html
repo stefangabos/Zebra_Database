@@ -1,24 +1,23 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML>
 <html>
 <head>
-<title>Zebra_Database, a MySQL database wrapper written in PHP - Class Zebra_Database</title>
+<title>A compact, lightweight and feature-rich MySQLi database wrapper library built around PHP's mysqli extension and using prepared statements - Class Zebra_Database</title>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-<meta http-equiv="Content-Script-Type" content="text/javascript">
-<meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="stylesheet" type="text/css" href="../media/reset.css">
 <link rel="stylesheet" type="text/css" href="../media/style.css">
 </head>
 <body>
 <div id="phpdoc">
-<div id="header">
-<h5><a href="http://stefangabos.ro/">Stefan Gabos <span>webdeveloper</span></a></h5>
-</div>
 <div id="doc_header">
 Package: <strong>Zebra_Database</strong>
 <ul class="notype float">
+<!--
 <li><a href="../classtrees_Zebra_Database.html">class tree: Zebra_Database</a></li>
-<li><a href="../elementindex_Zebra_Database.html">index: Zebra_Database</a></li>
+-->
+<li><a href="../elementindex_Zebra_Database.html">element index: Zebra_Database</a></li>
+<!--
 <li class="last"><a href="../elementindex.html">all elements</a></li>
+-->
 </ul>
 <div class="clear"></div>
 </div>
@@ -26,7 +25,7 @@ Package: <strong>Zebra_Database</strong>
 <tr>
 <td valign="top" class="sidebar">
 <div id="doc_sidebar">
-<strong>Project's homepage</strong>
+<p><strong>Project's homepage</strong></p>
 <ul>
 <li>
 <a href="https://github.com/stefangabos/Zebra_Database" class="projects-homepage">Zebra_Database</a>
@@ -48,7 +47,8 @@ Package: <strong>Zebra_Database</strong>
 <h6><strong>source file:</strong> /Zebra_Database.php</h6>
 <h3>Class Overview</h3>
 <pre></pre>
-<p>An advanced, compact and lightweight MySQL database wrapper library, built around PHP's   <a href="http://www.php.net/manual/en/book.mysqli.php">MySQLi extension</a>. It provides methods for interacting with MySQL   databases that are more secure, powerful and intuitive than PHP's default ones.<p>It supports <a href="http://dev.mysql.com/doc/refman/5.0/en/commit.html">transactions</a> and provides ways for caching   query results either by saving cached data on the disk, or by using <a href="http://memcached.org/about">memcache</a>.</p><p>Provides a comprehensive debugging interface with detailed information about the executed queries: execution time,   returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically   <a href="http://dev.mysql.com/doc/refman/5.0/en/explain.html">EXPLAIN</a>'s each SELECT query (so you don't miss those keys   again!).</p><p>It encourages developers to write maintainable code and provides a better default security layer by encouraging the   use of prepared statements, where arguments are escaped automatically.</p><p>The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to   E_ALL.</p></p>
+<p>A compact (one-file only), lightweight yet feature-rich MySQL database wrapper built around PHP's   <a href="http://www.php.net/manual/en/book.mysqli.php">MySQLi extension</a>. It provides methods for interacting with MySQL   databases that are more secure, powerful and intuitive than PHP's default ones.<p>It supports <a href="http://dev.mysql.com/doc/refman/5.0/en/commit.html">transactions</a> and provides ways for caching   query results either by saving cached to the disk, in the session, or by using <a href="http://memcached.org/about">memcache</a>.</p><p>The librry provides a comprehensive debugging interface with detailed information about the executed queries: execution   time, returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically   <a href="http://dev.mysql.com/doc/refman/5.0/en/explain.html">EXPLAIN</a>s each SELECT query <em>(so you don't miss those keys
+again!).</em></p><p>It encourages developers to write maintainable code and provides a better default security layer by encouraging the   use of <em>prepared statements</em>, where parameters are automatically escaped.</p><p>The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to   E_ALL.</p></p>
 <h4>Author(s):</h4>
 <ul>
 <li>Stefan Gabos &lt;<a href="mailto:contact@stefangabos.ro">contact@stefangabos.ro</a>&gt;</li>
@@ -162,7 +162,7 @@ Package: <strong>Zebra_Database</strong>
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$cache_path"></a>
@@ -177,7 +177,7 @@ Package: <strong>Zebra_Database</strong>
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$caching_method"></a>
@@ -220,7 +220,7 @@ methods like <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$debug"></a>
@@ -243,7 +243,7 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$debugger_ip"></a>
@@ -264,7 +264,7 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$debug_show_backtrace"></a>
@@ -283,7 +283,7 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$debug_show_explain"></a>
@@ -302,7 +302,7 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$debug_show_records"></a>
@@ -327,7 +327,7 @@ of this property or try and set PHP's memory limit higher using:</em></p><p><ol 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$disable_warnings"></a>
@@ -342,7 +342,7 @@ of this property or try and set PHP's memory limit higher using:</em></p><p><ol 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$found_rows"></a>
@@ -383,7 +383,7 @@ value will be 0!</em></p><p><ol class="code"><li><div class="src-line"><span cla
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$halt_on_errors"></a>
@@ -404,7 +404,7 @@ value will be 0!</em></p><p><ol class="code"><li><div class="src-line"><span cla
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$log_path"></a>
@@ -421,7 +421,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$max_query_time"></a>
@@ -438,7 +438,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$memcache_compressed"></a>
@@ -457,7 +457,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$memcache_host"></a>
@@ -476,7 +476,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$memcache_key_prefix"></a>
@@ -495,7 +495,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$memcache_port"></a>
@@ -514,7 +514,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$minimize_console"></a>
@@ -533,7 +533,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$notification_address"></a>
@@ -550,7 +550,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$notifier_domain"></a>
@@ -567,7 +567,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$resource_path"></a>
@@ -582,7 +582,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="var$returned_rows"></a>
@@ -618,7 +618,7 @@ be 0!</em></p><p>See <a href="../Zebra_Database/Zebra_Database.html#var$found_ro
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="class_methods"></a>
@@ -639,7 +639,7 @@ __construct (
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="method__destruct"></a>
@@ -662,7 +662,7 @@ __destruct (
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodclose"></a>
@@ -701,7 +701,7 @@ $reset_options
 <td valign="top"><p>If set to TRUE the library will also unsets the connection options previously                                   set with the <a href="../Zebra_Database/Zebra_Database.html#methodoption">option()</a> method.</p><p>Default is FALSE.</p><p><em>This option was added in 2.9.5</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodconnect"></a>
@@ -792,7 +792,7 @@ $connect
 <td valign="top"><p>(Optional) Setting this argument to TRUE will force the library to connect to the                               database right away instead of using a &quot;lazy connection&quot; where the actual connection                               to the database will be made when the first query is run.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methoddcount"></a>
@@ -885,7 +885,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methoddelete"></a>
@@ -962,7 +962,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methoddlookup"></a>
@@ -1056,7 +1056,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methoddmax"></a>
@@ -1149,7 +1149,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methoddsum"></a>
@@ -1242,7 +1242,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methoderror"></a>
@@ -1274,7 +1274,7 @@ error (
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodescape"></a>
@@ -1330,7 +1330,7 @@ is ON.</em></p><p><ol class="code"><li><div class="src-line"><span class="src-co
 <td valign="top">String to be quoted and escaped.</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodfetch_assoc"></a>
@@ -1375,7 +1375,7 @@ $resource
 <td valign="top"><p>(Optional) Resource to fetch.</p><p><em>If not specified, the resource returned by the last run query is used.</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodfetch_assoc_all"></a>
@@ -1430,7 +1430,7 @@ $resource
 <td valign="top"><p>(Optional) Resource to fetch.</p><p><em>If not specified, the resource returned by the last run query is used.</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodfetch_obj"></a>
@@ -1479,7 +1479,7 @@ $resource
 <td valign="top"><p>(Optional) Resource to fetch.</p><p><em>If not specified, the resource returned by the last run query is used.</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodfetch_obj_all"></a>
@@ -1534,7 +1534,7 @@ $resource
 <td valign="top"><p>(Optional) Resource to fetch.</p><p><em>If not specified, the resource returned by the last run query is used.</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodfree_result"></a>
@@ -1570,7 +1570,7 @@ $resource
 <td valign="top"><p>(Optional) A valid resource.</p><p><em>If not specified, the resource returned by the last run query is used.</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodget_columns"></a>
@@ -1616,7 +1616,7 @@ $resource
 <td valign="top"><p>(Optional) Resource to fetch columns information from.</p><p><em>If not specified, the resource returned by the last run query is used.</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodget_link"></a>
@@ -1652,7 +1652,7 @@ get_link (
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodget_selected_database"></a>
@@ -1679,7 +1679,7 @@ get_selected_database (
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodget_tables"></a>
@@ -1721,7 +1721,7 @@ $database
 <td valign="top"><p>(Optional) The name of the database from which to return the names of existing tables.</p><p>If not specified, the tables from the currently selected database will be returned.</p><p><em>This option was added in 2.9.5</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodget_table_columns"></a>
@@ -1763,7 +1763,7 @@ with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()
 method.</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodget_table_status"></a>
@@ -1808,7 +1808,7 @@ selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">
 calling this method.</em></p><p>% may be used as a wildcard in table's name to get information about all the tables                               matching the pattern.</p><p>If not specified, information will be returned for all the tables in the currently                               selected database.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodimplode"></a>
@@ -1870,7 +1870,7 @@ arrays directly in the replacement array became possible in version 2.8.6</em></
 <td valign="top">An array with items to be &quot;glued&quot; together</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodinsert"></a>
@@ -1961,7 +1961,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodinsert_bulk"></a>
@@ -2062,7 +2062,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodinsert_id"></a>
@@ -2089,7 +2089,7 @@ insert_id (
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodinsert_update"></a>
@@ -2194,7 +2194,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodlanguage"></a>
@@ -2230,7 +2230,7 @@ $language
 <td valign="top"><p>The name of the PHP language file from the &quot;languages&quot; subdirectory.</p><p>Must be specified without the extension!                               (i.e. &quot;german&quot; for the german language not &quot;german.php&quot;)</p><p>Default is &quot;english&quot;.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodoptimize"></a>
@@ -2270,7 +2270,7 @@ selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">
 calling this method.</em></p><p>% may be used as a wildcard in table's name to optimize only the tables matching the                               pattern.</p><p>If not specified, all the tables in the currently selected database will be optimized.</p><p><em>This option was added in 2.9.5</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodoption"></a>
@@ -2331,7 +2331,7 @@ the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> 
 <td valign="top">(Optional) When setting a single option this is the value to be associated with that                               option. When setting an array of options this argument is ignored.</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodparse_file"></a>
@@ -2371,7 +2371,7 @@ try the following:</em></p><p><ol class="code"><li><div class="src-line"><span c
 <td valign="top">Path to the file to be parsed.</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodquery"></a>
@@ -2472,7 +2472,7 @@ be 0!</em></p><p>Default is FALSE.</p></td>
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodquery_unbuffered"></a>
@@ -2497,7 +2497,7 @@ sync&quot; error unless you call the <a href="../Zebra_Database/Zebra_Database.h
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodseek"></a>
@@ -2545,7 +2545,7 @@ $resource
 <td valign="top"><p>(Optional) Resource to fetch.</p><p><em>If not specified, the resource returned by the last run query is used.</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodselect"></a>
@@ -2693,7 +2693,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodselect_database"></a>
@@ -2733,7 +2733,7 @@ $database
 <td valign="top">Name of database to select as the default database for queries.</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodset_charset"></a>
@@ -2779,7 +2779,7 @@ $collation
 <td valign="top"><p>(Optional) The collation to be used by the database.</p><p>Default is 'utf8_general_ci'.</p><p>See the <a href="http://dev.mysql.com/doc/refman/5.1/en/charset-charsets.html">list of possible values</a></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodtable_exists"></a>
@@ -2821,7 +2821,7 @@ selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">
 calling this method.</em></p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodtransaction_complete"></a>
@@ -2857,7 +2857,7 @@ transaction_complete (
 <td valign="top">public</td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodtransaction_start"></a>
@@ -2905,7 +2905,7 @@ $test_only
 <td valign="top"><p>(Optional) Starts the transaction system in &quot;test mode&quot; causing the queries                                       to be rolled back (when <a href="../Zebra_Database/Zebra_Database.html#methodtransaction_complete">transaction_complete()</a> is called) - even if                                       all queries are valid.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodtruncate"></a>
@@ -2958,7 +2958,7 @@ calling this method.</em></p></td>
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <a name="methodupdate"></a>
@@ -3078,7 +3078,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
 </tr>
 </table>
-<a href="#top" class="top">Top</a>
+<a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 </div>
@@ -3086,7 +3086,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Mon, 01 May 2017 19:36:52 +0200</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+Documentation generated on <span>Fri, 05 May 2017 11:00:50 +0200</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 </div>
 </div>
 <script type="text/javascript">

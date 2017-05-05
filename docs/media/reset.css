@@ -2,7 +2,7 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 /* transform the font size so that 1em is 10px so that you can use em's
 but think in pixels as now 1em is 10px, 1.2em is 12px and so on */
-html { font-size: 62.5% }
+html { font-size: 62.5%; height: 100%; }
 
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, aabbr, acronym, address,
 big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i,
@@ -28,9 +28,10 @@ a, blockquote, dd, div, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, img, inp
 body {
 
     text-align: center; /*  this is for IE6 so that it will center the main wrapper */
-    line-height: 1.5    /*  unit-less line-height does not inherit a percentage value of its parent element,
+    line-height: 1.5;    /*  unit-less line-height does not inherit a percentage value of its parent element,
                             but instead is based on a multiplier of the font-size */
-} 
+    height: 100%;
+}
 
 /* = FONT STACKS
 ----------------------------------------------------------------------------------------------------------------------*/
@@ -40,17 +41,17 @@ body    { font-family: Tahoma, Arial, Helvetica, sans-serif } /* "narrow" sans s
 /*body    { font-family: Georgia, Utopia, Palatino, 'Palatino Linotype', serif } /* "wide" serif */
 /*body    { font-family: 'Times New Roman', Times, serif } /* "narrow" serif */
 
-h1, h2, h3, h4, h5, h6 { font-weight: normal; margin: .5em 0; line-height: 1 }
+h1, h2, h3, h4, h5, h6 { font-weight: normal; margin: 0 0 1em; line-height: 1.2 }
 
 /* set default body font size. declarations that follow, are percentual relative to this */
 body,
 p       { font-size: 100% }
-h1      { font-size: 220% }
-h2      { font-size: 200% }
-h3      { font-size: 180% }
-h4      { font-size: 160% }
-h5      { font-size: 140% }
-h6      { font-size: 120% }
+h1      { font-size: 200% }
+h2      { font-size: 180% }
+h3      { font-size: 150% }
+h4      { font-size: 110%; font-weight: 600 }
+h5      { font-size: 120% }
+h6      { font-size: 100% }
 
 small,
 sup,
@@ -58,25 +59,15 @@ sub     { font-size: 70% }
 
 p small   { display: block; line-height: 1 }
 
-p, ul, ol, dl, pre { margin: 0 0 .5em }
+p, ul, ol, dl, dd, pre { margin: 0 0 1em }
 
-strong, b { font-weight: bold }
+strong, b, dt { font-weight: 600 }
 em, i { font-style: italic }
 
 /* = CLEARFIX
 ----------------------------------------------------------------------------------------------------------------------*/
 .clearfix { *zoom: 1 }
 .clearfix:after { content: ""; display: block; clear: both; visibility: hidden; font-size: 0; height: 0 }
-
-/* = LINKS
-----------------------------------------------------------------------------------------------------------------------*/
-a           { text-decoration: underline }
-
-a:link,
-a:visited,
-a.active    { color: #123456 }
-
-a:hover     { color: #0099CC }
 
 /* = TABLES
 ----------------------------------------------------------------------------------------------------------------------*/
@@ -86,31 +77,12 @@ table {
     border-spacing: 0;
     /* tables still need cellspacing="0" */
 
-} 
+}
 
 /* = LISTS
 ----------------------------------------------------------------------------------------------------------------------*/
-ul, ol          { list-style: none }
-ul ul, ul ol,
-ol ul, ol ol    { margin-bottom: 0 }
-li, dt, dd      { line-height: 1.6 }
-
-ul.float,
-ol.float        { margin: 0 }
-
-ul.float li,
-ol.float li     { float: left; margin: 0; line-height: inherit }
-
-ul.default,
-ul.default ul   { list-style-type: disc; list-style-position: inside }
-ul.default ol   { list-style-type: decimal; list-style-position: inside; *margin-left: 0 }
-
-ul.default ul,
-ul.default ol   { margin-left: 30px }
-
-ol.default,
-ol.default ol   { list-style-type: decimal; list-style-position: inside; *margin-left: 0 }
-ol.default ul   { list-style-type: disc; list-style-position: inside }
-
-ol.default ol,
-ol.default ul   { margin-left: 30px }
+ul, ol          { list-style-type: disc; margin-left: 1.2em }
+ul.float li ,
+ol.float li {
+    float: left;
+}
