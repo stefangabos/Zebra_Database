@@ -1,3 +1,10 @@
+## version 2.9.6 (May 01 2017)
+
+- the debugging console is not shown when AJAX requests are detected
+- fixed a bug where executing unbuffered queries was generating warnings
+- improved the MySQL function recognition pattern and added all MySQL functions as per [MySQL's documentation](https://dev.mysql.com/doc/refman/5.7/en/func-op-summary-ref.html)
+- source code tidying
+
 ## version 2.9.5 (April 11 2017)
 
 > This version somewhat break the compatibility with previous versions! To fix things, you will need to remove the call to the *show_debug_console* method as now the debugging console is automatically shown when script execution ends. If you were using the *write_log* method than you will need to remove the call to it and refer to the *debug* property for more information.
