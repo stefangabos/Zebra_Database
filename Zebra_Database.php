@@ -1,23 +1,10 @@
 <?php
 
 /**
- *  A compact (one-file only), lightweight yet feature-rich MySQL database wrapper built around PHP's
- *  {@link http://www.php.net/manual/en/book.mysqli.php MySQLi extension}. It provides methods for interacting with MySQL
- *  databases that are more secure, powerful and intuitive than PHP's default ones.
+ *  A compact (one-file only), lightweight yet feature-rich PHP MySQLi database wrapper providing methods for interacting
+ *  with MySQL databases that are more secure, powerful and intuitive than PHP's default ones.
  *
- *  It supports {@link http://dev.mysql.com/doc/refman/5.0/en/commit.html transactions} and provides ways for caching
- *  query results either by saving cached to the disk, in the session, or by using {@link http://memcached.org/about memcache}.
- *
- *  The librry provides a comprehensive debugging interface with detailed information about the executed queries: execution
- *  time, returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically
- *  {@link http://dev.mysql.com/doc/refman/5.0/en/explain.html EXPLAIN}s each SELECT query <i>(so you don't miss those keys
- *  again!).</i>
- *
- *  It encourages developers to write maintainable code and provides a better default security layer by encouraging the
- *  use of <i>prepared statements</i>, where parameters are automatically escaped.
- *
- *  The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to
- *  E_ALL.
+ *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
  *  @version    2.9.6 (last revision: May 01, 2017)
