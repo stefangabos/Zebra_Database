@@ -54,7 +54,7 @@ Download the latest version, unpack it, and load it in your project
 require_once ('Zebra_Database.php');
 ```
 
-### Installation with Composer
+## Installation with Composer
 You can install Zebra_Database via [Composer](https://packagist.org/packages/stefangabos/zebra_database)
 ```
 composer require stefangabos/zebra_database:dev-master
