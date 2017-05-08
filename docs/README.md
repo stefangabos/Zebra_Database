@@ -1,1 +1,1 @@
-:books: [Documentation](https://stefangabos.github.io/Zebra_Database/)
+:books: [Documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)
