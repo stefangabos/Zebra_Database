@@ -3,13 +3,13 @@
     "type": "library",
     "description": "An advanced, compact and lightweight MySQL database wrapper library, built around PHP's MySQLi extension.",
     "keywords": ["mysqli", "mysql", "wrapper", "database", "db", "class", "library", "php"],
-    "homepage": "http://stefangabos.ro/php-libraries/zebra-database/",
+    "homepage": "https://github.com/stefangabos/Zebra_Database",
     "license": "LGPL-3.0",
     "authors": [
         {
             "name": "Stefan Gabos",
             "email": "contact@stefangabos.ro",
-            "homepage": "http://stefangabos.ro/",
+            "homepage": "https://github.com/stefangabos",
             "role": "Developer"
         }
     ],
