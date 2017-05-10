@@ -1,3 +1,9 @@
+## version 2.9.7 (May 10 2017)
+
+- fixed a bug introduced in the previous release where `*` character could not be used anymore in the [select()](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodselect) method
+- documentation is now available in the repository and on GitHub
+- the home of the library is now exclusively on GitHub
+
 ## version 2.9.6 (May 01 2017)
 
 - the debugging console is not shown when AJAX requests are detected
