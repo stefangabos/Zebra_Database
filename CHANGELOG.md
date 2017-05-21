@@ -1,3 +1,7 @@
+## version 2.9.9 (May 21 2017)
+
+- unnecessary files are no more included when downloading from GitHub or via Composer
+
 ## version 2.9.7 (May 10 2017)
 
 - fixed a bug introduced in the previous release where `*` character could not be used anymore in the [select()](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodselect) method
