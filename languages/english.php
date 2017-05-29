@@ -3,7 +3,7 @@
     /**
     * English language file for the Zebra_Database class, by Stefan Gabos <contact@stefangabos.ro>.
     *
-    * @version      1.0
+    * @version      1.0.1
     * @author       Stefan Gabos <contact@stefangabos.ro>
     *
     */
@@ -28,12 +28,13 @@
         'execution_time'                        => 'execution time',
         'explain'                               => 'explain',
         'data_not_an_array'                     => 'The third argument of <em>insert_bulk()</em> needs to be an array of arrays.',
-        'file'                                  => 'file',
+        'file'                                  => 'File',
         'file_could_not_be_opened'              => 'Could not open file',
         'from_cache'                            => 'from cache',
-        'function'                              => 'function',
+        'function'                              => 'Function',
         'globals'                               => 'globals',
-        'line'                                  => 'line',
+        'invalid_option'                        => '%s is an invalid connection option',
+        'line'                                  => 'Line',
         'memcache_extension_not_installed'      => 'Memcache extension not found.<br><span>
                                                     For using memcache as caching method, PHP version must be 4.3.3+, must be compiled with the
                                                     <a href="http://pecl.php.net/package/memcache">memcached</a> extension, and needs to be
@@ -45,12 +46,17 @@
         'no_transaction_in_progress'            => 'No transaction in progress.',
         'not_a_valid_resource'                  => 'Not a valid resource (make sure you specify a resource as argument for fetch_assoc()/fetch_obj() if you are executing a query inside the loop)',
         'optimization_needed'                   => '<strong>WARNING</strong>: The first few results returned by this query are the same as returned by <strong>%s</strong> other queries!',
+        'options_before_connect'                => 'The "option" method must be called before connecting to a MySQL server',
         'returned_rows'                         => 'returned rows',
+        'seconds'                               => 'seconds',
         'successful_queries'                    => 'successful queries',
         'to_top'                                => 'to the top',
         'transaction_in_progress'               => 'Transaction could not be started as another transaction is in progress.',
+        'unbuffered'                            => 'unbuffered',
+        'unbuffered_queries_cannot_be_cached'   => 'Unbuffered queries cannot be cached',
         'unsuccessful_queries'                  => 'unsuccessful queries',
-        'warning_charset'                       => 'No default charset and collections were set. Call set_charset() after connecting to the database.',
+        'unusable_method_unbuffered_queries'    => '%s() method cannot be used with unbuffered queries',
+        'warning_charset'                       => 'No default charset and collation were set. Call <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#methodset_charset">set_charset()</a> after connecting to the database.',
         'warning_memcache'                      => 'The "memcache" extension is available on you server - consider using memcache for caching query results.<br>See <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#var$caching_method">the documentation</a> for more information.',
         'warning_replacements_not_array'        => '<em>$replacements</em> must be an arrays of values',
         'warning_replacements_wrong_number'     => 'the number of items to replace is different than the number of items in the <em>$replacements</em> array',

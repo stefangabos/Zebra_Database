@@ -30,9 +30,6 @@
         // create a new database wrapper object
         $db = new Zebra_Database();
 
-        // turn debugging on
-        $db->debug = true;
-
         // connect to the MySQL server and select the database
         $db->connect(
             '',     // host
@@ -44,7 +41,7 @@
         $db->set_charset();
 
         // let's work with a country
-        $country = 'Romania';
+        $country = 'United States';
 
         // get the country's code
         $country_code = $db->dlookup('Code', 'country', 'Name = ?', array($country));
@@ -74,11 +71,6 @@
             ORDER BY
                 Percentage DESC
         ', array($country_code));
-
-        // show debug console.
-        // THIS SHOULD ALWAYS BE PRESENT AT THE END OF YOUR SCRIPTS!
-        // debugging should be controlled by setting the "debug" property to TRUE/FALSE
-        $db->show_debug_console();
 
     ?>
 

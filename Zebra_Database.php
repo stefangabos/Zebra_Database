@@ -1,43 +1,24 @@
 <?php
 
 /**
- *  An advanced, compact and lightweight MySQL database wrapper library, built around PHP's
- *  {@link http://www.php.net/manual/en/book.mysqli.php MySQLi extension}. It provides methods for interacting with MySQL
- *  databases that are more secure, powerful and intuitive than PHP's default ones.
+ *  A compact (one-file only), lightweight yet feature-rich PHP MySQLi database wrapper providing methods for interacting
+ *  with MySQL databases that are more secure, powerful and intuitive than PHP's default ones.
  *
- *  It supports {@link http://dev.mysql.com/doc/refman/5.0/en/commit.html transactions} and provides ways for caching
- *  query results either by saving cached data on the disk, or by using {@link http://memcached.org/about memcache}.
- *
- *  Provides a comprehensive debugging interface with detailed information about the executed queries: execution time,
- *  returned/affected rows, excerpts of the found rows, error messages, etc. It also automatically
- *  {@link http://dev.mysql.com/doc/refman/5.0/en/explain.html EXPLAIN}'s each SELECT query (so you don't miss those keys
- *  again!).
- *
- *  It encourages developers to write maintainable code and provides a better default security layer by encouraging the
- *  use of prepared statements, where arguments are escaped automatically.
- *
- *  The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to
- *  E_ALL.
- *
- *  Visit {@link http://stefangabos.ro/php-libraries/zebra-database/} for more information.
- *
- *  For more resources visit {@link http://stefangabos.ro/}
+ *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.8.6 (last revision: December 15, 2014)
- *  @copyright  (c) 2006 - 2014 Stefan Gabos
+ *  @version    2.9.9 (last revision: May 20, 2017)
+ *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
  */
-
-class Zebra_Database
-{
+class Zebra_Database {
 
     /**
      *  After an INSERT, UPDATE, REPLACE or DELETE query this property will hold the number of rows that were affected by
-     *  its execution.     .
+     *  its execution.
      *
-     *  For the number of rows returned by SELECT queries see the {@link $returned_rows} property.
+     *  For the number of rows returned by SELECT queries see the {@link returned_rows} property.
      *
      *  <code>
      *  // update some columns in a table
@@ -114,14 +95,93 @@ class Zebra_Database
     public $caching_method;
 
     /**
+     *  These property can take one of the following values:
+     *
+     *  - boolean TRUE
+     *
+     *  Setting this property to TRUE will instruct the library to generate debugging information for each query it
+     *  executes and show it on the screen when script execution ends.
+     *
+     *  - an array([bool]daily, [bool]hourly, [bool]backtrace)
+     *
+     *  Setting this to an array like above, will instruct the library to generate debugging information for each query
+     *  it executes and write it to a log file when script execution ends.
+     *
+     *  <b>-</b> The value of the first entry (daily) indicates whether the log files should be grouped by days.
+     *  If set to TRUE, log files will have their name in the form of "log_ymd.txt", where "y", "m" and "d" represent two
+     *  digit values for year, month and day, respectively.
+     *
+     *  <b>-</b> The value of the second entry (hourly) indicates whether the log files should be grouped by hours.
+     *  If set to TRUE, log files will have their name in the form of "log_ymd_h.txt", where "y", "m" and "d" represent
+     *  two digit values for year, month and day, respectively, while "h" represents the two digit value for hour.
+     *
+     *  Note that if this argument is set to TRUE, the first entry will be automatically considered as set to TRUE.
+     *
+     *  <b>-</b> The value of the third entry (backtrace) indicated whether backtrace information (where the query was
+     *  called from) should be written to the log file.
+     *
+     *  <i>The default values of all the entries is FALSE and all are optional, so setting the value of this property to
+     *  an empty array is equivalent of setting it to array(false, false, false)</i>
+     *
+     *  - boolean FALSE
+     *
+     *  The library will not generate debugging information for any of the queries it executes but if an error occurs it
+     *  will try to write information to PHP's error log file, if your environment is
+     *  {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors configured to do so} !
+     *
+     *  <samp>It is highly recommended to set the value of this property to FALSE on the production environment. Generating
+     *  the debugging information consumes a lot of resources and is meant to be used *only* in the development process!</samp>
+     *
+     *  <code>
+     *  // log debug information instead of showing it on screen
+     *  // log everything in one single file (not by day/hour) and also show backtrace information
+     *  $db->debug = array(false, false, true);
+     *
+     *  // disable the generation of debugging information
+     *  $db->debug = false;
+     *  </code>
+     *
+     *  Default is TRUE.
+     *
+     *  @var boolean
+     */
+    public $debug;
+
+    /**
+     *  Indicates {@link http://php.net/manual/en/function.debug-backtrace.php backtrace} information should be shown
+     *  in the debugging console.
+     *
+     *  Default is TRUE.
+     *
+     *  @since  2.5.9
+     *
+     *  @var boolean
+     */
+    public $debug_show_backtrace;
+
+    /**
+     *  Indicates whether queries should be {@link http://dev.mysql.com/doc/refman/5.0/en/explain.html EXPLAIN}ed in the
+     *  debugging console.
+     *
+     *  Default is TRUE.
+     *
+     *  @since  2.5.9
+     *
+     *  @var boolean
+     */
+    public $debug_show_explain;
+
+    /**
      *  Sets the number records returned by SELECT queries to be shown in the debugging console.
+     *
+     *  Setting this to 0 or FALSE will disable this feature.
      *
      *  <code>
      *  // show 50 records
-     *  $db->console_show_records(50);
+     *  $db->debug_show_records(50);
      *  </code>
      *
-     *  <i>Be aware that having this property set to a high number (hundreds), and having queries that returnthat many
+     *  <i>Be aware that having this property set to a high number (hundreds), and having queries that return that many
      *  rows, can cause your script to crash due to memory limitations. In this case you should either lower the value
      *  of this property or try and set PHP's memory limit higher using:</i>
      *
@@ -136,40 +196,11 @@ class Zebra_Database
      *
      *  @var integer
      */
-    public $console_show_records;
+    public $debug_show_records;
 
     /**
-     *  Setting this property to TRUE will instruct the library to generate debugging information for each query it executes.
-     *
-     *  Debugging information can later be reviewed by calling the {@link show_debug_console()} method.
-     *
-     *  <b>Don't forget to set this to FALSE on the production environment. Generating the debugging information consumes
-     *  a lot of resources and is meant to be used *only* in the development process!</b>.
-     *
-     *  I recommend always calling the {@link show_debug_console()} method at the end of your scripts, and simply changing
-     *  the value of the <i>debug</i> property to suit your needs, as {@link show_debug_console()} will not display
-     *  anything if <i>debug</i> is FALSE.
-     *
-     *  Remember that on a production server you will not be left in the dark by setting this property to FALSE, as the
-     *  library will try to write any errors to the system log, if PHP is
-     *  {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors configured so}!
-     *
-     *  <code>
-     *  // disable the generation of debugging information
-     *  $db->debug = false;
-     *  </code>
-     *
-     *  Default is TRUE.
-     *
-     *  @var boolean
-     */
-    public $debug;
-
-    /**
-     *  An array of IP addresses for which, if the {@link debug} property is set to TRUE, the {@link show_debug_console()}
-     *  method should produce output.
-     *
-     *  An empty array would display the debugging console for everybody.
+     *  An array of IP addresses for which to show the debugging console / write to log file, if the {@link debug} property
+     *  is <b>not</b> set to FALSE.
      *
      *  <code>
      *  // show the debugging console only to specific IPs
@@ -200,12 +231,16 @@ class Zebra_Database
     public $disable_warnings;
 
     /**
-     *  After running a SELECT query through either {@link select()} or {@link query()} methods, and having set the
-     *  <i>calc_rows</i> argument to TRUE, this property would contain the number of records that <b>would</b> have been
-     *  returned <b>if</b> there was no LIMIT applied to the query.
+     *  After running a SELECT query through {@link select()}, {@link query()} or {@link query_unbuffered()} methods and
+     *  having the <i>calc_rows</i> argument set to TRUE, this property will contain the number of records that <b>would</b>
+     *  have been returned <b>if</b> there was no LIMIT applied to the query.
      *
      *  If <i>calc_rows</i> is FALSE or is TRUE but there is no LIMIT applied to the query, this property's value will
      *  be the same as the value of the {@link returned_rows} property.
+     *
+     *  <i>For {@link query_unbuffered unbuffered} queries the value of this property will be available only after
+     *  iterating over all the records with either {@link fetch_assoc()} or {@link fetch_obj()} methods. Until then, the
+     *  value will be 0!</i>
      *
      *  <code>
      *  // let's assume that "table" has 100 rows
@@ -240,8 +275,9 @@ class Zebra_Database
 
     /**
      *  When the value of this property is set to TRUE, the execution of the script will be halted for any unsuccessful
-     *  query and the debugging console will be shown, <b>if</b> the value of the {@link debug} property is TRUE and the
-     *  viewer's IP address is in the {@link debugger_ip} array (or {@link debugger_ip} is an empty array).
+     *  query and the debugging console will be shown (or debug information will be written to the log file if configured
+     *  so), <b>if</b> the value of the {@link debug} property is <b>not</b> FALSE and the viewer's IP address is in the
+     *  {@link debugger_ip} array (or {@link debugger_ip} is an empty array).
      *
      *  <code>
      *  // don't stop execution for unsuccessful queries (if possible)
@@ -257,20 +293,19 @@ class Zebra_Database
     public $halt_on_errors;
 
     /**
-     *  Path (with trailing slash) where to store the log file.
+     *  Path where to store the log files when the {@link debug} property is set to an array.
      *
      *  <b>The path is relative to your working directory.</b>
      *
-     *  Data is written to the log file when calling the {@link write_log()} method.
+     *  <b>Use "." (dot) for the current directory instead of an empty string or the log file will be written to the
+     *  server's root.</b>
      *
-     *  <i>At the given path the library will attempt to create a file named "log.txt". Remember to grant the appropriate
-     *  rights to the script!</i>
+     *  <i>At the given path the library will attempt to create a file named "log.txt" (or variations as described
+     *  {@link debug here}). Remember to grant the appropriate rights to the script!</i>
      *
      *  <b>IF YOU'RE LOGGING, MAKE SURE YOU HAVE A CRON JOB OR SOMETHING THAT DELETES THE LOG FILE FROM TIME TO TIME!</b>
      *
-     *  Remember that the library will try to write errors to the system log (if PHP is {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors configured so})
-     *  <b>only</b> when the {@link $debug debug} property is set to FALSE (as when the <i>debug</i> property is set to
-     *  TRUE the error messages are reported in the debugging console);
+     *  Default is "" (an empty string) - log files are created in the root of your server.
      *
      *  @var string
      */
@@ -335,7 +370,7 @@ class Zebra_Database
     public $memcache_port;
 
     /**
-     *  The prefix for the keys used to identify cached queries in memcache. This allows sepparate caching of the same
+     *  The prefix for the keys used to identify cached queries in memcache. This allows separate caching of the same
      *  queries by multiple instances of the libraries, or the same instance handling multiple domains on the same
      *  memcache server.
      *
@@ -398,8 +433,12 @@ class Zebra_Database
     public $notifier_domain;
 
     /**
-     *  After running a SELECT query through either {@link select()} or {@link query()} methods this property would
-     *  contain the number of returned rows.
+     *  After running a SELECT query through {@link select()}, {@link query()} or {@link query_unbuffered()} methods, this
+     *  property will contain the number returned rows.
+     *
+     *  <i>For {@link query_unbuffered unbuffered} queries the value of this property will be available only after iterating
+     *  over all the records with either {@link fetch_assoc()} or {@link fetch_obj()} methods. Until then, the value will
+     *  be 0!</i>
      *
      *  See {@link found_rows} also.
      *
@@ -435,7 +474,7 @@ class Zebra_Database
      *  @var string
      */
     public $resource_path;
-    
+
     /**
      *  Array with cached results.
      *
@@ -444,6 +483,13 @@ class Zebra_Database
      *  @access private
      */
     private $cached_results;
+
+    /**
+     *  MySQL link identifier.
+     *
+     *  @access private
+     */
+    private $connection;
 
     /**
      *  Array that will store the database connection credentials
@@ -469,13 +515,6 @@ class Zebra_Database
     private $language;
 
     /**
-     *  MySQL link identifier.
-     *
-     *  @access private
-     */
-    private $connection;
-
-    /**
      *  Instance of an opened memcache server connection.
      *
      *  @since 2.7
@@ -483,6 +522,29 @@ class Zebra_Database
      *  @access private
      */
     private $memcache;
+
+    /**
+     *  Stores extra connect options that affect behavior for a connection.
+     *
+     *  @since 2.9.5
+     *
+     *  @access private
+     */
+    private $options;
+
+    /**
+     *  Absolute path to the library, used for includes
+     *
+     *  @access private
+     */
+    private $path;
+
+    /**
+     *  Keeps track of the total time used to execute queries
+     *
+     *  @access private
+     */
+    private $total_execution_time;
 
     /**
      *  Tells whether a transaction is in progress or not.
@@ -498,21 +560,90 @@ class Zebra_Database
     private $transaction_status;
 
     /**
+     *  Flag telling the library whether to use unbuffered queries or not
+     *
+     *  @access private
+     */
+    private $unbuffered;
+
+    /**
      *  Array of warnings, generated by the script, to be shown to the user in the debugging console
      *
      *  @access private
      */
     private $warnings;
-    
+
+    /**
+     *  All MySQL functions as per {@link https://dev.mysql.com/doc/refman/5.7/en/func-op-summary-ref.html}
+     *
+     */
+    private $mysql_functions = array(
+
+        'ABS', 'ACOS', 'ADDDATE', 'ADDTIME', 'AES_DECRYPT', 'AES_ENCRYPT', 'ANY_VALUE', 'AREA', 'ASBINARY', 'ASWKB', 'ASCII',
+        'ASIN', 'ASTEXT', 'ASWKT', 'ASYMMETRIC_DECRYPT', 'ASYMMETRIC_DERIVE', 'ASYMMETRIC_ENCRYPT', 'ASYMMETRIC_SIGN',
+        'ASYMMETRIC_VERIFY', 'ATAN', 'ATAN2', 'ATAN', 'AVG', 'BENCHMARK', 'BIN', 'BIT_AND', 'BIT_COUNT', 'BIT_LENGTH',
+        'BIT_OR', 'BIT_XOR', 'BUFFER', 'CAST', 'CEIL', 'CEILING', 'CENTROID', 'CHAR', 'CHAR_LENGTH', 'CHARACTER_LENGTH',
+        'CHARSET', 'COALESCE', 'COERCIBILITY', 'COLLATION', 'COMPRESS', 'CONCAT', 'CONCAT_WS', 'CONNECTION_ID', 'CONTAINS',
+        'CONV', 'CONVERT', 'CONVERT_TZ', 'CONVEXHULL', 'COS', 'COT', 'COUNT', 'CRC32', 'CREATE_ASYMMETRIC_PRIV_KEY',
+        'CREATE_ASYMMETRIC_PUB_KEY', 'CREATE_DH_PARAMETERS', 'CREATE_DIGEST', 'CROSSES', 'CURDATE', 'CURRENT_DATE',
+        'CURRENT_TIME', 'CURRENT_TIMESTAMP', 'CURRENT_USER', 'CURTIME', 'DATABASE', 'DATE', 'DATE_ADD', 'DATE_FORMAT',
+        'DATE_SUB', 'DATEDIFF', 'DAY', 'DAYNAME', 'DAYOFMONTH', 'DAYOFWEEK', 'DAYOFYEAR', 'DECODE', 'DEFAULT', 'DEGREES',
+        'DES_DECRYPT', 'DES_ENCRYPT', 'DIMENSION', 'DISJOINT', 'DISTANCE', 'ELT', 'ENCODE', 'ENCRYPT', 'ENDPOINT', 'ENVELOPE',
+        'EQUALS', 'EXP', 'EXPORT_SET', 'EXTERIORRING', 'EXTRACT', 'EXTRACTVALUE', 'FIELD', 'FIND_IN_SET', 'FLOOR', 'FORMAT',
+        'FOUND_ROWS', 'FROM_BASE64', 'FROM_DAYS', 'FROM_UNIXTIME', 'GEOMCOLLFROMTEXT', 'GEOMETRYCOLLECTIONFROMTEXT',
+        'GEOMCOLLFROMWKB', 'GEOMETRYCOLLECTIONFROMWKB', 'GEOMETRYCOLLECTION', 'GEOMETRYN', 'GEOMETRYTYPE', 'GEOMFROMTEXT',
+        'GEOMETRYFROMTEXT', 'GEOMFROMWKB', 'GEOMETRYFROMWKB', 'GET_FORMAT', 'GET_LOCK', 'GLENGTH', 'GREATEST', 'GROUP_CONCAT',
+        'GTID_SUBSET', 'GTID_SUBTRACT', 'HEX', 'HOUR', 'IF', 'IFNULL', 'IN', 'INET_ATON', 'INET_NTOA', 'INET6_ATON',
+        'INET6_NTOA', 'INSERT', 'INSTR', 'INTERIORRINGN', 'INTERSECTS', 'INTERVAL', 'IS_FREE_LOCK', 'IS_IPV4',
+        'IS_IPV4_COMPAT', 'IS_IPV4_MAPPED', 'IS_IPV6', 'IS_USED_LOCK', 'ISCLOSED', 'ISEMPTY', 'ISNULL', 'ISSIMPLE',
+        'JSON_APPEND', 'JSON_ARRAY', 'JSON_ARRAY_APPEND', 'JSON_ARRAY_INSERT', 'JSON_CONTAINS', 'JSON_CONTAINS_PATH',
+        'JSON_DEPTH', 'JSON_EXTRACT', 'JSON_INSERT', 'JSON_KEYS', 'JSON_LENGTH', 'JSON_MERGE', 'JSON_OBJECT', 'JSON_QUOTE',
+        'JSON_REMOVE', 'JSON_REPLACE', 'JSON_SEARCH', 'JSON_SET', 'JSON_TYPE', 'JSON_UNQUOTE', 'JSON_VALID', 'LAST_DAY',
+        'LAST_INSERT_ID', 'LCASE', 'LEAST', 'LEFT', 'LENGTH', 'LINEFROMTEXT', 'LINESTRINGFROMTEXT', 'LINEFROMWKB',
+        'LINESTRINGFROMWKB', 'LINESTRING', 'LN', 'LOAD_FILE', 'LOCALTIME', 'LOCALTIMESTAMP', 'LOCATE', 'LOG', 'LOG10', 'LOG2',
+        'LOWER', 'LPAD', 'LTRIM', 'MAKE_SET', 'MAKEDATE', 'MAKETIME', 'MASTER_POS_WAIT', 'MAX', 'MBRCONTAINS', 'MBRCOVEREDBY',
+        'MBRCOVERS', 'MBRDISJOINT', 'MBREQUAL', 'MBREQUALS', 'MBRINTERSECTS', 'MBROVERLAPS', 'MBRTOUCHES', 'MBRWITHIN', 'MD5',
+        'MICROSECOND', 'MID', 'MIN', 'MINUTE', 'MLINEFROMTEXT', 'MULTILINESTRINGFROMTEXT', 'MLINEFROMWKB',
+        'MULTILINESTRINGFROMWKB', 'MOD', 'MONTH', 'MONTHNAME', 'MPOINTFROMTEXT', 'MULTIPOINTFROMTEXT', 'MPOINTFROMWKB',
+        'MULTIPOINTFROMWKB', 'MPOLYFROMTEXT', 'MULTIPOLYGONFROMTEXT', 'MPOLYFROMWKB', 'MULTIPOLYGONFROMWKB', 'MULTILINESTRING',
+        'MULTIPOINT', 'MULTIPOLYGON', 'NAME_CONST', 'NOT IN', 'NOW', 'NULLIF', 'NUMGEOMETRIES', 'NUMINTERIORRINGS',
+        'NUMPOINTS', 'OCT', 'OCTET_LENGTH', 'OLD_PASSWORD', 'ORD', 'OVERLAPS', 'PASSWORD', 'PERIOD_ADD', 'PERIOD_DIFF', 'PI',
+        'POINT', 'POINTFROMTEXT', 'POINTFROMWKB', 'POINTN', 'POLYFROMTEXT', 'POLYGONFROMTEXT', 'POLYFROMWKB', 'POLYGONFROMWKB',
+        'POLYGON', 'POSITION', 'POW', 'POWER', 'PROCEDURE ANALYSE', 'QUARTER', 'QUOTE', 'RADIANS', 'RAND', 'RANDOM_BYTES',
+        'RELEASE_ALL_LOCKS', 'RELEASE_LOCK', 'REPEAT', 'REPLACE', 'REVERSE', 'RIGHT', 'ROUND', 'ROW_COUNT', 'RPAD', 'RTRIM',
+        'SCHEMA', 'SEC_TO_TIME', 'SECOND', 'SESSION_USER', 'SHA1', 'SHA', 'SHA2', 'SIGN', 'SIN', 'SLEEP', 'SOUNDEX', 'SPACE',
+        'SQRT', 'SRID', 'ST_AREA', 'ST_ASBINARY', 'ST_ASWKB', 'ST_ASGEOJSON', 'ST_ASTEXT', 'ST_ASWKT', 'ST_BUFFER',
+        'ST_BUFFER_STRATEGY', 'ST_CENTROID', 'ST_CONTAINS', 'ST_CONVEXHULL', 'ST_CROSSES', 'ST_DIFFERENCE', 'ST_DIMENSION',
+        'ST_DISJOINT', 'ST_DISTANCE', 'ST_DISTANCE_SPHERE', 'ST_ENDPOINT', 'ST_ENVELOPE', 'ST_EQUALS', 'ST_EXTERIORRING',
+        'ST_GEOHASH', 'ST_GEOMCOLLFROMTEXT', 'ST_GEOMETRYCOLLECTIONFROMTEXT', 'ST_GEOMCOLLFROMTXT', 'ST_GEOMCOLLFROMWKB',
+        'ST_GEOMETRYCOLLECTIONFROMWKB', 'ST_GEOMETRYN', 'ST_GEOMETRYTYPE', 'ST_GEOMFROMGEOJSON', 'ST_GEOMFROMTEXT',
+        'ST_GEOMETRYFROMTEXT', 'ST_GEOMFROMWKB', 'ST_GEOMETRYFROMWKB', 'ST_INTERIORRINGN', 'ST_INTERSECTION', 'ST_INTERSECTS',
+        'ST_ISCLOSED', 'ST_ISEMPTY', 'ST_ISSIMPLE', 'ST_ISVALID', 'ST_LATFROMGEOHASH', 'ST_LENGTH', 'ST_LINEFROMTEXT',
+        'ST_LINESTRINGFROMTEXT', 'ST_LINEFROMWKB', 'ST_LINESTRINGFROMWKB', 'ST_LONGFROMGEOHASH', 'ST_MAKEENVELOPE',
+        'ST_MLINEFROMTEXT', 'ST_MULTILINESTRINGFROMTEXT', 'ST_MLINEFROMWKB', 'ST_MULTILINESTRINGFROMWKB', 'ST_MPOINTFROMTEXT',
+        'ST_MULTIPOINTFROMTEXT', 'ST_MPOINTFROMWKB', 'ST_MULTIPOINTFROMWKB', 'ST_MPOLYFROMTEXT', 'ST_MULTIPOLYGONFROMTEXT',
+        'ST_MPOLYFROMWKB', 'ST_MULTIPOLYGONFROMWKB', 'ST_NUMGEOMETRIES', 'ST_NUMINTERIORRING', 'ST_NUMINTERIORRINGS',
+        'ST_NUMPOINTS', 'ST_OVERLAPS', 'ST_POINTFROMGEOHASH', 'ST_POINTFROMTEXT', 'ST_POINTFROMWKB', 'ST_POINTN',
+        'ST_POLYFROMTEXT', 'ST_POLYGONFROMTEXT', 'ST_POLYFROMWKB', 'ST_POLYGONFROMWKB', 'ST_SIMPLIFY', 'ST_SRID',
+        'ST_STARTPOINT', 'ST_SYMDIFFERENCE', 'ST_TOUCHES', 'ST_UNION', 'ST_VALIDATE', 'ST_WITHIN', 'ST_X', 'ST_Y',
+        'STARTPOINT', 'STD', 'STDDEV', 'STDDEV_POP', 'STDDEV_SAMP', 'STR_TO_DATE', 'STRCMP', 'SUBDATE', 'SUBSTR', 'SUBSTRING',
+        'SUBSTRING_INDEX', 'SUBTIME', 'SUM', 'SYSDATE', 'SYSTEM_USER', 'TAN', 'TIME', 'TIME_FORMAT', 'TIME_TO_SEC', 'TIMEDIFF',
+        'TIMESTAMP', 'TIMESTAMPADD', 'TIMESTAMPDIFF', 'TO_BASE64', 'TO_DAYS', 'TO_SECONDS', 'TOUCHES', 'TRIM', 'TRUNCATE',
+        'UCASE', 'UNCOMPRESS', 'UNCOMPRESSED_LENGTH', 'UNHEX', 'UNIX_TIMESTAMP', 'UPDATEXML', 'UPPER', 'USER', 'UTC_DATE',
+        'UTC_TIME', 'UTC_TIMESTAMP', 'UUID', 'UUID_SHORT', 'VALIDATE_PASSWORD_STRENGTH', 'VALUES', 'VAR_POP', 'VAR_SAMP',
+        'VARIANCE', 'VERSION', 'WAIT_FOR_EXECUTED_GTID_SET', 'WAIT_UNTIL_SQL_THREAD_AFTER_GTIDS', 'WEEK', 'WEEKDAY',
+        'WEEKOFYEAR', 'WEIGHT_STRING', 'WITHIN', 'X', 'Y', 'YEAR', 'YEARWEEK'
+
+    );
+
     /**
      *  Constructor of the class
      *
      *  @return void
      */
-    function __construct()
-    {
+    public function __construct() {
 
-        // if the mysqli extension is not loded, stop execution
+        // if the mysqli extension is not loaded, stop execution
         if (!extension_loaded('mysqli')) trigger_error('Zebra_Database: mysqli extension is not enabled!', E_USER_ERROR);
 
         // get path of class and replace (on a windows machine) \ with /
@@ -523,9 +654,9 @@ class Zebra_Database
         // public properties
         $this->cache_path = $this->path . '/cache/';
 
-        $this->console_show_records = 20;
+        $this->debug_show_records = 20;
 
-        $this->debug = $this->halt_on_errors = $this->minimize_console = true;
+        $this->debug = $this->debug_show_backtrace = $this->debug_show_explain = $this->halt_on_errors = $this->minimize_console = true;
 
         $this->language('english');
 
@@ -537,9 +668,9 @@ class Zebra_Database
 
         $this->caching_method = 'disk';
 
-        $this->cached_results = $this->debug_info = $this->debugger_ip = array();
+        $this->cached_results = $this->debug_info = $this->debugger_ip = $this->options = array();
 
-        $this->connection = $this->memcache = $this->memcache_host = $this->memcache_port = $this->memcache_compressed = false;
+        $this->connection = $this->memcache = $this->memcache_host = $this->memcache_port = $this->memcache_compressed = $this->unbuffered = false;
 
         // set default warnings:
         $this->warnings = array(
@@ -547,27 +678,53 @@ class Zebra_Database
             'memcache'      =>  true,   // memcache is available but it is not used
         );
 
+        // don't show debug console for AJAX requests
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest')
+
+            // show the debug console when script execution ends
+            register_shutdown_function(array($this, '_debug'));
+
     }
 
     /**
-     *  Closes the MySQL connection.
+     *  Closes the MySQL connection and optionally unsets the connection options previously set with the {@link option()}
+     *  method.
+     *
+     *  @param  boolean $reset_options  If set to TRUE the library will also unsets the connection options previously
+     *                                  set with the {@link option()} method.
+     *
+     *                                  Default is FALSE.
+     *
+     *                                  <i>This option was added in 2.9.5</i>
      *
      *  @since  1.1.0
      *
      *  @return boolean     Returns TRUE on success or FALSE on failure.
      */
-    function close()
-    {
+    public function close($reset_options = false) {
 
-        // close the last one open
-        return @mysqli_close($this->connection);
+        // close the last open connection, if any
+        $result = @mysqli_close($this->connection);
+
+        // set this flag to FALSE so that other connection can be opened
+        $this->connection = false;
+
+        // unset previously set credentials
+        // or otherwise running a query after close will simply reuse those credentials to connect again
+        $this->credentials = array();
+
+        // if options need to be unset, unset them now
+        if ($reset_options) $this->options = array();
+
+        // return the result
+        return $result;
 
     }
 
     /**
      *  Opens a connection to a MySQL Server and selects a database.
      *
-     *  Since the library is using <i>lazy connection</i>    (it is not actually connecting to the database until the first
+     *  Since the library is using <i>lazy connection</i> (it is not actually connecting to the database until the first
      *  query is executed), the object representing the connection to the MySQL server is not available at this time. If
      *  you need it, use the {@link get_link()} method.
      *
@@ -579,11 +736,6 @@ class Zebra_Database
      *
      *  // notice that we're not doing any error checking. errors will be shown in the debugging console
      *  $db->connect('host', 'username', 'password', 'database');
-     *
-     *  //  code goes here
-     *
-     *  // show the debugging console (if enabled)
-     *  $db->show_debug_console();
      *  </code>
      *
      *  @param  string  $host       The address of the MySQL server to connect to (i.e. localhost).
@@ -594,7 +746,9 @@ class Zebra_Database
      *
      *  @param  string  $password   The password used for authentication when connecting to the MySQL server.
      *
-     *  @param  string  $database   The database to be selected after the connection is established.
+     *  @param  string  $database   (Optional) The database to be selected after the connection is established.
+     *
+     *                              This can also be set later with the {@link select_database()} method.
      *
      *  @param  string  $port       (Optional) The port number to attempt to connect to the MySQL server.
      *
@@ -616,11 +770,10 @@ class Zebra_Database
      *
      *  @return void
      */
-    function connect($host, $user, $password, $database, $port = '', $socket = '', $connect = false)
-    {
+    public function connect($host, $user, $password, $database = '', $port = '', $socket = '', $connect = false) {
 
         // if the "memcache" extension is loaded and the caching method is set to "memcache"
-        if (extension_loaded('memcache') && $this->caching_method == 'memcache')
+        if (!extension_loaded('memcache') || $this->caching_method == 'memcache')
 
             // suppress the warning telling the developer to use memcache for caching query results
             unset($this->warnings['memcache']);
@@ -658,6 +811,10 @@ class Zebra_Database
      *
      *  @param  string  $table          Name of the table containing the column.
      *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
+     *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
      *                                  Default is "" (an empty string).
@@ -693,8 +850,7 @@ class Zebra_Database
      *                                  which evaluates to FALSE, such as 0. Use the === operator for testing the return
      *                                  value of this method.</i>
      */
-    function dcount($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false)
-    {
+    public function dcount($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
         // run the query
         $this->query('
@@ -702,13 +858,13 @@ class Zebra_Database
             SELECT
                 COUNT(' . $column . ') AS counted
             FROM
-                `'. $table . '`' .
+                ' . $this->_escape($table) .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result !== false && $this->returned_rows > 0) {
+        if (isset($this->last_result) && $this->last_result !== false && $this->returned_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
@@ -737,6 +893,10 @@ class Zebra_Database
      *
      *  @param  string  $table          Table from which to delete.
      *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
+     *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
      *                                  Default is "" (an empty string).
@@ -759,23 +919,19 @@ class Zebra_Database
      *
      *  @return boolean                 Returns TRUE on success or FALSE on error.
      */
-    function delete($table, $where = '', $replacements = '', $highlight = false)
-    {
+    public function delete($table, $where = '', $replacements = '', $highlight = false) {
 
         // run the query
         $this->query('
 
             DELETE FROM
-                `'. $table . '`' .
+                ' . $this->_escape($table) .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, false, false, $highlight);
 
-        // if query was successful
-        if ($this->last_result) return true;
-
-        // if query was unsuccessful
-        return false;
+        // return TRUE if query was successful, or FALSE if it wasn't
+        return isset($this->last_result) && $this->last_result !== false;
 
     }
 
@@ -801,6 +957,10 @@ class Zebra_Database
      *                                  row.</i>
      *
      *  @param  string  $table          Name of the table in which to search.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
      *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
@@ -833,8 +993,7 @@ class Zebra_Database
      *                                  were found. It also returns FALSE if there are no records in the table or if there
      *                                  was an error.
      */
-    function dlookup($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false)
-    {
+    public function dlookup($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
         // run the query
         $this->query('
@@ -842,14 +1001,14 @@ class Zebra_Database
             SELECT
                 ' . $column . '
             FROM
-                `'. $table . '`' .
+                ' . $this->_escape($table) .
             ($where != '' ? ' WHERE ' . $where : '') . '
             LIMIT 1
 
         ', $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result !== false && $this->returned_rows > 0) {
+        if (isset($this->last_result) && $this->last_result !== false && $this->returned_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
@@ -859,7 +1018,7 @@ class Zebra_Database
             if (count($row) == 1) return array_pop($row);
 
             // if more than one columns, return as an array
-            else return $row;
+            return $row;
 
         }
 
@@ -883,6 +1042,10 @@ class Zebra_Database
      *  @param  string  $column         Name of the column in which to search.
      *
      *  @param  string  $table          Name of table in which to search.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
      *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
@@ -919,8 +1082,7 @@ class Zebra_Database
      *                                  which evaluates to FALSE, such as 0. Use the === operator for testing the return
      *                                  value of this method.</i>
      */
-    function dmax($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false)
-    {
+    public function dmax($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
         // run the query
          $this->query('
@@ -928,13 +1090,13 @@ class Zebra_Database
             SELECT
                 MAX(' . $column . ') AS maximum
             FROM
-                `'. $table . '`' .
+                ' . $this->_escape($table) .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result !== false && $this->returned_rows > 0) {
+        if (isset($this->last_result) && $this->last_result !== false && $this->returned_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
@@ -966,6 +1128,10 @@ class Zebra_Database
      *  @param  string  $column         Name of the column in which to sum values.
      *
      *  @param  string  $table          Name of the table in which to search.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
      *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
@@ -1001,8 +1167,7 @@ class Zebra_Database
      *                                  which evaluates to FALSE, such as 0. Use the === operator for testing the return
      *                                  value of this method.</i>
      */
-    function dsum($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false)
-    {
+    public function dsum($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
         // run the query
         $this->query('
@@ -1010,13 +1175,13 @@ class Zebra_Database
             SELECT
                 SUM(' . $column . ') AS total
             FROM
-                `'. $table . '`' .
+                ' . $this->_escape($table) .
             ($where != '' ? ' WHERE ' . $where : '')
 
         , $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if ($this->last_result !== false && $this->found_rows > 0) {
+        if (isset($this->last_result) && $this->last_result !== false && $this->found_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
@@ -1028,6 +1193,38 @@ class Zebra_Database
 
         // if error or no records
         return false;
+
+    }
+
+    /**
+     *  Returns a string description of the last error, or an empty string if no error occurred.
+     *
+     *  In most cases you should not need this method as any errors are shown in the debugging console as long as the
+     *  {@link debug} property is set to TRUE, or available in PHP's error log file (if your environment is
+     *  {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors configured to do so}) when set to
+     *  FALSE. Alternatively, debugging information can be found in the log file.
+     *
+     *  If, for some reasons, none of the above is available, you can use this method to see errors.
+     *
+     *  <code>
+     *  $db->query('
+     *      SELECT
+     *          *
+     *      FROM
+     *          users
+     *      WHERE
+     *          invalid_column = ?
+     *  ', array($value)) or die($db->error());
+     *  </code>
+     *
+     *  @since  2.9.1
+     *
+     *  @return void
+     */
+    public function error() {
+
+        // a string description of the last error, or an empty string if no error occurred
+        return mysqli_error($this->connection);
 
     }
 
@@ -1068,23 +1265,16 @@ class Zebra_Database
      *  @return string              Returns the quoted string with special characters escaped in order to prevent SQL
      *                              injections.     .
      */
-    function escape($string)
-    {
+    public function escape($string) {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if "magic quotes" are on, strip slashes
-            if (get_magic_quotes_gpc()) $string = stripslashes($string);
+        // if "magic quotes" are on, strip slashes
+        if (get_magic_quotes_gpc()) $string = stripslashes($string);
 
-            // escape and return the string
-            return mysqli_real_escape_string($this->connection, $string);
-
-        }
-
-        // upon error, we don't have to report anything as _connected() method already did
-        // just return FALSE
-        return false;
+        // escape and return the string
+        return mysqli_real_escape_string($this->connection, $string);
 
     }
 
@@ -1111,42 +1301,50 @@ class Zebra_Database
      *  @return mixed                   Returns an associative array that corresponds to the fetched row and moves the
      *                                  internal data pointer ahead, or FALSE if there are no more rows.
      */
-    function fetch_assoc($resource = '')
-    {
+    public function fetch_assoc($resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            // if $resource is a valid resource, fetch and return next row from the result set
-            if ($this->_is_result($resource)) return mysqli_fetch_assoc($resource);
+        // if $resource is a valid resource
+        if ($this->_is_result($resource)) {
 
-            // if $resource is a pointer to an array taken from cache
-            elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
+            // fetch next row from the result set
+            $result = mysqli_fetch_assoc($resource);
 
-                // get the current entry from the array and advance the pointer
-                $result = each($this->cached_results[$resource]);
+            // if this was an unbuffered query manage setting the value for $returned_rows and some other things
+            if ($resource->type == 1) $this->_manage_unbuffered_query_info($resource, $result);
 
-                // return as an associative array
-                return @$result[1];
+            // return next row, or FALSE if no more rows available
+            return $result;
 
-            // if $resource is invalid
-            } else
+        // if $resource is a pointer to an array taken from cache
+        } elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
 
-                // save debug information
-                $this->_log('errors', array(
+            // get the current entry from the array
+            $result = current($this->cached_results[$resource]);
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
+            // advance the pointer
+            next($this->cached_results[$resource]);
 
-                ));
+            // note that the above could've been done in a single step, using PHP's each() function
+            // but it has been deprecated starting with PHP 7.2.0
+
+            // return the value
+            return $result;
 
         }
 
-        // we don't have to report any error as either the _connected() method already did
-        // or did so the checking for valid resource
-        return false;
+        // if $resource is invalid
+        // save debug information
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['not_a_valid_resource'],
+
+        ));
 
     }
 
@@ -1179,59 +1377,52 @@ class Zebra_Database
      *                                  by the previous query or from the resource given as argument and moves the
      *                                  internal pointer to the end. Returns FALSE on error.
      */
-    function fetch_assoc_all($index = '', $resource = '')
-    {
+    public function fetch_assoc_all($index = '', $resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            if (
+        if (
 
-                // if $resource is a valid resource OR
-                $this->_is_result($resource) ||
+            // if $resource is a valid resource OR
+            $this->_is_result($resource) ||
 
-                // $resource is a pointer to an array taken from cache
-                (is_integer($resource) && isset($this->cached_results[$resource]))
+            // $resource is a pointer to an array taken from cache
+            (is_integer($resource) && isset($this->cached_results[$resource]))
 
-            ) {
+        ) {
 
-                // this is the array that will contain the results
-                $result = array();
+            // this is the array that will contain the results
+            $result = array();
 
-                // move the pointer to the start of $resource
-                // if there are any rows available (notice the @)
-                if (@$this->seek(0, $resource))
+            // move the pointer to the start of $resource
+            // if there are any rows available (notice the @)
+            if (@$this->seek(0, $resource))
 
-                    // iterate through the records
-                    while ($row = $this->fetch_assoc($resource))
+                // iterate through the records
+                while ($row = $this->fetch_assoc($resource))
 
-                        // if $index was specified and exists in the returned row, add data to the result
-                        if (trim($index) != '' && isset($row[$index])) $result[$row[$index]] = $row;
+                    // if $index was specified and exists in the returned row, add data to the result
+                    if (trim($index) != '' && isset($row[$index])) $result[$row[$index]] = $row;
 
-                        // if $index was not specified or does not exists in the returned row, add data to the result
-                        else $result[] = $row;
+                    // if $index was not specified or does not exists in the returned row, add data to the result
+                    else $result[] = $row;
 
-                // return the results
-                return $result;
-
-            // if $resource is invalid
-            } else
-
-                // save debug information
-                $this->_log('errors', array(
-
-                    'message'   =>  $this->language['not_a_valid_resource'],
-
-                ));
+            // return the results
+            return $result;
 
         }
 
-        // we don't have to report any error as either the _connected() method already did
-        // or did so the checking for valid resource
-        return false;
+        // if $resource is invalid
+        // save debug information
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['not_a_valid_resource'],
+
+        ));
 
     }
 
@@ -1260,55 +1451,56 @@ class Zebra_Database
      *  @return mixed                   Returns an object with properties that correspond to the fetched row and moves
      *                                  the internal data pointer ahead, or FALSE if there are no more rows.
      */
-    function fetch_obj($resource = '')
-    {
+    public function fetch_obj($resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            // if $resource is a valid resource, fetch and return next row from the result set
-            if ($this->_is_result($resource)) return mysqli_fetch_object($resource);
+        // if $resource is a valid resource, fetch and return next row from the result set
+        if ($this->_is_result($resource)) {
 
-            // if $resource is a pointer to an array taken from cache
-            elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
+            // fetch next row from the result set
+            $result = mysqli_fetch_object($resource);
 
-                // get the current entry from the array and advance the pointer
-                $result = each($this->cached_results[$resource]);
+            // if this was an unbuffered query manage setting the value for $returned_rows and some other things
+            if ($resource->type == 1) $this->_manage_unbuffered_query_info($resource, $result);
 
-                // if we're not past the end of the array
-                if ($result !== false) {
+            // return next row, or FALSE if no more rows available
+            return $result;
 
-                    // create a new generic object -> similar with $obj = new stdClass() but i like this one better ;)
-                    $obj = (object) NULL;
+        // if $resource is a pointer to an array taken from cache
+        } elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
 
-                    // populate the object's properties
-                    foreach ($result[1] as $key=>$value) $obj->$key = $value;
+            // get the current entry from the array
+            $result = current($this->cached_results[$resource]);
 
-                // if we're past the end of the array
-                // make sure we return FALSE
-                } else $obj = false;
+            // advance the pointer
+            next($this->cached_results[$resource]);
 
-                // return as object
-                return $obj;
+            // note that the above could've been done in a single step, using PHP's each() function
+            // but it has been deprecated starting with PHP 7.2.0
 
-            // if $resource is invalid
-            } else
+            // if we're not past the end of the array
+            if ($result !== false)
 
-                // save debug information
-                $this->_log('errors', array(
+                // cast the resulting array as an object
+                $result = (object)$result;
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
-
-                ));
+            // return result
+            return $result;
 
         }
 
-        // we don't have to report any error as either the _connected() method already did
-        // or did so the checking for valid resource
-        return false;
+        // if $resource is invalid
+        // save debug information
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['not_a_valid_resource'],
+
+        ));
 
     }
 
@@ -1341,59 +1533,79 @@ class Zebra_Database
      *                                  created by the previous query or from the resource given as argument and moves
      *                                  the internal pointer to the end. Returns FALSE on error.
      */
-    function fetch_obj_all($index = '', $resource = '')
-    {
+    public function fetch_obj_all($index = '', $resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            if (
+        if (
 
-                // if $resource is a valid resource OR
-                $this->_is_result($resource) ||
+            // if $resource is a valid resource OR
+            $this->_is_result($resource) ||
 
-                // $resource is a pointer to an array taken from cache
-                (is_integer($resource) && isset($this->cached_results[$resource]))
+            // $resource is a pointer to an array taken from cache
+            (is_integer($resource) && isset($this->cached_results[$resource]))
 
-            ) {
+        ) {
 
-                // this is the array that will contain the results
-                $result = array();
+            // this is the array that will contain the results
+            $result = array();
 
-                // move the pointer to the start of $resource
-                // if there are any rows available (notice the @)
-                if (@$this->seek(0, $resource))
+            // move the pointer to the start of $resource
+            // if there are any rows available (notice the @)
+            if (@$this->seek(0, $resource))
 
-                    // iterate through the resource data
-                    while ($row = $this->fetch_obj($resource))
+                // iterate through the resource data
+                while ($row = $this->fetch_obj($resource))
 
-                        // if $index was specified and exists in the returned row, add data to the result
-                        if (trim($index) != '' && isset($row[$index])) $result[$row[$index]] = $row;
+                    // if $index was specified and exists in the returned row, add data to the result
+                    if (trim($index) != '' && property_exists($row, $index)) $result[$row->{$index}] = $row;
 
-                        // if $index was not specified or does not exists in the returned row, add data to the result
-                        else $result[] = $row;
+                    // if $index was not specified or does not exists in the returned row, add data to the result
+                    else $result[] = $row;
 
-                // return the results
-                return $result;
-
-            // if $resource is invalid
-            } else
-
-                // save debug information
-                $this->_log('errors', array(
-
-                    'message'   =>  $this->language['not_a_valid_resource'],
-
-                ));
+            // return the results
+            return $result;
 
         }
 
-        // we don't have to report any error as either the _connected() method already did
-        // or did so the checking for valid resource
-        return false;
+        // if $resource is invalid
+        // save debug information
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['not_a_valid_resource'],
+
+        ));
+
+    }
+
+    /**
+     *  Frees the memory associated with a result
+     *
+     *  <samp>You should always free your result with {@link free_result()}, when your result object is not needed anymore.</samp>
+     *
+     *  @param  resource    $resource   (Optional) A valid resource.
+     *
+     *                                  <i>If not specified, the resource returned by the last run query is used.</i>
+     *
+     *  @since  2.9.1
+     *
+     *  @return void
+     */
+    public function free_result($resource = '') {
+
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
+
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+
+        // if argument is a valid resource, free the result
+        // (we mute it as it might have already been freed by a previous call to this method)
+        if ($this->_is_result($resource)) @mysqli_free_result($resource);
 
     }
 
@@ -1435,49 +1647,40 @@ class Zebra_Database
      *  @return mixed                   Returns an associative array with information about the columns in the MySQL
      *                                  result associated with the specified result identifier, or FALSE on error.
      */
-    function get_columns($resource = '')
-    {
+    public function get_columns($resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and a query was run before, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            // if $resource is a valid resource
-            if ($this->_is_result($resource)) {
+        // if $resource is a valid resource
+        if ($this->_is_result($resource)) {
 
-                $result = array();
+            $result = array();
 
-                // iterate through all the columns
-                while ($column_info = mysqli_fetch_field($resource))
+            // iterate through all the columns
+            while ($column_info = mysqli_fetch_field($resource))
 
-                    // add information to the array of results
-                    // converting it first to an associative array
-                    $result[$column_info->name] = get_object_vars($column_info);
+                // add information to the array of results
+                // converting it first to an associative array
+                $result[$column_info->name] = get_object_vars($column_info);
 
-                // return information
-                return $result;
+            // return information
+            return $result;
 
-            // if $resource is a pointer to an array taken from cache
-            // return information that was stored in the cached file
-            } elseif (is_integer($resource) && isset($this->cached_results[$resource])) return $this->column_info;
+        // if $resource is a pointer to an array taken from cache
+        // return information that was stored in the cached file
+        } elseif (is_integer($resource) && isset($this->cached_results[$resource])) return $this->column_info;
 
-            // if $resource is invalid
-            else
+        // if $resource is invalid
+        // save debug information
+        return $this->_log('errors', array(
 
-                // save debug information
-                $this->_log('errors', array(
+            'message'   =>  $this->language['not_a_valid_resource'],
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
-
-                ));
-
-        }
-
-        // we don't have to report any error as either the _connected() method already did
-        // or did so the checking for valid resource
-        return false;
+        ));
 
     }
 
@@ -1502,14 +1705,30 @@ class Zebra_Database
      *
      *  @return identifier  Returns the MySQL link identifier associated with the current connection to the MySQL server.
      */
-    function get_link()
-    {
+    public function get_link() {
 
         // if an active connection exists
         // return the MySQL link identifier associated with the current connection to the MySQL server
         if ($this->_connected()) return $this->connection;
 
         // if script gets this far, return false as something must've been wrong
+        return false;
+
+    }
+
+    /**
+    *   Returns the name of the currently selected database.
+    *
+    *   @since 2.8.7
+    *
+    *   @return mixed   Returns the name of the currently selected database, or FALSE if there's no active connection.
+    */
+    public function get_selected_database() {
+
+        // if an active connection exists
+        if ($this->_connected()) return $this->credentials['database'];
+
+        // return false if there's no connection
         return false;
 
     }
@@ -1524,17 +1743,20 @@ class Zebra_Database
      *
      *  @param  string  $table  Name of table to return column information for.
      *
+     *                          <i>May also be given like databasename.tablename if a database was not explicitly selected
+     *                          with the {@link connect()} or {@link select_database()} methods prior to calling this
+     *                          method.</i>
+     *
      *  @since  2.6
      *
      *  @return array           Returns information about the columns of a given table as an associative array.
      */
-    function get_table_columns($table)
-    {
+    public function get_table_columns($table) {
 
         // run the query
         $this->query('
 
-            SHOW COLUMNS FROM `' . $this->escape($table) . '`
+            SHOW COLUMNS FROM ' . $this->_escape($table) . '
 
         ');
 
@@ -1547,30 +1769,41 @@ class Zebra_Database
      *  Returns an associative array with a lot of useful information on all or specific tables only.
      *
      *  <code>
-     *  // return status information on tables having their name starting with "users"
+     *  // return status information on tables in the currently
+     *  // selected database having their name starting with "users"
      *  $tables = get_table_status('users%');
      *  </code>
      *
-     *  @param  string  $pattern    (Optional) Instructs the method to return information only on tables whose name matches
-     *                              the given pattern.
+     *  @param  string  $table      (Optional) Table for which to return information for.
      *
-     *                              Can be a table name or a pattern with "%" as wildcard.
+     *                              <i>May also be given like databasename.tablename if a database was not explicitly
+     *                              selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                              calling this method.</i>
+     *
+     *                              % may be used as a wildcard in table's name to get information about all the tables
+     *                              matching the pattern.
+     *
+     *                              If not specified, information will be returned for all the tables in the currently
+     *                              selected database.
      *
      *  @since  1.1.2
      *
      *  @return array               Returns an associative array with a lot of useful information on all or specific
      *                              tables only.
      */
-    function get_table_status($pattern = '')
-    {
+    public function get_table_status($table = '') {
+
+        // if table argument contains the database name, extract it
+        if (strpos($table, '.') !== false) list($database, $table) = explode('.', $table, 2);
 
         // run the query
         $this->query('
             SHOW
             TABLE
             STATUS
-            ' . (trim($pattern) != '' ? 'LIKE ?' : '') . '
-        ', array($pattern));
+            ' . (isset($database) ? ' IN ' . $this->_escape($database) : '') . '
+            ' . (trim($table) != '' ? 'LIKE ?' : '') . '
+        ', array($table));
 
         // fetch and return data
         return $this->fetch_assoc_all('Name');
@@ -1578,24 +1811,28 @@ class Zebra_Database
     }
 
     /**
-     *  Returns an array with all the tables in the current database.
+     *  Returns an array with all the tables in a database.
      *
      *  <code>
-     *  // get all tables from database
+     *  // get all tables from the currently selected database
      *  $tables = get_tables();
      *  </code>
+     *
+     *  @param  string  $database   (Optional) The name of the database from which to return the names of existing tables.
+     *
+     *                              If not specified, the tables from the currently selected database will be returned.
+     *
+     *                              <i>This option was added in 2.9.5</i>
      *
      *  @since  1.1.2
      *
      *  @return array   An array with all the tables in the current database.
      */
-    function get_tables()
-    {
+    public function get_tables($database = '') {
 
         // fetch all the tables in the database
         $result = $this->fetch_assoc_all('', $this->query('
-            SHOW TABLES
-        '));
+            SHOW TABLES' . ($database != '' ? ' IN ' . $this->_escape($database) : '')));
 
         $tables = array();
 
@@ -1605,26 +1842,6 @@ class Zebra_Database
 
         // return the array with the table names
         return $tables;
-
-    }
-
-    /**
-     *  Stops the execution of the script at the line where this method is called and, if {@link debug} is set to TRUE and
-     *  the viewer's IP address is in the {@link debugger_ip} array (or <i>debugger_ip</i> is an empty array), shows the
-     *  debugging console.
-     *
-     *  @since  1.0.7
-     *
-     *  @return void
-     */
-    function halt()
-    {
-
-        // show the debugging console
-        $this->show_debug_console();
-
-        // stop further execution of the script
-        die();
 
     }
 
@@ -1669,8 +1886,7 @@ class Zebra_Database
      *  @return string              Returns the string representation of all the array elements in the same order,
      *                              escaped and with commas between each element.
      */
-    function implode($pieces)
-    {
+    public function implode($pieces) {
 
         $result = '';
 
@@ -1688,15 +1904,33 @@ class Zebra_Database
      *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
      *
      *  <code>
+     *  // notice that we're also using MySQL functions within values
      *  $db->insert(
      *      'table',
      *      array(
-     *          'column1'   =>  'value1',
-     *          'column2'   =>  'value2',
+     *          'column1'       =>  'value1',
+     *          'column2'       =>  'TRIM(UCASE("value2"))',
+     *          'date_updated'  =>  'NOW()',
+     *  ));
+     *
+     *  // when using MySQL functions, the value will be used as it is without being escaped!
+     *  // while this is ok when using a function without any arguments like NOW(), this may
+     *  // pose a security concern if the argument(s) come from user input.
+     *  // in this case we have to escape the value ourselves
+     *  $db->insert(
+     *      'table',
+     *      array(
+     *          'column1'       =>  'value1',
+     *          'column2'       =>  'TRIM(UCASE("' . $db->escape($value) . '"))',
+     *          'date_updated'  =>  'NOW()',
      *  ));
      *  </code>
      *
      *  @param  string  $table          Table in which to insert.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
      *
      *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
      *                                  array's values represent the values to be inserted in each respective column.
@@ -1704,6 +1938,14 @@ class Zebra_Database
      *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
      *                                  usage of reserved words as column names) and values will be automatically
      *                                  {@link escape()}d in order to prevent SQL injections.
+     *
+     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
+     *                                  as <i>values</i>.
+     *
+     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
+     *                                  without being escaped! While this is ok when using a function without any arguments
+     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
+     *                                  In this case make sure you {@link escape} the values yourself!</samp>
      *
      *  @param  boolean $ignore         (Optional) By default trying to insert a record that would cause a duplicate
      *                                  entry for a primary key would result in an error. If you want these errors to be
@@ -1722,30 +1964,47 @@ class Zebra_Database
      *
      *  @return boolean                 Returns TRUE on success of FALSE on error.
      */
-    function insert($table, $columns, $ignore = false, $highlight = false)
-    {
+    public function insert($table, $columns, $ignore = false, $highlight = false) {
 
-        // enclose the column names in grave accents
-        $cols = '`' . implode('`,`', array_keys($columns)) . '`';
+        // get string of comma separated column names, enclosed in grave accents
+        $cols = $this->_escape(array_keys($columns));
 
-        // parameter markers for escaping values later on
-        $values = rtrim(str_repeat('?,', count($columns)), ',');
+        $values = '';
+
+        // iterate through the given columns
+        foreach ($columns as $column_name => $value) {
+
+            // separate values by comma
+            $values .= ($values != '' ? ', ' : '');
+
+            // if value is a MySQL function
+            if ($this->_is_mysql_function($value)) {
+
+                // use it as it is
+                $values .= $value;
+
+                // we don't need this value in the replacements array
+                unset($columns[$column_name]);
+
+            // if not a MySQL function, use a marker
+            // that we'll replace with the value from the replacements array
+            } else $values .= '?';
+
+        }
 
         // run the query
         $this->query('
 
             INSERT' . ($ignore ? ' IGNORE' : '') . ' INTO
-                `' . $table . '`
+                ' . $this->_escape($table) . '
                 (' . $cols . ')
             VALUES
                 (' . $values . ')'
 
         , array_values($columns), false, false, $highlight);
 
-        // return true if query was executed successfully
-        if ($this->last_result) return true;
-
-        return false;
+        // return TRUE if query was successful, or FALSE if it wasn't
+        return isset($this->last_result) && $this->last_result !== false;
 
     }
 
@@ -1756,29 +2015,52 @@ class Zebra_Database
      *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
      *
      *  <code>
+     *  // notice that we're also using MySQL functions within values
      *  $db->insert_bulk(
      *      'table',
-     *      array('column1', 'column2'),
+     *      array('column1', 'column2', 'date_updated'),
      *      array(
-     *          array('value1', 'value2'),
-     *          array('value3', 'value4'),
-     *          array('value5', 'value6'),
-     *          array('value7', 'value8'),
-     *          array('value9', 'value10')
+     *          array('value1', 'TRIM(UCASE("value2"))', 'NOW()'),
+     *          array('value3', 'TRIM(UCASE("value4"))', 'NOW()'),
      *      )
-     *  ));
+     *  );
+     *
+     *  // when using MySQL functions, the value will be used as it is without being escaped!
+     *  // while this is ok when using a function without any arguments like NOW(), this may
+     *  // pose a security concern if the argument(s) come from user input.
+     *  // in this case we have to escape the value ourselves
+     *  $db->insert_bulk(
+     *      'table',
+     *      array('column1', 'column2', 'date_updated'),
+     *      array(
+     *          array('value1', 'TRIM(UCASE("' . $db->escape($value2) . '"))', 'NOW()'),
+     *          array('value3', 'TRIM(UCASE("' . $db->escape($value4) . '"))', 'NOW()'),
+     *      )
+     *  );
      *  </code>
      *
      *  @param  string  $table          Table in which to insert.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
      *
      *  @param  array   $columns        An array with columns to insert values into.
      *
      *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
      *                                  usage of reserved words as column names).
      *
-     *  @param  array  $data           An array of an unlimited number of arrays containing values to be inserted.
+     *  @param  array  $data            An array of an unlimited number of arrays containing values to be inserted.
      *
      *                                  Values will be automatically {@link escape()}d in order to prevent SQL injections.
+     *
+     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
+     *                                  as <i>values</i>.
+     *
+     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
+     *                                  without being escaped! While this is ok when using a function without any arguments
+     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
+     *                                  In this case make sure you {@link escape} the values yourself!</samp>
      *
      *  @param  boolean $ignore         (Optional) By default, trying to insert a record that would cause a duplicate
      *                                  entry for a primary key would result in an error. If you want these errors to be
@@ -1788,12 +2070,16 @@ class Zebra_Database
      *
      *                                  Default is FALSE.
      *
+     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
+     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *
+     *                                  Default is FALSE.
+     *
      *  @since  2.1
      *
      *  @return boolean                 Returns TRUE on success of FALSE on error.
      */
-    function insert_bulk($table, $columns, $data, $ignore = false)
-    {
+    public function insert_bulk($table, $columns, $data, $ignore = false, $highlight = false) {
 
         // we can't do array_values(array_pop()) since PHP 5.3+ as will trigger a "strict standards" error
         $values = array_values($data);
@@ -1802,36 +2088,47 @@ class Zebra_Database
         if (!is_array(array_pop($values)))
 
             // save debug information
-            $this->_log('errors', array(
+            return $this->_log('errors', array(
 
                 'message'   =>  $this->language['data_not_an_array'],
 
             ));
 
-        // if arguments are ok
-        else {
+        // start preparing the INSERT statement
+        $sql = '
+            INSERT' . ($ignore ? ' IGNORE' : '') . ' INTO
+                ' . $this->_escape($table) . '
+                (' . '`' . implode('`,`', $columns) . '`' . ')
+            VALUES
+        ';
 
-            // start preparing the INSERT statement
-            $sql = '
-                INSERT' . ($ignore ? ' IGNORE' : '') . ' INTO
-                    `' . $table . '`
-                    (' . '`' . implode('`,`', $columns) . '`' . ')
-                VALUES
-            ';
+        $sql_values = $value_set = '';
 
-            // iterate through the arrays and escape values
-            foreach ($data as $values) $sql .= '(' . $this->implode($values) . '),';
+        // iterate through the value sets
+        foreach ($data as $values) {
 
-            // run the query
-            $this->query(rtrim($sql, ','));
+            $sql_values .= ($sql_values != '' ? ', ' : '') . '(';
 
-            // return true if query was executed successfully
-            if ($this->last_result) return true;
+            $value_set = '';
+
+            // for each value in set
+            foreach ($values as $value)
+
+                // if it represents one or more MySQL functions, do not enclose it in quotes, or do otherwise
+                $value_set .= ($value_set != '' ? ', ' : '') . ($this->_is_mysql_function($value) ? $value : '"' . $this->escape($value) . '"');
+
+            $sql_values .= $value_set . ')';
 
         }
 
-        // if script gets this far, return false as something must've been wrong
-        return false;
+        // append the value sets to the query
+        $sql .= $sql_values;
+
+        // run the query
+        $this->query($sql, '', false, false, $highlight);
+
+        // return true if query was executed successfully
+        return isset($this->last_result) && $this->last_result !== false;
 
     }
 
@@ -1844,28 +2141,21 @@ class Zebra_Database
      *                  '0' if the previous query does not generate an AUTO_INCREMENT value, or FALSE if there was
      *                  no MySQL connection.
      */
-    function insert_id()
-    {
+    public function insert_id() {
 
-        // if an active connection exists
-        if ($this->_connected())
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if a query was run before, return the AUTO_INCREMENT value
-            if (isset($this->last_result)) return mysqli_insert_id($this->connection);
+        // if a query was run before, return the AUTO_INCREMENT value
+        if (isset($this->last_result) && $this->last_result !== false) return mysqli_insert_id($this->connection);
 
-            // if no query was run before
-            else
+        // if no query was run before
+        // save debug information
+        return $this->_log('errors', array(
 
-                // save debug information
-                $this->_log('errors', array(
+            'message'   =>  $this->language['not_a_valid_resource'],
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
-
-                ));
-
-        // upon error, we don't have to report anything as _connected() method already did
-        // just return FALSE
-        return false;
+        ));
 
     }
 
@@ -1873,7 +2163,7 @@ class Zebra_Database
      *  When using this method, if a row is inserted that would cause a duplicate value in a UNIQUE index or PRIMARY KEY,
      *  an UPDATE of the old row is performed.
      *
-     *  Read more at {@link http://dev.mysql.com/doc/refman/5.0/en/insert-on-duplicate.html}.
+     *  Read more {@link http://dev.mysql.com/doc/refman/5.0/en/insert-on-duplicate.html here}.
      *
      *  When using this method, column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
      *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
@@ -1882,11 +2172,29 @@ class Zebra_Database
      *  // presuming article_id is a UNIQUE index or PRIMARY KEY, the statement below will insert a new row for given
      *  // $article_id and set the "votes" to 0. But, if $article_id is already in the database, increment the votes'
      *  // numbers.
+     *  // also notice that we're using a MySQL function as a value
      *  $db->insert_update(
      *      'table',
      *      array(
      *          'article_id'    =>  $article_id,
      *          'votes'         =>  0,
+     *          'date_updated'  =>  'NOW()',
+     *      ),
+     *      array(
+     *          'votes'         =>  'INC(1)',
+     *      )
+     *  );
+     *
+     *  // when using MySQL functions, the value will be used as it is without being escaped!
+     *  // while this is ok when using a function without any arguments like NOW(), this may
+     *  // pose a security concern if the argument(s) come from user input.
+     *  // in this case we have to escape the value ourselves
+     *  $db->insert_update(
+     *      'table',
+     *      array(
+     *          'article_id'    =>  'CEIL("' . $db->escape($article_id) . '")',
+     *          'votes'         =>  0,
+     *          'date_updated'  =>  'NOW()',
      *      ),
      *      array(
      *          'votes'         =>  'INC(1)',
@@ -1896,12 +2204,24 @@ class Zebra_Database
      *
      *  @param  string  $table          Table in which to insert/update.
      *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
+     *
      *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
      *                                  array's values represent the values to be inserted in each respective column.
      *
      *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
      *                                  usage of reserved words as column names) and values will be automatically
      *                                  {@link escape()}d.
+     *
+     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
+     *                                  as <i>values</i>.
+     *
+     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
+     *                                  without being escaped! While this is ok when using a function without any arguments
+     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
+     *                                  In this case make sure you {@link escape} the values yourself!</samp>
      *
      *  @param  array   $update         (Optional) An associative array where the array's keys represent the columns names
      *                                  and the array's values represent the values to update the columns' values to.
@@ -1920,6 +2240,14 @@ class Zebra_Database
      *                                  is the value to increase the column's value with. Use <i>INC(-value)</i> to decrease
      *                                  the column's value. See {@link update()} for an example.
      *
+     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
+     *                                  as <i>values</i>.
+     *
+     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
+     *                                  without being escaped! While this is ok when using a function without any arguments
+     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
+     *                                  In this case make sure you {@link escape} the values yourself!</samp>
+     *
      *                                  Default is an empty array.
      *
      *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
@@ -1931,23 +2259,42 @@ class Zebra_Database
      *
      *  @return boolean                 Returns TRUE on success of FALSE on error.
      */
-    function insert_update($table, $columns, $update = array(), $highlight = false)
-    {
+    public function insert_update($table, $columns, $update = array(), $highlight = false) {
 
         // if $update is not given as an array, make it an empty array
         if (!is_array($update)) $update = array();
 
-        // enclose the column names in grave accents
-        $cols = '`' . implode('`,`', array_keys($columns)) . '`';
+        // get string of comma separated column names, enclosed in grave accents
+        $cols = $this->_escape(array_keys($columns));
 
-        // parameter markers for escaping values later on
-        $values = rtrim(str_repeat('?,', count($columns)), ',');
+        $values = '';
+
+        // iterate through the given columns
+        foreach ($columns as $column_name => $value) {
+
+            // separate values by comma
+            $values .= ($values != '' ? ', ' : '');
+
+            // if value is a MySQL function
+            if ($this->_is_mysql_function($value)) {
+
+                // use it as it is
+                $values .= $value;
+
+                // we don't need this value in the replacements array
+                unset($columns[$column_name]);
+
+            // if not a MySQL function, use a marker
+            // that we'll replace with the value from the replacements array
+            } else $values .= '?';
+
+        }
 
         // if no $update specified
         if (empty($update)) {
 
             // use the columns specified in $columns
-            $update_cols = '`' . implode('` = ?,`', array_keys($columns)) . '` = ?';
+            $update_cols = $this->_build_sql($columns);
 
             // use the same column for update as for insert
             $update = $columns;
@@ -1960,7 +2307,7 @@ class Zebra_Database
         $this->query('
 
             INSERT INTO
-                `' . $table . '`
+                ' . $this->_escape($table) . '
                 (' . $cols . ')
             VALUES
                 (' . $values . ')
@@ -1969,18 +2316,16 @@ class Zebra_Database
 
         , array_merge(array_values($columns), array_values($update)), false, false, $highlight);
 
-        // return true if query was executed successfully
-        if ($this->last_result) return true;
-
-        return false;
+        // return TRUE if query was successful, or FALSE if it wasn't
+        return isset($this->last_result) && $this->last_result !== false;
 
     }
 
     /**
-     *  Sets the language to be used for the messages in the debugging console.
+     *  Sets the language to be used for the messages in the debugging console and in the log files.
      *
      *  <code>
-     *  // show messages in the debugging console in German
+     *  // show messages in German
      *  $db->language('german');
      *  </code>
      *
@@ -1995,8 +2340,7 @@ class Zebra_Database
      *
      *  @return void
      */
-    function language($language)
-    {
+    public function language($language) {
 
         // include the language file
         require $this->path . '/languages/' . $language . '.php';
@@ -2004,25 +2348,107 @@ class Zebra_Database
     }
 
     /**
-     *  Optimizes all tables that have overhead (unused, lost space)
+     *  Optimizes all tables that have overhead (unused, lost space) in a database.
      *
      *  <code>
-     *  // optimize all tables in the database
+     *  // optimize all tables in the currently selected database
      *  $db->optimize();
      *  </code>
+     *
+     *  @param  string  $table      (Optional) Table to optimize.
+     *
+     *                              <i>May also be given like databasename.tablename if a database was not explicitly
+     *                              selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                              calling this method.</i>
+     *
+     *                              % may be used as a wildcard in table's name to optimize only the tables matching the
+     *                              pattern.
+     *
+     *                              If not specified, all the tables in the currently selected database will be optimized.
+     *
+     *                              <i>This option was added in 2.9.5</i>
      *
      *  @since  1.1.2
      *
      *  @return void
      */
-    function optimize()
-    {
+    public function optimize($table = '') {
+
+        // if table argument contains the database name, extract it
+        if (strpos($table, '.') !== false) $database = substr($table, 0, strpos($table, '.'));
 
         // fetch information on all the tables in the database
-        $tables = $this->get_table_status();
+        $tables = $this->get_table_status($table);
 
         // iterate through the database's tables, and if it has overhead (unused, lost space), optimize it
-        foreach ($tables as $table) if ($table['Data_free'] > 0) $this->query('OPTIMIZE TABLE `' . $table['Name'] . '`');
+        foreach ($tables as $table) $this->query('OPTIMIZE TABLE ' . (isset($database) ? $this->_escape($database) . '.' : '') . $this->_escape($table['Name']));
+
+    }
+
+    /**
+     *  Sets one or more options that affect the behavior of a connection.
+     *
+     *  See {@link http://php.net/manual/en/mysqli.options.php the options} that can be set.
+     *
+     *  <samp>This method must to be called before connecting to a MySQL server. Keep in mind that because the library
+     *  uses "lazy connection", it will not actually connect to the given MySQL server until the first query is run, unless
+     *  the {@link connect()} method is called with the "connect" argument set to TRUE. Therefore, you can call it after
+     *  the {@link connect()} method but only if you run no queries until calling this method.</samp>
+     *
+     *  <i>This method may be called multiple times to set several options.</i>
+     *
+     *  <code>
+     *  // instantiate the library
+     *  $db = new Zebra_Database();
+     *
+     *  // set a single option
+     *  $db->option(MYSQLI_OPT_CONNECT_TIMEOUT, 5);
+     *
+     *  // set an array of options
+     *  $db->option(array(
+     *      MYSQLI_OPT_CONNECT_TIMEOUT  =>  5,
+     *      MYSQLI_INIT_COMMAND         =>  'SET AUTOCOMMIT = 0',
+     *  ));
+     *
+     *  // connect to a MySQL server using the options set above
+     *  $db->connect(...)
+     *
+     *  </code>
+     *
+     *  @param  mixed   $option     One of the valid values described {@link http://php.net/manual/en/mysqli.options.php here},
+     *                              or an array of key/value pairs where the keys are valid values described in the previous
+     *                              link.
+     *
+     *  @param  mixed   $value      (Optional) When setting a single option this is the value to be associated with that
+     *                              option. When setting an array of options this argument is ignored.
+     *
+     *  @since  2.9.5
+     *
+     *  @return void
+     */
+    public function option($option, $value = '') {
+
+        // if a connection was already made
+        if ($this->connection)
+
+            // inform the user that options can only be set before connecting
+            return $this->_log('errors', array(
+
+                'message'   =>  $this->language['options_before_connect'],
+
+            ));
+
+        // if option is given as an array
+        if (is_array($option))
+
+            // iterate over the options
+            foreach ($option as $property => $value)
+
+                // save them to a private property
+                $this->options[$property] = $value;
+
+        // if option is not given as an array
+        else $this->options[$option] = $value;
 
     }
 
@@ -2044,63 +2470,55 @@ class Zebra_Database
      *
      *  @return boolean         Returns TRUE on success or FALSE on failure.
      */
-    function parse_file($path)
-    {
+    public function parse_file($path) {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // read file into an array
+        $file_content = file($path);
 
-            // read file into an array
-            $file_content = file($path);
+        // if file was successfully opened
+        if ($file_content) {
 
-            // if file was successfully opened
-            if ($file_content) {
+            $query = '';
 
-                $query = '';
+            // iterates through every line of the file
+            foreach ($file_content as $sql_line) {
 
-                // iterates through every line of the file
-                foreach ($file_content as $sql_line) {
+                // trims whitespace from both beginning and end of line
+                $tsql = trim($sql_line);
 
-                    // trims whitespace from both beginning and end of line
-                    $tsql = trim($sql_line);
+                // if line content is not empty and is the line does not represent a comment
+                if ($tsql != '' && substr($tsql, 0, 2) != '--' && substr($tsql, 0, 1) != '#') {
 
-                    // if line content is not empty and is the line does not represent a comment
-                    if ($tsql != '' && substr($tsql, 0, 2) != '--' && substr($tsql, 0, 1) != '#') {
+                    // add to query string
+                    $query .= $sql_line;
 
-                        // add to query string
-                        $query .= $sql_line;
+                    // if line ends with ';'
+                    if (preg_match('/;\s*$/', $sql_line)) {
 
-                        // if line ends with ';'
-                        if (preg_match('/;\s*$/', $sql_line)) {
+                        // run the query
+                        $this->query($query);
 
-                            // run the query
-                            $this->query($query);
-
-                            // empties the query string
-                            $query = '';
-
-                        }
+                        // empties the query string
+                        $query = '';
 
                     }
 
                 }
 
-                return true;
+            }
 
-            // if file could not be opened
-            } else
-
-                // save debug info
-                $this->_log('errors', array(
-
-                    'message'   =>  $this->language['file_could_not_be_opened'],
-
-                ));
+            return true;
 
         }
 
-        // we don't have to report any error as _connected() method already did or checking for file returned FALSE
-        return false;
+        // if file could not be opened
+        // save debug info
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['file_could_not_be_opened'],
+
+        ));
+
 
     }
 
@@ -2157,6 +2575,8 @@ class Zebra_Database
      *
      *                                  The caching method is specified by the value of the {@link caching_method} property.
      *
+     *                                  <i>For {@link query_unbuffered unbuffered} queries this argument is always FALSE!</i>
+     *
      *                                  Default is FALSE.
      *
      *  @param  boolean $calc_rows      (Optional) If query is a SELECT query, this argument is set to TRUE, and there is
@@ -2165,8 +2585,13 @@ class Zebra_Database
      *                                  returned if there was no LIMIT applied to the query.
      *
      *                                  This is very useful for creating pagination or computing averages. Also, note
-     *                                  that this information will be available without running an extra query. Here's
-     *                                  how {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows}
+     *                                  that this information will be available without running an extra query.
+     *                                  {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows Here's how}
+     *
+     *                                  <i>For {@link query_unbuffered unbuffered} queries the value of this property
+     *                                  will be available only after iterating over all the records with either
+     *                                  {@link fetch_assoc()} or {@link fetch_obj()} methods. Until then, the value will
+     *                                  be 0!</i>
      *
      *                                  Default is FALSE.
      *
@@ -2181,136 +2606,179 @@ class Zebra_Database
      *                                  <i>If query results are taken from cache, the returned result will be a pointer to
      *                                  the actual results of the query!</i>
      */
-    function query($sql, $replacements = '', $cache = false, $calc_rows = false, $highlight= false)
-    {
+    public function query($sql, $replacements = '', $cache = false, $calc_rows = false, $highlight= false) {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // remove spaces used for indentation (if any)
-            $sql = preg_replace(array("/^\s+/m", "/\r\n/"), array('', ' '), $sql);
+        unset($this->affected_rows);
 
-            unset($this->affected_rows);
+        // if $replacements is specified but it's not an array
+        if ($replacements != '' && !is_array($replacements))
 
-            // if $replacements is specified but it's not an array
-            if ($replacements != '' && !is_array($replacements))
+            // save debug information
+            return $this->_log('unsuccessful-queries',  array(
+
+                'query' =>  $sql,
+                'error' =>  $this->language['warning_replacements_not_array']
+
+            ));
+
+        // if $replacements is specified and is an array
+        if ($replacements != '' && is_array($replacements) && !empty($replacements)) {
+
+            // found how many items to replace are there in the query string
+            preg_match_all('/\?/', $sql, $matches, PREG_OFFSET_CAPTURE);
+
+            // if the number of items to replace is different than the number of items specified in $replacements
+            if (!empty($matches[0]) && count($matches[0]) != count($replacements))
 
                 // save debug information
-                $this->_log('unsuccessful-queries',  array(
+                return $this->_log('unsuccessful-queries', array(
 
-                    'query' =>  $sql,
-                    'error' =>  $this->language['warning_replacements_not_array']
+                    'query' => $sql,
+                    'error' => $this->language['warning_replacements_wrong_number']
 
                 ));
 
-            // if $replacements is specified and is an array
-            elseif ($replacements != '' && is_array($replacements) && !empty($replacements)) {
+            // if the number of items to replace is the same as the number of items specified in $replacements
+            // make preparations for the replacement
+            $pattern1 = $pattern2 = $replacements1 = $replacements2 = array();
 
-                // found how many items to replace are there in the query string
-                preg_match_all('/\?/', $sql, $matches, PREG_OFFSET_CAPTURE);
+            // prepare parameter markers for replacement
+            foreach ($matches[0] as $match) $pattern1[] = '/\\' . $match[0] . '/';
 
-                // if the number of items to replace is different than the number of items specified in $replacements
-                if (!empty($matches[0]) && count($matches[0]) != count($replacements))
+            foreach ($replacements as $key => $replacement) {
 
-                    // save debug information
-                    $this->_log('unsuccessful-queries', array(
+                // generate a string
+                $randomstr = md5(microtime()) . $key;
 
-                        'query' => $sql,
-                        'error' => $this->language['warning_replacements_wrong_number']
+                // prepare the replacements for the parameter markers
+                $replacements1[] = $randomstr;
 
-                    ));
+                // if the replacement is NULL, leave it like it is
+                if ($replacement === NULL) $replacements2[$key] = 'NULL';
 
-                // if the number of items to replace is the same as the number of items specified in $replacements
-                else {
+                // if the replacement is an array, implode and escape it for use in WHERE ? IN ? statement
+                elseif (is_array($replacement)) $replacements2[$key] = preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->implode($replacement));
 
-                    // make preparations for the replacement
-                    $pattern1 = $pattern2 = $replacements1 = $replacements2 = array();
+                // otherwise, mysqli_real_escape_string the items in replacements
+                // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
+                // it as references
+                else $replacements2[$key] = '\'' . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->escape($replacement)) . '\'';
 
-                    // prepare parameter markers for replacement
-                    foreach ($matches[0] as $match) $pattern1[] = '/\\' . $match[0] . '/';
+                // and also, prepare the new pattern to be replaced afterwards
+                $pattern2[$key] = '/' . $randomstr . '/';
 
-                    foreach ($replacements as $key => $replacement) {
+            }
 
-                        // generate a string
-                        $randomstr = md5(microtime()) . $key;
+            // replace each question mark with something new
+            // (we do this intermediary step so that we can actually have question marks in the replacements)
+            $sql = preg_replace($pattern1, $replacements1, $sql, 1);
 
-                        // prepare the replacements for the parameter markers
-                        $replacements1[] = $randomstr;
+            // perform the actual replacement
+            $sql = preg_replace($pattern2, $replacements2, $sql, 1);
 
-                        // if the replacement is NULL, leave it like it is
-                        if ($replacement === NULL) $replacements2[$key] = 'NULL';
+        }
 
-                        // if the replacement is an array, implode and escape it for use in WHERE ? IN ? statement
-                        elseif (is_array($replacement)) $replacements2[$key] = preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->implode($replacement));
+        // unbuffered queries cannot be cached
+        if ($this->unbuffered && $cache) {
 
-                        // otherwise, mysqli_real_escape_string the items in replacements
-                        // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
-                        // it as references
-                        else $replacements2[$key] = '\'' . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->escape($replacement)) . '\'';
+            // save debug information
+            $this->_log('errors', array(
 
-                        // and also, prepare the new pattern to be replaced afterwards
-                        $pattern2[$key] = '/' . $randomstr . '/';
+                'query'     =>  $sql,
+                'message'   =>  $this->language['unbuffered_queries_cannot_be_cached'],
 
-                    }
+            ), false);
 
-                    // replace each question mark with something new
-                    // (we do this intermediary step so that we can actually have question marks in the replacements)
-                    $sql = preg_replace($pattern1, $replacements1, $sql, 1);
+            // set this flag to false
+            $cache = false;
 
-                    // perform the actual replacement
-                    $sql = preg_replace($pattern2, $replacements2, $sql, 1);
+        }
+
+        // $calc_rows is TRUE, we have a SELECT query and the SQL_CALC_FOUND_ROWS string is not in it
+        // (we do this trick to get the numbers of records that would've been returned if there was no LIMIT applied)
+        if ($calc_rows && strpos($sql, 'SQL_CALC_FOUND_ROWS') === false)
+
+            // add the 'SQL_CALC_FOUND_ROWS' parameter to the query
+            $sql = preg_replace('/^(.*?)SELECT/is', '$1SELECT SQL_CALC_FOUND_ROWS', $sql, 1);
+
+        if (isset($this->last_result)) unset($this->last_result);
+
+        // starts a timer
+        list($usec, $sec) = explode(' ', microtime());
+
+        $start_timer = (float)$usec + (float)$sec;
+
+        $refreshed_cache = 'nocache';
+
+        // if we need to look for a cached version of the query's results
+        if ($cache !== false && (int)$cache > 0) {
+
+            // by default, we assume that the cache exists and is not expired
+            $refreshed_cache = false;
+
+            // if caching method is "memcache"
+            if ($this->caching_method == 'memcache') {
+
+                // the key to identify this particular information (prefix it if required)
+                $memcache_key = md5($this->memcache_key_prefix . $sql);
+
+                // if there is a cached version of what we're looking for, and data is valid
+                if (($result = $this->memcache->get($memcache_key)) && $cached_result = @unserialize(gzuncompress(base64_decode($result)))) {
+
+                    // put results in the right place
+                    // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
+                    $this->cached_results[] = $cached_result;
+
+                    // assign to the last_result property the pointer to the position where the array was added
+                    $this->last_result = count($this->cached_results) - 1;
+
+                    // reset the pointer of the array
+                    reset($this->cached_results[$this->last_result]);
 
                 }
 
-            }
+            // if caching method is "session"
+            } elseif ($this->caching_method == 'session') {
 
-            // $calc_rows is TRUE, we have a SELECT query and the SQL_CALC_FOUND_ROWS string is not in it
-            // (we do this trick to get the numbers of records that would've been returned if there was no LIMIT applied)
-            if ($calc_rows && strtolower(substr(ltrim($sql), 0, 6)) == 'select' && strpos($sql, 'SQL_CALC_FOUND_ROWS') === false)
+                // unique identifier of the current query
+                $key = md5($sql);
 
-                // add the 'SQL_CALC_FOUND_ROWS' parameter to the query
-                $sql = preg_replace('/SELECT/i', 'SELECT SQL_CALC_FOUND_ROWS', $sql, 1);
+                // if a cached version of this query's result already exists and it is not expired
+                if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && $_SESSION[$key . '_timestamp'] + $cache > time() && $cached_result = @unserialize(gzuncompress(base64_decode($_SESSION[$key])))) {
 
-            unset($this->last_result);
+                    // put results in the right place
+                    // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
+                    $this->cached_results[] = $cached_result;
 
-            // starts a timer
-            list($usec, $sec) = explode(' ', microtime());
+                    // assign to the last_result property the pointer to the position where the array was added
+                    $this->last_result = count($this->cached_results) - 1;
 
-            $start_timer = (float)$usec + (float)$sec;
+                    // reset the pointer of the array
+                    reset($this->cached_results[$this->last_result]);
 
-            $refreshed_cache = 'nocache';
+                }
 
-            // if we need to look for a cached version of the query's results
-            if ($cache !== false && (int)$cache > 0) {
+            // if caching method is "disk"
+            } else
 
-                // by default, we assume that the cache exists and is not expired
-                $refreshed_cache = false;
+                // if cache folder exists and is writable
+                if (file_exists($this->cache_path) && is_dir($this->cache_path) && is_writable($this->cache_path)) {
 
-                // if caching method is "memcache"
-                if ($this->caching_method == 'memcache') {
+                    // the cache file's name
+                    $file_name = rtrim($this->cache_path, '/') . '/' . md5($sql);
 
-                    // the key to identify this particular information (prefix it if required)
-                    $memcache_key = md5($this->memcache_key_prefix . $sql);
+                    // if a cached version of this query's result already exists, it is not expired and is valid
+                    if (
+                        file_exists($file_name) && filemtime($file_name) + $cache > time() &&
+                        ($cached_result = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name)))))
+                    ) {
 
-                    // if there is a cached version of what we're looking for, and data is valid
-                    if (($result = $this->memcache->get($memcache_key)) && $this->cached_results[] = @unserialize(gzuncompress(base64_decode($result)))) {
-
-                        // assign to the last_result property the pointer to the position where the array was added
-                        $this->last_result = count($this->cached_results) - 1;
-
-                        // reset the pointer of the array
-                        reset($this->cached_results[$this->last_result]);
-
-                    }
-
-                // if caching method is "session"
-                } elseif ($this->caching_method == 'session') {
-
-                    // unique identifier of the current query
-                    $key = md5($sql);
-
-                    // if a cached version of this query's result already exists and it is not expired
-                    if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && $_SESSION[$key . '_timestamp'] + $cache > time() && $this->cached_results[] = @unserialize(gzuncompress(base64_decode($_SESSION[$key])))) {
+                        // put results in the right place
+                        // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
+                        $this->cached_results[] = $cached_result;
 
                         // assign to the last_result property the pointer to the position where the array was added
                         $this->last_result = count($this->cached_results) - 1;
@@ -2320,331 +2788,382 @@ class Zebra_Database
 
                     }
 
-                // if caching method is "disk"
+                // if folder doesn't exist
                 } else
 
-                    // if cache folder exists and is writable
-                    if (file_exists($this->cache_path) && is_dir($this->cache_path) && is_writable($this->cache_path)) {
+                    // save debug information
+                    return $this->_log('errors', array(
 
-                        // the cache file's name
-                        $file_name = rtrim($this->cache_path, '/') . '/' . md5($sql);
+                        'message'   =>  $this->language['cache_path_not_writable'],
 
-                        // if a cached version of this query's result already exists and it is not expired
-                        if (file_exists($file_name) && filemtime($file_name) + $cache > time())
+                    ), false);
 
-                            // if cache file is valid
-                            if ($this->cached_results[] = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name))))) {
+        }
 
-                                // assign to the last_result property the pointer to the position where the array was added
-                                $this->last_result = count($this->cached_results) - 1;
+        // if query was not read from the cache
+        if (!isset($this->last_result)) {
 
-                                // reset the pointer of the array
-                                reset($this->cached_results[$this->last_result]);
+            // run the query
+            $this->last_result = @mysqli_query($this->connection, $sql, $this->unbuffered ? MYSQLI_USE_RESULT : MYSQLI_STORE_RESULT);
 
-                            }
+            // if no test transaction, query was unsuccessful and a transaction is in progress
+            if ($this->transaction_status !== 3 && !$this->last_result && $this->transaction_status !== 0)
 
-                    // if folder doesn't exist
-                    } else
+                // set transaction_status to 2 so that the transaction_commit know that it has to rollback
+                $this->transaction_status = 2;
 
-                        // save debug information
-                        $this->_log('errors', array(
+        }
 
-                            'message'   =>  $this->language['cache_path_not_writable'],
+        // stops timer
+        list($usec, $sec) = explode(' ', microtime());
 
-                        ), false);
+        $stop_timer = (float)$usec + (float)$sec;
 
-            }
+        // add the execution time to the total execution time
+        // (we will use this in the debugging console)
+        $this->total_execution_time += $stop_timer - $start_timer;
 
-            // if query was not read from the cache
-            if (!isset($this->last_result)) {
+        // if
+        if (
 
-                // run the query
-                $this->last_result = @mysqli_query($this->connection, $sql);
+            // notification address and notifier domain are set
+            !empty($this->notification_address) &&
+            !empty($this->notifier_domain) &&
 
-                // if no test transaction, query was unsuccessful and a transaction is in progress
-                if ($this->transaction_status !== 3 && !$this->last_result && $this->transaction_status !== 0)
+            // and execution time exceeds max_query_time
+            ($stop_timer - $start_timer > $this->max_query_time)
 
-                    // set transaction_status to 2 so that the transaction_commit know that it has to rollback
-                    $this->transaction_status = 2;
+        )
 
-            }
+            // then send a notification mail
+            @mail(
+                $this->notification_address,
+                sprintf($this->language['email_subject'], $this->notifier_domain),
+                sprintf($this->language['email_content'], $this->max_query_time, $stop_timer - $start_timer, $sql),
+                'From: ' . $this->notifier_domain
+            );
 
-            // stops timer
-            list($usec, $sec) = explode(' ', microtime());
+        // if the query was successfully executed
+        if ($this->last_result !== false) {
 
-            $stop_timer = (float)$usec + (float)$sec;
+            // if query's result was not read from cache (meaning $this->last_result is a result resource or boolean
+            // TRUE - as queries like UPDATE, DELETE, DROP return boolean TRUE on success rather than a result resource)
+            if ($this->_is_result($this->last_result) || $this->last_result === true) {
 
-            // add the execution time to the total execution time
-            // (we will use this in the debugging console)
-            $this->total_execution_time += $stop_timer - $start_timer;
+                // if returned resource is a valid resource, consider query to be a SELECT query
+                $is_select = $this->_is_result($this->last_result);
 
-			// if notification address and notifier domain is set
-            if (!(empty($this->notification_address) || empty($this->notifier_domain)))
+                // reset these values for each query
+                $this->returned_rows = $this->found_rows = 0;
 
-				// if execution time exceeds max_query_time
-				if ($stop_timer - $start_timer > $this->max_query_time )
+                // if query was a SELECT query
+                if ($is_select) {
 
-					// then send a notification mail
-					@mail(
-						$this->notification_address,
-						sprintf($this->language['email_subject'], $this->notifier_domain),
-						sprintf($this->language['email_content'], $this->max_query_time, $stop_timer - $start_timer, $sql),
-						'From: ' . $this->notifier_domain
-					);
-
-            // if the query was successfully executed
-            if ($this->last_result !== false) {
-
-                // if query's result was not read from cache (meaning $this->last_result is a result resource or boolean
-                // TRUE - as queries like UPDATE, DELETE, DROP return boolean TRUE on success rather than a result resource)
-                if ($this->_is_result($this->last_result) || $this->last_result === true) {
-
-                    // by default, consider this not to be a SELECT query
-                    $is_select = false;
-
-                    // if returned resource is a valid resource, consider query to be a SELECT query
-                    if ($this->_is_result($this->last_result)) $is_select = true;
-
-                    // reset these values for each query
-                    $this->returned_rows = $this->found_rows = 0;
-
-                    // if query was a SELECT query
-                    if ($is_select) {
+                    // for buffered queries
+                    if (!$this->unbuffered)
 
                         // the returned_rows property holds the number of records returned by a SELECT query
                         $this->returned_rows = $this->found_rows = @mysqli_num_rows($this->last_result);
 
-                        // if we need the number of rows that would have been returned if there was no LIMIT
-                        if ($calc_rows) {
+                    // for unbuffered queries set this property of the result set so that once all the rows have iterated
+                    // over, we can get some extra iformation (see the _manage_unbuffered_query_info method for more info)
+                    else $this->last_result->query = $sql;
 
-                            // get the number of records that would've been returned if there was no LIMIT
-                            $found_rows = mysqli_fetch_assoc(mysqli_query($this->connection, 'SELECT FOUND_ROWS()'));
+                    // if we need the number of rows that would have been returned if there was no LIMIT
+                    // and the query was not an unbuffered one
+                    if ($calc_rows && !$this->unbuffered) {
 
-                            $this->found_rows = $found_rows['FOUND_ROWS()'];
+                        // get the number of records that would've been returned if there was no LIMIT
+                        $found_rows = mysqli_fetch_assoc(mysqli_query($this->connection, 'SELECT FOUND_ROWS()'));
 
-                        }
-
-                    // if query was an action query, the affected_rows property holds the number of affected rows by
-                    // action queries (DELETE, INSERT, UPDATE)
-                    } else $this->affected_rows = @mysqli_affected_rows($this->connection);
-
-                    // if query's results need to be cached
-                    if ($is_select && $cache !== false && (int)$cache > 0) {
-
-                        // flag that we have refreshed the cache
-                        $refreshed_cache = true;
-
-                        $cache_data = array();
-
-                        // iterate though the query's records and save the results in a temporary variable
-                        while ($row = mysqli_fetch_assoc($this->last_result)) $cache_data[] = $row;
-
-                        // if there were any records fetched, resets the internal pointer of the result resource
-                        if (!empty($cache_data)) $this->seek(0, $this->last_result);
-
-                        // we'll also be saving the found_rows, returned_rows and columns information
-                        array_push($cache_data, array(
-
-                            'returned_rows' =>  $this->returned_rows,
-                            'found_rows'    =>  $this->found_rows,
-                            'column_info'   =>  $this->get_columns(),
-
-                        ));
-
-                        // the content to be cached
-                        $content = base64_encode(gzcompress(serialize($cache_data)));
-
-                        // if caching method is "memcache"
-                        if ($this->caching_method == 'memcache')
-
-                            // cache query data
-                            $this->memcache->set($memcache_key, $content, ($this->memcache_compressed ? MEMCACHE_COMPRESSED : false), $cache);
-
-                        // if caching method is "session"
-                        elseif ($this->caching_method == 'session') {
-
-                            // if there seems to be no active session
-                            if (!isset($_SESSION))
-
-                                // save debug information
-                                $this->_log('errors', array(
-
-                                    'message'   =>  $this->language['no_active_session'],
-
-                                ), true);
-
-                            // the unique identifier for the current query
-                            $key = md5($sql);
-
-                            // cache query data in current session
-                            $_SESSION[$key] = $content;
-
-                            // save also the current timestamp
-                            $_SESSION[$key . '_timestamp'] = time();
-
-                        // if caching method is "disk" and cached folder was found and is writable
-                        } elseif (isset($file_name)) {
-
-                            // deletes (if exists) the previous cache file
-                            @unlink($file_name);
-
-                            // creates the new cache file
-                            $handle = fopen($file_name, 'wb');
-
-                            // saves the query's result in it
-                            fwrite($handle, $content);
-
-                            // and close the file
-                            fclose($handle);
-
-                        }
+                        $this->found_rows = $found_rows['FOUND_ROWS()'];
 
                     }
 
-                // if query was read from cache
-                } else {
+                // if query was an action query, the affected_rows property holds the number of affected rows by
+                // action queries (DELETE, INSERT, UPDATE)
+                } else $this->affected_rows = @mysqli_affected_rows($this->connection);
 
-                    // if read from cache this must be a SELECT query
-                    $is_select = true;
+                // if query's results need to be cached
+                if ($is_select && $cache !== false && (int)$cache > 0) {
 
-                    // the last entry in the cache file contains the returned_rows, found_rows and column_info properties
-                    // we need to take them off the array
-                    $counts = array_pop($this->cached_results[$this->last_result]);
+                    // flag that we have refreshed the cache
+                    $refreshed_cache = true;
 
-                    // set extract these properties from the values in the cached file
-                    $this->returned_rows    = $counts['returned_rows'];
-                    $this->found_rows       = $counts['found_rows'];
-                    $this->column_info      = $counts['column_info'];
+                    $cache_data = array();
 
-                }
+                    // iterate though the query's records and save the results in a temporary variable
+                    while ($row = mysqli_fetch_assoc($this->last_result)) $cache_data[] = $row;
 
-                // if debugging is on
-                if ($this->debug) {
+                    // if there were any records fetched, resets the internal pointer of the result resource
+                    if (!empty($cache_data)) $this->seek(0, $this->last_result);
 
-                    $warning = '';
+                    // we'll also be saving the found_rows, returned_rows and columns information
+                    array_push($cache_data, array(
 
-                    $result = array();
-
-                    // if rows were returned
-                    if ($is_select) {
-
-                        $row_counter = 0;
-
-                        // put the first rows, as defined by console_show_records, in an array to show them in the
-                        // debugging console
-                        // if query was not read from cache
-                        if ($this->_is_result($this->last_result)) {
-
-                            // iterate through the records until we displayed enough records
-                            while ($row_counter++ < $this->console_show_records && $row = mysqli_fetch_assoc($this->last_result))
-
-                                $result[] = $row;
-
-                            // reset the pointer in the result afterwards
-                            // we have to mute error reporting because if the result set is empty (mysqli_num_rows() == 0),
-                            // a seek to 0 will fail with a E_WARNING!
-                            @mysqli_data_seek($this->last_result, 0);
-
-                        // if query was read from the cache
-                        // put the first rows, as defined by console_show_records, in an array to show them in the
-                        // debugging console
-                        } else $result = array_slice($this->cached_results[$this->last_result], 0, $this->console_show_records);
-
-                        // if there were queries run already
-                        if (isset($this->debug_info['successful-queries'])) {
-
-                            $keys = array();
-
-                            // iterate through the run queries
-                            // to find out if this query was already run
-                            foreach ($this->debug_info['successful-queries'] as $key=>$query_data)
-
-                                // if this query was run before
-                                if (
-
-                                    isset($query_data['records']) &&
-
-                                    !empty($query_data['records']) &&
-
-                                    $query_data['records'] == $result
-
-                                // save the pointer to the query in an array
-                                ) $keys[] = $key;
-
-                            // if the query was run before
-                            if (!empty($keys))
-
-                                // issue a warning for all the queries that were found to be the same as the current one
-                                // iterate through the queries that are the same
-                                foreach ($keys as $key) {
-
-                                    // we create the variable as we will also use it later when adding the
-                                    // debug information for this query
-                                    $warning = sprintf($this->language['optimization_needed'], count($keys));
-
-                                    // add the warning to the query's debug information
-                                    $this->debug_info['successful-queries'][$key]['warning'] = $warning;
-
-                                }
-
-                        }
-
-                        // if it's a SELECT query and query is not read from cache...
-                        if ($is_select && $this->_is_result($this->last_result)) {
-
-                            // ask the MySQL to EXPLAIN the query
-                            $explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql);
-
-                            // if query returned a result
-                            // (as some queries cannot be EXPLAIN-ed like SHOW TABLE, DESCRIBE, etc)
-                            if ($explain_resource)
-
-                                // put all the records returned by the explain query in an array
-                                while ($row = mysqli_fetch_assoc($explain_resource)) $explain[] = $row;
-
-                        }
-
-                    }
-
-                    // save debug information
-                    $this->_log('successful-queries', array(
-
-                        'query'         =>  $sql,
-                        'records'       =>  $result,
                         'returned_rows' =>  $this->returned_rows,
-                        'explain'       =>  (isset($explain) ? $explain : ''),
-                        'affected_rows' =>  (isset($this->affected_rows) ? $this->affected_rows : false),
-                        'execution_time'=>  $stop_timer - $start_timer,
-                        'warning'       =>  $warning,
-                        'highlight'     =>  $highlight,
-                        'from_cache'    =>  $refreshed_cache,
-                        'transaction'   =>  ($this->transaction_status !== 0 ? true : false),
+                        'found_rows'    =>  $this->found_rows,
+                        'column_info'   =>  $this->get_columns(),
 
-                    ), false);
+                    ));
 
-                    // if at least one query is to be highlighted, set the "minimize_console" property to FALSE
-                    if ($highlight) $this->minimize_console = false;
+                    // the content to be cached
+                    $content = base64_encode(gzcompress(serialize($cache_data)));
+
+                    // if caching method is "memcache"
+                    if ($this->caching_method == 'memcache')
+
+                        // cache query data
+                        $this->memcache->set($memcache_key, $content, ($this->memcache_compressed ? MEMCACHE_COMPRESSED : false), $cache);
+
+                    // if caching method is "session"
+                    elseif ($this->caching_method == 'session') {
+
+                        // if there seems to be no active session
+                        if (!isset($_SESSION))
+
+                            // save debug information
+                            return $this->_log('errors', array(
+
+                                'message'   =>  $this->language['no_active_session'],
+
+                            ));
+
+                        // the unique identifier for the current query
+                        $key = md5($sql);
+
+                        // cache query data in current session
+                        $_SESSION[$key] = $content;
+
+                        // save also the current timestamp
+                        $_SESSION[$key . '_timestamp'] = time();
+
+                    // if caching method is "disk" and cached folder was found and is writable
+                    } elseif (isset($file_name)) {
+
+                        // deletes (if exists) the previous cache file
+                        @unlink($file_name);
+
+                        // creates the new cache file
+                        $handle = fopen($file_name, 'wb');
+
+                        // saves the query's result in it
+                        fwrite($handle, $content);
+
+                        // and close the file
+                        fclose($handle);
+
+                    }
 
                 }
 
-                // return result resource
-                return $this->last_result;
+            // if query was read from cache
+            } else {
+
+                // if read from cache this must be a SELECT query
+                $is_select = true;
+
+                // the last entry in the cache file contains the returned_rows, found_rows and column_info properties
+                // we need to take them off the array
+                $counts = array_pop($this->cached_results[$this->last_result]);
+
+                // set extract these properties from the values in the cached file
+                $this->returned_rows    = $counts['returned_rows'];
+                $this->found_rows       = $counts['found_rows'];
+                $this->column_info      = $counts['column_info'];
 
             }
 
-            // in case of error
-            // save debug information
-            $this->_log('unsuccessful-queries', array(
+            // if we need the number of rows that would have been returned if there was no LIMIT, the query was an
+            // unbuffered one and it was a successful query
+            if ($calc_rows && $this->unbuffered && $this->_is_result($this->last_result))
 
-                'query'     =>  $sql,
-                'error'     =>  mysqli_error($this->connection)
+                // set a flag telling the script to do this once all the rows are fetched
+                $this->last_result->calc_rows = true;
 
-            ));
+            // if debugging is on
+            if ($this->debug !== false) {
+
+                $warning = '';
+
+                $result = array();
+
+                // if rows were returned
+                if ($is_select) {
+
+                    $row_counter = 0;
+
+                    // if there are any number of rows to be shown
+                    if ($this->debug_show_records) {
+
+                        // if query was not read from cache
+                        // put the first rows, as defined by debug_show_records, in an array to show them in the
+                        // debugging console
+                        if ($this->_is_result($this->last_result)) {
+
+                            // if there are any rows
+                            if  (!$this->unbuffered && mysqli_num_rows($this->last_result)) {
+
+                                // iterate through the records until we displayed enough records
+                                while ($row_counter++ < $this->debug_show_records && $row = mysqli_fetch_assoc($this->last_result))
+
+                                    $result[] = $row;
+
+                                // reset the pointer in the result afterwards
+                                // we have to mute error reporting because if the result set is empty (mysqli_num_rows() == 0),
+                                // a seek to 0 will fail with a E_WARNING!
+                                mysqli_data_seek($this->last_result, 0);
+
+                            }
+
+                        // if query was read from the cache and there are any records
+                        // put the first rows, as defined by debug_show_records, in an array to show them in the
+                        // debugging console
+                        } else if (!empty($this->cached_results[$this->last_result])) $result = array_slice($this->cached_results[$this->last_result], 0, $this->debug_show_records);
+
+                    }
+
+                    // if there were queries run already
+                    if (isset($this->debug_info['successful-queries'])) {
+
+                        $keys = array();
+
+                        // iterate through the run queries
+                        // to find out if this query was already run
+                        foreach ($this->debug_info['successful-queries'] as $key => $query_data)
+
+                            // if this query was run before
+                            if (
+
+                                isset($query_data['records']) &&
+                                !empty($query_data['records']) &&
+                                $query_data['records'] == $result
+
+                            // save the pointer to the query in an array
+                            ) $keys[] = $key;
+
+                        // if the query was run before
+                        if (!empty($keys))
+
+                            // issue a warning for all the queries that were found to be the same as the current one
+                            // iterate through the queries that are the same
+                            foreach ($keys as $key) {
+
+                                // we create the variable as we will also use it later when adding the
+                                // debug information for this query
+                                $warning = sprintf($this->language['optimization_needed'], count($keys));
+
+                                // add the warning to the query's debug information
+                                $this->debug_info['successful-queries'][$key]['warning'] = $warning;
+
+                            }
+
+                    }
+
+                    // if
+                    if (
+
+                        // if we need to EXPLAIN the last executed query
+                        $this->debug_show_explain &&
+                        // it was not an unbuffered one
+                        !$this->unbuffered &&
+                        // query was successful
+                        $this->_is_result($this->last_result) &&
+                        // MySQL could explain it
+                        ($explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql))
+
+                    )
+
+                        // put all the records returned by the explain query in an array
+                        while ($row = mysqli_fetch_assoc($explain_resource)) $explain[] = $row;
+
+                    // if
+                    if (
+
+                        // we need to EXPLAIN the last executed query
+                        $this->debug_show_explain &&
+                        // it was an unbuffered one
+                        $this->unbuffered &&
+                        // query was successful
+                        $this->_is_result($this->last_result)
+
+                    ) {
+
+                        // set a flag telling the script to EXPLAIN the query once all the rows are fetched
+                        $this->last_result->explain = true;
+
+                        // the SQL to explain
+                        $this->last_result->query = $sql;
+
+                    }
+
+                }
+
+                // save debug information
+                $this->_log('successful-queries', array(
+
+                    'query'         =>  $sql,
+                    'records'       =>  $result,
+                    'returned_rows' =>  $this->returned_rows,
+                    'explain'       =>  (isset($explain) ? $explain : ''),
+                    'affected_rows' =>  (isset($this->affected_rows) ? $this->affected_rows : false),
+                    'execution_time'=>  $stop_timer - $start_timer,
+                    'warning'       =>  $warning,
+                    'highlight'     =>  $highlight,
+                    'from_cache'    =>  $refreshed_cache,
+                    'unbuffered'    =>  $this->unbuffered,
+                    'transaction'   =>  ($this->transaction_status !== 0 ? true : false),
+
+                ), false);
+
+                // if this was an unbuffered query and a valid select query
+                if ($this->unbuffered && $is_select && $this->_is_result($this->last_result))
+
+                    // save the index of the entry in the debug_info array
+                    $this->last_result->log_index = count($this->debug_info['successful-queries']) - 1;
+
+                // if at least one query is to be highlighted, set the "minimize_console" property to FALSE
+                if ($highlight) $this->minimize_console = false;
+
+            }
+
+            // return result resource
+            return $this->last_result;
 
         }
 
-        // we don't have to report any error as _connected() method already did or any of the previous checks
-        return false;
+        // in case of error
+        // save debug information
+        return $this->_log('unsuccessful-queries', array(
+
+            'query'     =>  $sql,
+            'error'     =>  mysqli_error($this->connection)
+
+        ));
+
+    }
+
+    /**
+     *  Runs a MySQL {@link http://php.net/manual/en/mysqlinfo.concepts.buffering.php unbuffered} query.
+     *
+     *  The method's arguments are the same as for the {@link query()} method.
+     *
+     *  <i>For unbuffered queries the values returned by {@link returned_rows} and {@link found_rows} is always 0.</i>
+     *
+     *  <samp>Note that untill you iterate over all the results, all subsequent queries will return a "Commands out of
+     *  sync" error unless you call the {@link free_result()} method.</samp>
+     *
+     *  @since 2.9.4
+     */
+    public function query_unbuffered() {
+
+        $this->unbuffered = true;
+
+        $result = call_user_func_array(array($this, 'query'), func_get_args());
+
+        $this->unbuffered = false;
+
+        return $result;
 
     }
 
@@ -2668,76 +3187,89 @@ class Zebra_Database
      *
      *  @return boolean                 Returns TRUE on success or FALSE on failure.
      */
-    function seek($row, $resource = '')
-    {
+    public function seek($row, $resource = '') {
 
-        // if an active connection exists
-        if ($this->_connected()) {
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
 
-            // if no resource was specified, and there was a previous call to the "query" method, assign the last resource
-            if ($resource == '' && isset($this->last_result)) $resource = & $this->last_result;
+        // if no resource was specified, and there was a previous call to the "query" method, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
-            // check if given resource is valid
-            if ($this->_is_result($resource)) {
+        // check if given resource is valid
+        if ($this->_is_result($resource)) {
 
-                // return the fetched row
-                // we have to mute error reporting because if the result set is empty (mysqli_num_rows() == 0),
-                // a seek to 0 will fail with a E_WARNING!
-                if (@mysqli_data_seek($resource, $row)) return true;
+            // if this is an unbuffered query
+            if ($resource->type == 1) {
 
-                // if error reporting was not supressed with @
-                elseif (error_reporting() != 0)
+                // get backtrace information
+                $debug = debug_backtrace();
 
-                    // save debug information
-                    $this->_log('errors', array(
+                // if method was called by another internal method (like fetch_assoc_all, for example) report that method
+                if (isset($debug[1]) && isset($debug[1]['function']) && $debug[1]['class'] == 'Zebra_Database') $method = $debug[1]['function'];
 
-                        'message'   =>  $this->language['could_not_seek'],
-
-                    ));
-
-            // if $resource is actually a pointer to an array taken from cache
-            } elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
-
-                // move the pointer to the start of the array
-                reset($this->cached_results[$resource]);
-
-                // if the pointer needs to be moved to the very first records then we don't need to do anything
-                // as by resetting the array we already have that
-                // simply return true
-                if ($row == 0) return true;
-
-                // if $row > 0
-                elseif ($row > 0) {
-
-                    // get the current info from the array and advance the pointer
-                    while (list($key, $value) = each($this->cached_results[$resource]))
-
-                        // we check it like this because elseways we'll have the pointer moved one entry too far
-                        if ($key == $row - 1) return true;
-
-                    // save debug information
-                    $this->_log('errors', array(
-
-                        'message'   =>  $this->language['could_not_seek'],
-
-                    ));
-
-                }
-
-            // if not a valid resource
-            } else
+                // if this (seek) method was called, report this method
+                else $method = $debug[0]['function'];
 
                 // save debug information
-                $this->_log('errors', array(
+                return $this->_log('errors', array(
 
-                    'message'   =>  $this->language['not_a_valid_resource'],
+                    'message'   => sprintf($this->language['unusable_method_unbuffered_queries'], $method),
 
                 ));
 
+            }
+
+            // return the fetched row
+            if (mysqli_num_rows($resource) == 0 || mysqli_data_seek($resource, $row)) return true;
+
+            // if error reporting was not supressed with @
+            elseif (error_reporting() != 0)
+
+                // save debug information
+                return $this->_log('errors', array(
+
+                    'message'   =>  $this->language['could_not_seek'],
+
+                ));
+
+        // if $resource is actually a pointer to an array taken from cache
+        } elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
+
+            // move the pointer to the start of the array
+            reset($this->cached_results[$resource]);
+
+            // if the pointer needs to be moved to the very first records then we don't need to do anything
+            // as by resetting the array we already have that
+            // simply return true
+            if ($row == 0) return true;
+
+            // if $row > 0
+            elseif ($row > 0) {
+
+                // get the current info from the array and advance the pointer
+                while (next($this->cached_results[$resource]))
+
+                    // if we've found what we were looking for
+                    if ($row == key($this->cached_results[$resource])) return true;
+
+                // save debug information
+                return $this->_log('errors', array(
+
+                    'message'   =>  $this->language['could_not_seek'],
+
+                ));
+
+            }
+
         }
 
-        // we don't have to report any error as _connected() method already did or checking for valid resource failed
-        return false;
+        // if not a valid resource
+        // save debug information
+        return $this->_log('errors', array(
+
+            'message'   =>  $this->language['not_a_valid_resource'],
+
+        ));
 
     }
 
@@ -2785,9 +3317,13 @@ class Zebra_Database
      *
      *  @param  string  $table          Table in which to search.
      *
-     *                                  <i>Note that table name will be enclosed in grave accents " ` " and thus only
-     *                                  one table name should be used! For anything but a simple select query use the
-     *                                  {@link query()} method.</i>
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
+     *
+     *                                  <i>Note that table name (and database name, if provided) will be enclosed in grave
+     *                                  accents " ` " and thus only one table name should be used! For anything but a
+     *                                  simple select query use the {@link query()} method.</i>
      *
      *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
      *
@@ -2819,14 +3355,14 @@ class Zebra_Database
      *
      *                                  Default is FALSE.
      *
-     *  @param  boolean $calc_rows      (Optional) If query is a SELECT query, this argument is set to TRUE, and there is
-     *                                  a LIMIT applied to the query, the value of the {@link found_rows} property (after
-     *                                  the query was run) will represent the number of records that would have been
-     *                                  returned if there was no LIMIT applied to the query.
+     *  @param  boolean $calc_rows      (Optional) If this argument is set to TRUE, and there is a LIMIT applied to the
+     *                                  query, the value of the {@link found_rows} property (after the query was run)
+     *                                  will represent the number of records that would have been returned if there was
+     *                                  no LIMIT applied to the query.
      *
      *                                  This is very useful for creating pagination or computing averages. Also, note
-     *                                  that this information will be available without running an extra query. Here's
-     *                                  how {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows}
+     *                                  that this information will be available without running an extra query.
+     *                                  {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows Here's how}
      *
      *                                  Default is FALSE.
      *
@@ -2843,16 +3379,15 @@ class Zebra_Database
      *                                  <i>If query results are taken from cache, the returned result will be a pointer to
      *                                  the actual results of the query!</i>
      */
-    function select($columns, $table, $where = '', $replacements = '', $order = '', $limit = '', $cache = false, $calc_rows = false, $highlight = false)
-    {
+    public function select($columns, $table, $where = '', $replacements = '', $order = '', $limit = '', $cache = false, $calc_rows = false, $highlight = false) {
 
         // run the query
         return $this->query('
 
             SELECT
-                ' . (is_string($columns) ? $columns : $this->_build_columns($columns)) . '
+                ' . $this->_escape($columns) . '
             FROM
-                `' . $table . '`' .
+                ' . $this->_escape($table) .
 
             ($where != '' ? ' WHERE ' . $where : '') .
 
@@ -2861,6 +3396,33 @@ class Zebra_Database
             ($limit != '' ? ' LIMIT ' . $limit : '')
 
         , $replacements, $cache, $calc_rows, $highlight);
+
+    }
+
+    /**
+     *  Selects the default database for queries.
+     *
+     *  <code>
+     *  // set the default database for queries
+     *  $db->select_database('database_name');
+     *  </code>
+     *
+     *  @param  string  $database   Name of database to select as the default database for queries.
+     *
+     *  @since 2.9.4
+     *
+     *  @return boolean     Returns TRUE on success or FALSE on failure.
+     */
+    public function select_database($database) {
+
+        // if no active connection exists, return false
+        if (!$this->_connected()) return false;
+
+        // update the value in the credentials
+        $this->credentials['database'] = $database;
+
+        // select the database
+        mysqli_select_db($this->connection, $database);
 
     }
 
@@ -2878,55 +3440,534 @@ class Zebra_Database
      *
      *                              Default is 'utf8'.
      *
-     *                              For a list of possible values see:
-     *                              {@link http://dev.mysql.com/doc/refman/5.1/en/charset-charsets.html}
+     *                              See the {@link http://dev.mysql.com/doc/refman/5.1/en/charset-charsets.html list of possible values}
      *
      *  @param  string  $collation  (Optional) The collation to be used by the database.
      *
      *                              Default is 'utf8_general_ci'.
      *
-     *                              For a list of possible values see:
-     *                              {@link http://dev.mysql.com/doc/refman/5.1/en/charset-charsets.html}
+     *                              See the {@link http://dev.mysql.com/doc/refman/5.1/en/charset-charsets.html list of possible values}
      *
      *  @since  2.0
      *
      *  @return void
      */
-    function set_charset($charset = 'utf8', $collation = 'utf8_general_ci')
-    {
+    public function set_charset($charset = 'utf8', $collation = 'utf8_general_ci') {
 
         // do not show the warning that this method has not been called
         unset($this->warnings['charset']);
 
         // set MySQL character set
-		$this->query('SET NAMES "' . $this->escape($charset) . '" COLLATE "' . $this->escape($collation) . '"');
+        $this->query('SET NAMES "' . $this->escape($charset) . '" COLLATE "' . $this->escape($collation) . '"');
 
     }
 
     /**
-     *  Shows the debugging console, <i>if</i> {@link debug} is TRUE and the viewer's IP address is in the
-     *  {@link debugger_ip} array (or <i>$debugger_ip</i> is an empty array).
+     *  Ends a transaction which means that if all the queries since {@link transaction_start()} are valid, it writes
+     *  the data to the database, but if any of the queries had an error, ignore all queries and treat them as if they
+     *  never happened.
      *
-     *  <i>This method must be called after all the queries in a script, preferably before </body>!</i>
+     *  <code>
+     *  // start transactions
+     *  $db->transaction_start();
      *
-     *  <b>You should ALWAYS have this method called at the end of your scripts and control whether the debugging console
-     *  will show or not with the {@link debug} property.</b>
+     *  // run queries
      *
-     *  @param  boolean $return         (Optional) If set to TRUE, the output will be returned instead of being printed
-     *                                  to the screen.
+     *  // if all the queries since "transaction_start" are valid, write data to the database;
+     *  // if any of the queries had an error, ignore all queries and treat them as if they never happened
+     *  $db->transaction_complete();
+     *  </code>
+     *
+     *  @since  2.1
+     *
+     *  @return boolean                     Returns TRUE on success or FALSE on error.
+     */
+    public function transaction_complete() {
+
+        $sql = 'COMMIT';
+
+        // if a transaction is in progress
+        if ($this->transaction_status !== 0) {
+
+            // if this was a test transaction or there was an error with one of the queries in the transaction
+            if ($this->transaction_status === 3 || $this->transaction_status === 2) {
+
+                // rollback changes
+                $this->query('ROLLBACK');
+
+                // set flag so that the query method will know that no transaction is in progress
+                $this->transaction_status = 0;
+
+                // if it was a test transaction return TRUE or FALSE otherwise
+                return ($this->transaction_status === 3 ? true : false);
+
+            }
+
+            // if all queries in the transaction were executed successfully and this was not a test transaction
+
+            // commit transaction
+            $this->query($sql);
+
+            // set flag so that the query method will know that no transaction is in progress
+            $this->transaction_status = 0;
+
+            // return TRUE if query was successful, or FALSE if it wasn't
+            return isset($this->last_result) && $this->last_result !== false;
+
+        }
+
+        // if no transaction was in progress
+        // save debug information
+        return $this->_log('unsuccessful-queries', array(
+
+            'query' =>  $sql,
+            'error' =>  $this->language['no_transaction_in_progress'],
+
+        ), false);
+
+    }
+
+    /**
+     *  Starts the transaction system.
+     *
+     *  Transactions work only with databases that support transaction-safe table types. In MySQL, these are InnoDB or
+     *  BDB table types. Working with MyISAM tables will not raise any errors but statements will be executed
+     *  automatically as soon as they are called (just like if there was no transaction).
+     *
+     *  If you are not familiar with transactions, have a look at {@link http://dev.mysql.com/doc/refman/5.0/en/commit.html here}
+     *  and try to find a good online resource for more specific information.
+     *
+     *  <code>
+     *  // start transactions
+     *  $db->transaction_start();
+     *
+     *  // run queries
+     *
+     *  // if all the queries since "transaction_start" are valid, write data to database;
+     *  // if any of the queries had an error, ignore all queries and treat them as if they never happened
+     *  $db->transaction_complete();
+     *  </code>
+     *
+     *  @param  boolean     $test_only      (Optional) Starts the transaction system in "test mode" causing the queries
+     *                                      to be rolled back (when {@link transaction_complete()} is called) - even if
+     *                                      all queries are valid.
+     *
+     *                                      Default is FALSE.
+     *
+     *  @since  2.1
+     *
+     *  @return boolean                     Returns TRUE on success or FALSE on error.
+     */
+    public function transaction_start($test_only = false) {
+
+        $sql = 'START TRANSACTION';
+
+        // if a transaction is not in progress
+        if ($this->transaction_status === 0) {
+
+            // set flag so that the query method will know that a transaction is in progress
+            $this->transaction_status = ($test_only ? 3 : 1);
+
+            // try to start transaction
+            $this->query($sql);
+
+            // return TRUE if query was successful, or FALSE if it wasn't
+            return isset($this->last_result) && $this->last_result !== false;
+
+        }
+
+        // save debug information
+        return $this->_log('unsuccessful-queries', array(
+
+            'query' =>  $sql,
+            'error' =>  $this->language['transaction_in_progress'],
+
+        ), false);
+
+    }
+
+    /**
+     *  Checks whether a table exists in the current database.
+     *
+     *  <code>
+     *  // checks whether table "users" exists
+     *  table_exists('users');
+     *  </code>
+     *
+     *  @param  string  $table      The name of the table to check if it exists in the database.
+     *
+     *                              <i>May also be given like databasename.tablename if a database was not explicitly
+     *                              selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                              calling this method.</i>
+     *
+     *  @since  2.3
+     *
+     *  @return boolean             Returns TRUE if table given as argument exists in the database or FALSE if not.
+     */
+    public function table_exists($table) {
+
+        // if table argument contains the database name, extract it
+        if (strpos($table, '.') !== false) list($database, $table) = explode('.', $table);
+
+        // check if table exists in the database
+        return $this->fetch_assoc($this->query('SHOW TABLES' . (isset($database) ? ' IN ' . $database : '') . ' LIKE ?', array($table))) !== false ? true : false;
+
+    }
+
+    /**
+     *  Shorthand for truncating tables.
+     *
+     *  <i>Truncating a table is quicker then deleting all rows, as stated in the
+     *  {@link http://dev.mysql.com/doc/refman/4.1/en/truncate-table.html MySQL documentation}. Truncating a table also
+     *  resets the value of the AUTO INCREMENT column.</i>
+     *
+     *  <code>
+     *  $db->truncate('table');
+     *  </code>
+     *
+     *  @param  string  $table          Table to truncate.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
+     *
+     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
+     *                                  and the query will be shown - really useful for quick and easy debugging.
      *
      *                                  Default is FALSE.
      *
+     *  @since  1.0.9
+     *
+     *  @return boolean                 Returns TRUE on success of FALSE on error.
+     */
+    public function truncate($table, $highlight = false) {
+
+        // run the query
+        $this->query('
+
+            TRUNCATE
+                ' . $this->_escape($table)
+
+        , '', false, false, $highlight);
+
+        // return TRUE if query was successful, or FALSE if it wasn't
+        return isset($this->last_result) && $this->last_result !== false;
+
+    }
+
+    /**
+     *  Shorthand for UPDATE queries.
+     *
+     *  When using this method column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
+     *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
+     *
+     *  After an update check {@link affected_rows} to find out how many rows were affected.
+     *
+     *  <code>
+     *  // notice that we're using a MySQL function as a value
+     *  $db->update(
+     *      'table',
+     *      array(
+     *          'column1'       =>  'value1',
+     *          'column2'       =>  'value2',
+     *          'date_updated'  =>  'NOW()',
+     *      ),
+     *      'criteria = ?',
+     *      array($criteria)
+     *  );
+     *
+     *  // when using MySQL functions, the value will be used as it is without being escaped!
+     *  // while this is ok when using a function without any arguments like NOW(), this may
+     *  // pose a security concern if the argument(s) come from user input.
+     *  // in this case we have to escape the value ourselves
+     *  $db->update(
+     *      'table',
+     *      array(
+     *          'column1'       =>  'TRIM(UCASE("' . $db->escape($value1) . '"))',
+     *          'column2'       =>  'value2',
+     *          'date_updated'  =>  'NOW()',
+     *      ),
+     *      'criteria = ?',
+     *      array($criteria)
+     *  );
+     *  </code>
+     *
+     *  @param  string  $table          Table in which to update.
+     *
+     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                                  calling this method.</i>
+     *
+     *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
+     *                                  array's values represent the values to be inserted in each respective column.
+     *
+     *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
+     *                                  usage of reserved words as column names) and values will be automatically
+     *                                  {@link escape()}d.
+     *
+     *                                  A special value may also be used for when a column's value needs to be
+     *                                  incremented or decremented. In this case, use <i>INC(value)</i> where <i>value</i>
+     *                                  is the value to increase the column's value with. Use <i>INC(-value)</i> to decrease
+     *                                  the column's value:
+     *
+     *                                  <code>
+     *                                  $db->update(
+     *                                      'table',
+     *                                      array(
+     *                                          'column'    =>  'INC(?)',
+     *                                      ),
+     *                                      'criteria = ?',
+     *                                      array(
+     *                                          $value,
+     *                                          $criteria
+     *                                      )
+     *                                  );
+     *                                  </code>
+     *
+     *                                  ...is equivalent to
+     *
+     *                                  <code>
+     *                                  $db->query('UPDATE table SET column = colum + ? WHERE criteria = ?', array($value, $criteria));
+     *                                  </code>
+     *
+     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
+     *                                  as <i>values</i>.
+     *
+     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
+     *                                  without being escaped! While this is ok when using a function without any arguments
+     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
+     *                                  In this case make sure you {@link escape} the values yourself!</samp>
+     *
+     *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
+     *
+     *                                  Default is "" (an empty string).
+     *
+     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
+     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
+     *                                  will replace the corresponding "?". Can also include an array as an item, case in
+     *                                  which each value from the array will automatically {@link escape()}-ed and then
+     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
+     *                                  column IN (?)</i> conditions. See second example {@link query here}.
+     *
+     *                                  Default is "" (an empty string).
+     *
+     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
+     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *
+     *                                  Default is FALSE.
+     *
+     *  @since  1.0.9
+     *
+     *  @return boolean                 Returns TRUE on success of FALSE on error
+     */
+    public function update($table, $columns, $where = '', $replacements = '', $highlight = false) {
+
+        // if $replacements is specified but it's not an array
+        if ($replacements != '' && !is_array($replacements))
+
+            // save debug information
+            return $this->_log('unsuccessful-queries',  array(
+
+                'query' =>  '',
+                'error' =>  $this->language['warning_replacements_not_array']
+
+            ));
+
+        // generate the SQL from the $columns array
+        $cols = $this->_build_sql($columns);
+
+        // run the query
+        $this->query('
+
+            UPDATE
+                ' . $this->_escape($table) . '
+            SET
+                ' . $cols .
+
+            ($where != '' ? ' WHERE ' . $where : '')
+
+        , array_merge(array_values($columns), $replacements == '' ? array() : $replacements), false, false, $highlight);
+
+        // return TRUE if query was successful, or FALSE if it wasn't
+        return isset($this->last_result) && $this->last_result !== false;
+
+    }
+
+    /**
+     *  Given an associative array where the array's keys represent column names and the array's values represent the
+     *  values to be associated with each respective column, this method will enclose column names in grave accents " ` "
+     *  (thus, allowing seamless usage of reserved words as column names) and automatically {@link escape()} value.
+     *
+     *  It will also take care of particular cases where the INC keyword is used in the values, where the INC keyword is
+     *  used with a parameter marker ("?", question mark) or where a value is a single question mark - which throws an
+     *  error message.
+     *
+     *  This method may also alter the original variable given as argument, as it is passed by reference!
+     *
+     *  @access private
+     */
+    private function _build_sql(&$columns) {
+
+        $sql = '';
+
+        // start creating the SQL string and enclose field names in `
+        foreach ($columns as $column_name => $value) {
+
+            // separate values by comma
+            $sql .= ($sql != '' ? ', ' : '');
+
+            // if value is just a parameter marker ("?", question mark)
+            if (trim($value) == '?')
+
+                // throw an error
+                return $this->_log('unsuccessful-queries',  array(
+
+                    'error' =>  sprintf($this->language['cannot_use_parameter_marker'], print_r($columns, true)),
+
+                ));
+
+            // if special INC() keyword is used
+            if (preg_match('/INC\((\-{1})?(.*?)\)/i', $value, $matches) > 0) {
+
+                // translate to SQL
+                $sql .= '`' . $column_name . '` = `' . $column_name . '` ' . ($matches[1] == '-' ? '-' : '+') . ' ?';
+
+                // if INC() contains an actual value and not a parameter marker ("?", question mark)
+                // add the actual value to the array with the replacement values
+                if ($matches[2] != '?') $columns[$column_name] = $matches[2];
+
+                // if we have a parameter marker ("?", question mark) instead of a value, it means the replacement value
+                // is already in the array with the replacement values, and that we don't need it here anymore
+                else unset($columns[$column_name]);
+
+            // if value looks like one or more nested functions
+            } elseif ($this->_is_mysql_function($value)) {
+
+                // build the string without enclosing this value in quotes
+                $sql .= '`' . $column_name . '` = ' . $value;
+
+                // we don't need this anymore
+                unset($columns[$column_name]);
+
+            // the usual way
+            } else $sql .= '`' . $column_name . '` = ?';
+
+        }
+
+        // return the built sql
+        return $sql;
+
+    }
+
+    /**
+     *  Checks if the connection to the MySQL server has been previously established by the connect() method.
+     *
+     *  @access private
+     */
+    private function _connected() {
+
+        // if there's no connection to a MySQL database
+        if (!$this->connection) {
+
+            // we need this because it is the only way we can set the connection options (if any)
+            $this->connection = mysqli_init();
+
+            // if we have any options set
+            if (!empty($this->options))
+
+                // iterate over the set options
+                foreach ($this->options as $option => $value)
+
+                    // set each option
+                    $this->connection->options($option, $value) ||
+
+                        // log if there's a bogus option/value
+                        $this->_log('errors', array(
+
+                            'message'   =>  sprintf($this->language['invalid_option'], $option),
+
+                        ));
+
+            // connect to the MySQL server
+            @mysqli_real_connect(
+                $this->connection,
+                $this->credentials['host'],
+                $this->credentials['user'],
+                $this->credentials['password'],
+                $this->credentials['database'],
+                $this->credentials['port'],
+                $this->credentials['socket']
+            );
+
+            // tries to connect to the MySQL database
+            if (mysqli_connect_errno())
+
+                // if connection could not be established
+                // save debug information
+                return $this->_log('errors', array(
+
+                    'message'   =>  $this->language['could_not_connect_to_database'],
+                    'error'     =>  mysqli_connect_error(),
+
+                ));
+
+            // if caching is to be done to a memcache server and we don't yet have a connection
+            if (!$this->memcache && $this->memcache_host !== false && $this->memcache_port !== false) {
+
+                // if memcache extension is installed
+                if (class_exists('Memcache')) {
+
+                    // instance to the memcache object
+                    $memcache = new Memcache();
+
+                    // try to connect to the memcache server
+                    if (!$memcache->connect($this->memcache_host, $this->memcache_port))
+
+                        // if connection could not be established, save debug information
+                        $this->_log('errors', array(
+
+                            'message'   =>  $this->language['could_not_connect_to_memcache_server'])
+
+                        );
+
+                    else $this->memcache = $memcache;
+
+                // if memcache extension is not installed
+                } else
+
+                    // if connection could not be established, save debug information
+                    $this->_log('errors', array(
+
+                        'message'   =>  $this->language['memcache_extension_not_installed'])
+
+                    );
+
+            }
+
+        }
+
+        // return TRUE if there is no error
+        return true;
+
+    }
+
+    /**
+     *  Shows the debugging console when the script ends, <i>if</i> {@link debug} is TRUE and the viewer's IP address is
+     *  in the {@link debugger_ip} array (or <i>$debugger_ip</i> is an empty array).
+     *
+     *  <i>This is a public method because it's used with register_shutdown_function.</i>
+     *
+     *  @access private
+     *
      *  @return void
      */
-    function show_debug_console($return = false)
-    {
+    function _debug() {
 
         // if
         if (
 
             // debug is enabled AND
-            $this->debug &&
+            $this->debug !== false &&
 
             // debugger_ip is an array AND
             is_array($this->debugger_ip) &&
@@ -2942,6 +3983,17 @@ class Zebra_Database
                 )
 
         ) {
+
+            if (is_array($this->debug)) return call_user_func_array(array($this, '_write_log'), $this->debug);
+
+            // include the SqlFormatter library
+            require 'includes/SqlFormatter.php';
+
+            // set some properties for the formatter
+            SqlFormatter::$number_attributes = SqlFormatter::$boundary_attributes = 'class="symbol"';
+            SqlFormatter::$quote_attributes = 'class="string"';
+            SqlFormatter::$reserved_attributes = 'class="keyword"';
+            SqlFormatter::$tab = '    ';
 
             // if warnings are not disabled
             if (!$this->disable_warnings)
@@ -3002,205 +4054,15 @@ class Zebra_Database
 
                         $identifier = $blocks[$block]['identifier'];
 
-                        // if block is about queries
-                        if ($block == 'successful-queries' || $block == 'unsuccessful-queries') {
+                        // if there are any queries, pretty-print them
+                        if (isset($debug_info['query']))
 
-                            // symbols in MySQL query
-                            $symbols = array(
-                                '=',
-                                '>',
-                                '<',
-                                '*',
-                                '+',
-                                '-',
-                                ',',
-                                '.',
-                                '(',
-                                ')',
-                            );
-
-                            // escape special characters and prepare them to be used to regular expressions
-                            array_walk($symbols, create_function('&$value', '$value="/(" . quotemeta($value) . ")/";'));
-
-                            // strings in MySQL queries
-                            $strings = array(
-                                "/\'([^\']*)\'/",
-                                "/\"([^\"]*)\"/",
-                            );
-
-                            // keywords in MySQL queries
-                            $keywords = array(
-                                'ADD',
-                                'ALTER',
-                                'ANALYZE',
-                                'BETWEEN',
-                                'CHANGE',
-                                'COMMIT',
-                                'CREATE',
-                                'DELETE',
-                                'DROP',
-                                'EXPLAIN',
-                                'FROM',
-                                'GROUP BY',
-                                'HAVING',
-                                'INNER JOIN',
-                                'INSERT INTO',
-                                'LEFT JOIN',
-                                'LIMIT',
-                                'ON DUPLICATE KEY',
-                                'OPTIMIZE',
-                                'ORDER BY',
-                                'RENAME',
-                                'REPAIR',
-                                'REPLACE INTO',
-                                'RIGHT JOIN',
-                                'ROLLBACK',
-                                'SELECT',
-                                'SET',
-                                'SHOW',
-                                'START TRANSACTION',
-                                'STATUS',
-                                'TABLE',
-                                'TABLES',
-                                'TRUNCATE',
-                                'UPDATE',
-                                'UNION',
-                                'VALUES',
-                                'WHERE'
-                            );
-
-                            // escape special characters and prepare them to be used to regular expressions
-                            array_walk($keywords, create_function('&$value', '$value="/(\b" . quotemeta($value) . "\b)/i";'));
-
-                            // more keywords (these are the keywords that we don't put a line break after in the debugging console
-                            // when showing queries formatted and highlighted)
-                            $keywords2 = array(
-                                'AGAINST',
-                                'ALL',
-                                'AND',
-                                'AS',
-                                'ASC',
-                                'AUTO INCREMENT',
-                                'AVG',
-                                'BINARY',
-                                'BOOLEAN',
-                                'BOTH',
-                                'CASE',
-                                'COLLATE',
-                                'COUNT',
-                                'DESC',
-                                'DOUBLE',
-                                'ELSE',
-                                'END',
-                                'ENUM',
-                                'FIND_IN_SET',
-                                'IN',
-                                'INT',
-                                'IS',
-                                'KEY',
-                                'LIKE',
-                                'MATCH',
-                                'MAX',
-                                'MIN',
-                                'MODE',
-                                'NAMES',
-                                'NOT',
-                                'NULL',
-                                'ON',
-                                'OR',
-                                'SQL_CALC_FOUND_ROWS',
-                                'SUM',
-                                'TEXT',
-                                'THEN',
-                                'TO',
-                                'VARCHAR',
-                                'WHEN',
-                                'XOR',
-                            );
-
-                            // escape special characters and prepare them to be used to regular expressions
-                            array_walk($keywords2, create_function('&$value', '$value="/(\b" . quotemeta($value) . "\b)/i";'));
-
-                            $query_strings = array();
-
-                            // if there are any strings in the query, store the offset where they start and the actual string
-                            // in the $matches var
-                            if (preg_match_all(
-
-                                '/(\'|\"|\`)([^\1\\\]*?(?:\\\.[^\1\\\]*?)*)\\1/',
-
-                                $debug_info['query'],
-
-                                $matches,
-
-                                PREG_OFFSET_CAPTURE
-
-                            ) > 0) {
-
-                                // reverse the order in which strings will be replaced so that we replace strings starting with
-                                // the last one or else we scramble up the offsets...
-                                $matches[2] = array_reverse($matches[2], true);
-
-                                // iterate through the strings
-                                foreach ($matches[2] as $match) {
-
-                                    // save the strings
-                                    $query_strings['/' . md5($match[0]) . '/'] = preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $match[0]);
-
-                                    // replace strings with their md5 hashed equivalent
-                                    // (we do this because we don't have to highlight anything in strings)
-                                    $debug_info['query'] = substr_replace(
-
-                                        $debug_info['query'],
-
-                                        md5($match[0]),
-
-                                        $match[1],
-
-                                        strlen($match[0])
-
-                                    );
-
-                                }
-
-                            }
-
-                            // highlight symbols
-                            $debug_info['query'] =
-
-                                preg_replace($symbols, htmlentities('<span class="symbol">$1</span>'), $debug_info['query']);
-
-                            // highlight strings
-                            $replacement = htmlentities('<span class="string">\'$1\'</span>');
-
-                            $debug_info['query'] = preg_replace($strings, $replacement, $debug_info['query']);
-
-                            // highlight keywords
-                            $debug_info['query'] =
-
-                                preg_replace(
-
-                                    $keywords,
-
-                                    htmlentities('<br><span class="keyword">$1</span><br><span class="indent"></span>'),
-
-                                    $debug_info['query']
-
-                                );
-
-                            // highlight more keywords
-                            $debug_info['query'] =
-
-                                preg_replace($keywords2, htmlentities('<span class="keyword">$1</span>'), $debug_info['query']);
-
-                            // convert strings back to their original values
-                            $debug_info['query'] = preg_replace(array_keys($query_strings), $query_strings, $debug_info['query']);
-
-                        }
+                            // format and highlight query
+                            $debug_info['query'] = SqlFormatter::format($debug_info['query']);
 
                         // all blocks are enclosed in tables
                         $output .= '
-                            <table cellspacing="0" cellpadding="0" border="1" class="zdc-entry' .
+                            <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry' .
 
                                 // apply a class for even rows
                                 ($counter % 2 == 0 ? ' even' : '') .
@@ -3273,12 +4135,21 @@ class Zebra_Database
                                     </li>
                                 ';
 
+                            // info about whether the query results were taken from cache or not
+                            elseif ($debug_info['unbuffered'])
+
+                                $output .= '
+                                    <li class="zdc-unbuffered">
+                                        <strong>' . $this->language['unbuffered'] . '</strong>
+                                    </li>
+                                ';
+
                             // info about execution time
                             $output .= '
                                 <li class="zdc-time">' .
                                     $this->language['execution_time'] . ': ' .
                                     $this->_fix_pow($debug_info['execution_time']) . ' ' .
-                                    $this->language['miliseconds'] . ' (<strong>' .
+                                    $this->language['seconds'] . ' (<strong>' .
                                     number_format(
                                         ($this->total_execution_time != 0 ? $debug_info['execution_time'] * 100 / $this->total_execution_time : 0),
                                         2, '.', ',') . '</strong>%)
@@ -3291,9 +4162,9 @@ class Zebra_Database
                                 // button for reviewing returned rows
                                 $output .= '
                                     <li class="zdc-records">
-                                        <a href="javascript:zdc_toggle(\'zdc-records-sq' . $counter . '\')">' .
+                                        ' . (!empty($debug_info['records']) ? '<a href="javascript:zdc_toggle(\'zdc-records-sq' . $counter . '\')">' : '') .
                                             $this->language['returned_rows'] . ': <strong>' . $debug_info['returned_rows'] . '</strong>
-                                        </a>
+                                        ' . (!empty($debug_info['records']) ? '</a>' : '') . '
                                     </li>
                                 ';
 
@@ -3372,7 +4243,7 @@ class Zebra_Database
                             // start generating output
                             $output .= '
                                 <div id="zdc-' . $table . '-' . $identifier . $counter . '" class="zdc-box zdc-' . $table . '-table">
-                                    <table cellspacing="0" cellpadding="0" border="1">
+                                    <table cellspacing="0" cellpadding="0" border="0">
                                         <tr>
                             ';
 
@@ -3451,7 +4322,7 @@ class Zebra_Database
 
                         // add to the generated output
                         $output .= '
-                            <table cellspacing="0" cellpadding="0" border="1" id="zdc-globals-' . strtolower($global) . '" class="zdc-entry">
+                            <table cellspacing="0" cellpadding="0" border="0" id="zdc-globals-' . strtolower($global) . '" class="zdc-entry">
                                 <tr>
                                     <td class="zdc-counter" valign="top">001</td>
                                     <td class="zdc-data">
@@ -3502,7 +4373,7 @@ class Zebra_Database
                 <li>
                     <a href="javascript:zdc_toggle(\'zdc-successful-queries\')">' .
                         $this->language['successful_queries'] . ': <span>' . $blocks['successful-queries']['counter'] . '</span>&nbsp;(' .
-                        $this->_fix_pow($this->total_execution_time) . ' ' . $this->language['miliseconds'] . ')
+                        $this->_fix_pow($this->total_execution_time) . ' ' . $this->language['seconds'] . ')
                     </a>
                 </li>
                 <li>
@@ -3517,7 +4388,7 @@ class Zebra_Database
                 $output .= '
                     <li>
                         <a href="javascript:zdc_toggle(\'zdc-warnings\')">' .
-                            $this->language['warnings'] . ': <span>' . count($this->warnings) . '</span>
+                            $this->language['warnings'] . ': <span>' . $blocks['warnings']['counter'] . '</span>
                         </a>
                     </li>
                 ';
@@ -3550,47 +4421,23 @@ class Zebra_Database
                 </div>
             ';
 
-            // tidy the output
-            $pattern = array(
-
-                // remove blank lines
-                "/[\r\n]+\s*[\r\n]+/",
-
-                // remove spaces used for indentation
-                "/^\s+/m",
-
-            );
-
-            $replacement = array(
-
-                "\r\n",
-                "",
-
-            );
-
-            // perform the tidying
-            $output = preg_replace($pattern, $replacement, $output);
-
             // use the provided resource path for stylesheets and javascript (if any)
             if (!is_null($this->resource_path))
 
                 $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . $this->resource_path), '/');
 
             // if path not provided, determine the path automatically
-            else 
+            else
 
                 // this is the url that will be used for automatically including
                 // the CSS and the JavaScript files
                 $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen(realpath($_SERVER['DOCUMENT_ROOT'])))), '/');
 
             // link the required javascript
-            $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.src.js"></script>' . $output;
+            $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.js"></script>' . $output;
 
             // link the required css file
             $output = '<link rel="stylesheet" href="' . $path . '/public/css/database.css" type="text/css">' . $output;
-
-            // if output is to be returned rather than printed to the screen
-            if ($return) return $output;
 
             // show generated output
             echo $output;
@@ -3600,397 +4447,270 @@ class Zebra_Database
     }
 
     /**
-     *  Ends a transaction which means that if all the queries since {@link transaction_start()} are valid, it writes
-     *  the data to the database, but if any of the queries had an error, ignore all queries and treat them as if they
-     *  never happened.
+     *  Encloses segments of a database.table.column construction in grave accents.
      *
-     *  <code>
-     *  // start transactions
-     *  $db->transaction_start();
+     *  @param  mixed   A string or an array to escape.
      *
-     *  // run queries
+     *  @return string  Returns a string with the segments of a database.table.column construction enclosed in grave
+     *                  accents.
      *
-     *  // if all the queries since "transaction_start" are valid, write data to the database;
-     *  // if any of the queries had an error, ignore all queries and treat them as if they never happened
-     *  $db->transaction_complete();
-     *  </code>
-     *
-     *  @since  2.1
-     *
-     *  @return boolean                     Returns TRUE on success or FALSE on error.
+     *  @access private
      */
-    function transaction_complete()
-    {
+    private function _escape($entries) {
 
-        $sql = 'COMMIT';
+        // treat argument as an array
+        $entries = (array)$entries;
 
-        // if a transaction is in progress
-        if ($this->transaction_status !== 0) {
+        $result = array();
 
-            // if this was a test transaction or there was an error with one of the queries in the transaction
-            if ($this->transaction_status === 3 || $this->transaction_status === 2) {
+        // iterate over the entries given as argument
+        foreach ($entries as $entry) {
 
-                // rollback changes
-                $this->query('ROLLBACK');
+            // explode string by dots
+            $entry = explode('.', $entry);
 
-                // set flag so that the query method will know that no transaction is in progress
-                $this->transaction_status = 0;
+            // iterate over the segments
+            $entry = array_map(function($value) {
 
-                // if it was a test transaction return TRUE or FALSE otherwise
-                return ($this->transaction_status === 3 ? true : false);
+                // trim ticks and whitespace
+                $value = trim(trim($value, '`'));
+
+                // if not * or a MySQL function
+                if ($value !== '*' && !$this->_is_mysql_function($value))
+
+                    // enclose value in grave accents
+                    return '`' . $value . '`';
+
+                // return the value as it is otherwise
+                return $value;
+
+            }, $entry);
+
+            // concatenate the string back and add it to the result
+            $result[] = implode('.', $entry);
+
+        }
+
+        // recompose the string and return it
+        return implode(', ', $result);
+
+    }
+
+    /**
+     *  PHP's microtime() will return elapsed time as something like 9.79900360107E-5 when the elapsed time is too short.
+     *
+     *  This function takes care of that and returns the number in the human readable format.
+     *
+     *  @access private
+     */
+    private function _fix_pow($value) {
+
+        // use value as literal
+        $value = (string)$value;
+
+        // if the power is present in the value
+        if (preg_match('/E\-([0-9]+)$/', $value, $matches) > 0)
+
+            // convert to human readable format
+            $value = '0.' . str_repeat('0', $matches[1] - 1) . preg_replace('/\./', '', substr($value, 0, -strlen($matches[0])));
+
+        // return the value
+        return number_format($value, 3);
+
+    }
+
+    /**
+     *  Checks if a string is in fact a MySQL function call (or a bunch of nested MySQL functions)
+     *
+     *  @access private
+     */
+    private function _is_mysql_function($value) {
+
+        $valid = false;
+
+        // if value looks like one or more nested functions
+        if (!is_array($value) && preg_match('/[a-z\_]+\(/i', $value) && preg_match_all('/([a-z\_]+\()/i', $value, $matches)) {
+
+            $valid = true;
+
+            // iterate through what look like MySQL functions
+            foreach ($matches[0] as $match)
+
+                // if entry is not a MySQL function
+                if (!in_array(strtoupper(substr($match, 0, -1)), $this->mysql_functions)) {
+
+                    // it means we made a mistake, don't look further
+                    $valid = false;
+
+                    break;
+
+                }
+
+        }
+
+        // return the result
+        return $valid;
+
+    }
+
+    /**
+     *  Checks is a value is a valid result set obtained from a query against the database
+     *
+     *  @access private
+     */
+    private function _is_result($value) {
+
+        // check whether a value is a valid result set obtained from a query against the database
+        return $value instanceof mysqli_result;
+
+    }
+
+    /**
+     *  Handles saving of debug information and halts the execution of the script on fatal error or if the
+     *  {@link halt_on_errors} property is set to TRUE
+     *
+     *  @access private
+     */
+    private function _log($category, $data, $fatal = true) {
+
+        // if debugging is on
+        if ($this->debug !== false) {
+
+            // if category is different than "warnings"
+            // (warnings are generated internally)
+            if ($category != 'warnings' && $this->debug_show_backtrace) {
+
+                // get backtrace information
+                $backtrace_data = debug_backtrace();
+
+                // unset first entry as it refers to the call to this particular method
+                unset($backtrace_data[0]);
+
+                $data['backtrace'] = array();
+
+                // iterate through the backtrace information
+                foreach ($backtrace_data as $backtrace)
+
+                    // extract needed information
+                    $data['backtrace'][] = array(
+
+                        $this->language['file']     =>  (isset($backtrace['file']) ? $backtrace['file'] : ''),
+                        $this->language['function'] =>  $backtrace['function'] . '()',
+                        $this->language['line']     =>  (isset($backtrace['line']) ? $backtrace['line'] : ''),
+
+                    );
 
             }
 
-            // if all queries in the transaction were executed successfully and this was not a test transaction
+            // saves debug information
+            $this->debug_info[$category][] = $data;
 
-            // commit transaction
-            $this->query($sql);
-
-            // set flag so that the query method will know that no transaction is in progress
-            $this->transaction_status = 0;
-
-            // if query was successful
-            if ($this->last_result) return true;
-
-            // if query was unsuccessful
-            return false;
-
-        }
-
-        // if no transaction was in progress
-        // save debug information
-        $this->_log('unsuccessful-queries', array(
-
-            'query' =>  $sql,
-            'error' =>  $this->language['no_transaction_in_progress'],
-
-        ), false);
-
-        return false;
-
-    }
-
-    /**
-     *  Starts the transaction system.
-     *
-     *  Transactions work only with databases that support transaction-safe table types. In MySQL, these are InnoDB or
-     *  BDB table types. Working with MyISAM tables will not raise any errors but statements will be executed
-     *  automatically as soon as they are called (just like if there was no transaction).
-     *
-     *  If you are not familiar with transactions, have a look at {@link http://dev.mysql.com/doc/refman/5.0/en/commit.html}
-     *  and try to find a good online resource for more specific information.
-     *
-     *  <code>
-     *  // start transactions
-     *  $db->transaction_start();
-     *
-     *  // run queries
-     *
-     *  // if all the queries since "transaction_start" are valid, write data to database;
-     *  // if any of the queries had an error, ignore all queries and treat them as if they never happened
-     *  $db->transaction_complete();
-     *  </code>
-     *
-     *  @param  boolean     $test_only      (Optional) Starts the transaction system in "test mode" causing the queries
-     *                                      to be rolled back (when {@link transaction_complete()} is called) - even if
-     *                                      all queries are valid.
-     *
-     *                                      Default is FALSE.
-     *
-     *  @since  2.1
-     *
-     *  @return boolean                     Returns TRUE on success or FALSE on error.
-     */
-    function transaction_start($test_only = false)
-    {
-
-        $sql = 'START TRANSACTION';
-
-        // if a transaction is not in progress
-        if ($this->transaction_status === 0) {
-
-            // set flag so that the query method will know that a transaction is in progress
-            $this->transaction_status = ($test_only ? 3 : 1);
-
-            // try to start transaction
-            $this->query($sql);
-
-            // returns TRUE, if query was executed successfully
-            if ($this->last_result) return true;
+            // if the saved debug info is about a fatal error
+            // and execution is to be stopped on fatal errors
+            if ($fatal && $this->halt_on_errors) die();
 
             return false;
 
-        }
+        // if there are any unsuccessful queries or other errors and no debugging
+        } elseif (($category == 'unsuccessful-queries' || $category == 'errors') && $this->debug === false) {
 
-        // save debug information
-        $this->_log('unsuccessful-queries', array(
+            // get backtrace information
+            $backtraceInfo = debug_backtrace();
 
-            'query' =>  $sql,
-            'error' =>  $this->language['transaction_in_progress'],
-
-        ), false);
-
-        return false;
-
-    }
-
-    /**
-     *  Checks whether a table exists in the current database.
-     *
-     *  <code>
-     *  // checks whether table "users" exists
-     *  table_exists('users');
-     *  </code>
-     *
-     *  @param  string  $table      The name of the table to check if it exists in the database.
-     *
-     *  @since  2.3
-     *
-     *  @return boolean             Returns TRUE if table given as argument exists in the database or FALSE if not.
-     *
-     *
-     */
-    function table_exists($table)
-    {
-
-        // check if table exists in the database
-        return $this->fetch_assoc($this->query('SHOW TABLES LIKE ?', array($table))) !== false ? true : false;
-
-    }
-
-    /**
-     *  Shorthand for truncating tables.
-     *
-     *  <i>Truncating a table is quicker then deleting all rows, as stated in the MySQL documentation at
-     *  {@link http://dev.mysql.com/doc/refman/4.1/en/truncate-table.html}. Truncating a table also resets the value of
-     *  the AUTO INCREMENT column.</i>
-     *
-     *  <code>
-     *  $db->truncate('table');
-     *  </code>
-     *
-     *  @param  string  $table          Table to truncate.
-     *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
-     *
-     *                                  Default is FALSE.
-     *
-     *  @since  1.0.9
-     *
-     *  @return boolean                 Returns TRUE on success of FALSE on error.
-     */
-    function truncate($table, $highlight = false)
-    {
-
-        // run the query
-        $this->query('
-
-            TRUNCATE
-                `' . $table . '`'
-
-        , '', false, false, $highlight);
-
-        // returns TRUE, if query was executed successfully
-        if ($this->last_result) return true;
-
-        return false;
-
-    }
-
-    /**
-     *  Shorthand for UPDATE queries.
-     *
-     *  When using this method column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
-     *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
-     *
-     *  After an update check {@link affected_rows} to find out how many rows were affected.
-     *
-     *  <code>
-     *  $db->update(
-     *      'table',
-     *      array(
-     *          'column1'   =>  'value1',
-     *          'column2'   =>  'value2',
-     *      ),
-     *      'criteria = ?',
-     *      array($criteria)
-     *  );
-     *  </code>
-     *
-     *  @param  string  $table          Table in which to update.
-     *
-     *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
-     *                                  array's values represent the values to be inserted in each respective column.
-     *
-     *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
-     *                                  usage of reserved words as column names) and values will be automatically
-     *                                  {@link escape()}d.
-     *
-     *                                  A special value may also be used for when a column's value needs to be
-     *                                  incremented or decremented. In this case, use <i>INC(value)</i> where <i>value</i>
-     *                                  is the value to increase the column's value with. Use <i>INC(-value)</i> to decrease
-     *                                  the column's value:
-     *
-     *                                  <code>
-     *                                  $db->update(
-     *                                      'table',
-     *                                      array(
-     *                                          'column'    =>  'INC(?)',
-     *                                      ),
-     *                                      'criteria = ?',
-     *                                      array(
-     *                                          $value,
-     *                                          $criteria
-     *                                      )
-     *                                  );
-     *                                  </code>
-     *
-     *                                  ...is equivalent to
-     *
-     *                                  <code>
-     *                                  $db->query('UPDATE table SET column = colum + ? WHERE criteria = ?', array($value, $criteria));
-     *                                  </code>
-     *
-     *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
-     *
-     *                                  Default is "" (an empty string).
-     *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
-     *                                  will replace the corresponding "?". Can also include an array as an item, case in
-     *                                  which each value from the array will automatically {@link escape()}-ed and then
-     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
-     *                                  column IN (?)</i> conditions. See second example {@link query here}.
-     *
-     *                                  Default is "" (an empty string).
-     *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
-     *
-     *                                  Default is FALSE.
-     *
-     *  @since  1.0.9
-     *
-     *  @return boolean                 Returns TRUE on success of FALSE on error
-     */
-    function update($table, $columns, $where = '', $replacements = '', $highlight = false)
-    {
-
-        // if $replacements is specified but it's not an array
-        if ($replacements != '' && !is_array($replacements)) {
-
-            // save debug information
-            $this->_log('unsuccessful-queries',  array(
-
-                'query' =>  '',
-                'error' =>  $this->language['warning_replacements_not_array']
-
-            ));
-
-            return false;
+            // log error to the system logger
+            error_log('Zebra_Database (MySQL): ' . (isset($data['error']) ? $data['error'] : $data['message']) . print_r(' in ' . $backtraceInfo[1]['file'] . ' on line ' . $backtraceInfo[1]['line'], true));
 
         }
 
-        // generate the SQL from the $columns array
-        $cols = $this->_build_sql($columns);
+    }
 
-        // run the query
-        $this->query('
+    /**
+     *  For unbuffered queries, this method manages setting the value of the {@link returned_rows} property once all the
+     *  records have been iterating over with either {@link fetch_assoc()} or {@link fetch_obj()} methods.
+     *
+     *  If requested so, this method will also set the value for the {@link found_rows} property, will EXPLAIN the query
+     *  and will populate the debugging console with the first few records, as set by the {@link debug_show_records}
+     *  property.
+     *
+     *  @access private
+     */
+    private function _manage_unbuffered_query_info(&$resource, &$result) {
 
-            UPDATE
-                `' . $table . '`
-            SET
-                ' . $cols .
+        // if it was the last row
+        if (!$result) {
 
-            ($where != '' ? ' WHERE ' . $where : '')
+            // set the number of returned rows
+            $this->found_rows = $this->returned_rows = $resource->num_rows;
 
-        , array_merge(array_values($columns), $replacements == '' ? array() : $replacements), false, false, $highlight);
+            // if debugging to the console is turned on
+            if ($this->debug === true) {
 
-        // returns TRUE if query was executed successfully
-        if ($this->last_result) return true;
+                // update the number of returned rows in the debugging console
+                $this->debug_info['successful-queries'][$resource->log_index]['returned_rows'] = $resource->num_rows;
 
-        return false;
+                // if we need to get the total number of rows in the table
+                if (isset($resource->calc_rows) && $resource->calc_rows) {
+
+                    // run that query now
+                    $found_rows = mysqli_fetch_assoc(mysqli_query($this->connection, 'SELECT FOUND_ROWS()'));
+
+                    // update the found_rows property
+                    $this->found_rows = $found_rows['FOUND_ROWS()'];
+
+                }
+
+                // if we need to EXPLAIN the query
+                if (isset($resource->explain) && $resource->explain) {
+
+                    // do that now
+                    $explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $resource->query);
+
+                    // update information in the debugging console
+                    while ($row = mysqli_fetch_assoc($explain_resource)) $this->debug_info['successful-queries'][$resource->log_index]['explain'][] = $row;
+
+                }
+
+            }
+
+        // if it was not the last row, debugging to the console is turned on and we've not yet reached the limit imposed by debug_show_records
+        } elseif ($this->debug === true && count($this->debug_info['successful-queries'][$resource->log_index]['records']) < $this->debug_show_records)
+
+            // add row data to the debugging console
+            $this->debug_info['successful-queries'][$resource->log_index]['records'][] = $result;
 
     }
 
     /**
-     *  Writes debug information to a <i>log.txt</i> log file at {@link log_path} <i>if</i> {@link debug} is TRUE and the
-     *  viewer's IP address is in the {@link debugger_ip} array (or <i>$debugger_ip</i> is an empty array).
+     *  See the {@link debug} property for more information.
      *
-     *  <i>This method must be called after all the queries in a script!</i>
-     *
-     *  <i>Make sure you're calling it BEFORE {@link show_debug_console()} so that you can see in the debugging console if
-     *  writing to the log file was successful or not.</i>
-     *
-     *  Note that by default all logs are written to a single file. Refer to the method's arguments for grouping logs by
-     *  days and/or hours.
-     *
-     *  @since  1.1.0
-     * 
-     *  @param boolean  $daily      Should logs be grouped by days?
-     *
-     *                              Log files will have their name in the form of "log_ymd.txt", where "y", "m" and "d"
-     *                              represent two digit values for year, month and day, respectively.
-     *
-     *                              Default is FALSE.
-     *
-     *  @param boolean  $hourly     Should logs be also groupped by hours?
-     * 
-     *                              Log files will have their name in the form of "log_ymd_h.txt", where "y", "m" and "d"
-     *                              represent two digit values for year, month and day, respectively, while "h" represents
-     *                              the two digit value for hour.
-     *
-     *                              Note that if this argument is set to TRUE, the $daily argument will be automatically
-     *                              set to TRUE.
-     *
-     *                              Default is FALSE.
+     *  @access private
      *
      *  @return void
      */
-    function write_log($daily = false, $hourly = false)
-    {
+    private function _write_log($daily = false, $hourly = false, $backtrace = false) {
 
-          // if
-        if (
+        // daily/hourly file?
+        $file_name = 'log';
 
-            // debug is enabled AND
-            $this->debug &&
+        // if $hourly is set to TRUE, $daily *must* be true
+        if ($hourly) $daily = true;
 
-            // debugger_ip is an array AND
-            is_array($this->debugger_ip) &&
+        // are we writing daily logs?
+        // (suppress "strict standards" warning for PHP 5.4+)
+        $file_name .= ($daily ? '-' . @date('Ymd') : '');
 
-                (
+        // are we writing hourly logs?
+        // (suppress "strict standards" warning for PHP 5.4+)
+        $file_name .= ($hourly ? '-' . @date('H') : '');
 
-                    // debugger_ip is an empty array OR
-                    empty($this->debugger_ip) ||
+        // log file's extension
+        $file_name .= '.txt';
 
-                    // the viewer's IP is the allowed array
-                    in_array($_SERVER['REMOTE_ADDR'], $this->debugger_ip)
+        // tries to create/open the 'log.txt' file
+        if ($handle = @fopen(rtrim($this->log_path, '/') . '/' . $file_name, 'a+')) {
 
-                )
-
-        ) {
-		
-            // daily/hourly file?
-            $file_name = 'log';
-
-            // if $hourly is set to TRUE, $daily *must* be true
-            if ($hourly) $daily = true;
-
-            // are we writing daily logs?
-            // (suppress "strict standards" warning for PHP 5.4+)
-            $file_name .= ($daily ? '-' . @date('Ymd') : '');
-
-            // are we writing hourly logs?
-            // (suppress "strict standards" warning for PHP 5.4+)
-            $file_name .= ($hourly ? '-' . @date('H') : '');
-
-            // log file's extension
-            $file_name .= '.txt';
-	
-            // tries to create/open the 'log.txt' file
-            if ($handle = @fopen(rtrim($this->log_path, '/') . '/' . $file_name, 'a+')) {
+            // if there are any successful queries
+            if (isset($this->debug_info['successful-queries']))
 
                 // iterate through the debug information
                 foreach ($this->debug_info['successful-queries'] as $debug_info) {
@@ -4020,6 +4740,7 @@ class Zebra_Database
                         strtoupper($this->language['file']),
                         strtoupper($this->language['line']),
                         strtoupper($this->language['function']),
+                        strtoupper($this->language['unbuffered']),
                     );
 
                     // determine the longest label (for propper indenting)
@@ -4051,7 +4772,7 @@ class Zebra_Database
                         // (is not available for unsuccessful queries)
                         (isset($debug_info['execution_time']) ?
 
-                            '# ' . $labels[2] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . '#: ' .  $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['miliseconds'] . "\n"
+                            '# ' . $labels[2] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . '#: ' .  $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['seconds'] . "\n"
                              : ''
 
                         ) .
@@ -4073,311 +4794,61 @@ class Zebra_Database
                         ) .
 
                         // if not an action query, show whether the query was returned from the cache or was executed
-                        ($debug_info['affected_rows'] === false ?
+                        ($debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] != 'nocache' ?
 
-                            '# ' . $labels[5] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) .  '#: ' .
-
-                            (isset($debug_info['from_cache']) && $debug_info['from_cache'] === true  ?
-
-                                $labels[6] :
-                                $labels[7]
-
-                            ) . "\n"
-
+                            '# ' . $labels[5] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) .  '#: ' . $labels[6] . "\n"
                             : ''
 
                         ) .
 
-                        '# ' . $labels[8] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . '#:' . "\n"
+                        // if query was an unbuffered one
+                        (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ?
+
+                            '# ' . $labels[12] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . '#: ' . $labels[6] . "\n"
+                            : ''
+
+                        )
 
                     , true));
 
-                    // write full backtrace info
-                    foreach ($debug_info['backtrace'] as $backtrace)
+                    // if backtrace information should be written to the log file
+                    if ($backtrace) {
 
+                        // write to log file
                         fwrite($handle, print_r(
 
                             '# ' . str_pad('', ($longest_label_length + 1), ' ', STR_PAD_RIGHT) . '#' . "\n" .
-                            '# ' . $labels[9] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['file']] . "\n" .
-                            '# ' . $labels[10] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['line']] . "\n" .
-                            '# ' . $labels[11] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['function']] . "\n"
+
+                            '# ' . $labels[8] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . '#:' . "\n"
 
                         , true));
+
+                        // write full backtrace info
+                        foreach ($debug_info['backtrace'] as $backtrace)
+
+                            fwrite($handle, print_r(
+
+                                '# ' . str_pad('', ($longest_label_length + 1), ' ', STR_PAD_RIGHT) . '#' . "\n" .
+                                '# ' . $labels[9] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['file']] . "\n" .
+                                '# ' . $labels[10] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['line']] . "\n" .
+                                '# ' . $labels[11] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['function']] . "\n"
+
+                            , true));
+
+                    }
 
                     // finish writing to the log file by adding a bottom border
                     fwrite($handle, str_pad('', $longest_label_length + 4, '#', STR_PAD_RIGHT) . "\n\n");
 
                 }
 
-                // close log file
-                fclose($handle);
+            // close log file
+            fclose($handle);
 
-            // if log file could not be created/opened
-            } else
+        // if log file could not be created/opened
+        } else
 
-                // save debug information
-                $this->_log('errors', array(
-
-                    'message'   =>  $this->language['could_not_write_to_log'],
-
-                ));
-
-        }
-
-    }
-
-    /**
-     *  Given an associative array or a string with comma separated values where the values represent column names, this
-     *  method will enclose column names in grave accents " ` " (thus, allowing seamless usage of reserved words as column
-     *  names) and automatically {@link escape()} value.
-     *
-     *  @access private
-     */
-    private function _build_columns($columns)
-    {
-        $sql = '';
-
-        // if the argument is not an array
-        if (!is_array($columns))
-
-            // transform it to an array
-            $columns = explode(',', $columns);
-
-        // loop through each column
-        foreach($columns as &$col)
-
-            // wrap in grave accents " ` "
-            $col = '`' . trim(trim($col), '`') . '`';
-
-        // create string from array
-        $sql = join(', ', $columns);
-
-        return $sql;
-
-    }
-    
-    /**
-     *  Given an associative array where the array's keys represent column names and the array's values represent the
-     *  values to be associated with each respective column, this method will enclose column names in grave accents " ` "
-     *  (thus, allowing seamless usage of reserved words as column names) and automatically {@link escape()} value.
-     *
-     *  It will also take care of particular cases where the INC keyword is used in the values, where the INC keyword is
-     *  used with a parameter marker ("?", question mark) or where a value is a single question mark - which throws an
-     *  error message.
-     *
-     *  This method may also alter the original variable given as argument, as it is passed by reference!
-     *
-     *  @access private
-     */
-    private function _build_sql(&$columns)
-    {
-
-        $sql = '';
-
-        // start creating the SQL string and enclose field names in `
-        foreach ($columns as $column_name => $value)
-
-            // if value is just a parameter marker ("?", question mark)
-            if (trim($value) == '?')
-
-                // throw an error
-                $this->_log('unsuccessful-queries',  array(
-
-                    'error' =>  sprintf($this->language['cannot_use_parameter_marker'], print_r($columns, true)),
-
-                ));
-
-            // if special INC() keyword is used
-            elseif (preg_match('/INC\((\-{1})?(.*?)\)/i', $value, $matches) > 0) {
-
-                // translate to SQL
-                $sql .= ($sql != '' ? ', ' : '') . '`' . $column_name . '` = `' . $column_name . '` ' . ($matches[1] == '-' ? '-' : '+') . ' ?';
-
-                // if INC() contains an actual value and not a parameter marker ("?", question mark)
-                // add the actual value to the array with the replacement values
-                if ($matches[2] != '?') $columns[$column_name] = $matches[2];
-
-                // if we have a parameter marker ("?", question mark) instead of a value, it means the replacement value
-                // is already in the array with the replacement values, and that we don't need it here anymore
-                else unset($columns[$column_name]);
-
-            // the usual way
-            } else $sql .= ($sql != '' ? ', ' : '') . '`' . $column_name . '` = ?';
-
-        // return the built sql
-        return $sql;
-
-    }
-
-    /**
-     *  Checks if the connection to the MySQL server has been previously established by the connect() method.
-     *
-     *  @access private
-     */
-    private function _connected()
-    {
-
-        // if there's no connection to a MySQL database
-        if (!$this->connection) {
-
-            $this->connection = @mysqli_connect(
-                $this->credentials['host'],
-                $this->credentials['user'],
-                $this->credentials['password'],
-                $this->credentials['database'],
-                $this->credentials['port'],
-                $this->credentials['socket']
-            );
-
-            // tries to connect to the MySQL database
-            if (mysqli_connect_errno()) {
-
-                // if connection could not be established
-                // save debug information
-                $this->_log('errors', array(
-
-                    'message'   =>  $this->language['could_not_connect_to_database'],
-                    'error'     =>  mysqli_connect_error(),
-
-                ));
-
-                // return FALSE
-                return false;
-
-            }
-
-            // if caching is to be done to a memcache server and we don't yet have a connection
-            if (!$this->memcache && $this->memcache_host !== false && $this->memcache_port !== false) {
-
-                // if memcache extension is installed
-                if (class_exists('Memcache')) {
-
-                    // instance to the memcache object
-                    $memcache = new Memcache();
-
-                    // try to connect to the memcache server
-                    if (!$memcache->connect($this->memcache_host, $this->memcache_port))
-
-                        // if connection could not be established, save debug information
-                        $this->_log('errors', array('message'   =>  $this->language['could_not_connect_to_memcache_server']));
-
-                    else $this->memcache = $memcache;
-
-                // if memcache extension is not installed
-                } else
-
-                    // if connection could not be established, save debug information
-                    $this->_log('errors', array('message'   =>  $this->language['memcache_extension_not_installed']));
-
-            }
-
-        }
-
-        // return TRUE if there is no error
-        return true;
-
-    }
-
-    /**
-     *  PHP's microtime() will return elapsed time as something like 9.79900360107E-5 when the elapsed time is too short.
-     *
-     *  This function takes care of that and returns the number in the human readable format.
-     *
-     *  @access private
-     */
-    private function _fix_pow($value)
-    {
-
-        // use value as literal
-        $value = (string)$value;
-
-        // if the power is present in the value
-        if (preg_match('/E\-([0-9]+)$/', $value, $matches) > 0)
-
-            // convert to human readable format
-            $value = '0.' . str_repeat('0', $matches[1] - 1) . preg_replace('/\./', '', substr($value, 0, -strlen($matches[0])));
-
-        // return the value
-        return number_format($value * 1000, 3);
-
-    }
-
-    /**
-     *  Checks is a value is a valid result set obtained from a query against the database
-     *
-     *  @access private
-     */
-    private function _is_result($value)
-    {
-
-        // check whether a value is a valid result set obtained from a query against the database
-        return is_object($value) && strtolower(get_class($value)) == 'mysqli_result';
-
-    }
-
-    /**
-     *  Handles saving of debug information and halts the execution of the script on fatal error or if the
-     *  {@link halt_on_errors} property is set to TRUE
-     *
-     *  @access private
-     */
-    private function _log($category, $data, $fatal = true)
-    {
-
-        // if debugging is on
-        if ($this->debug) {
-
-            // if category is different than "warnings"
-            // (warnings are generated internally)
-            if ($category != 'warnings') {
-
-                // get backtrace information
-                $backtrace_data = debug_backtrace();
-
-                // unset first entry as it refers to the call to this particular method
-                unset($backtrace_data[0]);
-
-                $data['backtrace'] = array();
-
-                // iterate through the backtrace information
-                foreach ($backtrace_data as $backtrace)
-
-                    // extract needed information
-                    $data['backtrace'][] = array(
-
-                        $this->language['file']     =>  (isset($backtrace['file']) ? $backtrace['file'] : ''),
-                        $this->language['function'] =>  $backtrace['function'] . '()',
-                        $this->language['line']     =>  (isset($backtrace['line']) ? $backtrace['line'] : ''),
-
-                    );
-
-            }
-
-            // saves debug information
-            $this->debug_info[$category][] = $data;
-
-            // if the saved debug info is about a fatal error
-            // and execution is to be stopped on fatal errors
-            if ($fatal && $this->halt_on_errors) {
-
-                // show the debugging window
-                $this->show_debug_console();
-
-                // halt execution
-                die();
-
-            }
-
-        // if there are any unsuccessful queries or other errors and no debugging
-        } elseif (($category == 'unsuccessful-queries' || $category == 'errors') && !$this->debug) {
-
-            // get backtrace information
-            $backtraceInfo = debug_backtrace();
-
-            // log error to the system logger
-            error_log('Zebra_Database (MySQL): ' . (isset($data['error']) ? $data['error'] : $data['message']) . print_r(' in ' . $backtraceInfo[1]['file'] . ' on line ' . $backtraceInfo[1]['line'], true));
-
-        }
+            trigger_error($this->language['could_not_write_to_log'], E_USER_ERROR);
 
     }
 
@@ -4388,17 +4859,11 @@ class Zebra_Database
      *
      *  @access private
      */
-    function __destruct()
-    {
+    public function __destruct() {
 
-        // if the last result is a mysqli result set (it can also be a boolean or not set)
-        if ($this->last_result instanceof mysqli_result)
-
-            // frees the memory associated with the last result
-            mysqli_free_result($this->last_result);
+        // frees the memory associated with the last result
+        $this->free_result();
 
     }
 
 }
-
-?>

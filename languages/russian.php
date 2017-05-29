@@ -33,6 +33,7 @@
         'from_cache'                            => 'из кеша',
         'function'                              => 'функция',
         'globals'                               => 'глобальные переменные',
+        'invalid_option'                        => '%s is an invalid connection option',
         'line'                                  => 'строка',
         'memcache_extension_not_installed'      => 'расширение Memcache не найдено.<br><span>
                                                     Для использования memcache в качестве кеширующего средства, PHP должен быть не ниже 4.3.3, скомпилирован
@@ -44,11 +45,16 @@
         'no_transaction_in_progress'            => 'Нет активных транзакций.',
         'not_a_valid_resource'                  => 'Недопустимый ресурс (убедитесь что вы указали ресурс в качестве аргумента для fetch_assoc()/fetch_obj() если вы выполняете запрос внутри цикла)',
         'optimization_needed'                   => '<strong>ВНИМАНИЕ</strong>: Несколько первых результатов текущего запроса такие же как у <strong>%s</strong> других запросов!',
+        'options_before_connect'                => 'The "option" method must be called before connecting to a MySQL server',
         'returned_rows'                         => 'строк возвращено',
+        'seconds'                               => 'seconds',
         'successful_queries'                    => 'успешных запросов',
         'to_top'                                => 'в начало',
         'transaction_in_progress'               => 'Транзакция не может быть запущена, пока выполняется другая.',
+        'unbuffered'                            => 'unbuffered',
+        'unbuffered_queries_cannot_be_cached'   => 'Unbuffered queries cannot be cached',
         'unsuccessful_queries'                  => 'неуспешных запросов',
+        'unusable_method_unbuffered_queries'    => '%s() method cannot be used with unbuffered queries',
         'warning_charset'                       => 'Значения по умолчанию для charset и collections небыли установлены. Вызовите set_charset() после подключения к базе.',
         'warning_memcache'                      => 'Расширение "memcache" доступно на вашем сервере, рассмотрите возможность использования memcache для кеширования результатов ваших запросов.<br>Подробности в <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#var$caching_method">документации</a>.',
         'warning_replacements_not_array'        => '<em>$replacements</em> должен быть массивом значений',
@@ -57,4 +63,7 @@
         'warning'                               => 'Предупреждение',
         'warnings'                              => 'предупреждения',
         'yes'                                   => 'Да',
+
     );
+
+?>
