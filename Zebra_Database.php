@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.9 (last revision: May 20, 2017)
+ *  @version    2.9.10 (last revision: June 03, 2017)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -3385,7 +3385,7 @@ class Zebra_Database {
         return $this->query('
 
             SELECT
-                ' . $this->_escape($columns) . '
+                ' . $columns . '
             FROM
                 ' . $this->_escape($table) .
 
