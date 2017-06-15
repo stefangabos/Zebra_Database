@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.10 (last revision: June 04, 2017)
+ *  @version    2.9.10 (last revision: June 15, 2017)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -3311,9 +3311,13 @@ class Zebra_Database {
      *  @param  mixed  $columns         A string with comma separated values or an array representing valid column names
      *                                  as used in a SELECT statement.
      *
-     *                                  <samp>These will be enclosed in grave accents, so make sure you are only using
-     *                                  column names and not things like "tablename.*"! You may also use "*" instead
-     *                                  of column names to select all columns from a table.</samp>
+     *                                  <samp>If given as a string it will be enclosed in grave accents, so make sure you
+     *                                  are only using column names and not things like "tablename.*" or MySQL functions!
+     *                                  Use this argument as an array if you want MySQL functions to be properly skipped
+     *                                  from this process.</samp>
+     *
+     *                                  <samp>You may also use "*" instead of column names to select all columns from a
+     *                                  table.</samp>
      *
      *  @param  string  $table          Table in which to search.
      *
@@ -3381,11 +3385,20 @@ class Zebra_Database {
      */
     public function select($columns, $table, $where = '', $replacements = '', $order = '', $limit = '', $cache = false, $calc_rows = false, $highlight = false) {
 
+        // if $columns is not a string, split by comma and trim whitespace
+        if (!is_array($columns)) $columns = array_map(function($value) { return trim($value); }, explode(',', $columns));
+
+        // iterate over the given columns
+        foreach ($columns as $key => $value)
+
+            // and escape everyone except the * character
+            if (trim($value) != '*') $columns[$key] = $this->_escape($value);
+
         // run the query
         return $this->query('
 
             SELECT
-                ' . implode(', ', array_map(function($value) { return $value == '*' ? $value : '`' . trim($value) . '`'; }, !is_array($columns) ? explode(',', $columns) : $columns)) . '
+                ' . implode(', ', $columns) . '
             FROM
                 ' . $this->_escape($table) .
 
