@@ -54,7 +54,7 @@ Package: <strong>Zebra_Database</strong>
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.9.9 (last revision: May 20, 2017)</li>
+<li>2.9.10 (last revision: June 15, 2017)</li>
 </ul>
 <h4>Copyright:</h4>
 <ul>
@@ -2642,9 +2642,11 @@ the actual results of the query!</em></p></td>
 <tr>
 <td valign="top"><em>mixed</em></td>
 <td valign="top"><strong>$columns</strong></td>
-<td valign="top"><p>A string with comma separated values or an array representing valid column names                                   as used in a SELECT statement.</p><p><div class="highlight">These will be enclosed in grave accents, so make sure you are only using
-column names and not things like &quot;tablename.*&quot;! You may also use &quot;*&quot; instead
-of column names to select all columns from a table.</div></p></td>
+<td valign="top"><p>A string with comma separated values or an array representing valid column names                                   as used in a SELECT statement.</p><p><div class="highlight">If given as a string it will be enclosed in grave accents, so make sure you
+are only using column names and not things like &quot;tablename.*&quot; or MySQL functions!
+Use this argument as an array if you want MySQL functions to be properly skipped
+from this process.</div></p><p><div class="highlight">You may also use &quot;*&quot; instead of column names to select all columns from a
+table.</div></p></td>
 </tr>
 <tr>
 <td valign="top"><em>string</em></td>
@@ -3085,7 +3087,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Sun, 21 May 2017 21:15:22 +0200</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+Documentation generated on <span>Thu, 15 Jun 2017 18:46:59 +0200</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 </div>
 </div>
 </body>
