@@ -4000,7 +4000,7 @@ class Zebra_Database {
             if (is_array($this->debug)) return call_user_func_array(array($this, '_write_log'), $this->debug);
 
             // include the SqlFormatter library
-            require 'includes/SqlFormatter.php';
+            require_once 'includes/SqlFormatter.php';
 
             // set some properties for the formatter
             SqlFormatter::$number_attributes = SqlFormatter::$boundary_attributes = 'class="symbol"';
