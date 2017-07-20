@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.10 (last revision: June 15, 2017)
+ *  @version    2.9.10 (last revision: July 20, 2017)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -4489,10 +4489,15 @@ class Zebra_Database {
                 $value = trim(trim($value, '`'));
 
                 // if not * or a MySQL function
-                if ($value !== '*' && !$this->_is_mysql_function($value))
+                if ($value !== '*' && !$this->_is_mysql_function($value)) {
+
+                    // if alias is used
+                    if (stripos($value, ' as ') !== false) list($value, $alias) = array_map(function($value) { return trim($value); }, preg_split('/ as /i', $value));
 
                     // enclose value in grave accents
-                    return '`' . $value . '`';
+                    return '`' . $value . '`' . (isset($alias) ? ' AS ' . $alias : '');
+
+                }
 
                 // return the value as it is otherwise
                 return $value;
