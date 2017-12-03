@@ -1,10 +1,10 @@
 ## version 2.9.10 (December 03 2017)
 
 - updated Russian translation; thanks @rayzru!
-- fixed bug with MySQL functions not being properly handled by the (select)[https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodselect] method when the `columns` argument was given as an array
+- fixed bug with MySQL functions not being properly handled by the [select](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodselect) method when the `columns` argument was given as an array
 - improved documentation for the "select" method
-- fixed an issue that would trigger an error if other PHP scripts were including the (SqlFormatter)[http://github.com/jdorn/sql-formatter] library
-- added support for using the `AS` keyword in the `columns` argument for the (select)[https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodselect] method. Fixes #34.
+- fixed an issue that would trigger an error if other PHP scripts were including the [SqlFormatter](http://github.com/jdorn/sql-formatter) library
+- added support for using the `AS` keyword in the `columns` argument for the [select](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodselect) method. Fixes #34.
 
 ## version 2.9.9 (May 21 2017)
 
