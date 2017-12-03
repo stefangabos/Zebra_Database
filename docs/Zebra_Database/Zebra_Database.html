@@ -39,13 +39,16 @@ Package: <strong>Zebra_Database</strong>
 <ul>
 <li><a href="../Zebra_Database/Zebra_Database.html">Zebra_Database</a></li>
 </ul>
+<p><strong>Files:</strong></p>
+<ul>
+<li><a href="../Zebra_Database/_Zebra_Database.php.html">Zebra_Database.php</a></li>
+</ul>
 </div>
 </td>
 <td valign="top" width="100%">
 <div id="doc_content">
 <h2>Class: <strong>Zebra_Database</strong></h2>
 <h6><strong>source file:</strong> /Zebra_Database.php</h6>
-<h3>Class Overview</h3>
 <pre></pre>
 <p>A compact (one-file only), lightweight yet feature-rich PHP MySQLi database wrapper providing methods for interacting   with MySQL databases that are more secure, powerful and intuitive than PHP's default ones.<p>Read more <a href="https://github.com/stefangabos/Zebra_Database">here</a></p></p>
 <h4>Author(s):</h4>
@@ -54,7 +57,7 @@ Package: <strong>Zebra_Database</strong>
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.9.10 (last revision: June 15, 2017)</li>
+<li>2.9.10 (last revision: December 03, 2017)</li>
 </ul>
 <h4>Copyright:</h4>
 <ul>
@@ -65,75 +68,77 @@ Package: <strong>Zebra_Database</strong>
 <div class="left">
 <h3>Properties</h3>
 <ul>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$affected_rows">$affected_rows</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$cache_path">$cache_path</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$caching_method">$caching_method</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$debug">$debug</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$debugger_ip">$debugger_ip</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$debug_show_backtrace">$debug_show_backtrace</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$debug_show_explain">$debug_show_explain</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$debug_show_records">$debug_show_records</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$disable_warnings">$disable_warnings</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$found_rows">$found_rows</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$halt_on_errors">$halt_on_errors</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$log_path">$log_path</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$max_query_time">$max_query_time</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$memcache_compressed">$memcache_compressed</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$memcache_host">$memcache_host</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$memcache_key_prefix">$memcache_key_prefix</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$memcache_port">$memcache_port</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$minimize_console">$minimize_console</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$notification_address">$notification_address</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$notifier_domain">$notifier_domain</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$resource_path">$resource_path</a></li>
-<li><a href="../Zebra_Database/Zebra_Database.html#var$returned_rows">$returned_rows</a></li>
+<li><a href="#var$affected_rows">$affected_rows</a></li>
+<li><a href="#var$cache_path">$cache_path</a></li>
+<li><a href="#var$caching_method">$caching_method</a></li>
+<li><a href="#var$debug">$debug</a></li>
+<li><a href="#var$debugger_ip">$debugger_ip</a></li>
+<li><a href="#var$debug_show_backtrace">$debug_show_backtrace</a></li>
+<li><a href="#var$debug_show_explain">$debug_show_explain</a></li>
+<li><a href="#var$debug_show_records">$debug_show_records</a></li>
+<li><a href="#var$disable_warnings">$disable_warnings</a></li>
+<li><a href="#var$found_rows">$found_rows</a></li>
+<li><a href="#var$halt_on_errors">$halt_on_errors</a></li>
+<li><a href="#var$log_path">$log_path</a></li>
+<li><a href="#var$max_query_time">$max_query_time</a></li>
+<li><a href="#var$memcache_compressed">$memcache_compressed</a></li>
+<li><a href="#var$memcache_host">$memcache_host</a></li>
+<li><a href="#var$memcache_key_prefix">$memcache_key_prefix</a></li>
+<li><a href="#var$memcache_port">$memcache_port</a></li>
+<li><a href="#var$minimize_console">$minimize_console</a></li>
+<li><a href="#var$notification_address">$notification_address</a></li>
+<li><a href="#var$notifier_domain">$notifier_domain</a></li>
+<li><a href="#var$resource_path">$resource_path</a></li>
+<li><a href="#var$returned_rows">$returned_rows</a></li>
 </ul>
 </div>
 <div class="left">
 <h3>Methods</h3>
 <ul>
-<li><a href="../Zebra_Database/Zebra_Database.html#method__construct">__construct</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#method__destruct">__destruct</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodclose">close</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methoddcount">dcount</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methoddelete">delete</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methoddlookup">dlookup</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methoddmax">dmax</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methoddsum">dsum</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methoderror">error</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc_all">fetch_assoc_all</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj_all">fetch_obj_all</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodfree_result">free_result</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodget_columns">get_columns</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodget_link">get_link</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodget_selected_database">get_selected_database</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodget_tables">get_tables</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodget_table_columns">get_table_columns</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodget_table_status">get_table_status</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodimplode">implode</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodinsert">insert</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodinsert_bulk">insert_bulk</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodinsert_id">insert_id</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodinsert_update">insert_update</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodlanguage">language</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodoptimize">optimize</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodoption">option</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodparse_file">parse_file</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodquery_unbuffered">query_unbuffered</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodseek">seek</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodselect">select</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodset_charset">set_charset</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodtable_exists">table_exists</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodtransaction_complete">transaction_complete</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodtransaction_start">transaction_start</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodtruncate">truncate</a>()</li>
-<li><a href="../Zebra_Database/Zebra_Database.html#methodupdate">update</a>()</li>
+</ul>
+<ul>
+<li><a href="#method__construct">__construct</a></li>
+<li><a href="#method__destruct">__destruct</a></li>
+<li><a href="#methodclose">close</a></li>
+<li><a href="#methodconnect">connect</a></li>
+<li><a href="#methoddcount">dcount</a></li>
+<li><a href="#methoddelete">delete</a></li>
+<li><a href="#methoddlookup">dlookup</a></li>
+<li><a href="#methoddmax">dmax</a></li>
+<li><a href="#methoddsum">dsum</a></li>
+<li><a href="#methoderror">error</a></li>
+<li><a href="#methodescape">escape</a></li>
+<li><a href="#methodfetch_assoc">fetch_assoc</a></li>
+<li><a href="#methodfetch_assoc_all">fetch_assoc_all</a></li>
+<li><a href="#methodfetch_obj">fetch_obj</a></li>
+<li><a href="#methodfetch_obj_all">fetch_obj_all</a></li>
+<li><a href="#methodfree_result">free_result</a></li>
+<li><a href="#methodget_columns">get_columns</a></li>
+<li><a href="#methodget_link">get_link</a></li>
+<li><a href="#methodget_selected_database">get_selected_database</a></li>
+<li><a href="#methodget_tables">get_tables</a></li>
+<li><a href="#methodget_table_columns">get_table_columns</a></li>
+<li><a href="#methodget_table_status">get_table_status</a></li>
+<li><a href="#methodimplode">implode</a></li>
+<li><a href="#methodinsert">insert</a></li>
+<li><a href="#methodinsert_bulk">insert_bulk</a></li>
+<li><a href="#methodinsert_id">insert_id</a></li>
+<li><a href="#methodinsert_update">insert_update</a></li>
+<li><a href="#methodlanguage">language</a></li>
+<li><a href="#methodoptimize">optimize</a></li>
+<li><a href="#methodoption">option</a></li>
+<li><a href="#methodparse_file">parse_file</a></li>
+<li><a href="#methodquery">query</a></li>
+<li><a href="#methodquery_unbuffered">query_unbuffered</a></li>
+<li><a href="#methodseek">seek</a></li>
+<li><a href="#methodselect">select</a></li>
+<li><a href="#methodselect_database">select_database</a></li>
+<li><a href="#methodset_charset">set_charset</a></li>
+<li><a href="#methodtable_exists">table_exists</a></li>
+<li><a href="#methodtransaction_complete">transaction_complete</a></li>
+<li><a href="#methodtransaction_start">transaction_start</a></li>
+<li><a href="#methodtruncate">truncate</a></li>
+<li><a href="#methodupdate">update</a></li>
 </ul>
 </div>
 <div class="clear"></div>
@@ -157,7 +162,7 @@ Package: <strong>Zebra_Database</strong>
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -172,7 +177,7 @@ Package: <strong>Zebra_Database</strong>
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -211,11 +216,11 @@ methods like <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.7</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -238,7 +243,7 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -255,11 +260,11 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.6</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -274,11 +279,11 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.5.9</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -293,11 +298,11 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.5.9</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -318,11 +323,11 @@ of this property or try and set PHP's memory limit higher using:</em></p><p><ol 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.9</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -337,7 +342,7 @@ of this property or try and set PHP's memory limit higher using:</em></p><p><ol 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -378,7 +383,7 @@ value will be 0!</em></p><p><ol class="code"><li><div class="src-line"><span cla
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -395,11 +400,11 @@ value will be 0!</em></p><p><ol class="code"><li><div class="src-line"><span cla
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.5</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -416,7 +421,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -433,7 +438,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -448,11 +453,11 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.7</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -467,11 +472,11 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.7</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -486,11 +491,11 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.8.4</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -505,11 +510,11 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.7</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -524,11 +529,11 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.4</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -545,7 +550,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -562,7 +567,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -577,7 +582,7 @@ server's root.</strong></p><p><em>At the given path the library will attempt to 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -609,11 +614,11 @@ be 0!</em></p><p>See <a href="../Zebra_Database/Zebra_Database.html#var$found_ro
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.4</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -623,7 +628,7 @@ be 0!</em></p><p>See <a href="../Zebra_Database/Zebra_Database.html#var$found_ro
 <a name="class_methods"></a>
 <h3>Class methods</h3>
 <a name="method__construct"></a>
-<h4 class="method"><span><em>constructor</em></span> __construct()</h4>
+<h4 class="method"><span><em>constructor</em></span> __construct() <span class="smalllinenumber">[line 644]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -634,7 +639,7 @@ __construct (
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -642,7 +647,7 @@ __construct (
 <div class="clear"></div>
 </div>
 <a name="method__destruct"></a>
-<h4 class="method"><span><em>destructor</em></span> __destruct()</h4>
+<h4 class="method"><span><em>destructor</em></span> __destruct() <span class="smalllinenumber">[line 4880]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -653,11 +658,11 @@ __destruct (
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.8</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -665,7 +670,7 @@ __destruct (
 <div class="clear"></div>
 </div>
 <a name="methodclose"></a>
-<h4 class="method"><span><em>method</em></span> close()</h4>
+<h4 class="method"><span><em>method</em></span> close() <span class="smalllinenumber">[line 704]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -680,15 +685,15 @@ $reset_options
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success or FALSE on failure.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.1.0</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -704,7 +709,7 @@ $reset_options
 <div class="clear"></div>
 </div>
 <a name="methodconnect"></a>
-<h4 class="method"><span><em>method</em></span> connect()</h4>
+<h4 class="method"><span><em>method</em></span> connect() <span class="smalllinenumber">[line 773]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -749,7 +754,7 @@ $connect
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -795,7 +800,7 @@ $connect
 <div class="clear"></div>
 </div>
 <a name="methoddcount"></a>
-<h4 class="method"><span><em>method</em></span> dcount()</h4>
+<h4 class="method"><span><em>method</em></span> dcount() <span class="smalllinenumber">[line 853]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -838,13 +843,13 @@ $highlight
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top"><p>Returns the number of counted records or FALSE if no records matching the given                                   criteria (if any) were found. It also returns FALSE if there are no records in                                   the table or if there was an error.</p><p><em>This method may return boolean FALSE but may also return a non-boolean value
 which evaluates to FALSE, such as 0. Use the === operator for testing the return
 value of this method.</em></p></td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -888,7 +893,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddelete"></a>
-<h4 class="method"><span><em>method</em></span> delete()</h4>
+<h4 class="method"><span><em>method</em></span> delete() <span class="smalllinenumber">[line 922]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -923,15 +928,15 @@ $highlight
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success or FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.9</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -965,7 +970,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddlookup"></a>
-<h4 class="method"><span><em>method</em></span> dlookup()</h4>
+<h4 class="method"><span><em>method</em></span> dlookup() <span class="smalllinenumber">[line 996]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1008,11 +1013,11 @@ $highlight
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Found value/values or FALSE if no records matching the given criteria (if any)                                   were found. It also returns FALSE if there are no records in the table or if there                                   was an error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1059,7 +1064,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddmax"></a>
-<h4 class="method"><span><em>method</em></span> dmax()</h4>
+<h4 class="method"><span><em>method</em></span> dmax() <span class="smalllinenumber">[line 1085]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1102,13 +1107,13 @@ $highlight
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top"><p>The maximum value in the column or FALSE if no records matching the given criteria                                   (if any) were found. It also returns FALSE if there are no records in the table                                   or if there was an error.</p><p><em>This method may return boolean FALSE but may also return a non-boolean value
 which evaluates to FALSE, such as 0. Use the === operator for testing the return
 value of this method.</em></p></td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1152,7 +1157,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddsum"></a>
-<h4 class="method"><span><em>method</em></span> dsum()</h4>
+<h4 class="method"><span><em>method</em></span> dsum() <span class="smalllinenumber">[line 1170]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1195,13 +1200,13 @@ $highlight
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top"><p>Returns the sum, or FALSE if no records matching the given criteria (if any) were                                   found. It also returns FALSE if there are no records in the table or on error.</p><p><em>This method may return boolean FALSE but may also return a non-boolean value
 which evaluates to FALSE, such as 0. Use the === operator for testing the return
 value of this method.</em></p></td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1245,7 +1250,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoderror"></a>
-<h4 class="method"><span><em>method</em></span> error()</h4>
+<h4 class="method"><span><em>method</em></span> error() <span class="smalllinenumber">[line 1224]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -1265,11 +1270,11 @@ error (
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.9.1</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1277,7 +1282,7 @@ error (
 <div class="clear"></div>
 </div>
 <a name="methodescape"></a>
-<h4 class="method"><span><em>method</em></span> escape()</h4>
+<h4 class="method"><span><em>method</em></span> escape() <span class="smalllinenumber">[line 1268]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>string</em>
@@ -1313,11 +1318,11 @@ is ON.</em></p><p><ol class="code"><li><div class="src-line"><span class="src-co
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns the quoted string with special characters escaped in order to prevent SQL                               injections.     .</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1333,7 +1338,7 @@ is ON.</em></p><p><ol class="code"><li><div class="src-line"><span class="src-co
 <div class="clear"></div>
 </div>
 <a name="methodfetch_assoc"></a>
-<h4 class="method"><span><em>method</em></span> fetch_assoc()</h4>
+<h4 class="method"><span><em>method</em></span> fetch_assoc() <span class="smalllinenumber">[line 1304]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1358,11 +1363,11 @@ $resource
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns an associative array that corresponds to the fetched row and moves the                                   internal data pointer ahead, or FALSE if there are no more rows.</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1378,7 +1383,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfetch_assoc_all"></a>
-<h4 class="method"><span><em>method</em></span> fetch_assoc_all()</h4>
+<h4 class="method"><span><em>method</em></span> fetch_assoc_all() <span class="smalllinenumber">[line 1380]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1404,15 +1409,15 @@ $resource
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns an associative array containing all the rows from the resource created                                   by the previous query or from the resource given as argument and moves the                                   internal pointer to the end. Returns FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.1.2</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1433,7 +1438,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfetch_obj"></a>
-<h4 class="method"><span><em>method</em></span> fetch_obj()</h4>
+<h4 class="method"><span><em>method</em></span> fetch_obj() <span class="smalllinenumber">[line 1454]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1458,15 +1463,15 @@ $resource
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns an object with properties that correspond to the fetched row and moves                                   the internal data pointer ahead, or FALSE if there are no more rows.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.8</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1482,7 +1487,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfetch_obj_all"></a>
-<h4 class="method"><span><em>method</em></span> fetch_obj_all()</h4>
+<h4 class="method"><span><em>method</em></span> fetch_obj_all() <span class="smalllinenumber">[line 1536]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1508,15 +1513,15 @@ $resource
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns an associative array containing all the rows (as objects) from the resource                                   created by the previous query or from the resource given as argument and moves                                   the internal pointer to the end. Returns FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.1.2</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1537,7 +1542,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfree_result"></a>
-<h4 class="method"><span><em>method</em></span> free_result()</h4>
+<h4 class="method"><span><em>method</em></span> free_result() <span class="smalllinenumber">[line 1598]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -1553,11 +1558,11 @@ $resource
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.9.1</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1573,7 +1578,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodget_columns"></a>
-<h4 class="method"><span><em>method</em></span> get_columns()</h4>
+<h4 class="method"><span><em>method</em></span> get_columns() <span class="smalllinenumber">[line 1650]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1595,15 +1600,15 @@ $resource
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns an associative array with information about the columns in the MySQL                                   result associated with the specified result identifier, or FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.0</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1619,7 +1624,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodget_link"></a>
-<h4 class="method"><span><em>method</em></span> get_link()</h4>
+<h4 class="method"><span><em>method</em></span> get_link() <span class="smalllinenumber">[line 1708]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>identifier</em>
@@ -1639,15 +1644,15 @@ get_link (
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns the MySQL link identifier associated with the current connection to the MySQL server.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.5</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1655,7 +1660,7 @@ get_link (
 <div class="clear"></div>
 </div>
 <a name="methodget_selected_database"></a>
-<h4 class="method"><span><em>method</em></span> get_selected_database()</h4>
+<h4 class="method"><span><em>method</em></span> get_selected_database() <span class="smalllinenumber">[line 1726]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1666,15 +1671,15 @@ get_selected_database (
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns the name of the currently selected database, or FALSE if there's no active connection.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.8.7</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1682,7 +1687,7 @@ get_selected_database (
 <div class="clear"></div>
 </div>
 <a name="methodget_tables"></a>
-<h4 class="method"><span><em>method</em></span> get_tables()</h4>
+<h4 class="method"><span><em>method</em></span> get_tables() <span class="smalllinenumber">[line 1831]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -1700,15 +1705,15 @@ $database
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">An array with all the tables in the current database.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.1.2</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1724,7 +1729,7 @@ $database
 <div class="clear"></div>
 </div>
 <a name="methodget_table_columns"></a>
-<h4 class="method"><span><em>method</em></span> get_table_columns()</h4>
+<h4 class="method"><span><em>method</em></span> get_table_columns() <span class="smalllinenumber">[line 1754]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -1740,15 +1745,15 @@ $table
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns information about the columns of a given table as an associative array.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.6</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1766,7 +1771,7 @@ method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodget_table_status"></a>
-<h4 class="method"><span><em>method</em></span> get_table_status()</h4>
+<h4 class="method"><span><em>method</em></span> get_table_status() <span class="smalllinenumber">[line 1794]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -1785,15 +1790,15 @@ $table
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns an associative array with a lot of useful information on all or specific                               tables only.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.1.2</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1811,7 +1816,7 @@ calling this method.</em></p><p>% may be used as a wildcard in table's name to g
 <div class="clear"></div>
 </div>
 <a name="methodimplode"></a>
-<h4 class="method"><span><em>method</em></span> implode()</h4>
+<h4 class="method"><span><em>method</em></span> implode() <span class="smalllinenumber">[line 1889]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>string</em>
@@ -1849,15 +1854,15 @@ arrays directly in the replacement array became possible in version 2.8.6</em></
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns the string representation of all the array elements in the same order,                               escaped and with commas between each element.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.0</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1873,7 +1878,7 @@ arrays directly in the replacement array became possible in version 2.8.6</em></
 <div class="clear"></div>
 </div>
 <a name="methodinsert"></a>
-<h4 class="method"><span><em>method</em></span> insert()</h4>
+<h4 class="method"><span><em>method</em></span> insert() <span class="smalllinenumber">[line 1967]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -1920,15 +1925,15 @@ $highlight
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success of FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.9</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -1964,7 +1969,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodinsert_bulk"></a>
-<h4 class="method"><span><em>method</em></span> insert_bulk()</h4>
+<h4 class="method"><span><em>method</em></span> insert_bulk() <span class="smalllinenumber">[line 2082]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2016,15 +2021,15 @@ $highlight
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success of FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.1</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2065,7 +2070,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodinsert_id"></a>
-<h4 class="method"><span><em>method</em></span> insert_id()</h4>
+<h4 class="method"><span><em>method</em></span> insert_id() <span class="smalllinenumber">[line 2144]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2076,15 +2081,15 @@ insert_id (
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">The ID generated for an AUTO_INCREMENT column by the previous INSERT query on success,                   '0' if the previous query does not generate an AUTO_INCREMENT value, or FALSE if there was                   no MySQL connection.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.4</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2092,7 +2097,7 @@ insert_id (
 <div class="clear"></div>
 </div>
 <a name="methodinsert_update"></a>
-<h4 class="method"><span><em>method</em></span> insert_update()</h4>
+<h4 class="method"><span><em>method</em></span> insert_update() <span class="smalllinenumber">[line 2262]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2150,15 +2155,15 @@ $highlight
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success of FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.1</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2197,7 +2202,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodlanguage"></a>
-<h4 class="method"><span><em>method</em></span> language()</h4>
+<h4 class="method"><span><em>method</em></span> language() <span class="smalllinenumber">[line 2343]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2213,11 +2218,11 @@ $language
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.6</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2233,7 +2238,7 @@ $language
 <div class="clear"></div>
 </div>
 <a name="methodoptimize"></a>
-<h4 class="method"><span><em>method</em></span> optimize()</h4>
+<h4 class="method"><span><em>method</em></span> optimize() <span class="smalllinenumber">[line 2375]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2251,11 +2256,11 @@ $table
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.1.2</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2273,7 +2278,7 @@ calling this method.</em></p><p>% may be used as a wildcard in table's name to o
 <div class="clear"></div>
 </div>
 <a name="methodoption"></a>
-<h4 class="method"><span><em>method</em></span> option()</h4>
+<h4 class="method"><span><em>method</em></span> option() <span class="smalllinenumber">[line 2429]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2309,11 +2314,11 @@ the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> 
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.9.5</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2334,7 +2339,7 @@ the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> 
 <div class="clear"></div>
 </div>
 <a name="methodparse_file"></a>
-<h4 class="method"><span><em>method</em></span> parse_file()</h4>
+<h4 class="method"><span><em>method</em></span> parse_file() <span class="smalllinenumber">[line 2473]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2354,11 +2359,11 @@ try the following:</em></p><p><ol class="code"><li><div class="src-line"><span c
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success or FALSE on failure.</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2374,7 +2379,7 @@ try the following:</em></p><p><ol class="code"><li><div class="src-line"><span c
 <div class="clear"></div>
 </div>
 <a name="methodquery"></a>
-<h4 class="method"><span><em>method</em></span> query()</h4>
+<h4 class="method"><span><em>method</em></span> query() <span class="smalllinenumber">[line 2609]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2430,12 +2435,12 @@ resource arguments, work on the LAST returned result resource!</strong></p><p><o
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top"><p>On success, returns a resource or an array (if results are taken from the cache)                                   or FALSE on error.</p><p><em>If query results are taken from cache, the returned result will be a pointer to
 the actual results of the query!</em></p></td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2475,7 +2480,7 @@ be 0!</em></p><p>Default is FALSE.</p></td>
 <div class="clear"></div>
 </div>
 <a name="methodquery_unbuffered"></a>
-<h4 class="method"><span><em>method</em></span> query_unbuffered()</h4>
+<h4 class="method"><span><em>method</em></span> query_unbuffered() <span class="smalllinenumber">[line 3158]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2488,11 +2493,11 @@ sync&quot; error unless you call the <a href="../Zebra_Database/Zebra_Database.h
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.9.4</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2500,7 +2505,7 @@ sync&quot; error unless you call the <a href="../Zebra_Database/Zebra_Database.h
 <div class="clear"></div>
 </div>
 <a name="methodseek"></a>
-<h4 class="method"><span><em>method</em></span> seek()</h4>
+<h4 class="method"><span><em>method</em></span> seek() <span class="smalllinenumber">[line 3190]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2519,15 +2524,15 @@ $resource
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success or FALSE on failure.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.1.0</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2548,7 +2553,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodselect"></a>
-<h4 class="method"><span><em>method</em></span> select()</h4>
+<h4 class="method"><span><em>method</em></span> select() <span class="smalllinenumber">[line 3386]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2624,16 +2629,16 @@ $highlight
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top"><p>On success, returns a resource or an array (if results are taken from the cache)                                   or FALSE on error.</p><p><em>If query results are taken from cache, the returned result will be a pointer to
 the actual results of the query!</em></p></td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.0</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2698,7 +2703,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methodselect_database"></a>
-<h4 class="method"><span><em>method</em></span> select_database()</h4>
+<h4 class="method"><span><em>method</em></span> select_database() <span class="smalllinenumber">[line 3429]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2714,15 +2719,15 @@ $database
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success or FALSE on failure.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.9.4</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2738,7 +2743,7 @@ $database
 <div class="clear"></div>
 </div>
 <a name="methodset_charset"></a>
-<h4 class="method"><span><em>method</em></span> set_charset()</h4>
+<h4 class="method"><span><em>method</em></span> set_charset() <span class="smalllinenumber">[line 3468]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2759,11 +2764,11 @@ $collation
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.0</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2784,7 +2789,7 @@ $collation
 <div class="clear"></div>
 </div>
 <a name="methodtable_exists"></a>
-<h4 class="method"><span><em>method</em></span> table_exists()</h4>
+<h4 class="method"><span><em>method</em></span> table_exists() <span class="smalllinenumber">[line 3620]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2800,15 +2805,15 @@ $table
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE if table given as argument exists in the database or FALSE if not.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.3</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2826,7 +2831,7 @@ calling this method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodtransaction_complete"></a>
-<h4 class="method"><span><em>method</em></span> transaction_complete()</h4>
+<h4 class="method"><span><em>method</em></span> transaction_complete() <span class="smalllinenumber">[line 3498]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2846,15 +2851,15 @@ transaction_complete (
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success or FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.1</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2862,7 +2867,7 @@ transaction_complete (
 <div class="clear"></div>
 </div>
 <a name="methodtransaction_start"></a>
-<h4 class="method"><span><em>method</em></span> transaction_start()</h4>
+<h4 class="method"><span><em>method</em></span> transaction_start() <span class="smalllinenumber">[line 3574]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2886,15 +2891,15 @@ $test_only
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success or FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">2.1</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2910,7 +2915,7 @@ $test_only
 <div class="clear"></div>
 </div>
 <a name="methodtruncate"></a>
-<h4 class="method"><span><em>method</em></span> truncate()</h4>
+<h4 class="method"><span><em>method</em></span> truncate() <span class="smalllinenumber">[line 3656]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2932,15 +2937,15 @@ resets the value of the AUTO INCREMENT column.</em></p><p><ol class="code"><li><
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success of FALSE on error.</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.9</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -2963,7 +2968,7 @@ calling this method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodupdate"></a>
-<h4 class="method"><span><em>method</em></span> update()</h4>
+<h4 class="method"><span><em>method</em></span> update() <span class="smalllinenumber">[line 3776]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3021,15 +3026,15 @@ $highlight
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top"><strong>return:</strong></td>
+<td valign="top"><strong>return:</strong>&nbsp;&nbsp;</td>
 <td valign="top">Returns TRUE on success of FALSE on error</td>
 </tr>
 <tr>
-<td valign="top"><strong>since:</strong></td>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
 <td valign="top">1.0.9</td>
 </tr>
 <tr>
-<td valign="top"><strong>access:</strong></td>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
 </tr>
 </table>
@@ -3087,7 +3092,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Thu, 15 Jun 2017 18:46:59 +0200</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+Documentation generated on <span>Sun, 03 Dec 17</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 </div>
 </div>
 </body>
