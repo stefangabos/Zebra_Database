@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.10 (last revision: December 03, 2017)
+ *  @version    2.9.10 (last revision: January 05, 2018)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -4544,30 +4544,22 @@ class Zebra_Database {
      */
     private function _is_mysql_function($value) {
 
-        $valid = false;
+        // returns TRUE if
+        return (
 
-        // if value looks like one or more nested functions
-        if (!is_array($value) && preg_match('/[a-z\_]+\(/i', $value) && preg_match_all('/([a-z\_]+\()/i', $value, $matches)) {
+            // is not an array
+            !is_array($value) &&
 
-            $valid = true;
+            // has opening and closing parenthesis
+            strpos($value, '(') !== false && strpos($value, ')') !== false &&
 
-            // iterate through what look like MySQL functions
-            foreach ($matches[0] as $match)
+            // there is no white spaces from the beginning until the opening parenthesis
+            preg_match('/^([\s]+)\(/i', $value, $matches) &&
 
-                // if entry is not a MySQL function
-                if (!in_array(strtoupper(substr($match, 0, -1)), $this->mysql_functions)) {
+            // and match is not a MySQL function
+            in_array(strtoupper($matches[1]), $this->mysql_functions)
 
-                    // it means we made a mistake, don't look further
-                    $valid = false;
-
-                    break;
-
-                }
-
-        }
-
-        // return the result
-        return $valid;
+        );
 
     }
 
