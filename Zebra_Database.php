@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.10 (last revision: January 05, 2018)
+ *  @version    2.9.10 (last revision: March 26, 2018)
  *  @copyright  (c) 2006 - 2017 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -3623,7 +3623,7 @@ class Zebra_Database {
         if (strpos($table, '.') !== false) list($database, $table) = explode('.', $table);
 
         // check if table exists in the database
-        return $this->fetch_assoc($this->query('SHOW TABLES' . (isset($database) ? ' IN ' . $database : '') . ' LIKE ?', array($table))) !== false ? true : false;
+        return is_array($this->fetch_assoc($this->query('SHOW TABLES' . (isset($database) ? ' IN ' . $database : '') . ' LIKE ?', array($table))));
 
     }
 
