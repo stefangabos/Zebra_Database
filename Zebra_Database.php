@@ -7,8 +7,8 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.10 (last revision: March 26, 2018)
- *  @copyright  (c) 2006 - 2017 Stefan Gabos
+ *  @version    2.9.10 (last revision: April 16, 2018)
+ *  @copyright  (c) 2006 - 2018 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
  */
@@ -3435,7 +3435,7 @@ class Zebra_Database {
         $this->credentials['database'] = $database;
 
         // select the database
-        mysqli_select_db($this->connection, $database);
+        return mysqli_select_db($this->connection, $database);
 
     }
 
