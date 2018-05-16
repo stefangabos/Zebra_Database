@@ -3386,7 +3386,7 @@ class Zebra_Database {
     public function select($columns, $table, $where = '', $replacements = '', $order = '', $limit = '', $cache = false, $calc_rows = false, $highlight = false) {
 
         // if $columns is not a string, split by comma and trim whitespace
-        if (!is_array($columns)) $columns = array_map(function($value) { return trim($value); }, explode(',', $columns));
+        if (!is_array($columns)) $columns = array_map('trim', explode(',', $columns));
 
         // iterate over the given columns
         foreach ($columns as $key => $value)
@@ -4492,7 +4492,7 @@ class Zebra_Database {
                 if ($value !== '*' && !$this->_is_mysql_function($value)) {
 
                     // if alias is used
-                    if (stripos($value, ' as ') !== false) list($value, $alias) = array_map(function($value) { return trim($value); }, preg_split('/ as /i', $value));
+                    if (stripos($value, ' as ') !== false) list($value, $alias) = array_map('trim', preg_split('/ as /i', $value));
 
                     // enclose value in grave accents
                     return '`' . $value . '`' . (isset($alias) ? ' AS ' . $alias : '');
