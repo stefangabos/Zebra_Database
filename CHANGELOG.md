@@ -1,3 +1,12 @@
+## version 2.9.11 (June 19 2018)
+
+- fixed issue [#43](https://github.com/stefangabos/Zebra_Database/issues/43) where some strings were incorrectly detected as MySQL functions
+- fixed issue [#45](https://github.com/stefangabos/Zebra_Database/issues/45) where the [table_exists](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodtable_exists) method was always returning `true`
+- fixed issue [#46](https://github.com/stefangabos/Zebra_Database/issues/46) where the [select_database](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodselect_database) was always returning `false`
+- fixed issue [#49](https://github.com/stefangabos/Zebra_Database/issues/49)
+- fixed issue [#50](https://github.com/stefangabos/Zebra_Database/issues/50) where MySQL functions were incorrectly recognized
+- source code improvements
+
 ## version 2.9.10 (December 03 2017)
 
 - updated Russian translation; thanks [@rayzru](https://github.com/rayzru)!
