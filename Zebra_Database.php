@@ -2866,7 +2866,7 @@ class Zebra_Database {
                         $this->returned_rows = $this->found_rows = @mysqli_num_rows($this->last_result);
 
                     // for unbuffered queries set this property of the result set so that once all the rows have iterated
-                    // over, we can get some extra iformation (see the _manage_unbuffered_query_info method for more info)
+                    // over, we can get some extra information (see the _manage_unbuffered_query_info method for more info)
                     else $this->last_result->query = $sql;
 
                     // if we need the number of rows that would have been returned if there was no LIMIT
@@ -3150,7 +3150,7 @@ class Zebra_Database {
      *
      *  <i>For unbuffered queries the values returned by {@link returned_rows} and {@link found_rows} is always 0.</i>
      *
-     *  <samp>Note that untill you iterate over all the results, all subsequent queries will return a "Commands out of
+     *  <samp>Note that until you iterate over all the results, all subsequent queries will return a "Commands out of
      *  sync" error unless you call the {@link free_result()} method.</samp>
      *
      *  @since 2.9.4
@@ -3222,7 +3222,7 @@ class Zebra_Database {
             // return the fetched row
             if (mysqli_num_rows($resource) == 0 || mysqli_data_seek($resource, $row)) return true;
 
-            // if error reporting was not supressed with @
+            // if error reporting was not suppressed with @
             elseif (error_reporting() != 0)
 
                 // save debug information
@@ -3740,7 +3740,7 @@ class Zebra_Database {
      *                                  ...is equivalent to
      *
      *                                  <code>
-     *                                  $db->query('UPDATE table SET column = colum + ? WHERE criteria = ?', array($value, $criteria));
+     *                                  $db->query('UPDATE table SET column = column + ? WHERE criteria = ?', array($value, $criteria));
      *                                  </code>
      *
      *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
