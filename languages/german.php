@@ -37,9 +37,9 @@
         'line'                                  => 'Zeile',
         'memcache_extension_not_installed'      => 'Die Memcache Erweiterung wurde nicht gefunden.<br><span>
                                                     Um memcache als Caching Methode zu nutzen ist PHP Version 4.3.3+ notwendig, PHP muss mit der
-                                                    <a href="http://pecl.php.net/package/memcache">memcached</a> Erweiterung kompiliert werden und muss mit 
+                                                    <a href="http://pecl.php.net/package/memcache">memcached</a> Erweiterung kompiliert werden und muss mit
                                                     <em>--with-zlib[=DIR]</em> konfiguriert werden.</span>',
-        'miliseconds'                           => 'ms',
+        'milliseconds'                          => 'ms',
         'mysql_error'                           => 'MySQL Fehler',
         'no'                                    => 'Nein',
         'no_active_session'                     => 'Sie haben ausgewählt, dass die Abfrageresultate in der Session zwischengespeichert (gechached) werden sollen, aber es gibt keine aktive Session. Rufen Sie <a href="http://php.net/manual/en/function.session-start.php" target="_blank">session_start()</a> auf bevor Sie Funktionen dieser Bibliothek benutzen!',

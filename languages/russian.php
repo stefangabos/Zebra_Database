@@ -38,7 +38,7 @@
         'memcache_extension_not_installed'      => 'расширение Memcache не найдено.<br><span>
                                                     Для использования memcache в качестве кэширующего средства, PHP должен быть не ниже 4.3.3, скомпилирован
                                                     с <a href="http://pecl.php.net/package/memcache">memcached</a>, и настроен с опцией <em>--with-zlib[=DIR]</em>.</span>',
-        'miliseconds'                           => 'мс.',
+        'milliseconds'                          => 'мс.',
         'mysql_error'                           => 'Ошибка MySQL',
         'no'                                    => 'Нет',
         'no_active_session'                     => 'Вы выбрали кэширование результатов запросоа в сессии, но активных сессий не найдено. Перед использованием библиотеки используйте <a href="http://php.net/manual/en/function.session-start.php" target="_blank">session_start()</a>!',
@@ -59,16 +59,16 @@
         'warning_memcache'                      => 'Расширение "memcache" доступно на вашем сервере, рассмотрите возможность использования memcache для кэширования результатов ваших запросов.<br>Подробности в <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#var$caching_method">документации</a>.',
         'warning_replacements_not_array'        => '<em>$replacements</em> должен быть массивом значений',
         'warning_replacements_wrong_number'     => 'количество значений для замены отличается от количества значений в массиве <em>$replacements</em>',
-        'warning_wait_timeout'                  => 'Значение переменной MySQL <em>wait_timeout</em> установлено в %s. 
- 													Переменная <em>wait_timeout</em> обозначает время в секундах, которое MySQL будет ожидать 
- 													перед тем как отключить неиспользуемое подключение.  
- 													После выполнения скрипта, подключение MySQL не уничтожается, а отправляется в состояние idle для 
- 													будущего использования тем же пользователем, требующим подключение к базе 
- 													(обычное поведение, когда пользователи пользуются веб-сайтом). Значение <em>wait_timeout</em> 
- 													по умолчанию 28800 секунд или 8 часов. В случае, когда у вас большое количество пользователей это приводит 
+        'warning_wait_timeout'                  => 'Значение переменной MySQL <em>wait_timeout</em> установлено в %s.
+ 													Переменная <em>wait_timeout</em> обозначает время в секундах, которое MySQL будет ожидать
+ 													перед тем как отключить неиспользуемое подключение.
+ 													После выполнения скрипта, подключение MySQL не уничтожается, а отправляется в состояние idle для
+ 													будущего использования тем же пользователем, требующим подключение к базе
+ 													(обычное поведение, когда пользователи пользуются веб-сайтом). Значение <em>wait_timeout</em>
+ 													по умолчанию 28800 секунд или 8 часов. В случае, когда у вас большое количество пользователей это приводит
  													к ошибке <em><a href="http://dev.mysql.com/doc/refman/5.5/ru/too-many-connections.html" target="_blank">
-													Слишком много соединений</a></em>, и возможны ситуации, когда нет возможности настроить максимальное количество 
-													<a href="http://dev.mysql.com/doc/refman/5.5/en/server-system-variables.html#sysvar_max_connections" target="_blank">свободных подключений</a>. 
+													Слишком много соединений</a></em>, и возможны ситуации, когда нет возможности настроить максимальное количество
+													<a href="http://dev.mysql.com/doc/refman/5.5/en/server-system-variables.html#sysvar_max_connections" target="_blank">свободных подключений</a>.
 													Рекомендуемое значение - 300 секунд (5 минут).',
         'warning'                               => 'Предупреждение',
         'warnings'                              => 'предупреждения',

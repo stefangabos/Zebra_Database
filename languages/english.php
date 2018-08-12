@@ -39,7 +39,7 @@
                                                     For using memcache as caching method, PHP version must be 4.3.3+, must be compiled with the
                                                     <a href="http://pecl.php.net/package/memcache">memcached</a> extension, and needs to be
                                                     configured with <em>--with-zlib[=DIR]</em>.</span>',
-        'miliseconds'                           => 'ms',
+        'milliseconds'                          => 'ms',
         'mysql_error'                           => 'MySQL error',
         'no'                                    => 'No',
         'no_active_session'                     => 'You have chosen to cache query results in sessions but there are no active session. Call <a href="http://php.net/manual/en/function.session-start.php" target="_blank">session_start()</a> before using the library!',
