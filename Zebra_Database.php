@@ -4779,7 +4779,7 @@ class Zebra_Database {
                         fwrite($handle, print_r(
 
                             // date
-                            $labels[0] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[0])), ' ', STR_PAD_RIGHT) . ': ' . @date('Y M d H:i:s') . "\n" .
+                            $labels[0] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[0])), ' ', STR_PAD_RIGHT) . ': ' . @date('Y-m-d H:i:s') . "\n" .
 
                             // query
                             $labels[1] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[1])), ' ', STR_PAD_RIGHT) . ': ' . trim(preg_replace($pattern, $replace, $debug_info['query'])) . "\n" .
