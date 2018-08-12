@@ -4852,7 +4852,7 @@ class Zebra_Database {
                         }
 
                         // finish writing to the log file by adding a bottom border
-                        fwrite($handle, "\n" . str_pad('', $longest_label_length + 1, '#', STR_PAD_RIGHT) . "\n");
+                        fwrite($handle, str_pad('', $longest_label_length + 1, '-', STR_PAD_RIGHT) . "\n");
 
                     }
 
