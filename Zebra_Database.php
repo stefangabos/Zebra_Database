@@ -2117,7 +2117,7 @@ class Zebra_Database {
                 // if it represents one or more MySQL functions, do not enclose it in quotes, or do otherwise
                 $value_set .= ($value_set != '' ? ', ' : '') . ($this->_is_mysql_function($value) ? $value : '"' . $this->escape($value) . '"');
 
-            $sql_values .= $value_set . ')';
+            $sql_values .= $value_set . ')' . "\n";
 
         }
 
@@ -4746,6 +4746,8 @@ class Zebra_Database {
                 // we use utf8_decode so that strlen counts correctly with accented chars
                 $longest_label_length = strlen(utf8_decode($label));
 
+        $longest_label_length--;
+
         // the following regular expressions strips newlines and indenting from the MySQL string, so that
         // we have it in a single line
         $pattern = array(
@@ -4776,20 +4778,17 @@ class Zebra_Database {
                         // write to log file
                         fwrite($handle, print_r(
 
-                            // top border
-                            str_pad('', $longest_label_length + 4, '#', STR_PAD_RIGHT) . "\n" .
-
                             // date
-                            '# ' . $labels[0] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[0])), ' ', STR_PAD_RIGHT) . '#: ' . @date('Y M d H:i:s') . "\n" .
+                            $labels[0] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[0])), ' ', STR_PAD_RIGHT) . ': ' . @date('Y M d H:i:s') . "\n" .
 
                             // query
-                            '# ' . $labels[1] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[1])), ' ', STR_PAD_RIGHT) . '#: ' . trim(preg_replace($pattern, $replace, $debug_info['query'])) . "\n" .
+                            $labels[1] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[1])), ' ', STR_PAD_RIGHT) . ': ' . trim(preg_replace($pattern, $replace, $debug_info['query'])) . "\n" .
 
                             // if execution time is available
                             // (is not available for unsuccessful queries)
                             (isset($debug_info['execution_time']) ?
 
-                                '# ' . $labels[2] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . '#: ' .  $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['seconds'] . "\n"
+                                $labels[2] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . ': ' .  $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['seconds'] . "\n"
                                 : ''
 
                             ) .
@@ -4797,7 +4796,7 @@ class Zebra_Database {
                             // if there is a warning message
                             (isset($debug_info['warning']) && $debug_info['warning'] != '' ?
 
-                                '# ' . $labels[3] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[3])), ' ', STR_PAD_RIGHT) . '#: ' . strip_tags($debug_info['warning']) . "\n"
+                                $labels[3] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[3])), ' ', STR_PAD_RIGHT) . ': ' . strip_tags($debug_info['warning']) . "\n"
                                 : ''
 
                             ) .
@@ -4805,7 +4804,7 @@ class Zebra_Database {
                             // if there is an error message
                             (isset($debug_info['error']) && $debug_info['error'] != '' ?
 
-                                '# ' . $labels[4] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[4])), ' ', STR_PAD_RIGHT) . '#: ' . $debug_info['error'] . "\n"
+                                $labels[4] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[4])), ' ', STR_PAD_RIGHT) . ': ' . $debug_info['error'] . "\n"
                                 : ''
 
                             ) .
@@ -4813,7 +4812,7 @@ class Zebra_Database {
                             // if not an action query, show whether the query was returned from the cache or was executed
                             (isset($debug_info['affected_rows']) && $debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] != 'nocache' ?
 
-                                '# ' . $labels[5] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) .  '#: ' . $labels[6] . "\n"
+                                $labels[5] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) .  ': ' . $labels[6] . "\n"
                                 : ''
 
                             ) .
@@ -4821,7 +4820,7 @@ class Zebra_Database {
                             // if query was an unbuffered one
                             (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ?
 
-                                '# ' . $labels[12] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . '#: ' . $labels[6] . "\n"
+                                $labels[12] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n"
                                 : ''
 
                             )
@@ -4834,9 +4833,7 @@ class Zebra_Database {
                             // write to log file
                             fwrite($handle, print_r(
 
-                                '# ' . str_pad('', ($longest_label_length + 1), ' ', STR_PAD_RIGHT) . '#' . "\n" .
-
-                                '# ' . $labels[8] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . '#:' . "\n"
+                                $labels[8] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . ':' . "\n"
 
                             , true));
 
@@ -4845,17 +4842,17 @@ class Zebra_Database {
 
                                 fwrite($handle, print_r(
 
-                                    '# ' . str_pad('', ($longest_label_length + 1), ' ', STR_PAD_RIGHT) . '#' . "\n" .
-                                    '# ' . $labels[9] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['file']] . "\n" .
-                                    '# ' . $labels[10] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['line']] . "\n" .
-                                    '# ' . $labels[11] . ':' . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . '#: ' . $backtrace[$this->language['function']] . "\n"
+                                    "\n" .
+                                    $labels[9] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['file']] . "\n" .
+                                    $labels[10] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['line']] . "\n" .
+                                    $labels[11] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['function']] . "\n"
 
                                 , true));
 
                         }
 
                         // finish writing to the log file by adding a bottom border
-                        fwrite($handle, str_pad('', $longest_label_length + 4, '#', STR_PAD_RIGHT) . "\n\n");
+                        fwrite($handle, "\n" . str_pad('', $longest_label_length + 1, '#', STR_PAD_RIGHT) . "\n");
 
                     }
 
