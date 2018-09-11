@@ -15,10 +15,9 @@
 class Zebra_Database {
 
     /**
-     *  After an INSERT, UPDATE, REPLACE or DELETE query this property will hold the number of rows that were affected by
-     *  its execution.
+     *  The number of rows affected after running an INSERT, UPDATE, REPLACE or DELETE query.
      *
-     *  For the number of rows returned by SELECT queries see the {@link returned_rows} property.
+     *  See the {@link returned_rows} property for getting the number of rows returned by SELECT queries.
      *
      *  <code>
      *  // update some columns in a table
@@ -95,39 +94,38 @@ class Zebra_Database {
     public $caching_method;
 
     /**
-     *  These property can take one of the following values:
+     *  Turns debugging on or off.
      *
-     *  - boolean TRUE
+     *  The property can take one of the following values:
      *
-     *  Setting this property to TRUE will instruct the library to generate debugging information for each query it
-     *  executes and show it on the screen when script execution ends.
+     *  -   <b>boolean TRUE</b><br>
+     *      Setting this property to a boolean TRUE will instruct the library to generate debugging information for each
+     *      query it executes and show the information on the screen when script's execution ends.
      *
-     *  - an array([bool]daily, [bool]hourly, [bool]backtrace)
+     *  -   <b>an array([bool]daily, [bool]hourly, [bool]backtrace)</b><br>
+     *      Setting this property to an array like above, will instruct the library to generate debugging information for
+     *      each query it executes and write the information to a log file when the script's execution ends.
      *
-     *  Setting this to an array like above, will instruct the library to generate debugging information for each query
-     *  it executes and write it to a log file when script execution ends.
+     *          -   the value of the first entry (daily) indicates whether the log files should be grouped by days or not;
+     *              if set to TRUE, log files will have their name in the form of "log_ymd.txt", where "y", "m" and "d"
+     *              represent two digit values for year, month and day, respectively.
      *
-     *  <b>-</b> The value of the first entry (daily) indicates whether the log files should be grouped by days.
-     *  If set to TRUE, log files will have their name in the form of "log_ymd.txt", where "y", "m" and "d" represent two
-     *  digit values for year, month and day, respectively.
+     *          -   the value of the second entry (hourly) indicates whether the log files should be grouped by hours or not;
+     *              if set to TRUE, log files will have their name in the form of "log_ymd_h.txt", where "y", "m" and "d"
+     *              represent two digit values for year, month and day, respectively, while "h" represents the two digit
+     *              value for hour.<br>
+     *              <i>Note that if this argument is set to TRUE, the first entry will be automatically considered as TRUE.</i>
      *
-     *  <b>-</b> The value of the second entry (hourly) indicates whether the log files should be grouped by hours.
-     *  If set to TRUE, log files will have their name in the form of "log_ymd_h.txt", where "y", "m" and "d" represent
-     *  two digit values for year, month and day, respectively, while "h" represents the two digit value for hour.
+     *          -   the value of the third entry (backtrace) indicates whether backtrace information (where the query was
+     *              called from) should also be written to the log file.<br><br>
+     *              <i>the default values for all the entries is FALSE and all are optional, therefore setting the value
+     *              of this property to an empty array is equivalent of setting it to array(false, false, false)</i>
      *
-     *  Note that if this argument is set to TRUE, the first entry will be automatically considered as set to TRUE.
-     *
-     *  <b>-</b> The value of the third entry (backtrace) indicated whether backtrace information (where the query was
-     *  called from) should be written to the log file.
-     *
-     *  <i>The default values of all the entries is FALSE and all are optional, so setting the value of this property to
-     *  an empty array is equivalent of setting it to array(false, false, false)</i>
-     *
-     *  - boolean FALSE
-     *
-     *  The library will not generate debugging information for any of the queries it executes but if an error occurs it
-     *  will try to write information to PHP's error log file, if your environment is
-     *  {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors configured to do so} !
+     *  -   <b>boolean FALSE</b><br>
+     *      Setting this property to FALSE will instruct the library to not generate debugging information for any of the
+     *      queries it executes. Even so, if an error occurs the library will try to write information to PHP's error log
+     *      file, if your environment is {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors
+     *      configured to do so} !
      *
      *  <samp>It is highly recommended to set the value of this property to FALSE on the production environment. Generating
      *  the debugging information consumes a lot of resources and is meant to be used *only* in the development process!</samp>
@@ -299,6 +297,9 @@ class Zebra_Database {
      *
      *  <b>Use "." (dot) for the current directory instead of an empty string or the log file will be written to the
      *  server's root.</b>
+     *
+     *  If a full path is specified (including an extension) the log file's name will be used from there. Otherwise,
+     *  the log file's name will be <i>log.txt</i>
      *
      *  <i>At the given path the library will attempt to create a file named "log.txt" (or variations as described
      *  {@link debug here}). Remember to grant the appropriate rights to the script!</i>
@@ -579,6 +580,7 @@ class Zebra_Database {
      */
     private $mysql_functions = array(
 
+        // spell-checker: disable
         'ABS', 'ACOS', 'ADDDATE', 'ADDTIME', 'AES_DECRYPT', 'AES_ENCRYPT', 'ANY_VALUE', 'AREA', 'ASBINARY', 'ASWKB', 'ASCII',
         'ASIN', 'ASTEXT', 'ASWKT', 'ASYMMETRIC_DECRYPT', 'ASYMMETRIC_DERIVE', 'ASYMMETRIC_ENCRYPT', 'ASYMMETRIC_SIGN',
         'ASYMMETRIC_VERIFY', 'ATAN', 'ATAN2', 'ATAN', 'AVG', 'BENCHMARK', 'BIN', 'BIT_AND', 'BIT_COUNT', 'BIT_LENGTH',
@@ -633,6 +635,7 @@ class Zebra_Database {
         'UTC_TIME', 'UTC_TIMESTAMP', 'UUID', 'UUID_SHORT', 'VALIDATE_PASSWORD_STRENGTH', 'VALUES', 'VAR_POP', 'VAR_SAMP',
         'VARIANCE', 'VERSION', 'WAIT_FOR_EXECUTED_GTID_SET', 'WAIT_UNTIL_SQL_THREAD_AFTER_GTIDS', 'WEEK', 'WEEKDAY',
         'WEEKOFYEAR', 'WEIGHT_STRING', 'WITHIN', 'X', 'Y', 'YEAR', 'YEARWEEK'
+        // spell-checker: enable
 
     );
 
@@ -722,7 +725,7 @@ class Zebra_Database {
     }
 
     /**
-     *  Opens a connection to a MySQL Server and selects a database.
+     *  Opens a connection to a MySQL Server and optionally selects a database.
      *
      *  Since the library is using <i>lazy connection</i> (it is not actually connecting to the database until the first
      *  query is executed), the object representing the connection to the MySQL server is not available at this time. If
@@ -2066,7 +2069,7 @@ class Zebra_Database {
      *                                  entry for a primary key would result in an error. If you want these errors to be
      *                                  skipped set this argument to TRUE.
      *
-     *                                  For more information see {@link http://dev.mysql.com/doc/refman/5.5/en/insert.html MySQL's INSERT IGNORE syntax}.
+     *                                  For more information see {@link https://dev.mysql.com/doc/refman/5.5/en/insert-on-duplicate.html MySQL's INSERT ... ON DUPLICATE KEY IGNORE syntax}.
      *
      *                                  Default is FALSE.
      *
