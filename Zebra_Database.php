@@ -1385,14 +1385,14 @@ class Zebra_Database {
         // if no active connection exists, return false
         if (!$this->_connected()) return false;
 
-        // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
-
         // if $resource is still an empty string, it means the first argument was skipped
         if ($resource == '') {
             $resource = $index;
             $index = '';
         }
+
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         if (
 
@@ -1547,14 +1547,14 @@ class Zebra_Database {
         // if no active connection exists, return false
         if (!$this->_connected()) return false;
 
-        // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
-
         // if $resource is still an empty string, it means the first argument was skipped
         if ($resource == '') {
             $resource = $index;
             $index = '';
         }
+
+        // if no resource was specified, and a query was run before, assign the last resource
+        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         if (
 
