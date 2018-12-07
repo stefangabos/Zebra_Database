@@ -42,7 +42,7 @@ The code is heavily commented and generates no warnings/errors/notices when PHP'
 
 ## Requirements
 
-PHP 5.2.0+ with the **mysqli extension** activated, MySQL 4.1.22+
+PHP 5.4.0+ with the **mysqli extension** activated, MySQL 4.1.22+
 
 For using **memcache** as caching method, PHP must be compiled with the [memcache](http://pecl.php.net/package/memcache) extension and, if [memcache_compressed](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$memcache_compressed) property is set to TRUE, needs to be configured with `–with-zlib[=DIR]`
 
