@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.10.0 (last revision: August 12, 2018)
+ *  @version    2.10.0 (last revision: December 07, 2018)
  *  @copyright  (c) 2006 - 2018 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -1388,6 +1388,9 @@ class Zebra_Database {
         // if no resource was specified, and a query was run before, assign the last resource
         if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
+        // if $resource is still an empty string, it means the first argument was skipped
+        if ($resource === '') $resource = $index;
+
         if (
 
             // if $resource is a valid resource OR
@@ -1543,6 +1546,9 @@ class Zebra_Database {
 
         // if no resource was specified, and a query was run before, assign the last resource
         if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+
+        // if $resource is still an empty string, it means the first argument was skipped
+        if ($resource === '') $resource = $index;
 
         if (
 
