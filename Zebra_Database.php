@@ -1389,7 +1389,7 @@ class Zebra_Database {
         if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         // if $resource is still an empty string, it means the first argument was skipped
-        if ($resource === '') {
+        if ($resource == '') {
             $resource = $index;
             $index = '';
         }
@@ -1551,7 +1551,7 @@ class Zebra_Database {
         if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         // if $resource is still an empty string, it means the first argument was skipped
-        if ($resource === '') {
+        if ($resource == '') {
             $resource = $index;
             $index = '';
         }
