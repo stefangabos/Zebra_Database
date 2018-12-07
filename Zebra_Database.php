@@ -1385,10 +1385,16 @@ class Zebra_Database {
         // if no active connection exists, return false
         if (!$this->_connected()) return false;
 
-        // if $resource is still an empty string, it means the first argument was skipped
-        if ($resource == '') {
+        // if only one argument was given
+        // meaning that the first argument is either a valid resource or a pointer to an array taken from cache
+        if ($resource == '' && $this->_is_result($index) || (is_integer($index) && isset($this->cached_results[$index]))) {
+
+            // use the first argument as the actual resource
             $resource = $index;
+
+            // consider first argument as skipped
             $index = '';
+
         }
 
         // if no resource was specified, and a query was run before, assign the last resource
@@ -1547,10 +1553,16 @@ class Zebra_Database {
         // if no active connection exists, return false
         if (!$this->_connected()) return false;
 
-        // if $resource is still an empty string, it means the first argument was skipped
-        if ($resource == '') {
+        // if only one argument was given
+        // meaning that the first argument is either a valid resource or a pointer to an array taken from cache
+        if ($resource == '' && $this->_is_result($index) || (is_integer($index) && isset($this->cached_results[$index]))) {
+
+            // use the first argument as the actual resource
             $resource = $index;
+
+            // consider first argument as skipped
             $index = '';
+
         }
 
         // if no resource was specified, and a query was run before, assign the last resource
