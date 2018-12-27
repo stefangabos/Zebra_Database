@@ -677,8 +677,8 @@ class Zebra_Database {
 
         // set default warnings:
         $this->warnings = array(
-            'charset'       =>  true,   // set_charset not called
-            'memcache'      =>  true,   // memcache is available but it is not used
+            'charset'   => true,   // set_charset not called
+            'memcache'  => true,   // memcache is available but it is not used
         );
 
         // don't show debug console for AJAX requests
@@ -785,12 +785,12 @@ class Zebra_Database {
         // that is, we are not going to actually connect to the database until we execute the first query
         // the actual connection is done by the _connected method
         $this->credentials = array(
-            'host'      =>  $host,
-            'user'      =>  $user,
-            'password'  =>  $password,
-            'database'  =>  $database,
-            'port'      =>  $port == '' ? ini_get('mysqli.default_port') : $port,
-            'socket'    =>  $socket == '' ? ini_get('mysqli.default_socket') : $socket,
+            'host'      => $host,
+            'user'      => $user,
+            'password'  => $password,
+            'database'  => $database,
+            'port'      => $port == '' ? ini_get('mysqli.default_port') : $port,
+            'socket'    => $socket == '' ? ini_get('mysqli.default_socket') : $socket,
         );
 
         // connect now, if we need to connect right away
@@ -862,9 +862,9 @@ class Zebra_Database {
                 COUNT(' . $column . ') AS counted
             FROM
                 ' . $this->_escape($table) .
-            ($where != '' ? ' WHERE ' . $where : '')
+            ($where != '' ? ' WHERE ' . $where : '') . '
 
-        , $replacements, $cache, false, $highlight);
+        ', $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
         if (isset($this->last_result) && $this->last_result !== false && $this->returned_rows > 0) {
@@ -929,9 +929,9 @@ class Zebra_Database {
 
             DELETE FROM
                 ' . $this->_escape($table) .
-            ($where != '' ? ' WHERE ' . $where : '')
+            ($where != '' ? ' WHERE ' . $where : '') . '
 
-        , $replacements, false, false, $highlight);
+        ', $replacements, false, false, $highlight);
 
         // return TRUE if query was successful, or FALSE if it wasn't
         return isset($this->last_result) && $this->last_result !== false;
@@ -1000,14 +1000,12 @@ class Zebra_Database {
 
         // run the query
         $this->query('
-
             SELECT
                 ' . $column . '
             FROM
                 ' . $this->_escape($table) .
-            ($where != '' ? ' WHERE ' . $where : '') . '
+                ($where != '' ? ' WHERE ' . $where : '') . '
             LIMIT 1
-
         ', $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
@@ -1088,15 +1086,15 @@ class Zebra_Database {
     public function dmax($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
         // run the query
-         $this->query('
+        $this->query('
 
             SELECT
                 MAX(' . $column . ') AS maximum
             FROM
                 ' . $this->_escape($table) .
-            ($where != '' ? ' WHERE ' . $where : '')
+            ($where != '' ? ' WHERE ' . $where : '') . '
 
-        , $replacements, $cache, false, $highlight);
+        ', $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
         if (isset($this->last_result) && $this->last_result !== false && $this->returned_rows > 0) {
@@ -1179,9 +1177,9 @@ class Zebra_Database {
                 SUM(' . $column . ') AS total
             FROM
                 ' . $this->_escape($table) .
-            ($where != '' ? ' WHERE ' . $where : '')
+            ($where != '' ? ' WHERE ' . $where : '') . '
 
-        , $replacements, $cache, false, $highlight);
+        ', $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
         if (isset($this->last_result) && $this->last_result !== false && $this->found_rows > 0) {
@@ -1345,7 +1343,7 @@ class Zebra_Database {
         // save debug information
         return $this->_log('errors', array(
 
-            'message'   =>  $this->language['not_a_valid_resource'],
+            'message'   => $this->language['not_a_valid_resource'],
 
         ));
 
@@ -1403,10 +1401,10 @@ class Zebra_Database {
         if (
 
             // if $resource is a valid resource OR
-            $this->_is_result($resource) ||
+            $this->_is_result($resource)
 
             // $resource is a pointer to an array taken from cache
-            (is_integer($resource) && isset($this->cached_results[$resource]))
+            || (is_integer($resource) && isset($this->cached_results[$resource]))
 
         ) {
 
@@ -1415,16 +1413,20 @@ class Zebra_Database {
 
             // move the pointer to the start of $resource
             // if there are any rows available (notice the @)
-            if (@$this->seek(0, $resource))
+            if (@$this->seek(0, $resource)) {
 
                 // iterate through the records
-                while ($row = $this->fetch_assoc($resource))
+                while ($row = $this->fetch_assoc($resource)) {
 
                     // if $index was specified and exists in the returned row, add data to the result
                     if (trim($index) != '' && isset($row[$index])) $result[$row[$index]] = $row;
 
                     // if $index was not specified or does not exists in the returned row, add data to the result
                     else $result[] = $row;
+
+                }
+
+            }
 
             // return the results
             return $result;
@@ -1435,7 +1437,7 @@ class Zebra_Database {
         // save debug information
         return $this->_log('errors', array(
 
-            'message'   =>  $this->language['not_a_valid_resource'],
+            'message'   => $this->language['not_a_valid_resource'],
 
         ));
 
@@ -1513,7 +1515,7 @@ class Zebra_Database {
         // save debug information
         return $this->_log('errors', array(
 
-            'message'   =>  $this->language['not_a_valid_resource'],
+            'message'   => $this->language['not_a_valid_resource'],
 
         ));
 
@@ -1571,10 +1573,10 @@ class Zebra_Database {
         if (
 
             // if $resource is a valid resource OR
-            $this->_is_result($resource) ||
+            $this->_is_result($resource)
 
             // $resource is a pointer to an array taken from cache
-            (is_integer($resource) && isset($this->cached_results[$resource]))
+            || (is_integer($resource) && isset($this->cached_results[$resource]))
 
         ) {
 
@@ -1583,16 +1585,20 @@ class Zebra_Database {
 
             // move the pointer to the start of $resource
             // if there are any rows available (notice the @)
-            if (@$this->seek(0, $resource))
+            if (@$this->seek(0, $resource)) {
 
                 // iterate through the resource data
-                while ($row = $this->fetch_obj($resource))
+                while ($row = $this->fetch_obj($resource)) {
 
                     // if $index was specified and exists in the returned row, add data to the result
                     if (trim($index) != '' && property_exists($row, $index)) $result[$row->{$index}] = $row;
 
                     // if $index was not specified or does not exists in the returned row, add data to the result
                     else $result[] = $row;
+
+                }
+
+            }
 
             // return the results
             return $result;
@@ -1603,7 +1609,7 @@ class Zebra_Database {
         // save debug information
         return $this->_log('errors', array(
 
-            'message'   =>  $this->language['not_a_valid_resource'],
+            'message'   => $this->language['not_a_valid_resource'],
 
         ));
 
@@ -1705,7 +1711,7 @@ class Zebra_Database {
         // save debug information
         return $this->_log('errors', array(
 
-            'message'   =>  $this->language['not_a_valid_resource'],
+            'message'   => $this->language['not_a_valid_resource'],
 
         ));
 
@@ -2026,9 +2032,9 @@ class Zebra_Database {
                 ' . $this->_escape($table) . '
                 (' . $cols . ')
             VALUES
-                (' . $values . ')'
+                (' . $values . ')
 
-        , array_values($columns), false, false, $highlight);
+        ', array_values($columns), false, false, $highlight);
 
         // return TRUE if query was successful, or FALSE if it wasn't
         return isset($this->last_result) && $this->last_result !== false;
@@ -2226,7 +2232,7 @@ class Zebra_Database {
         $sql = '
             INSERT' . ($update === false ? ' IGNORE' : '') . ' INTO
                 ' . $this->_escape($table) . '
-                (' . '`' . implode('`,`', $columns) . '`' . ')
+                (' . '`' . implode('`,`', $columns) . '`)
             VALUES
         ';
 
@@ -2287,7 +2293,7 @@ class Zebra_Database {
         // save debug information
         return $this->_log('errors', array(
 
-            'message'   =>  $this->language['not_a_valid_resource'],
+            'message'   => $this->language['not_a_valid_resource'],
 
         ));
 
@@ -2446,9 +2452,9 @@ class Zebra_Database {
             VALUES
                 (' . $values . ')
             ON DUPLICATE KEY UPDATE
-                ' . $update_cols
+                ' . $update_cols . '
 
-        , array_merge(array_values($columns), array_values($update)), false, false, $highlight);
+        ', array_merge(array_values($columns), array_values($update)), false, false, $highlight);
 
         // return TRUE if query was successful, or FALSE if it wasn't
         return isset($this->last_result) && $this->last_result !== false;
@@ -2568,7 +2574,7 @@ class Zebra_Database {
             // inform the user that options can only be set before connecting
             return $this->_log('errors', array(
 
-                'message'   =>  $this->language['options_before_connect'],
+                'message'   => $this->language['options_before_connect'],
 
             ));
 
@@ -2649,7 +2655,7 @@ class Zebra_Database {
         // save debug info
         return $this->_log('errors', array(
 
-            'message'   =>  $this->language['file_could_not_be_opened'],
+            'message'   => $this->language['file_could_not_be_opened'],
 
         ));
 
@@ -2740,7 +2746,7 @@ class Zebra_Database {
      *                                  <i>If query results are taken from cache, the returned result will be a pointer to
      *                                  the actual results of the query!</i>
      */
-    public function query($sql, $replacements = '', $cache = false, $calc_rows = false, $highlight= false) {
+    public function query($sql, $replacements = '', $cache = false, $calc_rows = false, $highlight = false) {
 
         // if no active connection exists, return false
         if (!$this->_connected()) return false;
@@ -2751,10 +2757,10 @@ class Zebra_Database {
         if ($replacements != '' && !is_array($replacements))
 
             // save debug information
-            return $this->_log('unsuccessful-queries',  array(
+            return $this->_log('unsuccessful-queries', array(
 
-                'query' =>  $sql,
-                'error' =>  $this->language['warning_replacements_not_array']
+                'query' => $sql,
+                'error' => $this->language['warning_replacements_not_array']
 
             ));
 
@@ -2791,14 +2797,14 @@ class Zebra_Database {
                 $replacements1[] = $randomstr;
 
                 // if the replacement is NULL, leave it like it is
-                if ($replacement === NULL) $replacements2[$key] = 'NULL';
+                if ($replacement === null) $replacements2[$key] = 'NULL';
 
                 // if the replacement is an array, implode and escape it for use in WHERE ? IN ? statement
                 elseif (is_array($replacement)) $replacements2[$key] = preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->implode($replacement));
 
                 // otherwise, mysqli_real_escape_string the items in replacements
                 // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
-                // it as references
+                // it as reference
                 else $replacements2[$key] = '\'' . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->escape($replacement)) . '\'';
 
                 // and also, prepare the new pattern to be replaced afterwards
@@ -2821,8 +2827,8 @@ class Zebra_Database {
             // save debug information
             $this->_log('errors', array(
 
-                'query'     =>  $sql,
-                'message'   =>  $this->language['unbuffered_queries_cannot_be_cached'],
+                'query'     => $sql,
+                'message'   => $this->language['unbuffered_queries_cannot_be_cached'],
 
             ), false);
 
@@ -2896,7 +2902,7 @@ class Zebra_Database {
                 }
 
             // if caching method is "disk"
-            } else
+            } else {
 
                 // if cache folder exists and is writable
                 if (file_exists($this->cache_path) && is_dir($this->cache_path) && is_writable($this->cache_path)) {
@@ -2906,8 +2912,8 @@ class Zebra_Database {
 
                     // if a cached version of this query's result already exists, it is not expired and is valid
                     if (
-                        file_exists($file_name) && filemtime($file_name) + $cache > time() &&
-                        ($cached_result = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name)))))
+                        file_exists($file_name) && filemtime($file_name) + $cache > time()
+                        && ($cached_result = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name)))))
                     ) {
 
                         // put results in the right place
@@ -2928,9 +2934,11 @@ class Zebra_Database {
                     // save debug information
                     return $this->_log('errors', array(
 
-                        'message'   =>  $this->language['cache_path_not_writable'],
+                        'message'   => $this->language['cache_path_not_writable'],
 
                     ), false);
+
+            }
 
         }
 
@@ -2961,11 +2969,11 @@ class Zebra_Database {
         if (
 
             // notification address and notifier domain are set
-            !empty($this->notification_address) &&
-            !empty($this->notifier_domain) &&
+            !empty($this->notification_address)
+            && !empty($this->notifier_domain)
 
             // and execution time exceeds max_query_time
-            ($stop_timer - $start_timer > $this->max_query_time)
+            && ($stop_timer - $start_timer > $this->max_query_time)
 
         )
 
@@ -3035,9 +3043,9 @@ class Zebra_Database {
                     // we'll also be saving the found_rows, returned_rows and columns information
                     array_push($cache_data, array(
 
-                        'returned_rows' =>  $this->returned_rows,
-                        'found_rows'    =>  $this->found_rows,
-                        'column_info'   =>  $this->get_columns(),
+                        'returned_rows' => $this->returned_rows,
+                        'found_rows'    => $this->found_rows,
+                        'column_info'   => $this->get_columns(),
 
                     ));
 
@@ -3059,7 +3067,7 @@ class Zebra_Database {
                             // save debug information
                             return $this->_log('errors', array(
 
-                                'message'   =>  $this->language['no_active_session'],
+                                'message'   => $this->language['no_active_session'],
 
                             ));
 
@@ -3153,7 +3161,7 @@ class Zebra_Database {
                         // if query was read from the cache and there are any records
                         // put the first rows, as defined by debug_show_records, in an array to show them in the
                         // debugging console
-                        } else if (!empty($this->cached_results[$this->last_result])) $result = array_slice($this->cached_results[$this->last_result], 0, $this->debug_show_records);
+                        } elseif (!empty($this->cached_results[$this->last_result])) $result = array_slice($this->cached_results[$this->last_result], 0, $this->debug_show_records);
 
                     }
 
@@ -3169,15 +3177,15 @@ class Zebra_Database {
                             // if this query was run before
                             if (
 
-                                isset($query_data['records']) &&
-                                !empty($query_data['records']) &&
-                                $query_data['records'] == $result
+                                isset($query_data['records'])
+                                && !empty($query_data['records'])
+                                && $query_data['records'] == $result
 
                             // save the pointer to the query in an array
                             ) $keys[] = $key;
 
                         // if the query was run before
-                        if (!empty($keys))
+                        if (!empty($keys)) {
 
                             // issue a warning for all the queries that were found to be the same as the current one
                             // iterate through the queries that are the same
@@ -3192,19 +3200,24 @@ class Zebra_Database {
 
                             }
 
+                        }
+
                     }
 
                     // if
                     if (
 
                         // if we need to EXPLAIN the last executed query
-                        $this->debug_show_explain &&
+                        $this->debug_show_explain
+
                         // it was not an unbuffered one
-                        !$this->unbuffered &&
+                        && !$this->unbuffered
+
                         // query was successful
-                        $this->_is_result($this->last_result) &&
+                        && $this->_is_result($this->last_result)
+
                         // MySQL could explain it
-                        ($explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql))
+                        && ($explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql))
 
                     )
 
@@ -3215,11 +3228,13 @@ class Zebra_Database {
                     if (
 
                         // we need to EXPLAIN the last executed query
-                        $this->debug_show_explain &&
+                        $this->debug_show_explain
+
                         // it was an unbuffered one
-                        $this->unbuffered &&
+                        && $this->unbuffered
+
                         // query was successful
-                        $this->_is_result($this->last_result)
+                        && $this->_is_result($this->last_result)
 
                     ) {
 
@@ -3236,17 +3251,17 @@ class Zebra_Database {
                 // save debug information
                 $this->_log('successful-queries', array(
 
-                    'query'         =>  $sql,
-                    'records'       =>  $result,
-                    'returned_rows' =>  $this->returned_rows,
-                    'explain'       =>  (isset($explain) ? $explain : ''),
-                    'affected_rows' =>  (isset($this->affected_rows) ? $this->affected_rows : false),
-                    'execution_time'=>  $stop_timer - $start_timer,
-                    'warning'       =>  $warning,
-                    'highlight'     =>  $highlight,
-                    'from_cache'    =>  $refreshed_cache,
-                    'unbuffered'    =>  $this->unbuffered,
-                    'transaction'   =>  ($this->transaction_status !== 0 ? true : false),
+                    'query'             => $sql,
+                    'records'           => $result,
+                    'returned_rows'     => $this->returned_rows,
+                    'explain'           => (isset($explain) ? $explain : ''),
+                    'affected_rows'     => (isset($this->affected_rows) ? $this->affected_rows : false),
+                    'execution_time'    => $stop_timer - $start_timer,
+                    'warning'           => $warning,
+                    'highlight'         => $highlight,
+                    'from_cache'        => $refreshed_cache,
+                    'unbuffered'        => $this->unbuffered,
+                    'transaction'       => ($this->transaction_status !== 0 ? true : false),
 
                 ), false);
 
@@ -3270,8 +3285,8 @@ class Zebra_Database {
         // save debug information
         return $this->_log('unsuccessful-queries', array(
 
-            'query'     =>  $sql,
-            'error'     =>  mysqli_error($this->connection)
+            'query' => $sql,
+            'error' => mysqli_error($this->connection)
 
         ));
 
@@ -3362,7 +3377,7 @@ class Zebra_Database {
                 // save debug information
                 return $this->_log('errors', array(
 
-                    'message'   =>  $this->language['could_not_seek'],
+                    'message'   => $this->language['could_not_seek'],
 
                 ));
 
@@ -3389,7 +3404,7 @@ class Zebra_Database {
                 // save debug information
                 return $this->_log('errors', array(
 
-                    'message'   =>  $this->language['could_not_seek'],
+                    'message'   => $this->language['could_not_seek'],
 
                 ));
 
@@ -3401,7 +3416,7 @@ class Zebra_Database {
         // save debug information
         return $this->_log('errors', array(
 
-            'message'   =>  $this->language['not_a_valid_resource'],
+            'message'   => $this->language['not_a_valid_resource'],
 
         ));
 
@@ -3540,9 +3555,9 @@ class Zebra_Database {
 
             ($order != '' ? ' ORDER BY ' . $order : '') .
 
-            ($limit != '' ? ' LIMIT ' . $limit : '')
+            ($limit != '' ? ' LIMIT ' . $limit : '') . '
 
-        , $replacements, $cache, $calc_rows, $highlight);
+        ', $replacements, $cache, $calc_rows, $highlight);
 
     }
 
@@ -3667,8 +3682,8 @@ class Zebra_Database {
         // save debug information
         return $this->_log('unsuccessful-queries', array(
 
-            'query' =>  $sql,
-            'error' =>  $this->language['no_transaction_in_progress'],
+            'query' => $sql,
+            'error' => $this->language['no_transaction_in_progress'],
 
         ), false);
 
@@ -3726,8 +3741,8 @@ class Zebra_Database {
         // save debug information
         return $this->_log('unsuccessful-queries', array(
 
-            'query' =>  $sql,
-            'error' =>  $this->language['transaction_in_progress'],
+            'query' => $sql,
+            'error' => $this->language['transaction_in_progress'],
 
         ), false);
 
@@ -3793,9 +3808,9 @@ class Zebra_Database {
         $this->query('
 
             TRUNCATE
-                ' . $this->_escape($table)
+                ' . $this->_escape($table) . '
 
-        , '', false, false, $highlight);
+        ', '', false, false, $highlight);
 
         // return TRUE if query was successful, or FALSE if it wasn't
         return isset($this->last_result) && $this->last_result !== false;
@@ -3913,10 +3928,10 @@ class Zebra_Database {
         if ($replacements != '' && !is_array($replacements))
 
             // save debug information
-            return $this->_log('unsuccessful-queries',  array(
+            return $this->_log('unsuccessful-queries', array(
 
-                'query' =>  '',
-                'error' =>  $this->language['warning_replacements_not_array']
+                'query' => '',
+                'error' => $this->language['warning_replacements_not_array']
 
             ));
 
@@ -3930,10 +3945,9 @@ class Zebra_Database {
                 ' . $this->_escape($table) . '
             SET
                 ' . $cols .
+            ($where != '' ? ' WHERE ' . $where : '') . '
 
-            ($where != '' ? ' WHERE ' . $where : '')
-
-        , array_merge(array_values($columns), $replacements == '' ? array() : $replacements), false, false, $highlight);
+        ', array_merge(array_values($columns), $replacements == '' ? array() : $replacements), false, false, $highlight);
 
         // return TRUE if query was successful, or FALSE if it wasn't
         return isset($this->last_result) && $this->last_result !== false;
@@ -3967,9 +3981,9 @@ class Zebra_Database {
             if (trim($value) == '?')
 
                 // throw an error
-                return $this->_log('unsuccessful-queries',  array(
+                return $this->_log('unsuccessful-queries', array(
 
-                    'error' =>  sprintf($this->language['cannot_use_parameter_marker'], print_r($columns, true)),
+                    'error' => sprintf($this->language['cannot_use_parameter_marker'], print_r($columns, true)),
 
                 ));
 
@@ -4031,7 +4045,7 @@ class Zebra_Database {
                         // log if there's a bogus option/value
                         $this->_log('errors', array(
 
-                            'message'   =>  sprintf($this->language['invalid_option'], $option),
+                            'message'   => sprintf($this->language['invalid_option'], $option),
 
                         ));
 
@@ -4053,8 +4067,8 @@ class Zebra_Database {
                 // save debug information
                 return $this->_log('errors', array(
 
-                    'message'   =>  $this->language['could_not_connect_to_database'],
-                    'error'     =>  mysqli_connect_error(),
+                    'message'   => $this->language['could_not_connect_to_database'],
+                    'error'     => mysqli_connect_error(),
 
                 ));
 
@@ -4073,9 +4087,9 @@ class Zebra_Database {
                         // if connection could not be established, save debug information
                         $this->_log('errors', array(
 
-                            'message'   =>  $this->language['could_not_connect_to_memcache_server'])
+                            'message'   => $this->language['could_not_connect_to_memcache_server']
 
-                        );
+                        ));
 
                     else $this->memcache = $memcache;
 
@@ -4085,9 +4099,9 @@ class Zebra_Database {
                     // if connection could not be established, save debug information
                     $this->_log('errors', array(
 
-                        'message'   =>  $this->language['memcache_extension_not_installed'])
+                        'message'   => $this->language['memcache_extension_not_installed']
 
-                    );
+                    ));
 
             }
 
@@ -4114,18 +4128,18 @@ class Zebra_Database {
         if (
 
             // debug is enabled AND
-            $this->debug !== false &&
+            $this->debug !== false
 
             // debugger_ip is an array AND
-            is_array($this->debugger_ip) &&
+            && is_array($this->debugger_ip)
 
-                (
+                && (
 
                     // debugger_ip is an empty array OR
-                    empty($this->debugger_ip) ||
+                    empty($this->debugger_ip)
 
                     // the viewer's IP is the allowed array
-                    in_array($_SERVER['REMOTE_ADDR'], $this->debugger_ip)
+                    || in_array($_SERVER['REMOTE_ADDR'], $this->debugger_ip)
 
                 )
 
@@ -4151,35 +4165,35 @@ class Zebra_Database {
                     // add them to the debugging console
                     $this->_log('warnings', array(
 
-                        'message'   =>  $this->language['warning_' . $warning],
+                        'message'   => $this->language['warning_' . $warning],
 
                     ), false);
 
             // blocks to be shown in the debugging console
             $blocks = array(
-                'errors'                =>  array(
-                                                'counter'       =>  0,
-                                                'identifier'    =>  'e',
-                                                'generated'     =>  '',
-                                            ),
-                'successful-queries'    =>  array(
-                                                'counter'       =>  0,
-                                                'identifier'    =>  'sq',
-                                                'generated'     =>  '',
-                                            ),
-                'unsuccessful-queries'  =>  array(
-                                                'counter'       =>  0,
-                                                'identifier'    =>  'uq',
-                                                'generated'     =>  '',
-                                            ),
-                'warnings'              =>  array(
-                                                'counter'       =>  0,
-                                                'identifier'    =>  'w',
-                                                'generated'     =>  '',
-                                            ),
-                'globals'               =>  array(
-                                                'generated'         =>  '',
-                                            ),
+                'errors'                => array(
+                    'counter'       => 0,
+                    'identifier'    => 'e',
+                    'generated'     => '',
+                ),
+                'successful-queries'    => array(
+                    'counter'       => 0,
+                    'identifier'    => 'sq',
+                    'generated'     => '',
+                ),
+                'unsuccessful-queries'  => array(
+                    'counter'       => 0,
+                    'identifier'    => 'uq',
+                    'generated'     => '',
+                ),
+                'warnings'              => array(
+                    'counter'       => 0,
+                    'identifier'    => 'w',
+                    'generated'     => '',
+                ),
+                'globals'               => array(
+                    'generated'     => '',
+                ),
             );
 
             // there are no warnings
@@ -4299,7 +4313,8 @@ class Zebra_Database {
                                     $this->language['seconds'] . ' (<strong>' .
                                     number_format(
                                         ($this->total_execution_time != 0 ? $debug_info['execution_time'] * 100 / $this->total_execution_time : 0),
-                                        2, '.', ',') . '</strong>%)
+                                        2, '.', ','
+                                    ) . '</strong>%)
                                 </li>
                             ';
 
@@ -4497,7 +4512,7 @@ class Zebra_Database {
             if ($blocks['unsuccessful-queries']['counter'] > 0 || $blocks['errors']['counter'] > 0) $this->minimize_console = false;
 
             // finalize output by enclosing the debugging console's menu and generated blocks in a container
-            $output =  '
+            $output = '
                 <div id="zdc" style="display:' . ($this->minimize_console ? 'none' : 'block') . '">
                     <a name="zdc-top"></a>
                     <ul class="zdc-main">
@@ -4738,9 +4753,9 @@ class Zebra_Database {
                     // extract needed information
                     $data['backtrace'][] = array(
 
-                        $this->language['file']     =>  (isset($backtrace['file']) ? $backtrace['file'] : ''),
-                        $this->language['function'] =>  $backtrace['function'] . '()',
-                        $this->language['line']     =>  (isset($backtrace['line']) ? $backtrace['line'] : ''),
+                        $this->language['file']     => (isset($backtrace['file']) ? $backtrace['file'] : ''),
+                        $this->language['function'] => $backtrace['function'] . '()',
+                        $this->language['line']     => (isset($backtrace['line']) ? $backtrace['line'] : ''),
 
                     );
 
@@ -4901,10 +4916,10 @@ class Zebra_Database {
             $sections = array('successful-queries', 'unsuccessful-queries');
 
             // iterate over the sections we need to show
-            foreach ($sections as $section)
+            foreach ($sections as $section) {
 
                 // if there are any queries in the section
-                if (isset($this->debug_info[$section]))
+                if (isset($this->debug_info[$section])) {
 
                     // iterate through the debug information
                     foreach ($this->debug_info[$section] as $debug_info) {
@@ -4920,56 +4935,27 @@ class Zebra_Database {
 
                             // if execution time is available
                             // (is not available for unsuccessful queries)
-                            (isset($debug_info['execution_time']) ?
-
-                                $labels[2] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . ': ' .  $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['seconds'] . "\n"
-                                : ''
-
-                            ) .
+                            (isset($debug_info['execution_time']) ? $labels[2] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . ': ' . $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['seconds'] . "\n" : '') .
 
                             // if there is a warning message
-                            (isset($debug_info['warning']) && $debug_info['warning'] != '' ?
-
-                                $labels[3] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[3])), ' ', STR_PAD_RIGHT) . ': ' . strip_tags($debug_info['warning']) . "\n"
-                                : ''
-
-                            ) .
+                            (isset($debug_info['warning']) && $debug_info['warning'] != '' ? $labels[3] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[3])), ' ', STR_PAD_RIGHT) . ': ' . strip_tags($debug_info['warning']) . "\n" : '') .
 
                             // if there is an error message
-                            (isset($debug_info['error']) && $debug_info['error'] != '' ?
-
-                                $labels[4] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[4])), ' ', STR_PAD_RIGHT) . ': ' . $debug_info['error'] . "\n"
-                                : ''
-
-                            ) .
+                            (isset($debug_info['error']) && $debug_info['error'] != '' ? $labels[4] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[4])), ' ', STR_PAD_RIGHT) . ': ' . $debug_info['error'] . "\n" : '') .
 
                             // if not an action query, show whether the query was returned from the cache or was executed
-                            (isset($debug_info['affected_rows']) && $debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] != 'nocache' ?
-
-                                $labels[5] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) .  ': ' . $labels[6] . "\n"
-                                : ''
-
-                            ) .
+                            (isset($debug_info['affected_rows']) && $debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] != 'nocache' ? $labels[5] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '') .
 
                             // if query was an unbuffered one
-                            (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ?
+                            (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ? $labels[12] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : ''),
 
-                                $labels[12] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n"
-                                : ''
-
-                            )
-
-                        , true));
+                        true));
 
                         // if backtrace information should be written to the log file
                         if ($backtrace) {
 
                             // write to log file
-                            fwrite($handle, print_r(
-
-                                $labels[8] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . ':' . "\n"
-
-                            , true));
+                            fwrite($handle, print_r($labels[8] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . ':' . "\n", true));
 
                             // write full backtrace info
                             foreach ($debug_info['backtrace'] as $backtrace)
@@ -4989,6 +4975,10 @@ class Zebra_Database {
                         fwrite($handle, str_pad('', $longest_label_length + 1, '-', STR_PAD_RIGHT) . "\n");
 
                     }
+
+                }
+
+            }
 
             // close log file
             fclose($handle);
