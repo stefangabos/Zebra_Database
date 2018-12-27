@@ -1400,10 +1400,10 @@ class Zebra_Database {
 
         if (
 
-            // if $resource is a valid resource OR
+            // if $resource is a valid resource
             $this->_is_result($resource)
 
-            // $resource is a pointer to an array taken from cache
+            // OR $resource is a pointer to an array taken from cache
             || (is_integer($resource) && isset($this->cached_results[$resource]))
 
         ) {
@@ -1572,10 +1572,10 @@ class Zebra_Database {
 
         if (
 
-            // if $resource is a valid resource OR
+            // if $resource is a valid resource
             $this->_is_result($resource)
 
-            // $resource is a pointer to an array taken from cache
+            // OR $resource is a pointer to an array taken from cache
             || (is_integer($resource) && isset($this->cached_results[$resource]))
 
         ) {
@@ -2912,7 +2912,8 @@ class Zebra_Database {
 
                     // if a cached version of this query's result already exists, it is not expired and is valid
                     if (
-                        file_exists($file_name) && filemtime($file_name) + $cache > time()
+                        file_exists($file_name)
+                        && filemtime($file_name) + $cache > time()
                         && ($cached_result = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name)))))
                     ) {
 
@@ -2970,6 +2971,7 @@ class Zebra_Database {
 
             // notification address and notifier domain are set
             !empty($this->notification_address)
+
             && !empty($this->notifier_domain)
 
             // and execution time exceeds max_query_time
@@ -3174,7 +3176,7 @@ class Zebra_Database {
                         // to find out if this query was already run
                         foreach ($this->debug_info['successful-queries'] as $key => $query_data)
 
-                            // if this query was run before
+                            // if query was run before
                             if (
 
                                 isset($query_data['records'])
@@ -4947,9 +4949,9 @@ class Zebra_Database {
                             (isset($debug_info['affected_rows']) && $debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] != 'nocache' ? $labels[5] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '') .
 
                             // if query was an unbuffered one
-                            (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ? $labels[12] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : ''),
+                            (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ? $labels[12] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '')
 
-                        true));
+                        , true));
 
                         // if backtrace information should be written to the log file
                         if ($backtrace) {
@@ -4958,16 +4960,17 @@ class Zebra_Database {
                             fwrite($handle, print_r($labels[8] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . ':' . "\n", true));
 
                             // write full backtrace info
-                            foreach ($debug_info['backtrace'] as $backtrace)
+                            foreach ($debug_info['backtrace'] as $backtrace) {
 
                                 fwrite($handle, print_r(
-
                                     "\n" .
                                     $labels[9] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['file']] . "\n" .
                                     $labels[10] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['line']] . "\n" .
-                                    $labels[11] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['function']] . "\n"
+                                    $labels[11] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['function']] . "\n",
+                                    true
+                                ));
 
-                                , true));
+                            }
 
                         }
 
