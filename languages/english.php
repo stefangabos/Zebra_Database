@@ -25,7 +25,7 @@
         'email_content'                         => "The following query exceeded normal running time of %s seconds by running %s seconds: \n\n %s",
         'error'                                 => 'Error',
         'errors'                                => 'errors',
-        'execution_time'                        => 'execution time',
+        'execution_time'                        => 'duration',
         'explain'                               => 'explain',
         'data_not_an_array'                     => 'The third argument of <em>insert_bulk()</em> needs to be an array of arrays.',
         'file'                                  => 'File',
