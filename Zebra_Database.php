@@ -4929,7 +4929,7 @@ class Zebra_Database {
             ' '
         );
 
-        // tries to create/open the 'log.txt' file
+        // tries to create/open the log file
         if ($handle = @fopen($file_name, 'a+')) {
 
             // we need to show both successful and unsuccessful queries
