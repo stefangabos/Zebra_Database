@@ -1,8 +1,10 @@
 ## version 2.9.12 (January 01 2019)
 
 - `insert_bulk` method now supports INSERT IGNORE and INSERT...ON DUPLICATE KEY UPDATE; this fixes [#42](https://github.com/stefangabos/Zebra_Database/issues/42) and deprecates the `insert_update` method
+- fixed [#47](https://github.com/stefangabos/Zebra_Database/issues/47) where setting `log_path` property to a full path to a file with extension would not change the log file's name, as stated in the documentation
 - fixed [#37](https://github.com/stefangabos/Zebra_Database/issues/37) where unsuccessful queries were not written to the log file
 - fixed bug when the first argument for `fetch_assoc_all` and `fetch_obj_all` methods was skipped
+- logs can now be handled via a custom callback function instead of being written to a log file, by setting the [$log_path](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$log_path) property; this answers [#48](https://github.com/stefangabos/Zebra_Database/issues/48)
 - changed output written to the log files which is now less verbose, cleaner and taking up less space
 - dates in log files are now in Y-m-d format instead of Y M d
 - changed how entries are separated in the log file
