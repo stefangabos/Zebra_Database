@@ -647,7 +647,7 @@ class Zebra_Database {
     public function __construct() {
 
         // if the mysqli extension is not loaded, stop execution
-        if (!extension_loaded('mysqli')) trigger_error('Zebra_Database: mysqli extension is not enabled!', E_USER_ERROR);
+        if (!extension_loaded('mysqli')) trigger_error('Zebra_Database: mysqli extension is not enabled', E_USER_ERROR);
 
         // get path of class and replace (on a windows machine) \ with /
         // this path is to be used for all includes as it is an absolute path
