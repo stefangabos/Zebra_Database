@@ -4853,8 +4853,23 @@ class Zebra_Database {
      */
     private function _write_log($daily = false, $hourly = false, $backtrace = false) {
 
-        // daily/hourly file?
-        $file_name = 'log';
+        $pathinfo = pathinfo($this->log_path);
+
+        // if log_path is given as full path to a file, together with extension
+        if (isset($pathinfo['filename']) && isset($pathinfo['extension'])) {
+
+            // use those values
+            $file_name = $pathinfo['dirname'] . '/' . $pathinfo['filename'];
+            $extension = '.' . $pathinfo['extension'];
+
+        // otherwise
+        } else {
+
+            // the file name is "log" and the extension is ".txt"
+            $file_name = rtrim($this->log_path, '/\\') . '/log';
+            $extension = '.txt';
+
+        }
 
         // if $hourly is set to TRUE, $daily *must* be true
         if ($hourly) $daily = true;
@@ -4868,7 +4883,7 @@ class Zebra_Database {
         $file_name .= ($hourly ? '-' . @date('H') : '');
 
         // log file's extension
-        $file_name .= '.txt';
+        $file_name .= $extension;
 
         // all the labels that may be used in a log entry
         $labels = array(
@@ -4915,7 +4930,7 @@ class Zebra_Database {
         );
 
         // tries to create/open the 'log.txt' file
-        if ($handle = @fopen(rtrim($this->log_path, '/') . '/' . $file_name, 'a+')) {
+        if ($handle = @fopen($file_name, 'a+')) {
 
             // we need to show both successful and unsuccessful queries
             $sections = array('successful-queries', 'unsuccessful-queries');
