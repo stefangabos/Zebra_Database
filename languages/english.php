@@ -19,7 +19,7 @@
         'could_not_connect_to_memcache_server'  => 'Could not connect to the memcache server',
         'could_not_seek'                        => 'could not seek to specified row',
         'could_not_select_database'             => 'Could not select database',
-        'could_not_write_to_log'                => 'Could not write to log file. Make sure the folder exists and is writable.',
+        'could_not_write_to_log'                => 'Could not write to log file. Make sure the folder exists and is writable',
         'date'                                  => 'Date',
         'email_subject'                         => 'Slow query on %s!',
         'email_content'                         => "The following query exceeded normal running time of %s seconds by running %s seconds: \n\n %s",

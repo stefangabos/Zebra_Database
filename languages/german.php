@@ -19,7 +19,7 @@
         'could_not_connect_to_memcache_server'  => 'Keine Verbindung zum Memcache Server',
         'could_not_seek'                        => 'Konnte die definierte Zeile nicht suchen',
         'could_not_select_database'             => 'Konnte die Datenbank nicht auswählen',
-        'could_not_write_to_log'                => 'Konnte nicht in die Log-Datei schreiben. Stellen Sie sicher, dass das Ordner existiert und beschreibbar ist.',
+        'could_not_write_to_log'                => 'Konnte nicht in die Log-Datei schreiben. Stellen Sie sicher, dass das Ordner existiert und beschreibbar ist',
         'date'                                  => 'Datum',
         'email_subject'                         => 'Langsame Abfrage in %s!',
         'email_content'                         => "Die nachfolgende Abfrage hat die normale Ausführungszeit von %s Sekunden überschritten. Sie dauerte %s Sekunden: \n\n %s",
