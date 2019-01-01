@@ -291,7 +291,8 @@ class Zebra_Database {
     public $halt_on_errors;
 
     /**
-     *  Path where to store the log files when the {@link debug} property is set to an array.
+     *  Path where to store the log files when the {@link debug} property is set to an array OR a callback function to
+     *  pass the log information to, instead of being written to a file.
      *
      *  <b>The path is relative to your working directory.</b>
      *
@@ -307,6 +308,12 @@ class Zebra_Database {
      *  <b>IF YOU'RE LOGGING, MAKE SURE YOU HAVE A CRON JOB OR SOMETHING THAT DELETES THE LOG FILE FROM TIME TO TIME!</b>
      *
      *  Default is "" (an empty string) - log files are created in the root of your server.
+     *
+     *  If you are using a callback function, the function receives two arguments:
+     *
+     *  -   the debug information, as a string, just like it would go into the log file
+     *  -   the backtrace information, as a string, just like it would go into the log file - if {@link $debug_show_backtrace}
+     *      is set to FALSE, this will be an empty string
      *
      *  @var string
      */
@@ -4853,37 +4860,51 @@ class Zebra_Database {
      */
     private function _write_log($daily = false, $hourly = false, $backtrace = false) {
 
-        $pathinfo = pathinfo($this->log_path);
+        // if we are using a callback function to handle logs
+        if (is_callable($this->log_path) && !isset($this->log_path_is_function))
 
-        // if log_path is given as full path to a file, together with extension
-        if (isset($pathinfo['filename']) && isset($pathinfo['extension'])) {
+            // set flag
+            $this->log_path_is_function = true;
 
-            // use those values
-            $file_name = $pathinfo['dirname'] . '/' . $pathinfo['filename'];
-            $extension = '.' . $pathinfo['extension'];
+        // if we are writing logs to a file
+        else {
 
-        // otherwise
-        } else {
+            // set flag
+            $this->log_path_is_function = false;
 
-            // the file name is "log" and the extension is ".txt"
-            $file_name = rtrim($this->log_path, '/\\') . '/log';
-            $extension = '.txt';
+            $pathinfo = pathinfo($this->log_path);
+
+            // if log_path is given as full path to a file, together with extension
+            if (isset($pathinfo['filename']) && isset($pathinfo['extension'])) {
+
+                // use those values
+                $file_name = $pathinfo['dirname'] . '/' . $pathinfo['filename'];
+                $extension = '.' . $pathinfo['extension'];
+
+            // otherwise
+            } else {
+
+                // the file name is "log" and the extension is ".txt"
+                $file_name = rtrim($this->log_path, '/\\') . '/log';
+                $extension = '.txt';
+
+            }
+
+            // if $hourly is set to TRUE, $daily *must* be true
+            if ($hourly) $daily = true;
+
+            // are we writing daily logs?
+            // (suppress "strict standards" warning for PHP 5.4+)
+            $file_name .= ($daily ? '-' . @date('Ymd') : '');
+
+            // are we writing hourly logs?
+            // (suppress "strict standards" warning for PHP 5.4+)
+            $file_name .= ($hourly ? '-' . @date('H') : '');
+
+            // log file's extension
+            $file_name .= $extension;
 
         }
-
-        // if $hourly is set to TRUE, $daily *must* be true
-        if ($hourly) $daily = true;
-
-        // are we writing daily logs?
-        // (suppress "strict standards" warning for PHP 5.4+)
-        $file_name .= ($daily ? '-' . @date('Ymd') : '');
-
-        // are we writing hourly logs?
-        // (suppress "strict standards" warning for PHP 5.4+)
-        $file_name .= ($hourly ? '-' . @date('H') : '');
-
-        // log file's extension
-        $file_name .= $extension;
 
         // all the labels that may be used in a log entry
         $labels = array(
@@ -4929,8 +4950,8 @@ class Zebra_Database {
             ' '
         );
 
-        // tries to create/open the log file
-        if ($handle = @fopen($file_name, 'a+')) {
+        // if we are using a callback function for logs or we are writing the logs to a file and we can create/write to the log file
+        if ($this->log_path_is_function || $handle = @fopen($file_name, 'a+')) {
 
             // we need to show both successful and unsuccessful queries
             $sections = array('successful-queries', 'unsuccessful-queries');
@@ -4944,8 +4965,8 @@ class Zebra_Database {
                     // iterate through the debug information
                     foreach ($this->debug_info[$section] as $debug_info) {
 
-                        // write to log file
-                        fwrite($handle, print_r(
+                        // the output
+                        $output =
 
                             // date
                             $labels[0] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[0])), ' ', STR_PAD_RIGHT) . ': ' . @date('Y-m-d H:i:s') . "\n" .
@@ -4967,33 +4988,46 @@ class Zebra_Database {
                             (isset($debug_info['affected_rows']) && $debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] != 'nocache' ? $labels[5] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '') .
 
                             // if query was an unbuffered one
-                            (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ? $labels[12] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '')
+                            (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ? $labels[12] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '');
 
-                        , true));
+                        // if we are writing the logs to a file, write to the log file
+                        if (!$this->log_path_is_function) fwrite($handle, print_r($output, true));
+
+                        $backtrace_output = '';
 
                         // if backtrace information should be written to the log file
                         if ($backtrace) {
 
-                            // write to log file
-                            fwrite($handle, print_r($labels[8] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . ':' . "\n", true));
+                            $backtrace_output = $labels[8] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . ':' . "\n";
 
-                            // write full backtrace info
+                            // if we are writing the logs to a file, write to the log file
+                            if (!$this->log_path_is_function) fwrite($handle, print_r($backtrace_output, true));
+
+                            // handle full backtrace info
                             foreach ($debug_info['backtrace'] as $backtrace) {
 
-                                fwrite($handle, print_r(
+                                // output
+                                $tmp =
                                     "\n" .
                                     $labels[9] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['file']] . "\n" .
                                     $labels[10] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['line']] . "\n" .
-                                    $labels[11] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['function']] . "\n",
-                                    true
-                                ));
+                                    $labels[11] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['function']] . "\n";
+
+                                // if we are writing the logs to a file, write to the log file
+                                if (!$this->log_path_is_function) fwrite($handle, print_r($tmp, true));
+
+                                // otherwise, add to the string
+                                else $backtrace_output .= $tmp;
 
                             }
 
                         }
 
-                        // finish writing to the log file by adding a bottom border
-                        fwrite($handle, str_pad('', $longest_label_length + 1, '-', STR_PAD_RIGHT) . "\n");
+                        // if we are writing the logs to a file, finish writing to the log file by adding a bottom border
+                        if (!$this->log_path_is_function) fwrite($handle, str_pad('', $longest_label_length + 1, '-', STR_PAD_RIGHT) . "\n");
+
+                        // if we are using a callback to manage logs, pass log information to the log file
+                        else call_user_func_array($this->log_path, array($output, $backtrace_output));
 
                     }
 
@@ -5001,8 +5035,8 @@ class Zebra_Database {
 
             }
 
-            // close log file
-            fclose($handle);
+            // if we are writing the logs to a file, close the log file
+            if (!$this->log_path_is_function) fclose($handle);
 
         // if log file could not be created/opened
         } else
