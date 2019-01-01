@@ -1,4 +1,4 @@
-## version 2.9.12 (January 01 2019)
+## version 2.9.12 (TBA)
 
 - `insert_bulk` method now supports INSERT IGNORE and INSERT...ON DUPLICATE KEY UPDATE; this fixes [#42](https://github.com/stefangabos/Zebra_Database/issues/42) and deprecates the `insert_update` method
 - fixed [#47](https://github.com/stefangabos/Zebra_Database/issues/47) where setting `log_path` property to a full path to a file with extension would not change the log file's name, as stated in the documentation
