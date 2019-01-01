@@ -1,3 +1,13 @@
+## version 2.9.12 (January 01 2019)
+
+- `insert_bulk` method now supports INSERT IGNORE and INSERT...ON DUPLICATE KEY UPDATE; this fixes [#42](https://github.com/stefangabos/Zebra_Database/issues/42) and deprecates the `insert_update` method
+- fixed [#37](https://github.com/stefangabos/Zebra_Database/issues/37) where unsuccessful queries were not written to the log file
+- fixed bug when the first argument for `fetch_assoc_all` and `fetch_obj_all` methods was skipped
+- changed output written to the log files which is now less verbose, cleaner and taking up less space
+- dates in log files are now in Y-m-d format instead of Y M d
+- changed how entries are separated in the log file
+- updated minimum required PHP version from 5.2.0 to 5.4.0. This fixes [#44](https://github.com/stefangabos/Zebra_Database/issues/44)
+
 ## version 2.9.11 (June 19 2018)
 
 - fixed issue [#43](https://github.com/stefangabos/Zebra_Database/issues/43) where some strings were incorrectly detected as MySQL functions
