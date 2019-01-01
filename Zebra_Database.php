@@ -2300,6 +2300,8 @@ class Zebra_Database {
     }
 
     /**
+     *  <samp>This method is deprecated since 2.12.0 and will be removed in 3.0. Please use the {@link insert_bulk()} method.</samp>
+     *
      *  When using this method, if a row is inserted that would cause a duplicate value in a UNIQUE index or PRIMARY KEY,
      *  an UPDATE of the old row is performed.
      *
@@ -2396,6 +2398,7 @@ class Zebra_Database {
      *                                  Default is FALSE.
      *
      *  @since  2.1
+     *  @deprecated                     since 2.12.0, will be removed in 3.0
      *
      *  @return boolean                 Returns TRUE on success of FALSE on error.
      */
