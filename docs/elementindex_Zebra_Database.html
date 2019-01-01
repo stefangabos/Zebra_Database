@@ -79,7 +79,7 @@ Package: <strong>Zebra_Database</strong>
 <h3>a</h3>
 <dl>
 <dt>$affected_rows</dt>
-<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$affected_rows">Zebra_Database::$affected_rows</a><span>After an INSERT, UPDATE, REPLACE or DELETE query this property will hold the number of rows that were affected by   its execution.</span></dd>
+<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$affected_rows">Zebra_Database::$affected_rows</a><span>The number of rows affected after running an INSERT, UPDATE, REPLACE or DELETE query.</span></dd>
 </dl>
 </div>
 <a href="elementindex_Zebra_Database.html#top" class="top">top</a>
@@ -95,7 +95,7 @@ Package: <strong>Zebra_Database</strong>
 <dt>close</dt>
 <dd>in file <em>Zebra_Database.php</em>, method <a href="Zebra_Database/Zebra_Database.html#methodclose">Zebra_Database::close()</a><span>Closes the MySQL connection and optionally unsets the connection options previously set with the <a href="Zebra_Database/Zebra_Database.html#methodoption">option()</a>   method.</span></dd>
 <dt>connect</dt>
-<dd>in file <em>Zebra_Database.php</em>, method <a href="Zebra_Database/Zebra_Database.html#methodconnect">Zebra_Database::connect()</a><span>Opens a connection to a MySQL Server and selects a database.</span></dd>
+<dd>in file <em>Zebra_Database.php</em>, method <a href="Zebra_Database/Zebra_Database.html#methodconnect">Zebra_Database::connect()</a><span>Opens a connection to a MySQL Server and optionally selects a database.</span></dd>
 </dl>
 </div>
 <a href="elementindex_Zebra_Database.html#top" class="top">top</a>
@@ -105,7 +105,7 @@ Package: <strong>Zebra_Database</strong>
 <h3>d</h3>
 <dl>
 <dt>$debug</dt>
-<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$debug">Zebra_Database::$debug</a><span>These property can take one of the following values:</span></dd>
+<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$debug">Zebra_Database::$debug</a><span>Turns debugging on or off.</span></dd>
 <dt>$debugger_ip</dt>
 <dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$debugger_ip">Zebra_Database::$debugger_ip</a><span>An array of IP addresses for which to show the debugging console / write to log file, if the <a href="Zebra_Database/Zebra_Database.html#var$debug">debug</a> property   is <strong>not</strong> set to FALSE.</span></dd>
 <dt>$debug_show_backtrace</dt>
@@ -201,11 +201,11 @@ Package: <strong>Zebra_Database</strong>
 <dt>insert</dt>
 <dd>in file <em>Zebra_Database.php</em>, method <a href="Zebra_Database/Zebra_Database.html#methodinsert">Zebra_Database::insert()</a><span>Shorthand for INSERT queries.</span></dd>
 <dt>insert_bulk</dt>
-<dd>in file <em>Zebra_Database.php</em>, method <a href="Zebra_Database/Zebra_Database.html#methodinsert_bulk">Zebra_Database::insert_bulk()</a><span>Shorthand for inserting multiple rows in a single query.</span></dd>
+<dd>in file <em>Zebra_Database.php</em>, method <a href="Zebra_Database/Zebra_Database.html#methodinsert_bulk">Zebra_Database::insert_bulk()</a><span>Shorthand for inserting multiple rows in a single query with additional ON DUPLICATE KEY support.</span></dd>
 <dt>insert_id</dt>
 <dd>in file <em>Zebra_Database.php</em>, method <a href="Zebra_Database/Zebra_Database.html#methodinsert_id">Zebra_Database::insert_id()</a><span>Retrieves the ID generated for an AUTO_INCREMENT column by the previous INSERT query.</span></dd>
 <dt>insert_update</dt>
-<dd>in file <em>Zebra_Database.php</em>, method <a href="Zebra_Database/Zebra_Database.html#methodinsert_update">Zebra_Database::insert_update()</a><span>When using this method, if a row is inserted that would cause a duplicate value in a UNIQUE index or PRIMARY KEY,   an UPDATE of the old row is performed.</span></dd>
+<dd>in file <em>Zebra_Database.php</em>, method <a href="Zebra_Database/Zebra_Database.html#methodinsert_update">Zebra_Database::insert_update()</a><span><div class="highlight">This method is deprecated since 2.12.0 and will be removed in 3.0. Please use the <a href="Zebra_Database/Zebra_Database.html#methodinsert_bulk">insert_bulk()</a> method.</div></span></dd>
 </dl>
 </div>
 <a href="elementindex_Zebra_Database.html#top" class="top">top</a>
@@ -360,7 +360,7 @@ Package: <strong>Zebra_Database</strong>
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Tue, 19 Jun 18</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+Documentation generated on <span>Tue, 01 Jan 19</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 </div>
 </div>
 </body>
