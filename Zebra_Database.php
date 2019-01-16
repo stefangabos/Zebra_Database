@@ -2084,71 +2084,7 @@ class Zebra_Database {
      */
     public function insert($table, $columns, $update = true, $highlight = false) {
 
-        // get string of comma separated column names, enclosed in grave accents
-        $cols = $this->_escape(array_keys($columns));
-
-        $values = '';
-
-        // iterate through the given columns
-        foreach ($columns as $column_name => $value) {
-
-            // separate values by comma
-            $values .= ($values != '' ? ', ' : '');
-
-            // if value is a MySQL function
-            if ($this->_is_mysql_function($value)) {
-
-                // use it as it is
-                $values .= $value;
-
-                // we don't need this value in the replacements array
-                unset($columns[$column_name]);
-
-            // if not a MySQL function, use a marker
-            // that we'll replace with the value from the replacements array
-            } else $values .= '?';
-
-        }
-
-        $sql = '';
-
-        // if $update is an array and is not empty
-        if (is_array($update) && !empty($update))
-
-            // prepare the ON DUPLICATE KEY statement
-            $sql .= 'ON DUPLICATE KEY UPDATE' . "\n" .
-
-            // add required values
-            implode(', ', array_map(function($column, $value) {
-
-                // if $update is not an associative array it means the columns are also the values
-                if (is_numeric($column) && is_int($column))
-
-                    // and return column = VALUES(column)
-                    return '`' . $value . '` = VALUES(`' . $this->escape($value) . '`)';
-
-                // if $update is an associative array
-                else
-
-                    // it means we have probably given a static value
-                    return '`' . $column . '` = ' . ($this->_is_mysql_function($value) ? $value : '"' . $this->escape($value) . '"');
-
-            }, array_keys($update), array_values($update)));
-
-        // run the query
-        $this->query('
-
-            INSERT' . ($update === false ? ' IGNORE' : '') . ' INTO
-                ' . $this->_escape($table) . '
-                (' . $cols . ')
-            VALUES
-                (' . $values . ')' .
-            $sql . '
-
-        ', array_values($columns), false, false, $highlight);
-
-        // return TRUE if query was successful, or FALSE if it wasn't
-        return isset($this->last_result) && $this->last_result !== false;
+        return $this->insert_bulk($table, array_keys($columns), array(array_values($columns)), $update, $highlight);
 
     }
 
