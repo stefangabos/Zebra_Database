@@ -1940,6 +1940,9 @@ class Zebra_Database {
     /**
      *  Shorthand for INSERT queries with additional IGNORE / ON DUPLICATE KEY support.
      *
+     *  <samp>This method inserts a single row of data. For inserting multiple rows of data see the {@link insert_bulk()}
+     *  method</samp>
+     *
      *  When using this method column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
      *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
      *
