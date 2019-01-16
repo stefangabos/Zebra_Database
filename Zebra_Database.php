@@ -1938,20 +1938,71 @@ class Zebra_Database {
     }
 
     /**
-     *  Shorthand for INSERT queries.
+     *  Shorthand for INSERT queries with additional IGNORE / ON DUPLICATE KEY support.
      *
      *  When using this method column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
      *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
      *
      *  <code>
-     *  // notice that we're also using MySQL functions within values
+     *  // simple insert
      *  $db->insert(
      *      'table',
      *      array(
-     *          'column1'       =>  'value1',
-     *          'column2'       =>  'TRIM(UCASE("value2"))',
-     *          'date_updated'  =>  'NOW()',
-     *  ));
+     *          'a' => 1,
+     *          'b' => 2,
+     *          'c' => 3,
+     *      )
+     *  );
+     *
+     *  //  would result in
+     *  //  INSERT INTO
+     *  //      table (`a`, `b`, `c`)
+     *  //  VALUES
+     *  //      ("1", "2", "3")
+     *
+     *  // ==================================================
+     *
+     *  // ignore inserts if it would create duplicate keys
+     *  $db->insert(
+     *      'table',
+     *      array(
+     *          'a' => 1,
+     *          'b' => 2,
+     *          'c' => 3,
+     *      ),
+     *      false
+     *  );
+     *
+     *  //  would result in
+     *  //  INSERT IGNORE INTO
+     *  //      table (`a`, `b`, `c`)
+     *  //  VALUES
+     *  //      ("1", "2", "3")
+     *
+     *  // ==================================================
+     *
+     *  // update values on duplicate keys
+     *  // (let's assume `a` is the key)
+     *  $db->insert(
+     *      'table',
+     *      array(
+     *          'a' => 1,
+     *          'b' => 2,
+     *          'c' => 3,
+     *      ),
+     *      array('b', 'c')
+     *  );
+     *
+     *  //  would result in
+     *  //  INSERT INTO
+     *  //      table (`a`, `b`, `c`)
+     *  //  VALUES
+     *  //      ("1", "2", "3"),
+     *  //  ON DUPLICATE KEY UPDATE
+     *  //      `b` = VALUES(`b`),
+     *  //      `c` = VALUES(`c`)
+     *
+     *  // ==================================================
      *
      *  // when using MySQL functions, the value will be used as it is without being escaped!
      *  // while this is ok when using a function without any arguments like NOW(), this may
@@ -1987,13 +2038,37 @@ class Zebra_Database {
      *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
      *                                  In this case make sure you {@link escape} the values yourself!</samp>
      *
-     *  @param  boolean $ignore         (Optional) By default trying to insert a record that would cause a duplicate
-     *                                  entry for a primary key would result in an error. If you want these errors to be
-     *                                  skipped set this argument to TRUE.
+     *  @param  mixed $update           (Optional) By default, calling this method with this argument set to boolean TRUE
+     *                                  or to an empty array will result in a simple insert which will fail in case of
+     *                                  duplicate keys.
      *
-     *                                  For more information see {@link http://dev.mysql.com/doc/refman/5.5/en/insert.html MySQL's INSERT IGNORE syntax}.
+     *                                  Setting this argument to boolean FALSE will create an INSERT IGNORE query where
+     *                                  when trying to insert a record that would cause a duplicate entry for a key,
+     *                                  would skip the row instead of creating an error.
      *
-     *                                  Default is FALSE.
+     *                                  Setting this argument to an array of column names will create a query where, on
+     *                                  duplicate key, these given columns will be updated with their respective values
+     *                                  from the <i>$values</i> argument.
+     *
+     *                                  Alternatively, this argument can also be an associative array where the array's
+     *                                  keys represent column names and the array's values represent the values to update
+     *                                  the columns' values to if the inserted row would cause a duplicate key.
+     *
+     *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
+     *                                  usage of reserved words as column names) and values will be automatically
+     *                                  {@link escape()}d.
+     *
+     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
+     *                                  as <i>values</i>.
+     *
+     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
+     *                                  without being escaped! While this is ok when using a function without any arguments
+     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
+     *                                  In this case make sure you {@link escape} the values yourself!</samp>
+     *
+     *                                  For more information see {@link https://dev.mysql.com/doc/refman/5.5/en/insert-on-duplicate.html MySQL's INSERT ... ON DUPLICATE KEY syntax}.
+     *
+     *                                  Default is TRUE.
      *
      *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
      *                                  and the query will be shown - really useful for quick and easy debugging.
@@ -2004,7 +2079,7 @@ class Zebra_Database {
      *
      *  @return boolean                 Returns TRUE on success of FALSE on error.
      */
-    public function insert($table, $columns, $ignore = false, $highlight = false) {
+    public function insert($table, $columns, $update = true, $highlight = false) {
 
         // get string of comma separated column names, enclosed in grave accents
         $cols = $this->_escape(array_keys($columns));
@@ -2032,14 +2107,40 @@ class Zebra_Database {
 
         }
 
+        $sql = '';
+
+        // if $update is an array and is not empty
+        if (is_array($update) && !empty($update))
+
+            // prepare the ON DUPLICATE KEY statement
+            $sql .= 'ON DUPLICATE KEY UPDATE' . "\n" .
+
+            // add required values
+            implode(', ', array_map(function($column, $value) {
+
+                // if $update is not an associative array it means the columns are also the values
+                if (is_numeric($column) && is_int($column))
+
+                    // and return column = VALUES(column)
+                    return '`' . $value . '` = VALUES(`' . $this->escape($value) . '`)';
+
+                // if $update is an associative array
+                else
+
+                    // it means we have probably given a static value
+                    return '`' . $column . '` = ' . ($this->_is_mysql_function($value) ? $value : '"' . $this->escape($value) . '"');
+
+            }, array_keys($update), array_values($update)));
+
         // run the query
         $this->query('
 
-            INSERT' . ($ignore ? ' IGNORE' : '') . ' INTO
+            INSERT' . ($update === false ? ' IGNORE' : '') . ' INTO
                 ' . $this->_escape($table) . '
                 (' . $cols . ')
             VALUES
-                (' . $values . ')
+                (' . $values . ')' .
+            $sql . '
 
         ', array_values($columns), false, false, $highlight);
 
