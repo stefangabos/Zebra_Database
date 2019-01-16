@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>A compact, lightweight and feature-rich PHP MySQLi database wrapper - Class Zebra_Database</title>
+<title>A compact, lightweight and feature-rich PHP MySQLi database wrapper - Class: Zebra_Database</title>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="../media/reset.css">
 <link rel="stylesheet" type="text/css" href="../media/style.css">
@@ -655,7 +655,7 @@ __construct (
 <div class="clear"></div>
 </div>
 <a name="method__destruct"></a>
-<h4 class="method"><span><em>destructor</em></span> __destruct() <span class="smalllinenumber">[line 5055]</span></h4>
+<h4 class="method"><span><em>destructor</em></span> __destruct() <span class="smalllinenumber">[line 5164]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -1886,7 +1886,7 @@ arrays directly in the replacement array became possible in version 2.8.6</em></
 <div class="clear"></div>
 </div>
 <a name="methodinsert"></a>
-<h4 class="method"><span><em>method</em></span> insert() <span class="smalllinenumber">[line 2007]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert() <span class="smalllinenumber">[line 2082]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -1898,9 +1898,9 @@ array
 $columns
 , 
 [
-boolean
-$ignore
-= false]
+mixed
+$update
+= true]
 , 
 [
 boolean
@@ -1908,15 +1908,66 @@ $highlight
 = false]
 )
 </p>
-<p>Shorthand for INSERT queries.</p>
-<p>When using this method column names will be enclosed in grave accents &quot; ` &quot; (thus, allowing seamless usage of   reserved words as column names) and values will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape()</a>d in order to prevent SQL injections.</p><p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;notice&nbsp;that&nbsp;we're&nbsp;also&nbsp;using&nbsp;MySQL&nbsp;functions&nbsp;within&nbsp;values</span></div></li>
+<p>Shorthand for INSERT queries with additional IGNORE / ON DUPLICATE KEY support.</p>
+<p>When using this method column names will be enclosed in grave accents &quot; ` &quot; (thus, allowing seamless usage of   reserved words as column names) and values will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape()</a>d in order to prevent SQL injections.</p><p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;simple&nbsp;insert</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodinsert">insert</a><span class="src-sym">(</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column1'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'value1'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column2'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'TRIM(UCASE(&quot;value2&quot;))'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'date_updated'&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'NOW()'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line"><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'a'&nbsp;</span>=&gt;&nbsp;<span class="src-num">1</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'b'&nbsp;</span>=&gt;&nbsp;<span class="src-num">2</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'c'&nbsp;</span>=&gt;&nbsp;<span class="src-num">3</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">)</span></div></li>
+<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;would&nbsp;result&nbsp;in</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;INSERT&nbsp;INTO</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;table&nbsp;(`a`,&nbsp;`b`,&nbsp;`c`)</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;VALUES</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;1&quot;,&nbsp;&quot;2&quot;,&nbsp;&quot;3&quot;)</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;==================================================</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;ignore&nbsp;inserts&nbsp;if&nbsp;it&nbsp;would&nbsp;create&nbsp;duplicate&nbsp;keys</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodinsert">insert</a><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'a'&nbsp;</span>=&gt;&nbsp;<span class="src-num">1</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'b'&nbsp;</span>=&gt;&nbsp;<span class="src-num">2</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'c'&nbsp;</span>=&gt;&nbsp;<span class="src-num">3</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">)</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id">false</span></div></li>
+<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;would&nbsp;result&nbsp;in</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;INSERT&nbsp;IGNORE&nbsp;INTO</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;table&nbsp;(`a`,&nbsp;`b`,&nbsp;`c`)</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;VALUES</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;1&quot;,&nbsp;&quot;2&quot;,&nbsp;&quot;3&quot;)</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;==================================================</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;update&nbsp;values&nbsp;on&nbsp;duplicate&nbsp;keys</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;(let's&nbsp;assume&nbsp;`a`&nbsp;is&nbsp;the&nbsp;key)</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodinsert">insert</a><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'a'&nbsp;</span>=&gt;&nbsp;<span class="src-num">1</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'b'&nbsp;</span>=&gt;&nbsp;<span class="src-num">2</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'c'&nbsp;</span>=&gt;&nbsp;<span class="src-num">3</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">)</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'b'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'c'</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;would&nbsp;result&nbsp;in</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;INSERT&nbsp;INTO</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;table&nbsp;(`a`,&nbsp;`b`,&nbsp;`c`)</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;VALUES</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;1&quot;,&nbsp;&quot;2&quot;,&nbsp;&quot;3&quot;),</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;ON&nbsp;DUPLICATE&nbsp;KEY&nbsp;UPDATE</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`b`&nbsp;=&nbsp;VALUES(`b`),</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`c`&nbsp;=&nbsp;VALUES(`c`)</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;==================================================</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;using&nbsp;MySQL&nbsp;functions,&nbsp;the&nbsp;value&nbsp;will&nbsp;be&nbsp;used&nbsp;as&nbsp;it&nbsp;is&nbsp;without&nbsp;being&nbsp;escaped!</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;while&nbsp;this&nbsp;is&nbsp;ok&nbsp;when&nbsp;using&nbsp;a&nbsp;function&nbsp;without&nbsp;any&nbsp;arguments&nbsp;like&nbsp;NOW(),&nbsp;this&nbsp;may</span></div></li>
@@ -1963,9 +2014,12 @@ like NOW(), this may pose a security concern if the argument(s) come from user i
 In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values yourself!</div></p></td>
 </tr>
 <tr>
-<td valign="top"><em>boolean</em></td>
-<td valign="top"><strong>$ignore</strong></td>
-<td valign="top"><p>(Optional) By default trying to insert a record that would cause a duplicate                                   entry for a primary key would result in an error. If you want these errors to be                                   skipped set this argument to TRUE.</p><p>For more information see <a href="http://dev.mysql.com/doc/refman/5.5/en/insert.html">MySQL's INSERT IGNORE syntax</a>.</p><p>Default is FALSE.</p></td>
+<td valign="top"><em>mixed</em></td>
+<td valign="top"><strong>$update</strong></td>
+<td valign="top"><p>(Optional) By default, calling this method with this argument set to boolean TRUE                                   or to an empty array will result in a simple insert which will fail in case of                                   duplicate keys.</p><p>Setting this argument to boolean FALSE will create an INSERT IGNORE query where                                   when trying to insert a record that would cause a duplicate entry for a key,                                   would skip the row instead of creating an error.</p><p>Setting this argument to an array of column names will create a query where, on                                   duplicate key, these given columns will be updated with their respective values                                   from the <em>$values</em> argument.</p><p>Alternatively, this argument can also be an associative array where the array's                                   keys represent column names and the array's values represent the values to update                                   the columns' values to if the inserted row would cause a duplicate key.</p><p>Column names will be enclosed in grave accents &quot; ` &quot; (thus, allowing seamless                                   usage of reserved words as column names) and values will be automatically                                   <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape()</a>d.</p><p>You may also use any of <a href="http://www.techonthenet.com/mysql/functions/">MySQL's functions</a>                                   as <em>values</em>.</p><p><div class="highlight">Be aware that when using MySQL functions, the value will be used as it is
+without being escaped! While this is ok when using a function without any arguments
+like NOW(), this may pose a security concern if the argument(s) come from user input.
+In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values yourself!</div></p><p>For more information see <a href="https://dev.mysql.com/doc/refman/5.5/en/insert-on-duplicate.html">MySQL's INSERT ... ON DUPLICATE KEY syntax</a>.</p><p>Default is TRUE.</p></td>
 </tr>
 <tr>
 <td valign="top"><em>boolean</em></td>
@@ -1977,7 +2031,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodinsert_bulk"></a>
-<h4 class="method"><span><em>method</em></span> insert_bulk() <span class="smalllinenumber">[line 2226]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert_bulk() <span class="smalllinenumber">[line 2335]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2002,7 +2056,7 @@ $highlight
 = false]
 )
 </p>
-<p>Shorthand for inserting multiple rows in a single query with additional ON DUPLICATE KEY support.</p>
+<p>Shorthand for inserting multiple rows in a single query with additional IGNORE / ON DUPLICATE KEY support.</p>
 <p>When using this method column names will be enclosed in grave accents &quot; ` &quot; (thus, allowing seamless usage of   reserved words as column names) and values will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape()</a>d in order to prevent SQL injections.</p><p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;simple,&nbsp;multi-row&nbsp;insert</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodinsert_bulk">insert_bulk</a><span class="src-sym">(</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
@@ -2021,6 +2075,8 @@ $highlight
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;1&quot;,&nbsp;&quot;2&quot;,&nbsp;&quot;3&quot;),</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;4&quot;,&nbsp;&quot;5&quot;,&nbsp;&quot;6&quot;),</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;7&quot;,&nbsp;&quot;8&quot;,&nbsp;&quot;9&quot;)</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;==================================================</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;ignore&nbsp;inserts&nbsp;if&nbsp;it&nbsp;would&nbsp;create&nbsp;duplicate&nbsp;keys</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodinsert_bulk">insert_bulk</a><span class="src-sym">(</span></div></li>
@@ -2042,6 +2098,8 @@ $highlight
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;4&quot;,&nbsp;&quot;5&quot;,&nbsp;&quot;6&quot;),</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;7&quot;,&nbsp;&quot;8&quot;,&nbsp;&quot;9&quot;)</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;==================================================</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;update&nbsp;values&nbsp;on&nbsp;duplicate&nbsp;keys</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;(let's&nbsp;assume&nbsp;`a`&nbsp;is&nbsp;the&nbsp;key)</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodinsert_bulk">insert_bulk</a><span class="src-sym">(</span></div></li>
@@ -2056,7 +2114,7 @@ $highlight
 <li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;would&nbsp;result&nbsp;in</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;INSERT&nbsp;IGNORE&nbsp;INTO</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;INSERT&nbsp;INTO</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;table&nbsp;(`a`,&nbsp;`b`,&nbsp;`c`)</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;VALUES</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;1&quot;,&nbsp;&quot;2&quot;,&nbsp;&quot;3&quot;),</span></div></li>
@@ -2065,6 +2123,8 @@ $highlight
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;ON&nbsp;DUPLICATE&nbsp;KEY&nbsp;UPDATE</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`b`&nbsp;=&nbsp;VALUES(`b`),</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`c`&nbsp;=&nbsp;VALUES(`c`)</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;==================================================</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;update&nbsp;values&nbsp;on&nbsp;duplicate&nbsp;keys,&nbsp;but&nbsp;this&nbsp;time&nbsp;use&nbsp;static&nbsp;values</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;(let's&nbsp;assume&nbsp;`a`&nbsp;is&nbsp;the&nbsp;key)</span></div></li>
@@ -2080,7 +2140,7 @@ $highlight
 <li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;would&nbsp;result&nbsp;in</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;INSERT&nbsp;IGNORE&nbsp;INTO</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;INSERT&nbsp;INTO</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;table&nbsp;(`a`,&nbsp;`b`,&nbsp;`c`)</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;VALUES</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&quot;1&quot;,&nbsp;&quot;2&quot;,&nbsp;&quot;3&quot;),</span></div></li>
@@ -2089,6 +2149,8 @@ $highlight
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;ON&nbsp;DUPLICATE&nbsp;KEY&nbsp;UPDATE</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`b`&nbsp;=&nbsp;&quot;foo&quot;,</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`c`&nbsp;=&nbsp;&quot;bar&quot;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;==================================================</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;using&nbsp;MySQL&nbsp;functions,&nbsp;the&nbsp;value&nbsp;will&nbsp;be&nbsp;used&nbsp;as&nbsp;it&nbsp;is&nbsp;without&nbsp;being&nbsp;escaped!</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;while&nbsp;this&nbsp;is&nbsp;ok&nbsp;when&nbsp;using&nbsp;a&nbsp;function&nbsp;without&nbsp;any&nbsp;arguments&nbsp;like&nbsp;NOW(),&nbsp;this&nbsp;may</span></div></li>
@@ -2143,7 +2205,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <tr>
 <td valign="top"><em>mixed</em></td>
 <td valign="top"><strong>$update</strong></td>
-<td valign="top"><p>(Optional) By default, calling this method with this argument set to boolean TRUE                                   or to an empty array will result in a simple multi-row insert which will fail in                                   case of duplicate keys.</p><p>Setting this argument to boolean FALSE will create an INSERT IGNORE query where when                                   trying to insert a record that would cause a duplicate entry for a key, would skip                                   the row instead of creating an error.</p><p>Setting this argument to an of column names will create a query where, on duplicate                                   key, these given column will be updated with the respective values from the <em>$values</em>                                   argument.</p><p>Alternatively, this argument can also be an associative array where the array's keys                                   represent column names and the array's values represent the values to update                                   the columns' values to if the inserted row would cause a duplicate key.</p><p>Column names will be enclosed in grave accents &quot; ` &quot; (thus, allowing seamless                                   usage of reserved words as column names) and values will be automatically                                   <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape()</a>d.</p><p>You may also use any of <a href="http://www.techonthenet.com/mysql/functions/">MySQL's functions</a>                                   as <em>values</em>.</p><p><div class="highlight">Be aware that when using MySQL functions, the value will be used as it is
+<td valign="top"><p>(Optional) By default, calling this method with this argument set to boolean TRUE                                   or to an empty array will result in a simple multi-row insert which will fail in                                   case of duplicate keys.</p><p>Setting this argument to boolean FALSE will create an INSERT IGNORE query where                                   when trying to insert a record that would cause a duplicate entry for a key,                                   would skip the row instead of creating an error.</p><p>Setting this argument to an array of column names will create a query where, on                                   duplicate key, these given columns will be updated with their respective values                                   from the <em>$values</em> argument.</p><p>Alternatively, this argument can also be an associative array where the array's                                   keys represent column names and the array's values represent the values to update                                   the columns' values to if the inserted row would cause a duplicate key.</p><p>Column names will be enclosed in grave accents &quot; ` &quot; (thus, allowing seamless                                   usage of reserved words as column names) and values will be automatically                                   <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape()</a>d.</p><p>You may also use any of <a href="http://www.techonthenet.com/mysql/functions/">MySQL's functions</a>                                   as <em>values</em>.</p><p><div class="highlight">Be aware that when using MySQL functions, the value will be used as it is
 without being escaped! While this is ok when using a function without any arguments
 like NOW(), this may pose a security concern if the argument(s) come from user input.
 In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values yourself!</div></p><p>For more information see <a href="https://dev.mysql.com/doc/refman/5.5/en/insert-on-duplicate.html">MySQL's INSERT ... ON DUPLICATE KEY syntax</a>.</p><p>Default is TRUE.</p></td>
@@ -2158,7 +2220,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodinsert_id"></a>
-<h4 class="method"><span><em>method</em></span> insert_id() <span class="smalllinenumber">[line 2291]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert_id() <span class="smalllinenumber">[line 2400]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2185,7 +2247,7 @@ insert_id (
 <div class="clear"></div>
 </div>
 <a name="methodinsert_update"></a>
-<h4 class="method"><span><em>method</em></span> insert_update() <span class="smalllinenumber">[line 2412]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert_update() <span class="smalllinenumber">[line 2521]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2294,7 +2356,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodlanguage"></a>
-<h4 class="method"><span><em>method</em></span> language() <span class="smalllinenumber">[line 2493]</span></h4>
+<h4 class="method"><span><em>method</em></span> language() <span class="smalllinenumber">[line 2602]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2330,7 +2392,7 @@ $language
 <div class="clear"></div>
 </div>
 <a name="methodoptimize"></a>
-<h4 class="method"><span><em>method</em></span> optimize() <span class="smalllinenumber">[line 2525]</span></h4>
+<h4 class="method"><span><em>method</em></span> optimize() <span class="smalllinenumber">[line 2634]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2370,7 +2432,7 @@ calling this method.</em></p><p>% may be used as a wildcard in table's name to o
 <div class="clear"></div>
 </div>
 <a name="methodoption"></a>
-<h4 class="method"><span><em>method</em></span> option() <span class="smalllinenumber">[line 2579]</span></h4>
+<h4 class="method"><span><em>method</em></span> option() <span class="smalllinenumber">[line 2688]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2431,7 +2493,7 @@ the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> 
 <div class="clear"></div>
 </div>
 <a name="methodparse_file"></a>
-<h4 class="method"><span><em>method</em></span> parse_file() <span class="smalllinenumber">[line 2623]</span></h4>
+<h4 class="method"><span><em>method</em></span> parse_file() <span class="smalllinenumber">[line 2732]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2471,7 +2533,7 @@ try the following:</em></p><p><ol class="code"><li><div class="src-line"><span c
 <div class="clear"></div>
 </div>
 <a name="methodquery"></a>
-<h4 class="method"><span><em>method</em></span> query() <span class="smalllinenumber">[line 2759]</span></h4>
+<h4 class="method"><span><em>method</em></span> query() <span class="smalllinenumber">[line 2868]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2572,7 +2634,7 @@ be 0!</em></p><p>Default is FALSE.</p></td>
 <div class="clear"></div>
 </div>
 <a name="methodquery_unbuffered"></a>
-<h4 class="method"><span><em>method</em></span> query_unbuffered() <span class="smalllinenumber">[line 3319]</span></h4>
+<h4 class="method"><span><em>method</em></span> query_unbuffered() <span class="smalllinenumber">[line 3428]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2597,7 +2659,7 @@ sync&quot; error unless you call the <a href="../Zebra_Database/Zebra_Database.h
 <div class="clear"></div>
 </div>
 <a name="methodseek"></a>
-<h4 class="method"><span><em>method</em></span> seek() <span class="smalllinenumber">[line 3351]</span></h4>
+<h4 class="method"><span><em>method</em></span> seek() <span class="smalllinenumber">[line 3460]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2645,7 +2707,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodselect"></a>
-<h4 class="method"><span><em>method</em></span> select() <span class="smalllinenumber">[line 3547]</span></h4>
+<h4 class="method"><span><em>method</em></span> select() <span class="smalllinenumber">[line 3656]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2795,7 +2857,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methodselect_database"></a>
-<h4 class="method"><span><em>method</em></span> select_database() <span class="smalllinenumber">[line 3590]</span></h4>
+<h4 class="method"><span><em>method</em></span> select_database() <span class="smalllinenumber">[line 3699]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2835,7 +2897,7 @@ $database
 <div class="clear"></div>
 </div>
 <a name="methodset_charset"></a>
-<h4 class="method"><span><em>method</em></span> set_charset() <span class="smalllinenumber">[line 3629]</span></h4>
+<h4 class="method"><span><em>method</em></span> set_charset() <span class="smalllinenumber">[line 3738]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2881,7 +2943,7 @@ $collation
 <div class="clear"></div>
 </div>
 <a name="methodtable_exists"></a>
-<h4 class="method"><span><em>method</em></span> table_exists() <span class="smalllinenumber">[line 3781]</span></h4>
+<h4 class="method"><span><em>method</em></span> table_exists() <span class="smalllinenumber">[line 3890]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2923,7 +2985,7 @@ calling this method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodtransaction_complete"></a>
-<h4 class="method"><span><em>method</em></span> transaction_complete() <span class="smalllinenumber">[line 3659]</span></h4>
+<h4 class="method"><span><em>method</em></span> transaction_complete() <span class="smalllinenumber">[line 3768]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2959,7 +3021,7 @@ transaction_complete (
 <div class="clear"></div>
 </div>
 <a name="methodtransaction_start"></a>
-<h4 class="method"><span><em>method</em></span> transaction_start() <span class="smalllinenumber">[line 3735]</span></h4>
+<h4 class="method"><span><em>method</em></span> transaction_start() <span class="smalllinenumber">[line 3844]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3007,7 +3069,7 @@ $test_only
 <div class="clear"></div>
 </div>
 <a name="methodtruncate"></a>
-<h4 class="method"><span><em>method</em></span> truncate() <span class="smalllinenumber">[line 3817]</span></h4>
+<h4 class="method"><span><em>method</em></span> truncate() <span class="smalllinenumber">[line 3926]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3060,7 +3122,7 @@ calling this method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodupdate"></a>
-<h4 class="method"><span><em>method</em></span> update() <span class="smalllinenumber">[line 3937]</span></h4>
+<h4 class="method"><span><em>method</em></span> update() <span class="smalllinenumber">[line 4046]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3184,7 +3246,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Tue, 01 Jan 19</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+Documentation generated on <span>Wed, 16 Jan 19</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 </div>
 </div>
 </body>
