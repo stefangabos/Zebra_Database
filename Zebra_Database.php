@@ -2075,6 +2075,8 @@ class Zebra_Database {
      *  //      ("4", "5", "6"),
      *  //      ("7", "8", "9")
      *
+     *  // ==================================================
+     *
      *  // ignore inserts if it would create duplicate keys
      *  $db->insert_bulk(
      *      'table',
@@ -2094,6 +2096,8 @@ class Zebra_Database {
      *  //      ("1", "2", "3"),
      *  //      ("4", "5", "6"),
      *  //      ("7", "8", "9")
+     *
+     *  // ==================================================
      *
      *  // update values on duplicate keys
      *  // (let's assume `a` is the key)
@@ -2119,6 +2123,8 @@ class Zebra_Database {
      *  //      `b` = VALUES(`b`),
      *  //      `c` = VALUES(`c`)
      *
+     *  // ==================================================
+     *
      *  // update values on duplicate keys, but this time use static values
      *  // (let's assume `a` is the key)
      *  $db->insert_bulk(
@@ -2142,6 +2148,8 @@ class Zebra_Database {
      *  //  ON DUPLICATE KEY UPDATE
      *  //      `b` = "foo",
      *  //      `c` = "bar"
+     *
+     *  // ==================================================
      *
      *  // when using MySQL functions, the value will be used as it is without being escaped!
      *  // while this is ok when using a function without any arguments like NOW(), this may
