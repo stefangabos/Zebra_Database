@@ -1,6 +1,7 @@
-## version 2.9.12 (TBA)
+## version 2.9.12 (January 16 2019)
 
-- `insert_bulk` method now supports INSERT IGNORE and INSERT...ON DUPLICATE KEY UPDATE; this fixes [#42](https://github.com/stefangabos/Zebra_Database/issues/42) and deprecates the `insert_update` method
+- the [insert_bulk](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodinsert_bulk) method now supports INSERT IGNORE and INSERT...ON DUPLICATE KEY UPDATE; this fixes [#42](https://github.com/stefangabos/Zebra_Database/issues/42) and deprecates the `insert_update` method
+- the [insert](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodinsert) method now also supports INSERT...ON DUPLICATE KEY UPDATE - this slightly changes the functionality of the method's 3rd agument but stays compatible with previous versions of the library
 - fixed [#47](https://github.com/stefangabos/Zebra_Database/issues/47) where setting `log_path` property to a full path to a file with extension would not change the log file's name, as stated in the documentation
 - fixed [#37](https://github.com/stefangabos/Zebra_Database/issues/37) where unsuccessful queries were not written to the log file
 - fixed bug when the first argument for `fetch_assoc_all` and `fetch_obj_all` methods was skipped
