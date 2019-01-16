@@ -2049,7 +2049,7 @@ class Zebra_Database {
     }
 
     /**
-     *  Shorthand for inserting multiple rows in a single query with additional ON DUPLICATE KEY support.
+     *  Shorthand for inserting multiple rows in a single query with additional IGNORE / ON DUPLICATE KEY support.
      *
      *  When using this method column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
      *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
