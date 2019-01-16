@@ -2109,7 +2109,7 @@ class Zebra_Database {
      *  );
      *
      *  //  would result in
-     *  //  INSERT IGNORE INTO
+     *  //  INSERT INTO
      *  //      table (`a`, `b`, `c`)
      *  //  VALUES
      *  //      ("1", "2", "3"),
@@ -2133,7 +2133,7 @@ class Zebra_Database {
      *  );
      *
      *  //  would result in
-     *  //  INSERT IGNORE INTO
+     *  //  INSERT INTO
      *  //      table (`a`, `b`, `c`)
      *  //  VALUES
      *  //      ("1", "2", "3"),
@@ -2186,16 +2186,16 @@ class Zebra_Database {
      *                                  or to an empty array will result in a simple multi-row insert which will fail in
      *                                  case of duplicate keys.
      *
-     *                                  Setting this argument to boolean FALSE will create an INSERT IGNORE query where when
-     *                                  trying to insert a record that would cause a duplicate entry for a key, would skip
-     *                                  the row instead of creating an error.
+     *                                  Setting this argument to boolean FALSE will create an INSERT IGNORE query where
+     *                                  when trying to insert a record that would cause a duplicate entry for a key,
+     *                                  would skip the row instead of creating an error.
      *
-     *                                  Setting this argument to an of column names will create a query where, on duplicate
-     *                                  key, these given column will be updated with the respective values from the <i>$values</i>
-     *                                  argument.
+     *                                  Setting this argument to an array of column names will create a query where, on
+     *                                  duplicate key, these given columns will be updated with their respective values
+     *                                  from the <i>$values</i> argument.
      *
-     *                                  Alternatively, this argument can also be an associative array where the array's keys
-     *                                  represent column names and the array's values represent the values to update
+     *                                  Alternatively, this argument can also be an associative array where the array's
+     *                                  keys represent column names and the array's values represent the values to update
      *                                  the columns' values to if the inserted row would cause a duplicate key.
      *
      *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
@@ -2248,7 +2248,7 @@ class Zebra_Database {
             return '(' . implode(', ', array_map(function($value) { return $this->_is_mysql_function($value) ? $value : '"' . $this->escape($value) . '"'; }, $row)) . ')' . "\n";
         }, $values));
 
-        // if $values is an array and is not empty
+        // if $update is an array and is not empty
         if (is_array($update) && !empty($update))
 
             // prepare the ON DUPLICATE KEY statement
