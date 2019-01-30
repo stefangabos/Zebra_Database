@@ -2366,9 +2366,9 @@ class Zebra_Database {
      *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
      *
      *  <code>
-     *  // presuming article_id is a UNIQUE index or PRIMARY KEY, the statement below will insert a new row for given
-     *  // $article_id and set the "votes" to 0. But, if $article_id is already in the database, increment the votes'
-     *  // numbers.
+     *  // presuming article_id is a UNIQUE index or PRIMARY KEY, the statement below will
+     *  // insert a new row for given $article_id and set the "votes" to 0. But, if $article_id
+     *  // is already in the database, increment the votes' numbers.
      *  // also notice that we're using a MySQL function as a value
      *  $db->insert_update(
      *      'table',
@@ -3949,7 +3949,14 @@ class Zebra_Database {
      *                                  ...is equivalent to
      *
      *                                  <code>
-     *                                  $db->query('UPDATE table SET column = column + ? WHERE criteria = ?', array($value, $criteria));
+     *                                  $db->query('
+     *                                      UPDATE
+     *                                          table
+     *                                      SET
+     *                                          column = column + ?
+     *                                      WHERE
+     *                                          criteria = ?
+     *                                  ', array($value, $criteria));
      *                                  </code>
      *
      *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
