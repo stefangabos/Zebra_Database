@@ -655,7 +655,7 @@ __construct (
 <div class="clear"></div>
 </div>
 <a name="method__destruct"></a>
-<h4 class="method"><span><em>destructor</em></span> __destruct() <span class="smalllinenumber">[line 5103]</span></h4>
+<h4 class="method"><span><em>destructor</em></span> __destruct() <span class="smalllinenumber">[line 5110]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2271,9 +2271,9 @@ $highlight
 )
 </p>
 <p><div class="highlight">This method is deprecated since 2.12.0 and will be removed in 3.0. Please use the <a href="../Zebra_Database/Zebra_Database.html#methodinsert_bulk">insert_bulk()</a> method.</div></p>
-<p>When using this method, if a row is inserted that would cause a duplicate value in a UNIQUE index or PRIMARY KEY,   an UPDATE of the old row is performed.</p><p>Read more <a href="http://dev.mysql.com/doc/refman/5.0/en/insert-on-duplicate.html">here</a>.</p><p>When using this method, column names will be enclosed in grave accents &quot; ` &quot; (thus, allowing seamless usage of   reserved words as column names) and values will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape()</a>d in order to prevent SQL injections.</p><p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;presuming&nbsp;article_id&nbsp;is&nbsp;a&nbsp;UNIQUE&nbsp;index&nbsp;or&nbsp;PRIMARY&nbsp;KEY,&nbsp;the&nbsp;statement&nbsp;below&nbsp;will&nbsp;insert&nbsp;a&nbsp;new&nbsp;row&nbsp;for&nbsp;given</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;$article_id&nbsp;and&nbsp;set&nbsp;the&nbsp;&quot;votes&quot;&nbsp;to&nbsp;0.&nbsp;But,&nbsp;if&nbsp;$article_id&nbsp;is&nbsp;already&nbsp;in&nbsp;the&nbsp;database,&nbsp;increment&nbsp;the&nbsp;votes'</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;numbers.</span></div></li>
+<p>When using this method, if a row is inserted that would cause a duplicate value in a UNIQUE index or PRIMARY KEY,   an UPDATE of the old row is performed.</p><p>Read more <a href="http://dev.mysql.com/doc/refman/5.0/en/insert-on-duplicate.html">here</a>.</p><p>When using this method, column names will be enclosed in grave accents &quot; ` &quot; (thus, allowing seamless usage of   reserved words as column names) and values will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape()</a>d in order to prevent SQL injections.</p><p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;presuming&nbsp;article_id&nbsp;is&nbsp;a&nbsp;UNIQUE&nbsp;index&nbsp;or&nbsp;PRIMARY&nbsp;KEY,&nbsp;the&nbsp;statement&nbsp;below&nbsp;will</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;insert&nbsp;a&nbsp;new&nbsp;row&nbsp;for&nbsp;given&nbsp;$article_id&nbsp;and&nbsp;set&nbsp;the&nbsp;&quot;votes&quot;&nbsp;to&nbsp;0.&nbsp;But,&nbsp;if&nbsp;$article_id</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;is&nbsp;already&nbsp;in&nbsp;the&nbsp;database,&nbsp;increment&nbsp;the&nbsp;votes'&nbsp;numbers.</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;also&nbsp;notice&nbsp;that&nbsp;we're&nbsp;using&nbsp;a&nbsp;MySQL&nbsp;function&nbsp;as&nbsp;a&nbsp;value</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodinsert_update">insert_update</a><span class="src-sym">(</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
@@ -3123,7 +3123,7 @@ calling this method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodupdate"></a>
-<h4 class="method"><span><em>method</em></span> update() <span class="smalllinenumber">[line 3985]</span></h4>
+<h4 class="method"><span><em>method</em></span> update() <span class="smalllinenumber">[line 3992]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3216,7 +3216,14 @@ calling this method.</em></p></td>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$criteria</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">)</span></div></li>
 <li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol><p>...is equivalent to</p><p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'UPDATE&nbsp;table&nbsp;SET&nbsp;column&nbsp;=&nbsp;column&nbsp;+&nbsp;?&nbsp;WHERE&nbsp;criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$value</span><span class="src-sym">,&nbsp;</span><span class="src-var">$criteria</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+</ol><p>...is equivalent to</p><p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;UPDATE</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;table</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;SET</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;column&nbsp;=&nbsp;column&nbsp;+&nbsp;?</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;WHERE</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;criteria&nbsp;=&nbsp;?</span></div></li>
+<li><div class="src-line"><span class="src-str">'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$value</span><span class="src-sym">,&nbsp;</span><span class="src-var">$criteria</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
 </ol><p>You may also use any of <a href="http://www.techonthenet.com/mysql/functions/">MySQL's functions</a>                                   as <em>values</em>.</p><p><div class="highlight">Be aware that when using MySQL functions, the value will be used as it is
 without being escaped! While this is ok when using a function without any arguments
 like NOW(), this may pose a security concern if the argument(s) come from user input.
@@ -3247,7 +3254,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Tue, 29 Jan 19</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+Documentation generated on <span>Wed, 30 Jan 19</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 </div>
 </div>
 <!-- Global site tag (gtag.js) - Google Analytics -->
