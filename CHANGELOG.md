@@ -1,3 +1,8 @@
+## version 2.9.13 (TBA)
+
+- added the `return_error_number` argument to the [error()](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methoderror) method
+- added property [auto_quote_replacements](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$auto_quote_replacements) allowing to disable the library's default behavior of automatically quoting escaped values
+
 ## version 2.9.12 (January 16 2019)
 
 - the [insert_bulk](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodinsert_bulk) method now supports INSERT IGNORE and INSERT...ON DUPLICATE KEY UPDATE; this fixes [#42](https://github.com/stefangabos/Zebra_Database/issues/42) and deprecates the `insert_update` method
