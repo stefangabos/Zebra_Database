@@ -1205,7 +1205,7 @@ class Zebra_Database {
     }
 
     /**
-     *  Returns a string description of the last error, or an empty string if no error occurred.
+     *  Returns the description of the last error, or an empty string if no error occurred.
      *
      *  In most cases you should not need this method as any errors are shown in the debugging console as long as the
      *  {@link debug} property is set to TRUE, or available in PHP's error log file (if your environment is
@@ -1227,9 +1227,31 @@ class Zebra_Database {
      *
      *  @since  2.9.1
      *
-     *  @return void
+     *  @param  boolean $return_error_number    Indicates whether the error number should also be returned.
+     *
+     *                                          If set to TRUE, the method returns an array in the form of
+     *
+     *                                          <code>
+     *                                          Array(
+     *                                              'number'    =>  '1234',
+     *                                              'message'   =>  'The message',
+     *                                          )
+     *                                          </code>
+     *
+     *                                          ...or an empty string if no error occurred.
+     *
+     *                                          Default is FALSE.
      */
-    public function error() {
+    public function error($return_error_number = false) {
+
+        // if we also need to return the error number alongside the error message
+        if ($return_error_number && mysqli_error($this->connection) != '')
+
+            // return as an array
+            return array(
+                'number'    => mysqli_errno($this->connection),
+                'message'   => mysqli_error($this->connection),
+            );
 
         // a string description of the last error, or an empty string if no error occurred
         return mysqli_error($this->connection);
