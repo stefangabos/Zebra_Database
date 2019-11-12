@@ -35,6 +35,17 @@ class Zebra_Database {
     public $affected_rows;
 
     /**
+     *  Should escape variable be also enclosed in single quotes?
+     *
+     *  Default is TRUE.
+     *
+     *  @since  2.9.13
+     *
+     *  @var boolean
+     */
+    public $auto_quote_replacements;
+
+    /**
      *  Path (with trailing slash) where to cache queries results.
      *
      *  <i>The path must be relative to your working path and not the class' path!</i>
@@ -666,7 +677,7 @@ class Zebra_Database {
 
         $this->debug_show_records = 20;
 
-        $this->debug = $this->debug_show_backtrace = $this->debug_show_explain = $this->halt_on_errors = $this->minimize_console = true;
+        $this->debug = $this->debug_show_backtrace = $this->debug_show_explain = $this->halt_on_errors = $this->minimize_console = $this->auto_quote_replacements = true;
 
         $this->language('english');
 
@@ -2885,7 +2896,7 @@ class Zebra_Database {
                 // otherwise, mysqli_real_escape_string the items in replacements
                 // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
                 // it as reference
-                else $replacements2[$key] = '\'' . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->escape($replacement)) . '\'';
+                else $replacements2[$key] = ($this->auto_quote_replacements ? '\'' : '') . preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->escape($replacement)) . ($this->auto_quote_replacements ? '\'' : '');
 
                 // and also, prepare the new pattern to be replaced afterwards
                 $pattern2[$key] = '/' . $randomstr . '/';
