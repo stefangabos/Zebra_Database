@@ -1,5 +1,6 @@
 ## version 2.9.13 (TBA)
 
+- fixed a bug where the library would incorrectly handle MySQL functions in certain scenarios
 - added the `return_error_number` argument to the [error()](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methoderror) method
 - added property [auto_quote_replacements](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$auto_quote_replacements) allowing to disable the library's default behavior of automatically quoting escaped values
 
