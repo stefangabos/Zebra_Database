@@ -2326,7 +2326,7 @@ class Zebra_Database {
 
         // prepare the values
         $sql .= implode(', ', array_map(function($row) {
-            return '(' . implode(', ', array_map(function($value) { return $this->_is_mysql_function($value) ? $value : '"' . $this->escape($value) . '"'; }, $row)) . ')' . "\n";
+            return '(' . implode(', ', array_map(function($value) {return ($this->_is_mysql_function($value) ? $value : (is_null($value) ? 'NULL' : '"' . $this->escape($value) . '"'));}, $row)) . ')' . "\n";
         }, $values));
 
         // if $update is an array and is not empty
