@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.13 (last revision: January 15, 2020)
+ *  @version    2.9.13 (last revision: February 26, 2020)
  *  @copyright  (c) 2006 - 2020 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -4796,17 +4796,22 @@ class Zebra_Database {
         // returns TRUE if
         return (
 
-            // is not an array
-            !is_array($value) &&
+            // treat NULL as a function
+            is_null($value) || (
 
-            // has opening and closing parenthesis
-            strpos($value, '(') !== false && strpos($value, ')') !== false &&
+                // is not an array
+                !is_array($value) &&
 
-            // there is no white spaces from the beginning until the opening parenthesis
-            preg_match('/^([^\s]+?)\(/i', $value, $matches) &&
+                // has opening and closing parenthesis
+                strpos($value, '(') !== false && strpos($value, ')') !== false &&
 
-            // and match is not a MySQL function
-            in_array(strtoupper($matches[1]), $this->mysql_functions)
+                // there is no white spaces from the beginning until the opening parenthesis
+                preg_match('/^([^\s]+?)\(/i', $value, $matches) &&
+
+                // and match is not a MySQL function
+                in_array(strtoupper($matches[1]), $this->mysql_functions)
+
+            )
 
         );
 
