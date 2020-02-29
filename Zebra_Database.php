@@ -699,6 +699,9 @@ class Zebra_Database {
             'memcache'  => true,   // memcache is available but it is not used
         );
 
+        // this is used in the "escape" method
+        $this->use_deprecated = version_compare(PHP_VERSION, '5.4.0', '<');
+
         // don't show debug console for AJAX requests
         if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest')
 
@@ -1311,8 +1314,8 @@ class Zebra_Database {
         // if no active connection exists, return false
         if (!$this->_connected()) return false;
 
-        // if "magic quotes" are on, strip slashes
-        if (get_magic_quotes_gpc()) $string = stripslashes($string);
+        // if we are on PHP < 5.4.0 and "magic quotes" are on, strip slashes
+        if ($this->use_deprecated && get_magic_quotes_gpc()) $string = stripslashes($string);
 
         // escape and return the string
         return mysqli_real_escape_string($this->connection, $string);
