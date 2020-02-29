@@ -1,6 +1,7 @@
 ## version 2.9.13 (TBA)
 
 - fixed a bug where the library would incorrectly handle MySQL functions in certain scenarios
+- fixed [#57](https://github.com/stefangabos/Zebra_Database/issues/57) where in PHP 7.4.0 a warning was shown about `get_magic_quotes_gpc` function being deprecated; thanks [userc479](https://github.com/userc479) for reporting!
 - added the `return_error_number` argument to the [error()](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methoderror) method
 - added property [auto_quote_replacements](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$auto_quote_replacements) allowing to disable the library's default behavior of automatically quoting escaped values
 
