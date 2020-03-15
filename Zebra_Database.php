@@ -2329,7 +2329,7 @@ class Zebra_Database {
 
         // prepare the values
         $sql .= implode(', ', array_map(function($row) {
-            return '(' . implode(', ', array_map(function($value) { return $this->_is_mysql_function($value) ? $value : '"' . $this->escape($value) . '"'; }, $row)) . ')' . "\n";
+            return '(' . implode(', ', array_map(function($value) { return $this->_is_mysql_function($value) ? (is_null($value) ? 'NULL' : $value) : '"' . $this->escape($value) . '"'; }, $row)) . ')' . "\n";
         }, $values));
 
         // if $update is an array and is not empty
@@ -2351,7 +2351,7 @@ class Zebra_Database {
                 else
 
                     // it means we have probably given a static value
-                    return '`' . $column . '` = ' . ($this->_is_mysql_function($value) ? $value : '"' . $this->escape($value) . '"');
+                    return '`' . $column . '` = ' . ($this->_is_mysql_function($value) ? (is_null($value) ? 'NULL' : $value) : '"' . $this->escape($value) . '"');
 
             }, array_keys($update), array_values($update)));
 
@@ -2513,7 +2513,7 @@ class Zebra_Database {
             if ($this->_is_mysql_function($value)) {
 
                 // use it as it is
-                $values .= $value;
+                $values .= (is_null($value) ? 'NULL' : $value);
 
                 // we don't need this value in the replacements array
                 unset($columns[$column_name]);
@@ -4108,7 +4108,7 @@ class Zebra_Database {
             } elseif ($this->_is_mysql_function($value)) {
 
                 // build the string without enclosing this value in quotes
-                $sql .= '`' . $column_name . '` = ' . $value;
+                $sql .= '`' . $column_name . '` = ' . (is_null($value) ? 'NULL' : $value);
 
                 // we don't need this anymore
                 unset($columns[$column_name]);
@@ -4752,7 +4752,7 @@ class Zebra_Database {
                 }
 
                 // return the value as it is otherwise
-                return $value;
+                return (is_null($value) ? 'NULL' : $value);
 
             }, $entry);
 
