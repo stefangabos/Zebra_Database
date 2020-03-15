@@ -4744,7 +4744,7 @@ class Zebra_Database {
                 if ($value !== '*' && !$this->_is_mysql_function($value)) {
 
                     // if alias is used
-                    if (stripos($value, ' as ') !== false) list($value, $alias) = array_map('trim', preg_split('/ as /i', $value));
+                    if (stripos($value, ' AS ') !== false) list($value, $alias) = array_map('trim', preg_split('/ AS /i', $value));
 
                     // enclose value in grave accents
                     return '`' . $value . '`' . (isset($alias) ? ' AS ' . $alias : '');
