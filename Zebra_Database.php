@@ -181,6 +181,32 @@ class Zebra_Database {
     public $debug_show_explain;
 
     /**
+     *  Indicates whether $_POST, $_GET, $_SESSION, $_COOKIE, $_FILES and $_SERVER globals should be available in the
+     *  debugging console, under the "globals" section.
+     *
+     *  Can be set to either boolean TRUE or FALSE, as a global setting, or as an associative array where each option's
+     *  visibility can be individually be set, like in the example below:
+     *
+     *  <code>
+     *  $db->debug_show_globals(array(
+     *      'post'      =>  true,
+     *      'get'       =>  true,
+     *      'session'   =>  true,
+     *      'cookie'    =>  true,
+     *      'files'     =>  true,
+     *      'server'    =>  true,
+     *  ));
+     *  </code>
+     *
+     *  Default is TRUE.
+     *
+     *  @since  2.9.13
+     *
+     *  @var mixed
+     */
+    public $debug_show_globals;
+
+    /**
      *  Sets the number records returned by SELECT queries to be shown in the debugging console.
      *
      *  Setting this to 0 or FALSE will disable this feature.
@@ -677,7 +703,7 @@ class Zebra_Database {
 
         $this->debug_show_records = 20;
 
-        $this->debug = $this->debug_show_backtrace = $this->debug_show_explain = $this->halt_on_errors = $this->minimize_console = $this->auto_quote_replacements = true;
+        $this->debug = $this->debug_show_backtrace = $this->debug_show_explain = $this->debug_show_globals = $this->halt_on_errors = $this->minimize_console = $this->auto_quote_replacements = true;
 
         $this->language('english');
 
@@ -4299,6 +4325,10 @@ class Zebra_Database {
                 ),
             );
 
+            // if we don't have to show globals
+            // (value is boolean FALSE or is an array but all entries are set to FALSE)
+            if ($this->debug_show_globals === false || (is_array($this->debug_show_globals) && empty(array_filter($this->debug_show_globals, function($value) { return $value !== false; })))) unset($blocks['globals']);
+
             // there are no warnings
             $warnings = false;
 
@@ -4552,7 +4582,9 @@ class Zebra_Database {
                 } elseif ($block == 'globals') {
 
                     // globals to show
-                    $globals = array('POST', 'GET', 'SESSION', 'COOKIE', 'FILES', 'SERVER');
+                    $globals =  $this->debug_show_globals === true ?
+                                array('POST', 'GET', 'SESSION', 'COOKIE', 'FILES', 'SERVER') :
+                                array_map('strtoupper', array_keys(array_filter($this->debug_show_globals, function($value) { return $value !== false; })));
 
                     // start building output
                     $output = '
@@ -4658,13 +4690,17 @@ class Zebra_Database {
                     </li>
                 ';
 
-            $output .= '
-                <li>
-                    <a href="javascript:zdc_toggle(\'zdc-globals-submenu\')">' .
-                        $this->language['globals'] . '
-                    </a>
-                </li>
-            ';
+            // if globals are to be shown
+            // (value is boolean TRUE or is an array with at least one entry set to TRUE)
+            if ($this->debug_show_globals === true || (is_array($this->debug_show_globals) && !empty(array_filter($this->debug_show_globals, function($value) { return $value !== false; }))))
+
+                $output .= '
+                    <li>
+                        <a href="javascript:zdc_toggle(\'zdc-globals-submenu\')">' .
+                            $this->language['globals'] . '
+                        </a>
+                    </li>
+                ';
 
             // wrap up debugging console's menu
             $output .= '
