@@ -4539,39 +4539,32 @@ class Zebra_Database {
                             $output .= '
                                 <div id="zdc-' . $table . '-' . $identifier . $counter . '" class="zdc-box zdc-' . $table . '-table">
                                     <table cellspacing="0" cellpadding="0" border="0">
-                                        <tr>
+                                        <thead><tr>
                             ';
 
                             // print table headers
                             foreach (array_keys($debug_info[$table][0]) as $header) $output .= '<th>' . $header . '</th>';
 
-                            $output .= '</tr>';
+                            $output .= '</tr></thead><tbody>';
 
                             // print table rows and columns
-                            foreach ($debug_info[$table] as $index => $row) {
+                            foreach ($debug_info[$table] as $row) {
 
-                                $output .= '<tr class="' . (($index + 1) % 2 == 0 ? 'even' : '') . '">';
+                                $output .= '<tr>';
 
-                                foreach (array_values($row) as $column) $output .= '<td valign="top">' . $column . '</td>';
+                                foreach (array_values($row) as $column) $output .= '<td>' . $column . '</td>';
 
                                 $output .= '</tr>';
 
                             }
 
                             // wrap up data tables
-                            $output .= '
-                                    </table>
-                                </div>
-                            ';
+                            $output .= '</tbody></table></div>';
 
                         }
 
                         // finish block
-                        $output .= '
-                                    </td>
-                                </tr>
-                            </table>
-                        ';
+                        $output .= '</td></tr></table>';
 
                     }
 

@@ -1,4 +1,4 @@
-#zdc { position: absolute; top: 0; left:0; width: 100%; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 12px; text-align: left; z-index: 9998; overflow: hidden }
+#zdc { position: absolute; top: 0; left:0; width: 100%; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 13px; text-align: left; z-index: 9998; overflow: hidden }
 #zdc * { margin: 0; padding: 0; font-family: inherit; font-size: inherit; color: #000 }
 
 /* COMMON */
@@ -6,16 +6,16 @@
 #zdc .zdc-hidden    { display: none }
 #zdc .zdc-visible   { display: block }
 #zdc table          { border-collapse: collapse; }
-#zdc table tr.even  { background: #DEDEDE }
+#zdc table tbody tr:nth-child(even) { background: #DEDEDE }
 #zdc table td,
-#zdc table th       { padding: 4px; border: none }
+#zdc table th       { padding: 4px; border: none; vertical-align: top }
 #zdc table th       { background: #9ca68f; color: #f0f0f0 }
 #zdc .clear         { clear: both }
 
 /* MAIN MENU */
 #zdc .zdc-main              { list-style-type: none; margin: 0; padding: 0; background: #151C24; display: block; float: left; width: 100% }
 #zdc .zdc-main li           { float: left; border-right: 1px solid #9CA68F }
-#zdc .zdc-main li a         { color: #FFF; padding: 10px; display: block; float: left }
+#zdc .zdc-main li a         { color: #FFF; padding: 12px; display: block; float: left }
 #zdc .zdc-main li a:hover   { background: #403D32 }
 #zdc .zdc-main li span      { background: orange; padding: 2px 5px; font-weight: bold; color: #000; margin: 0 4px }
 
@@ -23,7 +23,7 @@
 #zdc-globals-submenu                { border:1px solid #403D32 }
 #zdc-globals-submenu ul             { list-style-type: none; margin: 0; padding: 0; background: #403D32; display: block; float: left; width: 100% }
 #zdc-globals-submenu ul li          { float: left }
-#zdc-globals-submenu ul li a        { display: block; float: left; padding: 10px; color: #FFF }
+#zdc-globals-submenu ul li a        { display: block; float: left; padding: 12px; color: #FFF }
 #zdc-globals-submenu ul li a:hover  { background: #73705D }
 
 /* ENTRIES */
@@ -79,6 +79,6 @@
 { display: none; overflow: auto }
 
 /* MINI CONSOLE */
-#zdc-mini { position: absolute; top: 0; right: 0; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 12px; text-align: left; display: block }
-#zdc-mini a { background: #151C24 url('db.gif') no-repeat 6px 9px; display: block; padding: 10px 10px 10px 30px; color: #FFF; text-decoration: none }
+#zdc-mini { position: absolute; top: 0; right: 0; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 13px; text-align: left; display: block }
+#zdc-mini a { background: #151C24 url('db.gif') no-repeat 10px 12px; display: block; padding: 12px 12px 12px 35px; color: #FFF; text-decoration: none }
 #zdc-mini a span { font-weight: bold; background-color: #c40000; padding: 0 5px 0 5px; margin: 0px 4px 0 4px }
