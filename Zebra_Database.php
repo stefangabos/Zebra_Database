@@ -4447,7 +4447,7 @@ class Zebra_Database {
                             $output .= '
                                 <li class="zdc-time">' .
                                     $this->language['execution_time'] . ': ' .
-                                    $this->_fix_pow($debug_info['execution_time']) . ' ' .
+                                    number_format($debug_info['execution_time'], 5) . ' ' .
                                     $this->language['seconds'] . ' (<strong>' .
                                     number_format(
                                         ($this->total_execution_time != 0 ? $debug_info['execution_time'] * 100 / $this->total_execution_time : 0),
@@ -4668,7 +4668,7 @@ class Zebra_Database {
                 <li>
                     <a href="javascript:zdc_toggle(\'zdc-successful-queries\')">' .
                         $this->language['successful_queries'] . ': <span>' . $blocks['successful-queries']['counter'] . '</span>&nbsp;(' .
-                        $this->_fix_pow($this->total_execution_time) . ' ' . $this->language['seconds'] . ')
+                        number_format($this->total_execution_time, 5) . ' ' . $this->language['seconds'] . ')
                     </a>
                 </li>
                 <li>
@@ -4797,29 +4797,6 @@ class Zebra_Database {
 
         // recompose the string and return it
         return implode(', ', $result);
-
-    }
-
-    /**
-     *  PHP's microtime() will return elapsed time as something like 9.79900360107E-5 when the elapsed time is too short.
-     *
-     *  This function takes care of that and returns the number in the human readable format.
-     *
-     *  @access private
-     */
-    private function _fix_pow($value) {
-
-        // use value as literal
-        $value = (string)$value;
-
-        // if the power is present in the value
-        if (preg_match('/E\-([0-9]+)$/', $value, $matches) > 0)
-
-            // convert to human readable format
-            $value = '0.' . str_repeat('0', $matches[1] - 1) . preg_replace('/\./', '', substr($value, 0, -strlen($matches[0])));
-
-        // return the value
-        return number_format($value, 3);
 
     }
 
@@ -5106,7 +5083,7 @@ class Zebra_Database {
 
                             // if execution time is available
                             // (is not available for unsuccessful queries)
-                            (isset($debug_info['execution_time']) ? $labels[2] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . ': ' . $this->_fix_pow($debug_info['execution_time']) . ' ' . $this->language['seconds'] . "\n" : '') .
+                            (isset($debug_info['execution_time']) ? $labels[2] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . ': ' . number_format($debug_info['execution_time'], 5) . ' ' . $this->language['seconds'] . "\n" : '') .
 
                             // if there is a warning message
                             (isset($debug_info['warning']) && $debug_info['warning'] != '' ? $labels[3] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[3])), ' ', STR_PAD_RIGHT) . ': ' . strip_tags($debug_info['warning']) . "\n" : '') .
