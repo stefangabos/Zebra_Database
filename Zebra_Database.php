@@ -4276,14 +4276,19 @@ class Zebra_Database {
 
             if (is_array($this->debug)) return call_user_func_array(array($this, '_write_log'), $this->debug);
 
-            // include the SqlFormatter library
-            require_once 'includes/SqlFormatter.php';
+            // include the SqlFormatter library, if available
+            @include_once 'includes/SqlFormatter.php';
 
-            // set some properties for the formatter
-            SqlFormatter::$number_attributes = SqlFormatter::$boundary_attributes = 'class="symbol"';
-            SqlFormatter::$quote_attributes = 'class="string"';
-            SqlFormatter::$reserved_attributes = 'class="keyword"';
-            SqlFormatter::$tab = '    ';
+            // if SqlFormatter is available
+            if (class_exists('SqlFormatter')) {
+
+                // set some properties for the formatter
+                SqlFormatter::$number_attributes = SqlFormatter::$boundary_attributes = 'class="symbol"';
+                SqlFormatter::$quote_attributes = 'class="string"';
+                SqlFormatter::$reserved_attributes = 'class="keyword"';
+                SqlFormatter::$tab = '    ';
+
+            }
 
             // if warnings are not disabled
             if (!$this->disable_warnings)
@@ -4352,7 +4357,7 @@ class Zebra_Database {
                         if (isset($debug_info['query']))
 
                             // format and highlight query
-                            $debug_info['query'] = SqlFormatter::format($debug_info['query']);
+                            $debug_info['query'] = class_exists('SqlFormatter') ? SqlFormatter::format($debug_info['query']) : $debug_info['query'];
 
                         // all blocks are enclosed in tables
                         $output .= '
