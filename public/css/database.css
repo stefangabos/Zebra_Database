@@ -1,84 +1,90 @@
-#zdc { position: absolute; top: 0; left:0; width: 100%; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 13px; text-align: left; z-index: 9998; overflow: hidden }
-#zdc * { margin: 0; padding: 0; font-family: inherit; font-size: inherit; color: #000 }
+#zdc                                { position: absolute; top: 0; left:0; width: 100%; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 13px; text-align: left; z-index: 9998; overflow: hidden }
+#zdc *                              { margin: 0; padding: 0; font-family: inherit; font-size: inherit; color: #000 }
 
 /* COMMON */
-#zdc a              { text-decoration: none }
-#zdc .zdc-hidden    { display: none }
-#zdc .zdc-visible   { display: block }
-#zdc table          { border-collapse: collapse; }
+#zdc a                              { text-decoration: none }
+#zdc .zdc-hidden                    { display: none }
+#zdc .zdc-visible                   { display: block }
+#zdc table                          { border-collapse: collapse }
 #zdc table tbody tr:nth-child(even) { background: #DEDEDE }
 #zdc table td,
-#zdc table th       { padding: 4px; border: none; vertical-align: top }
-#zdc table th       { background: #9ca68f; color: #f0f0f0 }
-#zdc .clear         { clear: both }
+#zdc table th                       { padding: 4px; border: none; vertical-align: top }
+#zdc table th                       { background: #9CA68F; color: #F0F0F0 }
+#zdc ul                             { list-style-type: none; margin: 0; padding: 0; display: block; float: left; width: 100% }
+#zdc ul li                          { float: left }
+#zdc ul li a                        { display: block; float: left }
+#zdc .clear                         { clear: both }
 
 /* MAIN MENU */
-#zdc .zdc-main              { list-style-type: none; margin: 0; padding: 0; background: #151C24; display: block; float: left; width: 100% }
-#zdc .zdc-main li           { float: left; border-right: 1px solid #9CA68F }
-#zdc .zdc-main li a         { color: #FFF; padding: 12px; display: block; float: left }
-#zdc .zdc-main li a:hover   { background: #403D32 }
-#zdc .zdc-main li span      { background: orange; padding: 2px 5px; font-weight: bold; color: #000; margin: 0 4px }
+#zdc .zdc-main                      { background: #151C24 }
+#zdc .zdc-main li                   { border-right: 1px solid #9CA68F }
+#zdc .zdc-main li a                 { color: #FFF; padding: 12px }
+#zdc .zdc-main li a:hover           { background: #403D32 }
+#zdc .zdc-main li span              { background: orange; padding: 2px 5px; font-weight: bold; color: #000; margin: 0 4px }
 
 /* GLOBALS SUBMENU */
-#zdc-globals-submenu                { border:1px solid #403D32 }
-#zdc-globals-submenu ul             { list-style-type: none; margin: 0; padding: 0; background: #403D32; display: block; float: left; width: 100% }
-#zdc-globals-submenu ul li          { float: left }
-#zdc-globals-submenu ul li a        { display: block; float: left; padding: 12px; color: #FFF }
+#zdc-globals-submenu                { border: 1px solid #403D32 }
+#zdc-globals-submenu ul             { background: #403D32 }
+#zdc-globals-submenu ul li a        { padding: 12px; color: #FFF }
 #zdc-globals-submenu ul li a:hover  { background: #73705D }
 
 /* ENTRIES */
-#zdc .zdc-entry                 { margin: 1px; background: #9CA68F; width: 99.9% }
-#zdc .zdc-box                   { background: #EEE; padding: 10px }
-#zdc .zdc-transaction           { background: #FFFFCC }
-#zdc .zdc-counter               { background: #73705D; padding: 5px; color: #DDD }
-#zdc .zdc-even .zdc-counter     { background: #252626 }
-#zdc .zdc-data                  { width: 100%; padding: 5px }
-#zdc .zdc-error                 { background: #CC3333; color: #FFF; font-weight: bold }
+#zdc .zdc-entry                     { margin: 1px; background: #9CA68F; width: 99.9% }
+#zdc .zdc-box                       { background: #EEE; padding: 10px }
+#zdc .zdc-counter                   { background: #9CA68F; filter: brightness(75%); padding: 5px; color: #FFF }
+#zdc .zdc-data                      { width: 100%; padding: 5px }
+#zdc .zdc-error                     { background: #CC3333; color: #FFF; font-weight: bold }
 #zdc .zdc-error pre,
 #zdc .zdc-error span,
 #zdc .zdc-error em,
-#zdc .zdc-error a               { font-weight: normal; color: #FFF }
-#zdc .zdc-error a               { text-decoration: underline }
-#zdc .zdc-error strong          { color: #FFF }
-#zdc .zdc-highlight             { background: orange }
+#zdc .zdc-error a                   { font-weight: normal; color: #FFF }
+#zdc .zdc-error a                   { text-decoration: underline }
+#zdc .zdc-error strong              { color: #FFF }
 
-#zdc .zdc-actions           { padding: 2px; background: #CDD8BF; color: #151C24; margin-top: 1px; }
-#zdc .zdc-actions ul        { list-style-type: none; margin: 0; padding: 0 }
-#zdc .zdc-actions ul li     { float: left; display: block; margin-right: 0px; background-repeat: no-repeat; background-position: 5px center; padding: 5px 5px 5px 28px }
-#zdc .zdc-actions ul li a   { color: #151C24 !important; text-decoration: underline }
+/* TRANSACTIONS */
+#zdc .zdc-transaction,
+#zdc .zdc-transaction .zdc-counter  { background: #888 }
 
-#zdc .zdc-time          { background-image: url('clock.png') }
-#zdc .zdc-cache         { background-image: url('cache.png'); background-color: #CCFF99; color: #222 }
-#zdc .zdc-unbuffered    { background-image: url('unbuffered.png'); background-color: #CCFF99; color: #222 }
-#zdc .zdc-top           { background-image: url('top.png') }
-#zdc .zdc-close         { background-image: url('close.png') }
-#zdc .zdc-records       { background-image: url('records.png') }
-#zdc .zdc-affected      { background-image: url('affected.png') }
-#zdc .zdc-explain       { background-image: url('explain.png') }
-#zdc .zdc-backtrace     { background-image: url('backtrace.png') }
+/* HIGHLIGHTED QUERIES */
+#zdc .zdc-highlight,
+#zdc .zdc-highlight .zdc-counter    { background: #926492 }
 
-/* TABLES */
-#zdc .zdc-records-table th,
-#zdc .zdc-records-table td,
-#zdc .zdc-explain-table th,
-#zdc .zdc-explain-table td,
-#zdc .zdc-backtrace-table th,
-#zdc .zdc-backtrace-table td {
-    border: 1px solid #888;
-}
+#zdc .zdc-actions                   { padding: 2px; background: #CDD8BF; color: #151C24; margin-top: 1px }
+#zdc .zdc-actions ul li             { margin-right: 0px; background-repeat: no-repeat; background-position: 5px center; padding: 5px 5px 5px 28px }
+#zdc .zdc-actions ul li a           { color: #151C24 !important; text-decoration: underline }
+
+#zdc .zdc-time                      { background-image: url('clock.png') }
+#zdc .zdc-cache                     { background-image: url('cache.png'); background-color: #FFFFCC; color: #222; border: 1px solid #AAA }
+#zdc .zdc-unbuffered                { background-image: url('unbuffered.png'); background-color: #CCFF99; color: #222 }
+#zdc .zdc-top                       { background-image: url('top.png') }
+#zdc .zdc-close                     { background-image: url('close.png') }
+#zdc .zdc-records                   { background-image: url('records.png') }
+#zdc .zdc-affected                  { background-image: url('affected.png') }
+#zdc .zdc-explain                   { background-image: url('explain.png') }
+#zdc .zdc-backtrace                 { background-image: url('backtrace.png') }
+
+/* DATA TABLES */
+#zdc .zdc-data-table                { background: #FFF }
+#zdc .zdc-data-table th,
+#zdc .zdc-records-table td          { border: 1px solid #888 }
 
 /* HIGHLIGHTING */
-#zdc pre { background: #EEE !important; border: transparent !important }
-#zdc .keyword { font-weight: bold; color: #990099; text-transform: uppercase }
-#zdc .string { font-weight: bold; color: #008000 }
-#zdc .symbol { font-weight: bold; color: #FF00FF }
-#zdc .indent { padding: 0 0 0 20px }
+#zdc pre                            { background: #EEE !important; border: transparent !important }
+#zdc .keyword                       { font-weight: bold; color: #990099; text-transform: uppercase }
+#zdc .string                        { font-weight: bold; color: #008000 }
+#zdc .symbol                        { font-weight: bold; color: #FF00FF }
+#zdc .indent                        { padding: 0 0 0 20px }
 
-#zdc-successful-queries, #zdc-unsuccessful-queries, #zdc-globals, #zdc-globals-submenu,
-.zdc-entry, .zdc-records-table, .zdc-explain-table, .zdc-backtrace-table
-{ display: none; overflow: auto }
+#zdc-successful-queries,
+#zdc-unsuccessful-queries,
+#zdc-globals,
+#zdc-globals-submenu,
+.zdc-entry,
+.zdc-records-table,
+.zdc-explain-table,
+.zdc-backtrace-table                { display: none; overflow: auto }
 
 /* MINI CONSOLE */
-#zdc-mini { position: absolute; top: 0; right: 0; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 13px; text-align: left; display: block }
-#zdc-mini a { background: #151C24 url('db.gif') no-repeat 10px 12px; display: block; padding: 12px 12px 12px 35px; color: #FFF; text-decoration: none }
-#zdc-mini a span { font-weight: bold; background-color: #c40000; padding: 0 5px 0 5px; margin: 0px 4px 0 4px }
+#zdc-mini                           { position: absolute; top: 0; right: 0; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 13px; text-align: left; display: block }
+#zdc-mini a                         { background: #151C24 url('db.gif') no-repeat 10px 12px; display: block; padding: 12px 12px 12px 35px; color: #FFF; text-decoration: none }
+#zdc-mini a span                    { font-weight: bold; background-color: #C40000; padding: 0 5px 0 5px; margin: 0px 4px 0 4px }

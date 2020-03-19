@@ -4363,15 +4363,12 @@ class Zebra_Database {
                         $output .= '
                             <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry' .
 
-                                // apply a class for even rows
-                                ($counter % 2 == 0 ? ' even' : '') .
-
-                                // should this query be highlighted
-                                (isset($debug_info['highlight']) && $debug_info['highlight'] == 1 ? ' zdc-highlight' : '') .
+                                // should this query be highlighted or is a transaction
+                                (isset($debug_info['highlight']) && $debug_info['highlight'] == 1 ? ' zdc-highlight' : (isset($debug_info['transaction']) && $debug_info['transaction'] ? ' zdc-transaction' : '')) .
 
                             '">
                                 <tr>
-                                    <td class="zdc-counter" valign="top">' . str_pad($counter, 3, '0', STR_PAD_LEFT) . '</td>
+                                    <td class="zdc-counter">' . str_pad($counter, 3, '0', STR_PAD_LEFT) . '</td>
                                     <td class="zdc-data">
                         ';
 
@@ -4411,7 +4408,7 @@ class Zebra_Database {
                         if (isset($debug_info['query']) )
 
                             $output .= '
-                                <div class="zdc-box' . (isset($debug_info['transaction']) && $debug_info['transaction'] ? ' zdc-transaction' : '') . '">' .
+                                <div class="zdc-box">' .
                                     preg_replace('/^\<br\>/', '', html_entity_decode($debug_info['query'])) . '
                                 </div>
                             ';
@@ -4542,7 +4539,7 @@ class Zebra_Database {
 
                             // start generating output
                             $output .= '
-                                <div id="zdc-' . $table . '-' . $identifier . $counter . '" class="zdc-box zdc-' . $table . '-table">
+                                <div id="zdc-' . $table . '-' . $identifier . $counter . '" class="zdc-box zdc-data-table zdc-' . $table . '-table">
                                     <table cellspacing="0" cellpadding="0" border="0">
                                         <thead><tr>
                             ';
@@ -4619,7 +4616,7 @@ class Zebra_Database {
                         $output .= '
                             <table cellspacing="0" cellpadding="0" border="0" id="zdc-globals-' . strtolower($global) . '" class="zdc-entry">
                                 <tr>
-                                    <td class="zdc-counter" valign="top">001</td>
+                                    <td class="zdc-counter">001</td>
                                     <td class="zdc-data">
                                         <div class="zdc-box">
                                             <strong>$_' . $global . '</strong>
