@@ -1,11 +1,17 @@
-## version 2.9.13 (TBA)
+## version 2.9.14 (TBA)
+
+- fixed incorrect handling of `NULL` values; see [#60](https://github.com/stefangabos/Zebra_Database/issues/60)
+- the `global` section in the debugging console can now be disabled or configured to show only specific subsections via the newly added [debug_show_globals](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_globals) property; see [#59](https://github.com/stefangabos/Zebra_Database/issues/59)
+- minor layout updates for the debugging console
+
+## version 2.9.13 (February 29, 2020)
 
 - fixed a bug where the library would incorrectly handle MySQL functions in certain scenarios
 - fixed [#57](https://github.com/stefangabos/Zebra_Database/issues/57) where in PHP 7.4.0 a warning was shown about `get_magic_quotes_gpc` function being deprecated; thanks [userc479](https://github.com/userc479) for reporting!
 - added the `return_error_number` argument to the [error()](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methoderror) method
 - added property [auto_quote_replacements](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$auto_quote_replacements) allowing to disable the library's default behavior of automatically quoting escaped values
 
-## version 2.9.12 (January 16 2019)
+## version 2.9.12 (January 16, 2019)
 
 - the [insert_bulk](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodinsert_bulk) method now supports INSERT IGNORE and INSERT...ON DUPLICATE KEY UPDATE; this fixes [#42](https://github.com/stefangabos/Zebra_Database/issues/42) and deprecates the `insert_update` method
 - the [insert](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodinsert) method now also supports INSERT...ON DUPLICATE KEY UPDATE - this slightly changes the functionality of the method's 3rd agument but stays compatible with previous versions of the library
@@ -18,7 +24,7 @@
 - changed how entries are separated in the log file
 - updated minimum required PHP version from 5.2.0 to 5.4.0. This fixes [#44](https://github.com/stefangabos/Zebra_Database/issues/44)
 
-## version 2.9.11 (June 19 2018)
+## version 2.9.11 (June 19, 2018)
 
 - fixed issue [#43](https://github.com/stefangabos/Zebra_Database/issues/43) where some strings were incorrectly detected as MySQL functions
 - fixed issue [#45](https://github.com/stefangabos/Zebra_Database/issues/45) where the [table_exists](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodtable_exists) method was always returning `true`
@@ -27,7 +33,7 @@
 - fixed issue [#50](https://github.com/stefangabos/Zebra_Database/issues/50) where MySQL functions were incorrectly recognized
 - source code improvements
 
-## version 2.9.10 (December 03 2017)
+## version 2.9.10 (December 03, 2017)
 
 - updated Russian translation; thanks [@rayzru](https://github.com/rayzru)!
 - fixed bug with MySQL functions not being properly handled by the [select](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodselect) method when the `columns` argument was given as an array
@@ -35,24 +41,24 @@
 - fixed an issue that would trigger an error if other PHP scripts were including the [SqlFormatter](http://github.com/jdorn/sql-formatter) library
 - added support for using the `AS` keyword in the `columns` argument for the [select](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodselect) method. Fixes [#34](https://github.com/stefangabos/Zebra_Database/issues/34).
 
-## version 2.9.9 (May 21 2017)
+## version 2.9.9 (May 21, 2017)
 
 - unnecessary files are no more included when downloading from GitHub or via Composer
 
-## version 2.9.7 (May 10 2017)
+## version 2.9.7 (May 10, 2017)
 
 - fixed a bug introduced in the previous release where `*` character could not be used anymore in the [select()](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodselect) method
 - documentation is now available in the repository and on GitHub
 - the home of the library is now exclusively on GitHub
 
-## version 2.9.6 (May 01 2017)
+## version 2.9.6 (May 01, 2017)
 
 - the debugging console is not shown when AJAX requests are detected
 - fixed a bug where executing unbuffered queries was generating warnings
 - improved the MySQL function recognition pattern and added all MySQL functions as per [MySQL's documentation](https://dev.mysql.com/doc/refman/5.7/en/func-op-summary-ref.html)
 - source code tidying
 
-## version 2.9.5 (April 11 2017)
+## version 2.9.5 (April 11, 2017)
 
 > This version somewhat break the compatibility with previous versions! To fix things, you will need to remove the call to the *show_debug_console* method as now the debugging console is automatically shown when script execution ends. If you were using the *write_log* method than you will need to remove the call to it and refer to the *debug* property for more information.
 
@@ -72,7 +78,7 @@
 -  changed the occurrences of PHP's [each()](http://php.net/manual/en/function.each.php) function which is being deprecated starting with PHP 7.2.0
 -  **lots** of source code optimizations and documentation updates
 
-## version 2.9.4 (April 01 2017)
+## version 2.9.4 (April 01, 2017)
 
 - fixed a bug where a new connection could not be made after using the [close](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodclose) method
 - fixed an issue with the memcache warning message appearing even if no memcache extension was available; thanks **Jeff Buckles**
@@ -80,32 +86,32 @@
 - added a new [select_database](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodselect_database) method (as a side-effect, the "database" argument is not mandatory anymore for the [connect](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodconnect) method)
 - added *DEFAULT* to the list of known MySQL functions; thanks **Jeff Buckles**
 
-## version 2.9.3 (February 19 2016)
+## version 2.9.3 (February 19, 2016)
 
 - fixed an issue that would trigger a warning if a replacement value was an array instead of a string
 - fixed a bug where "fetch_obj_all" method would fail if the "index" argument was given; thanks **Milan Kvita**
 - minimum required PHP version is now 5.2.0 instead of 5.0.0
 
-## version 2.9.2 (January 07 2016)
+## version 2.9.2 (January 07, 2016)
 
 - the library now uses [SqlFormatter](https://github.com/jdorn/sql-formatter) PHP library by [Jeremy Dorn](https://github.com/jdorn) for better highlighting of SQL queries
 - the debug console got a few minor visual tweaks
 
-## version 2.9.1 (January 04 2016)
+## version 2.9.1 (January 04, 2016)
 
 - added 2 new methods: [error](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methoderror) and [free_result](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodfree_result)
 - MySQL functions can now be used when setting values in "insert", "insert_update", "insert_bulk" and "update" methods
 - fixed caching not working anymore since 2.9.0; thanks **Andrew Rumm**
 
-## version 2.9.0 (December 07 2015)
+## version 2.9.0 (December 07, 2015)
 
 - fixed warnings that would be triggered on PHP 5.5+; thanks to **Andrew Rumm**
 
-## version 2.8.8 (February 13 2015)
+## version 2.8.8 (February 13, 2015)
 
 - more fixes for warning when no queries are run
 
-## version 2.8.7 (February 10 2015)
+## version 2.8.7 (February 10, 2015)
 
 - added a new "get_selected_database" method for getting the name of the currently selected database; thanks to **Stijn** for suggesting
 - fixed a bug in the library's destructor method where mysqli_free_result would trigger a notice in your server's log files if the result was not a mysqli result set (as it could also be a boolean for queries that do not return anything or even unset when no queries were run); thanks to **Eike Broda**
@@ -113,12 +119,12 @@
 - added Russian language file; thanks to **Andrew Rumm**
 - fixed an issue where the library would not check if an email address was set when sending out notifying emails for queries that take too long to execute; thanks to **Andrew Rumm**
 
-## version 2.8.6 (November 25 2014)
+## version 2.8.6 (November 25, 2014)
 
 - simpler usage of WHERE-IN conditions; previously you had to use the implode method but now, when an array is given as a replacement item, this method will be automatically used for you; thanks to **primenic**
 - updates to the German language file; thanks to **Eike Broda**
 
-## version 2.8.5 (November 12 2014)
+## version 2.8.5 (November 12, 2014)
 
 - result sets can now also be cached in sessions
 - users can now change resource paths, allowing users to move scripts and stylesheets to whatever locations; thanks to **Joseph Spurrier**
@@ -134,12 +140,12 @@
 - fixed a bug where port and socket were not used even if set; thanks to **Nam Trung**
 - fixed some typos in comments
 
-## version 2.8.4 (December 22 2013)
+## version 2.8.4 (December 22, 2013)
 
 - added a new "memcache_key_prefix" property; this allows separate caching of the same queries by multiple instances of the libraries on the same memcache server, or the library handling multiple domains on the same memcache server; thanks to **primeinc**
 - fixed a bug with the insert_bulk method; thanks to **Guillermo**
 
-## version 2.8.3 (October 10 2013)
+## version 2.8.3 (October 10, 2013)
 
 - fixed a bug with the connection credentials which were stored in a public property rather than a private one; thanks **etb09**
 - fixed a bug with the output generated by the "write_log" method; thanks **etb09**
@@ -149,7 +155,7 @@
 - entries in log files now have correct indentation regardless of the used language file
 - added German translation; thanks **etb09**
 
-## version 2.8.2 (August 24 2013)
+## version 2.8.2 (August 24, 2013)
 
 - table names are now enclosed in grave accents for all the methods that take a table name as argument: dcount, delete, dlookup, dmax, dsum, get_table_columns, insert, insert_bulk, insert_update, select, truncate and update; this allows working with tables having special characters in their name
 - minor performance optimizations in the debug console's JavaScript code
