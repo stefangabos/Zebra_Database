@@ -2979,8 +2979,8 @@ class Zebra_Database {
             // by default, we assume that the cache exists and is not expired
             $refreshed_cache = false;
 
-            // if caching method is "memcache"
-            if ($this->caching_method == 'memcache') {
+            // if caching method is "memcache" and memcache is enabled
+            if ($this->caching_method == 'memcache' && $this->memcache) {
 
                 // the key to identify this particular information (prefix it if required)
                 $memcache_key = md5($this->memcache_key_prefix . $sql);
@@ -3174,8 +3174,8 @@ class Zebra_Database {
                     // the content to be cached
                     $content = base64_encode(gzcompress(serialize($cache_data)));
 
-                    // if caching method is "memcache"
-                    if ($this->caching_method == 'memcache')
+                    // if caching method is "memcache" and memcache is enabled
+                    if ($this->caching_method == 'memcache' && $this->memcache)
 
                         // cache query data
                         $this->memcache->set($memcache_key, $content, ($this->memcache_compressed ? MEMCACHE_COMPRESSED : false), $cache);
@@ -4202,7 +4202,7 @@ class Zebra_Database {
                 ));
 
             // if caching is to be done to a memcache server and we don't yet have a connection
-            if (!$this->memcache && $this->memcache_host !== false && $this->memcache_port !== false) {
+            if ($this->caching_method == 'memcache' && !$this->memcache && $this->memcache_host !== false && $this->memcache_port !== false) {
 
                 // if memcache extension is installed
                 if (class_exists('Memcache')) {
