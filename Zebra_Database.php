@@ -181,14 +181,15 @@ class Zebra_Database {
     public $debug_show_explain;
 
     /**
-     *  Indicates whether $_POST, $_GET, $_SESSION, $_COOKIE, $_FILES and $_SERVER globals should be available in the
-     *  debugging console, under the "globals" section.
+     *  Indicates whether $_REQUEST, $_POST, $_GET, $_SESSION, $_COOKIE, $_FILES and $_SERVER globals should be available
+     *  in the debugging console, under the "globals" section.
      *
      *  Can be set to either boolean TRUE or FALSE, as a global setting, or as an associative array where each option's
      *  visibility can be individually be set, like in the example below:
      *
      *  <code>
      *  $db->debug_show_globals(array(
+     *      'request'   =>  true,
      *      'post'      =>  true,
      *      'get'       =>  true,
      *      'session'   =>  true,
@@ -4578,7 +4579,7 @@ class Zebra_Database {
 
                     // globals to show
                     $globals =  $this->debug_show_globals === true ?
-                                array('POST', 'GET', 'SESSION', 'COOKIE', 'FILES', 'SERVER') :
+                                array('REQUEST', 'POST', 'GET', 'SESSION', 'COOKIE', 'FILES', 'SERVER') :
                                 array_map('strtoupper', array_keys(array_filter($this->debug_show_globals, function($value) { return $value !== false; })));
 
                     // start building output
