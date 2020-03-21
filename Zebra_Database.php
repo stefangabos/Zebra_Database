@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.14 (last revision: March 20, 2020)
+ *  @version    2.9.14 (last revision: March 21, 2020)
  *  @copyright  (c) 2006 - 2020 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -4310,14 +4310,14 @@ class Zebra_Database {
                     'identifier'    => 'e',
                     'generated'     => '',
                 ),
-                'successful-queries'    => array(
-                    'counter'       => 0,
-                    'identifier'    => 'sq',
-                    'generated'     => '',
-                ),
                 'unsuccessful-queries'  => array(
                     'counter'       => 0,
                     'identifier'    => 'uq',
+                    'generated'     => '',
+                ),
+                'successful-queries'    => array(
+                    'counter'       => 0,
+                    'identifier'    => 'sq',
                     'generated'     => '',
                 ),
                 'warnings'              => array(
@@ -4364,7 +4364,7 @@ class Zebra_Database {
                             <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry' .
 
                                 // should this query be highlighted or is a transaction
-                                (isset($debug_info['highlight']) && $debug_info['highlight'] == 1 ? ' zdc-highlight zdc-visible' : (isset($debug_info['transaction']) && $debug_info['transaction'] ? ' zdc-transaction' : '')) .
+                                ($block == 'unsuccessful-queries' && isset($debug_info['error']) ? ' zdc-visible' : (isset($debug_info['highlight']) && $debug_info['highlight'] == 1 ? ' zdc-highlight zdc-visible' : (isset($debug_info['transaction']) && $debug_info['transaction'] ? ' zdc-transaction' : ''))) .
 
                             '">
                                 <tr>
