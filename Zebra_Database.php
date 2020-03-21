@@ -4364,7 +4364,7 @@ class Zebra_Database {
                             <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry' .
 
                                 // should this query be highlighted or is a transaction
-                                (isset($debug_info['highlight']) && $debug_info['highlight'] == 1 ? ' zdc-highlight' : (isset($debug_info['transaction']) && $debug_info['transaction'] ? ' zdc-transaction' : '')) .
+                                (isset($debug_info['highlight']) && $debug_info['highlight'] == 1 ? ' zdc-highlight zdc-visible' : (isset($debug_info['transaction']) && $debug_info['transaction'] ? ' zdc-transaction' : '')) .
 
                             '">
                                 <tr>
@@ -4458,8 +4458,8 @@ class Zebra_Database {
 
                                 // button for reviewing returned rows
                                 $output .= '
-                                    <li class="zdc-records">
-                                        ' . (!empty($debug_info['records']) ? '<a href="javascript:zdc_toggle(\'zdc-records-sq' . $counter . '\')">' : '') .
+                                    <li>
+                                        ' . (!empty($debug_info['records']) ? '<a href="javascript: void(0)" class="zdc-records zdc-toggle zdc-records-table">' : '') .
                                             $this->language['returned_rows'] . ': <strong>' . $debug_info['returned_rows'] . '</strong>
                                         ' . (!empty($debug_info['records']) ? '</a>' : '') . '
                                     </li>
@@ -4480,8 +4480,8 @@ class Zebra_Database {
 
                                 // button for reviewing EXPLAIN results
                                 $output .= '
-                                    <li class="zdc-explain">
-                                        <a href="javascript:zdc_toggle(\'zdc-explain-sq' . $counter . '\')">' .
+                                    <li>
+                                        <a href="javascript: void(0)" class="zdc-explain zdc-toggle zdc-explain-table">' .
                                             $this->language['explain'] . '
                                         </a>
                                     </li>
@@ -4493,8 +4493,8 @@ class Zebra_Database {
                         if (isset($debug_info['backtrace']))
 
                             $output .= '
-                                <li class="zdc-backtrace">
-                                    <a href="javascript:zdc_toggle(\'zdc-backtrace-' . $identifier . $counter . '\')">' .
+                                <li>
+                                    <a href="javascript: void(0)" class="zdc-backtrace zdc-toggle zdc-backtrace-table">' .
                                         $this->language['backtrace'] . '
                                     </a>
                                 </li>
@@ -4502,13 +4502,13 @@ class Zebra_Database {
 
                         // common actions (to top, close all)
                         $output .= '
-                            <li class="zdc-top">
-                                <a href="' . preg_replace('/\#zdc\-top$/i', '', $_SERVER['REQUEST_URI']) . '#zdc-top">' .
+                            <li>
+                                <a href="' . preg_replace('/\#zdc\-top$/i', '', $_SERVER['REQUEST_URI']) . '#zdc-top" class="zdc-top">' .
                                     $this->language['to_top'] . '
                                 </a>
                             </li>
-                            <li class="zdc-close">
-                                <a href="javascript:zdc_closeAll(\'\')">' .
+                            <li>
+                                <a href="javascript: void(0)" class="zdc-close">' .
                                     $this->language['close_all'] . '
                                 </a>
                             </li>
@@ -4539,7 +4539,7 @@ class Zebra_Database {
 
                             // start generating output
                             $output .= '
-                                <div id="zdc-' . $table . '-' . $identifier . $counter . '" class="zdc-box zdc-data-table zdc-' . $table . '-table">
+                                <div class="zdc-box zdc-data-table zdc-' . $table . '-table">
                                     <table cellspacing="0" cellpadding="0" border="0">
                                         <thead><tr>
                             ';
@@ -4593,7 +4593,7 @@ class Zebra_Database {
                         // add button to submenu
                         $output .=
                             '<li>
-                                <a href="javascript:zdc_toggle(\'zdc-globals-' . strtolower($global) . '\')">$_' .
+                                <a href="javascript: void(0)" class="zdc-toggle zdc-toggle-id zdc-globals-' . strtolower($global) . '">$_' .
                                     $global . '
                                 </a>
                             </li>
@@ -4643,9 +4643,9 @@ class Zebra_Database {
 
             // finalize output by enclosing the debugging console's menu and generated blocks in a container
             $output = '
-                <div id="zdc" style="display:' . ($this->minimize_console ? 'none' : 'block') . '">
+                <div id="zdc">
                     <a name="zdc-top"></a>
-                    <ul class="zdc-main">
+                    <ul id="zdc-main" class="' . ($this->minimize_console ? '' : 'zdc-visible') . '">
             ';
 
             // are there any error messages?
@@ -4654,7 +4654,7 @@ class Zebra_Database {
                 // button for reviewing errors
                 $output .= '
                     <li>
-                        <a href="javascript:zdc_toggle(\'zdc-errors\')">' .
+                        <a href="javascript: void(0)" class="zdc-toggle zdc-errors">' .
                             $this->language['errors'] . ': <span>' . $blocks['errors']['counter'] . '</span>
                         </a>
                     </li>
@@ -4663,23 +4663,24 @@ class Zebra_Database {
             // common buttons
             $output .= '
                 <li>
-                    <a href="javascript:zdc_toggle(\'zdc-successful-queries\')">' .
+                    <a href="javascript: void(0)" class="zdc-toggle zdc-successful-queries">' .
                         $this->language['successful_queries'] . ': <span>' . $blocks['successful-queries']['counter'] . '</span>&nbsp;(' .
                         number_format($this->total_execution_time, 5) . ' ' . $this->language['seconds'] . ')
                     </a>
                 </li>
                 <li>
-                    <a href="javascript:zdc_toggle(\'zdc-unsuccessful-queries\')">' .
+                    <a href="javascript: void(0)" class="zdc-toggle zdc-unsuccessful-queries">' .
                         $this->language['unsuccessful_queries'] . ': <span>' . $blocks['unsuccessful-queries']['counter'] . '</span>
                     </a>
                 </li>
             ';
 
+            // if there are any warnings
             if (isset($this->debug_info['warnings']))
 
                 $output .= '
                     <li>
-                        <a href="javascript:zdc_toggle(\'zdc-warnings\')">' .
+                        <a href="javascript: void(0)" class="zdc-toggle zdc-warnings">' .
                             $this->language['warnings'] . ': <span>' . $blocks['warnings']['counter'] . '</span>
                         </a>
                     </li>
@@ -4691,7 +4692,7 @@ class Zebra_Database {
 
                 $output .= '
                     <li>
-                        <a href="javascript:zdc_toggle(\'zdc-globals-submenu\')">' .
+                        <a href="javascript: void(0)" class="zdc-toggle zdc-toggle-id zdc-globals-submenu">' .
                             $this->language['globals'] . '
                         </a>
                     </li>
@@ -4711,7 +4712,7 @@ class Zebra_Database {
             // add the minified version of the debugging console
             $output .= '
                 <div id="zdc-mini">
-                    <a href="javascript:zdc_toggle(\'console\')">' .
+                    <a href="javascript: void(0)" class="zdc-toggle zdc-toggle-id zdc-main">' .
                         $blocks['successful-queries']['counter'] . ($warnings ? '<span>!</span>' : '') . ' / ' . $blocks['unsuccessful-queries']['counter'] . '
                     </a>
                 </div>

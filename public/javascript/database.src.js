@@ -1,417 +1,80 @@
-/**
- *  Returns an array of children elements of a given parent element based on tag and class name.
- *
- *  @param  parent          The parent element
- *  @param  tag             The HTML tags that we are looking for in the parent element
- *  @param  class_name      Optional. Narrows down the search to only the tags having the indicated class
- *  @param  first_only      Optional. Boolean. If set to TRUE, will return only the first child.
- *
- */
-function zdc_getElements(parent, tag, className) {
+// prevent multiple initializations
+if (typeof _$ === 'undefined') {
 
-    var
+    // custom build of zebrajs (see https://github.com/stefangabos/zebrajs)
+    !function(){"use strict";var s={},e=0,f=function(t,e,n){var o,r=[];if("string"==typeof t&&"body"===t.toLocaleLowerCase()&&(t=document.body),"string"==typeof t)if(0===t.indexOf("<")&&1<t.indexOf(">")&&2<t.length)(e=document.createElement("div")).innerHTML=t,r.push(e.firstChild);else if(e?"object"==typeof e&&e.version?e=e[0]:"string"==typeof e&&(e=document.querySelector(e)):e=document,t.match(/^#[^s]+$/))r.push(e.querySelector(t));else if(n)try{r.push(e.querySelector(t))}catch(t){}else try{r=Array.prototype.slice.call(e.querySelectorAll(t))}catch(t){}else if("object"==typeof t&&(t instanceof Document||t instanceof Window||t instanceof Element||t instanceof Text))r.push(t);else if(t instanceof NodeList)r=Array.prototype.slice.call(t);else if(Array.isArray(t))r=r.concat(t);else if("object"==typeof t&&t.version)return t;for(o in r=r.filter(function(t){return null!=t}),f.fn)r[o]=f.fn[o];return r};f.fn={version:"1.0.0"},f.fn.addClass=function(t){return this._class("add",t)},f.fn.attr=function(n,e){if("object"==typeof n)this.forEach(function(t){for(var e in n)t.setAttribute(e,n[e])});else if("string"==typeof n){if(void 0===e)return this[0].getAttribute(n);this.forEach(function(t){!1===e||null===e?t.removeAttribute(n):t.setAttribute(n,e)})}return this},f.fn.closest=function(e){var n=[];return this[0].matches(e)?this:(this.forEach(function(t){for(;!((t=t.parentNode)instanceof Document);)if(t.matches(e)){-1===n.indexOf(t)&&n.push(t);break}}),f(n))},f.fn.each=function(t){for(var e=0;e<this.length;e++)if(!1===t.call(this[e],e,this[e]))return},f.fn.hasClass=function(t){for(var e=0;e<this.length;e++)if(this[e].classList.contains(t))return!0;return!1},f.fn.is=function(e){var n=!1;return this.forEach(function(t){if("string"==typeof e&&t.matches(e)||"object"==typeof e&&e.version&&t===e[0]||"object"==typeof e&&(e instanceof Document||e instanceof Element||e instanceof Text||e instanceof Window)&&t===e)return!(n=!0)}),n},f.fn.not=function(n){return f(this.filter(function(e,t){return"function"==typeof n&&void 0!==n.call?n.call(e,t):Array.isArray(n)?!n.filter(function(t){return f(e).is(t)}).length:!f(e).is(n)}))},f.fn.on=function(n,o,r,i){var e,c,a,t;if("object"!=typeof n)return e=n.split(" "),void 0===r&&(r=o),this.forEach(function(t){e.forEach(function(e){a=!1,c=e.split("."),n=c[0],c=c[1]||"",void 0===s[n]&&(s[n]=[]),"string"==typeof o?(a=function(t){i&&f(this).off(e,r),this!==t.target&&t.target.matches(o)&&r(t)},t.addEventListener(n,a)):i?(a=function(t){f(this).off(e,r),r(t)},t.addEventListener(n,a)):t.addEventListener(n,r),s[n].push([t,r,c,a])})}),this;for(t in n)this.on(t,n[t])},f.fn.ready=function(t){return"complete"===document.readyState||"loading"!==document.readyState?t():document.addEventListener("DOMContentLoaded",t),this},f.fn.removeClass=function(t){return this._class("remove",t)},f.fn._class=function(n,t){return t=t.split(" "),this.forEach(function(e){t.forEach(function(t){e.classList["add"===n||"toggle"===n&&!e.classList.contains(t)?"add":"remove"](t)})}),this},Element.prototype.matches||(Element.prototype.matches=Element.prototype.matchesSelector||Element.prototype.mozMatchesSelector||Element.prototype.msMatchesSelector||Element.prototype.oMatchesSelector||Element.prototype.webkitMatchesSelector||function(t){for(var e=(this.document||this.ownerDocument).querySelectorAll(t),n=e.length;0<=--n&&e.item(n)!==this;);return-1<n}),window._$=window.jQuery=f}();
 
-        // initialize the array to be returned
-        result = [],
+    _$(document).ready(function() {
 
-        elements, i,
+        // use $ instead of _$
+        (function($) {
 
-        // if native support is available
-        nativeSupport = parent.getElementsByClassName,
+            // closes everything
+            $('.zdc-close').on('click', function() {
+                $('#zdc .zdc-visible').not('#zdc-main').removeClass('zdc-visible');
+            });
 
-        // the regular expression for matching class names
-        regexp = new RegExp('\\b' + className + '\\b', 'i');
+            // handle visibility toggling
+            $('.zdc-toggle').each(function() {
 
-    // if parent is undefined, the parent is the document object
-    parent || (parent = document);
+                $(this).on('click', function() {
+                    var $element = $(this),
+                        target, $target, is_open;
 
-    // if tag is undefined, match all tags
-    tag || (tag = '*');
+                    // the section that needs to be toggled
+                    target = $element.attr('class').replace(/^.*?zdc\-toggle/, '').replace(/\zdc\-toggle\-id/, '').trim();
 
-    // if native implementation is available
-    // get elements having the sought class
-    if (nativeSupport) elements = parent.getElementsByClassName(className);
+                    // the element we will toggle
+                    $target = $('#' + target);
 
-    // get children elements matching the given tag
-    else elements = parent.getElementsByTagName(tag);
+                    // if we have to open a section by ID
+                    if ($element.hasClass('zdc-toggle-id') || !$target.length) {
 
-    // the total number of found elements
-    i = elements.length;
+                        // if we need to toggle the visibility of a data table, lock on the data table
+                        if (!$target.length) $target = $('div.' + target, $element.closest('.zdc-data'));
 
-    // iterate through the found elements
-    // decreasing while loop is the fastest way to iterate in JavaScript
-    // http://blogs.oracle.com/greimer/entry/best_way_to_code_a
-    while (i--)
+                        // is the section open?
+                        // (we have to do this before hiding all the sections)
+                        is_open = $target.hasClass('zdc-visible');
 
-        // if getElementsByClassName is available natively
-        if ((nativeSupport &&
+                        // if we are viewing a global section, keep the submenu open
+                        if ($element.attr('class').match(/zdc\-globals\-/) && !$element.attr('class').match(/zdc\-globals\-submenu/))
 
-            // and we need specific tags and current element's tag is what we're looking for
-            (tag !== '*' && elements[i].nodeName.toLowerCase() === tag) ||
+                            $('#zdc .zdc-visible').not('#zdc-globals-submenu').not('#zdc-main').removeClass('zdc-visible');
 
-            // or we don't need specific tags
-            tag === '*'
+                        // if we are *not* toggling the visibility of a data table, hide any open section
+                        else if (!$target.hasClass('zdc-data-table')) $('#zdc .zdc-visible').not('#zdc-main').removeClass('zdc-visible');
 
-        // or if getElementsByClassName is not available natively
-        ) || (!nativeSupport &&
+                        // if we are toggling a data table, hide any open data table
+                        else $('#zdc .zdc-data-table.zdc-visible').not('#zdc-main').removeClass('zdc-visible');
 
-            // first, test if the class name *contains* what we're searching for
-            // because indexOf is much faster than a regular expression
-            elements[i].className.indexOf(className) > -1 &&
+                    // if we have to open a section by class name
+                    } else {
 
-            // if class name contains what we're searching for
-            // use a regular expression to test if there's an exact match
-            regexp.test(elements[i].className))
+                        // is the section open?
+                        // (we have to do this before hiding all the sections)
+                        is_open = $('.zdc-entry.zdc-visible', $target).length;
 
-        )
+                        // hide open section
+                        $('#zdc .zdc-visible').not('#zdc-main').removeClass('zdc-visible');
 
-            // add it to results
-            result.push(elements[i]);
+                        // the element(s) for which we are going to toggle visibility
+                        $target = $('.zdc-entry', $target);
 
-    // if there are no elements found, return false or, return the found elements if any
-    return result.length ? result : false;
+                    }
 
-}
+                    // if section is open, close it
+                    if (is_open) $target.removeClass('zdc-visible');
 
-/**
- *  Sets the "display" css property for an array of elements.
- *
- *  @param  elements    An array of elements to set the "display" css property for
- *
- *  @param  display     The "display" css property ("block" or "none")
- */
-function zdc_setDisplay(elements, display) {
+                    // if section is closed, open it
+                    else $target.addClass('zdc-visible');
 
-    // iterate through the array of elements
-    for (var index in elements)
+                });
 
-        // set display for each element
-        // (exclude the entries in the array that are added through JavaScript)
-        if (index.match(/^[0-9]+$/)) elements[index].style.display = display;
+            });
 
-}
+        })(_$);
 
-/**
- *  Closes all tabs shown by the debug console
- *
- *  @param  ignore  Tab to ignore and leave as it is
- */
-function zdc_closeAll(skip) {
-
-    // if tab is not one of the following
-    if (!(
-
-        skip.indexOf('zdc-records') > -1 ||
-        skip.indexOf('zdc-explain') > -1 ||
-        skip.indexOf('zdc-backtrace') > -1
-
-    )) {
-
-        // these are some of the main tabs
-        var tabs = ['zdc-errors', 'zdc-successful-queries', 'zdc-unsuccessful-queries', 'zdc-warnings'],
-            index, tab, parent, children, el;
-
-        // iterate through the tabs
-        for (index in tabs) {
-
-            tab = tabs[index];
-
-            // if we should not skip this tab
-            if (tab !== skip) {
-
-                // get the tab element from the DOM
-                tab = document.getElementById(tab);
-
-                // if tab exists
-                if (null !== tab) {
-
-                    // get children <table>s having the 'zdc-entry' class
-                    children = zdc_getElements(tab, 'table', 'zdc-entry');
-
-                    // hide them
-                    zdc_setDisplay(children, 'none');
-
-                    // and also hide the tab
-                    tab.style.display = 'none';
-
-                }
-
-            }
-
-        }
-
-        // the sub-tabs of the "global" main tab
-        tabs = ['post', 'get', 'session', 'cookie', 'files', 'server'];
-
-        // if the "globals" tab is not to be skipped
-        if (null === skip.match(/^zdc\-globals/)) {
-
-            // hide the globals submenu
-            document.getElementById('zdc-globals-submenu').style.display = 'none';
-
-            // the parent element
-            parent = document.getElementById('zdc-globals');
-
-            // hide the parent element
-            parent.style.display = 'none';
-
-            // iterate through the tabs
-            for (index in tabs) {
-
-                // the actual name of the sub-tab element
-                el = 'zdc-globals-' + tabs[index];
-
-                // if element exists, hide it
-                if (null !== document.getElementById(el)) document.getElementById(el).style.display = 'none';
-
-            }
-
-        // if a sub-tab of the "globals" main tab is to be skipped
-        } else
-
-            // iterate through the tabs
-            for (index in tabs) {
-
-                // the actual name of the sub-tab element
-                el = 'zdc-globals-' + tabs[index];
-
-                // if element is not to be skipped and it exists, hide it
-                if (el !== skip && null !== document.getElementById(el)) document.getElementById(el).style.display = 'none';
-
-            }
-
-    }
-
-}
-
-/**
- *  Toggles the "display" css property of an element or an array of elements.
- *
- *  @param  element     An element or an array of elements.
- */
-function zdc_toggle(element) {
-
-    var el, parent, children, status, matches, elem1, elem2, elem3;
-
-    // close all tabs, except the one given as argument to this function
-    zdc_closeAll(element);
-
-    // if element is the actual console
-    if (element === 'console') {
-
-        // get the element from the DOM
-        el = document.getElementById('zdc');
-
-        // toggle its display property
-        el.style.display = (el.style.display !== 'block' ? 'block' : 'none');
-
-    // if not the console element
-    } else
-
-        // let's see what the element is
-        switch (element) {
-
-            case 'zdc-errors':
-            case 'zdc-successful-queries':
-            case 'zdc-unsuccessful-queries':
-            case 'zdc-warnings':
-
-                // get the element from the DOM
-                el = document.getElementById(element);
-
-                // if element exists
-                if (null !== el) {
-
-                    // get the children <table> elements having the 'zdc-entry' class
-                    children = zdc_getElements(el, 'table', 'zdc-entry');
-
-                    // get the negated value of the display property of the element
-                    status = (el.style.display !== 'block' ? 'block' : 'none');
-
-                    // update the display property for all the element's children
-                    zdc_setDisplay(children, status);
-
-                    // update the display property of the element itself
-                    el.style.display = status;
-                }
-
-                break;
-
-            case 'zdc-globals-submenu':
-
-                // get the element from the DOM
-                el = document.getElementById(element);
-
-                // this is the parent of the element
-                parent = document.getElementById('zdc-globals');
-
-                // toggle display property of the element
-                el.style.display = (el.style.display !== 'block' ? 'block' : 'none');
-
-                // toggle display property of the parent
-                parent.style.display = (parent.style.display !== 'block' ? 'block' : 'none');
-
-                break;
-
-            case 'zdc-globals-post':
-            case 'zdc-globals-get':
-            case 'zdc-globals-session':
-            case 'zdc-globals-cookie':
-            case 'zdc-globals-files':
-            case 'zdc-globals-server':
-
-                // get the element from the DOM
-                el = document.getElementById(element);
-
-                // toggle display property of the element
-                el.style.display = (el.style.display !== 'block' ? 'block' : 'none');
-
-                break;
-
-            default:
-
-                // get the element from the DOM
-                el = document.getElementById(element);
-
-                // se if the element is the "show records", "explain" or "backtrace" tab
-                matches = element.match(/\-([a-z]+)([0-9]+)$/);
-
-                // if the element is the "show records", "explain" or "backtrace" tab
-                if (null !== matches) {
-
-                    // when we open the "show records", "explain" or the "backtrace" tab we need to
-                    // hide the other two
-                    // therefore, get all three tabs
-                    elem1 = document.getElementById('zdc-records-' + matches[1] + matches[2]);
-                    elem2 = document.getElementById('zdc-explain-' + matches[1] + matches[2]);
-                    elem3 = document.getElementById('zdc-backtrace-' + matches[1] + matches[2]);
-
-                    // if tab exists and is not the one being opened, close it
-                    if (null !== elem1 && elem1 !== el) elem1.style.display = 'none';
-                    if (null !== elem2 && elem2 !== el) elem2.style.display = 'none';
-                    if (null !== elem3 && elem3 !== el) elem3.style.display = 'none';
-
-                }
-
-                // toggle display property of the element
-                if (null !== el) el.style.display = (el.style.display !== 'block' ? 'block' : 'none');
-
-        }
-
-}
-
-// The DOM-ready part is copyright (c) Patrick Hunlock and is taken from http://www.hunlock.com/blogs/Are_you_ready_for_this
-// A stack of functions to run onload/domready
-var startStack = function() { },
-
-    registerOnLoad = function(func) {
-
-        var orgOnLoad = startStack;
-
-        startStack = function() {
-
-            orgOnLoad();
-            func();
-
-            return;
-
-        };
-
-    },
-
-    ranOnload = false, // Flag to determine if we've ran the starting stack already.
-    orgOnLoad;
-
-if (document.addEventListener)
-
-    // Mozilla actually has a DOM READY event.
-    document.addEventListener('DOMContentLoaded', function() {
-        if (!ranOnload) {
-            ranOnload = true;
-            startStack();
-        }
-    }, false);
-
-else if (document.all && !window.opera) {
-
-    // This is the IE style which exploits a property of the (standards defined) defer attribute
-    document.write('<scr' + 'ipt id="DOMReady" defer=true ' + 'src=//:><\/scr' + 'ipt>');
-    document.getElementById('DOMReady').onreadystatechange = function() {
-        if (this.readyState === 'complete' && (!ranOnload)) {
-            ranOnload = true;
-            startStack();
-        }
-    }
-
-}
-
-orgOnLoad = window.onload;
-
-window.onload = function() {
-    if (typeof (orgOnLoad) === 'function') orgOnLoad();
-    if (!ranOnload) {
-        ranOnload = true;
-        startStack();
-    }
-}
-
-registerOnLoad(function() {
-
-    var
-
-        // are there any error messages?
-        errors = document.getElementById('zdc-errors'),
-
-        // are there any unsuccessful queries
-        unsuccessful = document.getElementById('zdc-unsuccessful-queries'),
-
-        successful, highlight, children;
-
-    // if there are error messages
-    if (null !== errors) {
-
-        // get all the "error messages" tab's children <table>s having the 'zdc-entry' class
-        children = zdc_getElements(errors, 'table', 'zdc-entry');
-
-        // set the found tables' display property to "block"
-        zdc_setDisplay(children, 'block');
-
-        // set the "error messages" tab's display property to "block"
-        errors.style.display = 'block';
-
-    // if there are unsuccessful queries
-    } else if (null !== unsuccessful) {
-
-        // get all the "error messages" tab's children <table>s having the 'zdc-entry' class
-        children = zdc_getElements(unsuccessful, 'table', 'zdc-entry');
-
-        // set the found tables' display property to "block"
-        zdc_setDisplay(children, 'block');
-
-        // set the "unsuccessful queries" tab's display property to "block"
-        unsuccessful.style.display = 'block';
-
-    } else {
-
-        // if there are successful queries
-        successful = document.getElementById('zdc-successful-queries');
-
-        // are there any queries that need to be highlighted?
-        // get all the "successful queries" tab's children <table>s having the 'zdc-highlight' class
-        highlight = zdc_getElements(successful, 'table', 'zdc-highlight');
-
-        // set the found tables' display property to "block"
-        zdc_setDisplay(highlight, 'block');
-
-        // set the "successful queries" tab's display property to "block"
-        // successful.style.display = 'block';
-
-    }
-
-    // close everything when pressing ESC
-    document.addEventListener('keydown', function(e) {
-        e = e || window.event;
-        if (e.keyCode === 27) zdc_closeAll('');
     });
 
-});
+}
