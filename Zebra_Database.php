@@ -4555,7 +4555,7 @@ class Zebra_Database {
 
                                 $output .= '<tr>';
 
-                                foreach (array_values($row) as $column) $output .= '<td>' . $column . '</td>';
+                                foreach (array_values($row) as $column) $output .= '<td>' . htmlspecialchars($column, ENT_QUOTES, 'UTF-8') . '</td>';
 
                                 $output .= '</tr>';
 
