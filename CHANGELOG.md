@@ -1,5 +1,6 @@
 ## version 2.9.14 (TBA)
 
+- fixed bug with XSS in the debug console; see [#62](https://github.com/stefangabos/Zebra_Database/issues/62)
 - fixed incorrect handling of `NULL` values; see [#60](https://github.com/stefangabos/Zebra_Database/issues/60)
 - the `global` section in the debugging console can now be disabled or configured to show only specific subsections via the newly added [debug_show_globals](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_globals) property; see [#59](https://github.com/stefangabos/Zebra_Database/issues/59)
 - fixed bug with setting the caching method to "memcache" but not having memcache properly set up, or setting up memcache but not having the caching method set to "memcache"
