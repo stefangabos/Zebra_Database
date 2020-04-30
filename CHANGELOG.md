@@ -1,4 +1,4 @@
-## version 2.9.14 (TBA)
+## version 2.9.14 (April 30, 2020)
 
 - fixed bug with XSS in the debug console; see [#62](https://github.com/stefangabos/Zebra_Database/issues/62)
 - fixed incorrect handling of `NULL` values; see [#60](https://github.com/stefangabos/Zebra_Database/issues/60)
