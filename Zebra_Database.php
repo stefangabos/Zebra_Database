@@ -170,6 +170,7 @@ class Zebra_Database {
 
     /**
      *  Indicates {@link http://php.net/manual/en/function.debug-backtrace.php backtrace} information should be shown
+     *  Indicates whether {@link http://php.net/manual/en/function.debug-backtrace.php backtrace} information should be shown
      *  in the debugging console.
      *
      *  Default is TRUE.
@@ -270,7 +271,7 @@ class Zebra_Database {
      *  The ensure that data is both properly saved and retrieved to and from the database, this method should be called
      *  first thing after connecting to the database.
      *
-     *  If you don't want to call this method nor do you want to see the warning, set this property to FALSE.
+     *  If you don't want to call this method nor do you want to see the warning, set this property to TRUE.
      *
      *  Default is FALSE.
      *
@@ -362,7 +363,7 @@ class Zebra_Database {
      *  If you are using a callback function, the function receives two arguments:
      *
      *  -   the debug information, as a string, just like it would go into the log file
-     *  -   the backtrace information, as a string, just like it would go into the log file - if {@link $debug_show_backtrace}
+     *  -   the backtrace information, as a string, just like it would go into the log file - if {@link debug_show_backtrace}
      *      is set to FALSE, this will be an empty string
      *
      *  @var string
