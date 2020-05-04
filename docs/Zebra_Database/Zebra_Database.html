@@ -66,6 +66,7 @@ Package: <strong>Zebra_Database</strong>
 <li><a href="#var$caching_method">$caching_method</a></li>
 <li><a href="#var$debug">$debug</a></li>
 <li><a href="#var$debugger_ip">$debugger_ip</a></li>
+<li><a href="#var$debug_cookie_name">$debug_cookie_name</a></li>
 <li><a href="#var$debug_show_backtrace">$debug_show_backtrace</a></li>
 <li><a href="#var$debug_show_explain">$debug_show_explain</a></li>
 <li><a href="#var$debug_show_globals">$debug_show_globals</a></li>
@@ -133,7 +134,6 @@ Package: <strong>Zebra_Database</strong>
 <li><a href="#methodtransaction_start">transaction_start</a></li>
 <li><a href="#methodtruncate">truncate</a></li>
 <li><a href="#methodupdate">update</a></li>
-<li><a href="#method_show_debugging_console">_show_debugging_console</a></li>
 </ul>
 </div>
 <div class="clear"></div>
@@ -165,7 +165,7 @@ Package: <strong>Zebra_Database</strong>
 <div class="clear"></div>
 </div>
 <a name="var$auto_quote_replacements"></a>
-<h4 class="variable"><span><em>boolean</em></span> $auto_quote_replacements <span class="value"></span></h4>
+<h4 class="variable"><span><em>boolean</em></span> $auto_quote_replacements =  <span class="value">true</span></h4>
 <div class="doc_block">
 <p>Should escaped variable be also enclosed in single quotes?</p>
 <p>Default is TRUE.</p>
@@ -199,7 +199,7 @@ Package: <strong>Zebra_Database</strong>
 <div class="clear"></div>
 </div>
 <a name="var$caching_method"></a>
-<h4 class="variable"><span><em>string</em></span> $caching_method <span class="value"></span></h4>
+<h4 class="variable"><span><em>string</em></span> $caching_method =  <span class="value">'disk'</span></h4>
 <div class="doc_block">
 <p>The method to be used for caching query results.</p>
 <p>Can be either:</p><ul><li><strong>disk</strong>     - query results are cached as files on the disk at the path specified by <a href="../Zebra_Database/Zebra_Database.html#var$cache_path">cache_path</a>.</li><li><strong>session</strong>  - query results are cached in the session (use this only for small data sets). Note that when
@@ -242,16 +242,20 @@ methods like <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()
 <div class="clear"></div>
 </div>
 <a name="var$debug"></a>
-<h4 class="variable"><span><em>boolean</em></span> $debug <span class="value"></span></h4>
+<h4 class="variable"><span><em>boolean</em></span> $debug =  <span class="value">true</span></h4>
 <div class="doc_block">
 <p>Turns debugging on or off.</p>
 <p>The property can take one of the following values:</p><p><ul><li><strong>boolean TRUE</strong><br>
 Setting this property to a boolean TRUE will instruct the library to generate debugging information for each
 query it executes and show the information on the screen when script's execution ends.</li></ul> <ul><li><strong>a string</strong><br>
 Setting this property to a string will instruct the library to turn debugging on when the given string is
-present in the query string part of the URL and has the value of <strong>1</strong> (i.e ?show_debug=1)
+present as argument in the query string (in the URL) and has the value of <strong>1</strong> (i.e ?show_debug=1)
 <br><br><div class="highlight">Useful for turning debugging on on the fly. If you decide to use this in production, make
-sure to not use an easily guessable value!</div></li></ul> <ul><li><strong>an array([bool]daily, [bool]hourly, [bool]backtrace)</strong><br>
+sure to not use an easily guessable value!</div><br>
+When debugging is turned on this way, a session cookie (a cookie that expires when the browser is closed) will
+also be set so that the query string argument doesn't need to be present for subsequent requests. Debugging
+can also be turned off by setting said query string argument to <strong>0</strong> (i.e ?show_debug=0). The cookie's
+name is set via the <a href="../Zebra_Database/Zebra_Database.html#var$debug_cookie_name">debug_cookie_name</a> property.</li></ul> <ul><li><strong>an array([bool]daily, [bool]hourly, [bool]backtrace)</strong><br>
 Setting this property to an array like above, will instruct the library to generate debugging information for
 each query it executes and write the information to a log file when the script's execution ends.</li></ul> <ul><li>the value of the first entry (daily) indicates whether the log files should be grouped by days or not;
 if set to TRUE, log files will have their name in the form of &quot;log_ymd.txt&quot;, where &quot;y&quot;, &quot;m&quot; and &quot;d&quot;
@@ -292,7 +296,7 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <div class="clear"></div>
 </div>
 <a name="var$debugger_ip"></a>
-<h4 class="variable"><span><em>array</em></span> $debugger_ip <span class="value"></span></h4>
+<h4 class="variable"><span><em>array</em></span> $debugger_ip =  <span class="value">array()</span></h4>
 <div class="doc_block">
 <p>An array of IP addresses for which to show the debugging console / write to log file, if the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property   is <strong>not</strong> set to FALSE.</p>
 <p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;show&nbsp;the&nbsp;debugging&nbsp;console&nbsp;only&nbsp;to&nbsp;specific&nbsp;IPs</span></div></li>
@@ -312,10 +316,29 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<a name="var$debug_show_backtrace"></a>
-<h4 class="variable"><span><em>boolean</em></span> $debug_show_backtrace <span class="value"></span></h4>
+<a name="var$debug_cookie_name"></a>
+<h4 class="variable"><span><em>string</em></span> $debug_cookie_name =  <span class="value">'zebra_db'</span></h4>
 <div class="doc_block">
-<p>Indicates <a href="http://php.net/manual/en/function.debug-backtrace.php">backtrace</a> information should be shown   in the debugging console.</p>
+<p>If debugging is enabled on the fly via the presence of a query string argument (see the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property),   a cookie is set so that the query string is not required to be present in subsequent requests.</p>
+<p>This property sets that cookie's name.</p><p>Default value is <strong>zebra_db</strong></p>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
+<td valign="top">2.10.0</td>
+</tr>
+<tr>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
+<td valign="top">public</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<a name="var$debug_show_backtrace"></a>
+<h4 class="variable"><span><em>boolean</em></span> $debug_show_backtrace =  <span class="value">true</span></h4>
+<div class="doc_block">
+<p>Indicates whether <a href="http://php.net/manual/en/function.debug-backtrace.php">backtrace</a> information should be shown   in the debugging console.</p>
 <p>Default is TRUE.</p>
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
@@ -332,7 +355,7 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <div class="clear"></div>
 </div>
 <a name="var$debug_show_explain"></a>
-<h4 class="variable"><span><em>boolean</em></span> $debug_show_explain <span class="value"></span></h4>
+<h4 class="variable"><span><em>boolean</em></span> $debug_show_explain =  <span class="value">true</span></h4>
 <div class="doc_block">
 <p>Indicates whether queries should be <a href="http://dev.mysql.com/doc/refman/5.0/en/explain.html">EXPLAIN</a>ed in the   debugging console.</p>
 <p>Default is TRUE.</p>
@@ -351,7 +374,7 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <div class="clear"></div>
 </div>
 <a name="var$debug_show_globals"></a>
-<h4 class="variable"><span><em>mixed</em></span> $debug_show_globals <span class="value"></span></h4>
+<h4 class="variable"><span><em>mixed</em></span> $debug_show_globals =  <span class="value">true</span></h4>
 <div class="doc_block">
 <p>Indicates whether $_REQUEST, $_POST, $_GET, $_SESSION, $_COOKIE, $_FILES and $_SERVER globals should be available   in the debugging console, under the &quot;globals&quot; section.</p>
 <p>Can be set to either boolean TRUE or FALSE, as a global setting, or as an associative array where each option's   visibility can be individually be set, like in the example below:</p><p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$debug_show_globals">debug_show_globals</a></span><span class="src-sym">(</span><span class="src-key">array</span><span class="src-sym">(</span></div></li>
@@ -379,7 +402,7 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <div class="clear"></div>
 </div>
 <a name="var$debug_show_records"></a>
-<h4 class="variable"><span><em>integer</em></span> $debug_show_records <span class="value"></span></h4>
+<h4 class="variable"><span><em>integer</em></span> $debug_show_records =  <span class="value">20</span></h4>
 <div class="doc_block">
 <p>Sets the number records returned by SELECT queries to be shown in the debugging console.</p>
 <p>Setting this to 0 or FALSE will disable this feature.</p><p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;show&nbsp;50&nbsp;records</span></div></li>
@@ -404,10 +427,10 @@ of this property or try and set PHP's memory limit higher using:</em></p><p><ol 
 <div class="clear"></div>
 </div>
 <a name="var$disable_warnings"></a>
-<h4 class="variable"><span><em>boolean</em></span> $disable_warnings <span class="value"></span></h4>
+<h4 class="variable"><span><em>boolean</em></span> $disable_warnings =  <span class="value">false</span></h4>
 <div class="doc_block">
 <p>By default, if <a href="../Zebra_Database/Zebra_Database.html#methodset_charset">set_charset()</a> method is not called, a warning message will be displayed in the debugging   console.</p>
-<p>The ensure that data is both properly saved and retrieved to and from the database, this method should be called   first thing after connecting to the database.</p><p>If you don't want to call this method nor do you want to see the warning, set this property to FALSE.</p><p>Default is TRUE.</p>
+<p>The ensure that data is both properly saved and retrieved to and from the database, this method should be called   first thing after connecting to the database.</p><p>If you don't want to call this method nor do you want to see the warning, set this property to TRUE.</p><p>Default is FALSE.</p>
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
 <tr>
@@ -460,7 +483,7 @@ value will be 0!</em></p><p><ol class="code"><li><div class="src-line"><span cla
 <div class="clear"></div>
 </div>
 <a name="var$halt_on_errors"></a>
-<h4 class="variable"><span><em>boolean</em></span> $halt_on_errors <span class="value"></span></h4>
+<h4 class="variable"><span><em>boolean</em></span> $halt_on_errors =  <span class="value">true</span></h4>
 <div class="doc_block">
 <p>When the value of this property is set to TRUE, the execution of the script will be halted for any unsuccessful   query and the debugging console will be shown (or debug information will be written to the log file if configured   so), <strong>if</strong> the value of the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property is <strong>not</strong> FALSE and the viewer's IP address is in the   <a href="../Zebra_Database/Zebra_Database.html#var$debugger_ip">debugger_ip</a> array (or <a href="../Zebra_Database/Zebra_Database.html#var$debugger_ip">debugger_ip</a> is an empty array).</p>
 <p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;don't&nbsp;stop&nbsp;execution&nbsp;for&nbsp;unsuccessful&nbsp;queries&nbsp;(if&nbsp;possible)</span></div></li>
@@ -481,12 +504,12 @@ value will be 0!</em></p><p><ol class="code"><li><div class="src-line"><span cla
 <div class="clear"></div>
 </div>
 <a name="var$log_path"></a>
-<h4 class="variable"><span><em>string</em></span> $log_path <span class="value"></span></h4>
+<h4 class="variable"><span><em>string</em></span> $log_path =  <span class="value">''</span></h4>
 <div class="doc_block">
 <p>Path where to store the log files when the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property is set to an array OR a callback function to   pass the log information to, instead of being written to a file.</p>
 <p><strong>The path is relative to your working directory.</strong></p><p><strong>Use &quot;.&quot; (dot) for the current directory instead of an empty string or the log file will be written to the
 server's root.</strong></p><p>If a full path is specified (including an extension) the log file's name will be used from there. Otherwise,   the log file's name will be <em>log.txt</em></p><p><em>At the given path the library will attempt to create a file named &quot;log.txt&quot; (or variations as described
-<a href="../Zebra_Database/Zebra_Database.html#var$debug">here</a>). Remember to grant the appropriate rights to the script!</em></p><p><strong>IF YOU'RE LOGGING, MAKE SURE YOU HAVE A CRON JOB OR SOMETHING THAT DELETES THE LOG FILE FROM TIME TO TIME!</strong></p><p>Default is &quot;&quot; (an empty string) - log files are created in the root of your server.</p><p>If you are using a callback function, the function receives two arguments:</p><p><ul><li>the debug information, as a string, just like it would go into the log file</li><li>the backtrace information, as a string, just like it would go into the log file - if <a href="../Zebra_Database/Zebra_Database.html#var$debug_show_backtrace">$debug_show_backtrace</a>
+<a href="../Zebra_Database/Zebra_Database.html#var$debug">here</a>). Remember to grant the appropriate rights to the script!</em></p><p><strong>IF YOU'RE LOGGING, MAKE SURE YOU HAVE A CRON JOB OR SOMETHING THAT DELETES THE LOG FILE FROM TIME TO TIME!</strong></p><p>Default is &quot;&quot; (an empty string) - log files are created in the root of your server.</p><p>If you are using a callback function, the function receives two arguments:</p><p><ul><li>the debug information, as a string, just like it would go into the log file</li><li>the backtrace information, as a string, just like it would go into the log file - if <a href="../Zebra_Database/Zebra_Database.html#var$debug_show_backtrace">debug_show_backtrace</a>
 is set to FALSE, this will be an empty string</li></ul>
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
@@ -499,7 +522,7 @@ is set to FALSE, this will be an empty string</li></ul>
 <div class="clear"></div>
 </div>
 <a name="var$max_query_time"></a>
-<h4 class="variable"><span><em>integer</em></span> $max_query_time <span class="value"></span></h4>
+<h4 class="variable"><span><em>integer</em></span> $max_query_time =  <span class="value">10</span></h4>
 <div class="doc_block">
 <p>Time (in seconds) after which a query will be considered as running for too long.</p>
 <p>If a query's execution time exceeds this number, a notification email will be automatically sent to the address   defined by <a href="../Zebra_Database/Zebra_Database.html#var$notification_address">notification_address</a>, having <a href="../Zebra_Database/Zebra_Database.html#var$notifier_domain">notifier_domain</a> in subject.</p><p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;consider&nbsp;queries&nbsp;running&nbsp;for&nbsp;more&nbsp;than&nbsp;5&nbsp;seconds&nbsp;as&nbsp;slow&nbsp;and&nbsp;send&nbsp;email</span></div></li>
@@ -516,7 +539,7 @@ is set to FALSE, this will be an empty string</li></ul>
 <div class="clear"></div>
 </div>
 <a name="var$memcache_compressed"></a>
-<h4 class="variable"><span><em>boolean</em></span> $memcache_compressed <span class="value"></span></h4>
+<h4 class="variable"><span><em>boolean</em></span> $memcache_compressed =  <span class="value">false</span></h4>
 <div class="doc_block">
 <p>Setting this property to TRUE will instruct to library to compress (using zlib) the cached results.</p>
 <p><em>For this to work, PHP needs to be configured with</em> <strong>--with-zlib[=DIR]</strong> <em>!</em></p><p><em>Set this property only if you are using &quot;memcache&quot; as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is FALSE.</p>
@@ -535,7 +558,7 @@ is set to FALSE, this will be an empty string</li></ul>
 <div class="clear"></div>
 </div>
 <a name="var$memcache_host"></a>
-<h4 class="variable"><span><em>mixed</em></span> $memcache_host <span class="value"></span></h4>
+<h4 class="variable"><span><em>mixed</em></span> $memcache_host =  <span class="value">false</span></h4>
 <div class="doc_block">
 <p>The host where memcache is listening for connections.</p>
 <p><em>Set this property only if you are using &quot;memcache&quot; as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is FALSE.</p>
@@ -554,7 +577,7 @@ is set to FALSE, this will be an empty string</li></ul>
 <div class="clear"></div>
 </div>
 <a name="var$memcache_key_prefix"></a>
-<h4 class="variable"><span><em>string</em></span> $memcache_key_prefix <span class="value"></span></h4>
+<h4 class="variable"><span><em>string</em></span> $memcache_key_prefix =  <span class="value">''</span></h4>
 <div class="doc_block">
 <p>The prefix for the keys used to identify cached queries in memcache. This allows separate caching of the same   queries by multiple instances of the libraries, or the same instance handling multiple domains on the same   memcache server.</p>
 <p><em>Set this property only if you are using &quot;memcache&quot; as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is &quot;&quot; (an empty string).</p>
@@ -573,7 +596,7 @@ is set to FALSE, this will be an empty string</li></ul>
 <div class="clear"></div>
 </div>
 <a name="var$memcache_port"></a>
-<h4 class="variable"><span><em>mixed</em></span> $memcache_port <span class="value"></span></h4>
+<h4 class="variable"><span><em>mixed</em></span> $memcache_port =  <span class="value">false</span></h4>
 <div class="doc_block">
 <p>The port where memcache is listening for connections.</p>
 <p><em>Set this property only if you are using &quot;memcache&quot; as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is FALSE.</p>
@@ -592,7 +615,7 @@ is set to FALSE, this will be an empty string</li></ul>
 <div class="clear"></div>
 </div>
 <a name="var$minimize_console"></a>
-<h4 class="variable"><span><em>boolean</em></span> $minimize_console <span class="value"></span></h4>
+<h4 class="variable"><span><em>boolean</em></span> $minimize_console =  <span class="value">true</span></h4>
 <div class="doc_block">
 <p>By setting this property to TRUE a minimized version of the debugging console will be shown by default, instead   of the full-sized one.</p>
 <p>Clicking on it will show the full debugging console.</p><p>For quick and easy debugging, setting the <em>highlight</em> argument of a method that has it will result in the   debugging console being shown at full size and with the respective query visible for inspecting.</p><p>Default is TRUE</p>
@@ -611,7 +634,7 @@ is set to FALSE, this will be an empty string</li></ul>
 <div class="clear"></div>
 </div>
 <a name="var$notification_address"></a>
-<h4 class="variable"><span><em>string</em></span> $notification_address <span class="value"></span></h4>
+<h4 class="variable"><span><em>string</em></span> $notification_address =  <span class="value">''</span></h4>
 <div class="doc_block">
 <p>Email address to which notification emails to be sent when a query's execution time exceeds the number of   seconds set by <a href="../Zebra_Database/Zebra_Database.html#var$max_query_time">max_query_time</a>. The notification email will be automatically sent to the address defined   by <a href="../Zebra_Database/Zebra_Database.html#var$notification_address">notification_address</a> and having <a href="../Zebra_Database/Zebra_Database.html#var$notifier_domain">notifier_domain</a> in subject.</p>
 <p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;the&nbsp;email&nbsp;address&nbsp;where&nbsp;to&nbsp;send&nbsp;an&nbsp;email&nbsp;when&nbsp;there&nbsp;are&nbsp;slow&nbsp;queries</span></div></li>
@@ -628,7 +651,7 @@ is set to FALSE, this will be an empty string</li></ul>
 <div class="clear"></div>
 </div>
 <a name="var$notifier_domain"></a>
-<h4 class="variable"><span><em>string</em></span> $notifier_domain <span class="value"></span></h4>
+<h4 class="variable"><span><em>string</em></span> $notifier_domain =  <span class="value">''</span></h4>
 <div class="doc_block">
 <p>Domain name to be used in the subject of notification emails sent when a query's execution time exceeds the number   of seconds set by <a href="../Zebra_Database/Zebra_Database.html#var$max_query_time">max_query_time</a>.</p>
 <p>If a query's execution time exceeds the number of seconds set by <a href="../Zebra_Database/Zebra_Database.html#var$max_query_time">max_query_time</a>, a notification email   will be automatically sent to the address defined by <a href="../Zebra_Database/Zebra_Database.html#var$notification_address">notification_address</a> and having <a href="../Zebra_Database/Zebra_Database.html#var$notifier_domain">notifier_domain</a>   in subject.</p><p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;set&nbsp;a&nbsp;domain&nbsp;name&nbsp;so&nbsp;that&nbsp;you'll&nbsp;know&nbsp;where&nbsp;the&nbsp;email&nbsp;comes&nbsp;from</span></div></li>
@@ -698,7 +721,7 @@ be 0!</em></p><p>See <a href="../Zebra_Database/Zebra_Database.html#var$found_ro
 <a name="class_methods"></a>
 <h3>Class methods</h3>
 <a name="method__construct"></a>
-<h4 class="method"><span><em>constructor</em></span> __construct() <span class="smalllinenumber">[line 704]</span></h4>
+<h4 class="method"><span><em>constructor</em></span> __construct() <span class="smalllinenumber">[line 726]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -717,7 +740,7 @@ __construct (
 <div class="clear"></div>
 </div>
 <a name="method__destruct"></a>
-<h4 class="method"><span><em>destructor</em></span> __destruct() <span class="smalllinenumber">[line 5193]</span></h4>
+<h4 class="method"><span><em>destructor</em></span> __destruct() <span class="smalllinenumber">[line 5227]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -740,7 +763,7 @@ __destruct (
 <div class="clear"></div>
 </div>
 <a name="methodclose"></a>
-<h4 class="method"><span><em>method</em></span> close() <span class="smalllinenumber">[line 767]</span></h4>
+<h4 class="method"><span><em>method</em></span> close() <span class="smalllinenumber">[line 773]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -779,7 +802,7 @@ $reset_options
 <div class="clear"></div>
 </div>
 <a name="methodconnect"></a>
-<h4 class="method"><span><em>method</em></span> connect() <span class="smalllinenumber">[line 836]</span></h4>
+<h4 class="method"><span><em>method</em></span> connect() <span class="smalllinenumber">[line 842]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -870,7 +893,7 @@ $connect
 <div class="clear"></div>
 </div>
 <a name="methoddcount"></a>
-<h4 class="method"><span><em>method</em></span> dcount() <span class="smalllinenumber">[line 916]</span></h4>
+<h4 class="method"><span><em>method</em></span> dcount() <span class="smalllinenumber">[line 922]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -963,7 +986,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddelete"></a>
-<h4 class="method"><span><em>method</em></span> delete() <span class="smalllinenumber">[line 985]</span></h4>
+<h4 class="method"><span><em>method</em></span> delete() <span class="smalllinenumber">[line 991]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -1040,7 +1063,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddlookup"></a>
-<h4 class="method"><span><em>method</em></span> dlookup() <span class="smalllinenumber">[line 1059]</span></h4>
+<h4 class="method"><span><em>method</em></span> dlookup() <span class="smalllinenumber">[line 1065]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1134,7 +1157,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddmax"></a>
-<h4 class="method"><span><em>method</em></span> dmax() <span class="smalllinenumber">[line 1146]</span></h4>
+<h4 class="method"><span><em>method</em></span> dmax() <span class="smalllinenumber">[line 1152]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1227,7 +1250,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddsum"></a>
-<h4 class="method"><span><em>method</em></span> dsum() <span class="smalllinenumber">[line 1231]</span></h4>
+<h4 class="method"><span><em>method</em></span> dsum() <span class="smalllinenumber">[line 1237]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1320,7 +1343,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoderror"></a>
-<h4 class="method"><span><em>method</em></span> error() <span class="smalllinenumber">[line 1298]</span></h4>
+<h4 class="method"><span><em>method</em></span> error() <span class="smalllinenumber">[line 1304]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -1368,7 +1391,7 @@ $return_error_number
 <div class="clear"></div>
 </div>
 <a name="methodescape"></a>
-<h4 class="method"><span><em>method</em></span> escape() <span class="smalllinenumber">[line 1351]</span></h4>
+<h4 class="method"><span><em>method</em></span> escape() <span class="smalllinenumber">[line 1357]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>string</em>
@@ -1424,7 +1447,7 @@ is ON.</em></p><p><ol class="code"><li><div class="src-line"><span class="src-co
 <div class="clear"></div>
 </div>
 <a name="methodfetch_assoc"></a>
-<h4 class="method"><span><em>method</em></span> fetch_assoc() <span class="smalllinenumber">[line 1387]</span></h4>
+<h4 class="method"><span><em>method</em></span> fetch_assoc() <span class="smalllinenumber">[line 1393]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1469,7 +1492,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfetch_assoc_all"></a>
-<h4 class="method"><span><em>method</em></span> fetch_assoc_all() <span class="smalllinenumber">[line 1463]</span></h4>
+<h4 class="method"><span><em>method</em></span> fetch_assoc_all() <span class="smalllinenumber">[line 1469]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1524,7 +1547,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfetch_obj"></a>
-<h4 class="method"><span><em>method</em></span> fetch_obj() <span class="smalllinenumber">[line 1553]</span></h4>
+<h4 class="method"><span><em>method</em></span> fetch_obj() <span class="smalllinenumber">[line 1559]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1573,7 +1596,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfetch_obj_all"></a>
-<h4 class="method"><span><em>method</em></span> fetch_obj_all() <span class="smalllinenumber">[line 1635]</span></h4>
+<h4 class="method"><span><em>method</em></span> fetch_obj_all() <span class="smalllinenumber">[line 1641]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1628,7 +1651,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfree_result"></a>
-<h4 class="method"><span><em>method</em></span> free_result() <span class="smalllinenumber">[line 1713]</span></h4>
+<h4 class="method"><span><em>method</em></span> free_result() <span class="smalllinenumber">[line 1719]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -1664,7 +1687,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodget_columns"></a>
-<h4 class="method"><span><em>method</em></span> get_columns() <span class="smalllinenumber">[line 1765]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_columns() <span class="smalllinenumber">[line 1771]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1710,7 +1733,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodget_link"></a>
-<h4 class="method"><span><em>method</em></span> get_link() <span class="smalllinenumber">[line 1823]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_link() <span class="smalllinenumber">[line 1829]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>identifier</em>
@@ -1746,7 +1769,7 @@ get_link (
 <div class="clear"></div>
 </div>
 <a name="methodget_selected_database"></a>
-<h4 class="method"><span><em>method</em></span> get_selected_database() <span class="smalllinenumber">[line 1841]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_selected_database() <span class="smalllinenumber">[line 1847]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1773,7 +1796,7 @@ get_selected_database (
 <div class="clear"></div>
 </div>
 <a name="methodget_tables"></a>
-<h4 class="method"><span><em>method</em></span> get_tables() <span class="smalllinenumber">[line 1946]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_tables() <span class="smalllinenumber">[line 1952]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -1815,7 +1838,7 @@ $database
 <div class="clear"></div>
 </div>
 <a name="methodget_table_columns"></a>
-<h4 class="method"><span><em>method</em></span> get_table_columns() <span class="smalllinenumber">[line 1869]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_table_columns() <span class="smalllinenumber">[line 1875]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -1857,7 +1880,7 @@ method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodget_table_status"></a>
-<h4 class="method"><span><em>method</em></span> get_table_status() <span class="smalllinenumber">[line 1909]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_table_status() <span class="smalllinenumber">[line 1915]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -1902,7 +1925,7 @@ calling this method.</em></p><p>% may be used as a wildcard in table's name to g
 <div class="clear"></div>
 </div>
 <a name="methodimplode"></a>
-<h4 class="method"><span><em>method</em></span> implode() <span class="smalllinenumber">[line 2004]</span></h4>
+<h4 class="method"><span><em>method</em></span> implode() <span class="smalllinenumber">[line 2010]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>string</em>
@@ -1964,7 +1987,7 @@ arrays directly in the replacement array became possible in version 2.8.6</em></
 <div class="clear"></div>
 </div>
 <a name="methodinsert"></a>
-<h4 class="method"><span><em>method</em></span> insert() <span class="smalllinenumber">[line 2160]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert() <span class="smalllinenumber">[line 2166]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2110,7 +2133,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodinsert_bulk"></a>
-<h4 class="method"><span><em>method</em></span> insert_bulk() <span class="smalllinenumber">[line 2349]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert_bulk() <span class="smalllinenumber">[line 2355]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2299,7 +2322,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodinsert_id"></a>
-<h4 class="method"><span><em>method</em></span> insert_id() <span class="smalllinenumber">[line 2414]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert_id() <span class="smalllinenumber">[line 2420]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2326,7 +2349,7 @@ insert_id (
 <div class="clear"></div>
 </div>
 <a name="methodinsert_update"></a>
-<h4 class="method"><span><em>method</em></span> insert_update() <span class="smalllinenumber">[line 2535]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert_update() <span class="smalllinenumber">[line 2541]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2435,7 +2458,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodlanguage"></a>
-<h4 class="method"><span><em>method</em></span> language() <span class="smalllinenumber">[line 2616]</span></h4>
+<h4 class="method"><span><em>method</em></span> language() <span class="smalllinenumber">[line 2622]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2471,7 +2494,7 @@ $language
 <div class="clear"></div>
 </div>
 <a name="methodoptimize"></a>
-<h4 class="method"><span><em>method</em></span> optimize() <span class="smalllinenumber">[line 2648]</span></h4>
+<h4 class="method"><span><em>method</em></span> optimize() <span class="smalllinenumber">[line 2654]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2511,7 +2534,7 @@ calling this method.</em></p><p>% may be used as a wildcard in table's name to o
 <div class="clear"></div>
 </div>
 <a name="methodoption"></a>
-<h4 class="method"><span><em>method</em></span> option() <span class="smalllinenumber">[line 2702]</span></h4>
+<h4 class="method"><span><em>method</em></span> option() <span class="smalllinenumber">[line 2708]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2572,7 +2595,7 @@ the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> 
 <div class="clear"></div>
 </div>
 <a name="methodparse_file"></a>
-<h4 class="method"><span><em>method</em></span> parse_file() <span class="smalllinenumber">[line 2746]</span></h4>
+<h4 class="method"><span><em>method</em></span> parse_file() <span class="smalllinenumber">[line 2752]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2612,7 +2635,7 @@ try the following:</em></p><p><ol class="code"><li><div class="src-line"><span c
 <div class="clear"></div>
 </div>
 <a name="methodquery"></a>
-<h4 class="method"><span><em>method</em></span> query() <span class="smalllinenumber">[line 2882]</span></h4>
+<h4 class="method"><span><em>method</em></span> query() <span class="smalllinenumber">[line 2888]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2713,7 +2736,7 @@ be 0!</em></p><p>Default is FALSE.</p></td>
 <div class="clear"></div>
 </div>
 <a name="methodquery_unbuffered"></a>
-<h4 class="method"><span><em>method</em></span> query_unbuffered() <span class="smalllinenumber">[line 3442]</span></h4>
+<h4 class="method"><span><em>method</em></span> query_unbuffered() <span class="smalllinenumber">[line 3448]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2738,7 +2761,7 @@ sync&quot; error unless you call the <a href="../Zebra_Database/Zebra_Database.h
 <div class="clear"></div>
 </div>
 <a name="methodseek"></a>
-<h4 class="method"><span><em>method</em></span> seek() <span class="smalllinenumber">[line 3474]</span></h4>
+<h4 class="method"><span><em>method</em></span> seek() <span class="smalllinenumber">[line 3480]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2786,7 +2809,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodselect"></a>
-<h4 class="method"><span><em>method</em></span> select() <span class="smalllinenumber">[line 3670]</span></h4>
+<h4 class="method"><span><em>method</em></span> select() <span class="smalllinenumber">[line 3676]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2936,7 +2959,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methodselect_database"></a>
-<h4 class="method"><span><em>method</em></span> select_database() <span class="smalllinenumber">[line 3713]</span></h4>
+<h4 class="method"><span><em>method</em></span> select_database() <span class="smalllinenumber">[line 3719]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2976,7 +2999,7 @@ $database
 <div class="clear"></div>
 </div>
 <a name="methodset_charset"></a>
-<h4 class="method"><span><em>method</em></span> set_charset() <span class="smalllinenumber">[line 3752]</span></h4>
+<h4 class="method"><span><em>method</em></span> set_charset() <span class="smalllinenumber">[line 3758]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -3022,7 +3045,7 @@ $collation
 <div class="clear"></div>
 </div>
 <a name="methodtable_exists"></a>
-<h4 class="method"><span><em>method</em></span> table_exists() <span class="smalllinenumber">[line 3904]</span></h4>
+<h4 class="method"><span><em>method</em></span> table_exists() <span class="smalllinenumber">[line 3910]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3064,7 +3087,7 @@ calling this method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodtransaction_complete"></a>
-<h4 class="method"><span><em>method</em></span> transaction_complete() <span class="smalllinenumber">[line 3782]</span></h4>
+<h4 class="method"><span><em>method</em></span> transaction_complete() <span class="smalllinenumber">[line 3788]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3100,7 +3123,7 @@ transaction_complete (
 <div class="clear"></div>
 </div>
 <a name="methodtransaction_start"></a>
-<h4 class="method"><span><em>method</em></span> transaction_start() <span class="smalllinenumber">[line 3858]</span></h4>
+<h4 class="method"><span><em>method</em></span> transaction_start() <span class="smalllinenumber">[line 3864]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3148,7 +3171,7 @@ $test_only
 <div class="clear"></div>
 </div>
 <a name="methodtruncate"></a>
-<h4 class="method"><span><em>method</em></span> truncate() <span class="smalllinenumber">[line 3940]</span></h4>
+<h4 class="method"><span><em>method</em></span> truncate() <span class="smalllinenumber">[line 3946]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3201,7 +3224,7 @@ calling this method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodupdate"></a>
-<h4 class="method"><span><em>method</em></span> update() <span class="smalllinenumber">[line 4067]</span></h4>
+<h4 class="method"><span><em>method</em></span> update() <span class="smalllinenumber">[line 4073]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3322,26 +3345,6 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <td valign="top"><em>boolean</em></td>
 <td valign="top"><strong>$highlight</strong></td>
 <td valign="top"><p>(Optional) If set to TRUE the debugging console will be opened automatically                                   and the query will be shown - really useful for quick and easy debugging.</p><p>Default is FALSE.</p></td>
-</tr>
-</table>
-<a href="#top" class="top">top</a>
-<div class="clear"></div>
-</div>
-<a name="method_show_debugging_console"></a>
-<h4 class="method"><span><em>method</em></span> _show_debugging_console() <span class="smalllinenumber">[line 4267]</span></h4>
-<div class="doc_block">
-<p class="code">
-<em>void</em>
-_show_debugging_console (
-)
-</p>
-<p>Shows the debugging console (or writes debugging information to the log file) when the script ends, if   necessary conditions are met.</p>
-<p><em>This is a public method because it's used with register_shutdown_function.</em></p>
-<h5>Tags:</h5>
-<table cellspacing="0" cellpadding="0">
-<tr>
-<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
-<td valign="top">public</td>
 </tr>
 </table>
 <a href="#top" class="top">top</a>

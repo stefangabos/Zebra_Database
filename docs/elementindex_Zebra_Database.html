@@ -66,8 +66,6 @@ Package: <strong>Zebra_Database</strong>
 <a name="_"></a>
 <h3>_</h3>
 <dl>
-<dt>_show_debugging_console</dt>
-<dd>in file <em>Zebra_Database.php</em>, method <a href="Zebra_Database/Zebra_Database.html#method_show_debugging_console">Zebra_Database::_show_debugging_console()</a><span>Shows the debugging console (or writes debugging information to the log file) when the script ends, if   necessary conditions are met.</span></dd>
 <dt>__construct</dt>
 <dd>in file <em>Zebra_Database.php</em>, method <a href="Zebra_Database/Zebra_Database.html#method__construct">Zebra_Database::__construct()</a><span>Constructor of the class</span></dd>
 <dt>__destruct</dt>
@@ -112,8 +110,10 @@ Package: <strong>Zebra_Database</strong>
 <dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$debug">Zebra_Database::$debug</a><span>Turns debugging on or off.</span></dd>
 <dt>$debugger_ip</dt>
 <dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$debugger_ip">Zebra_Database::$debugger_ip</a><span>An array of IP addresses for which to show the debugging console / write to log file, if the <a href="Zebra_Database/Zebra_Database.html#var$debug">debug</a> property   is <strong>not</strong> set to FALSE.</span></dd>
+<dt>$debug_cookie_name</dt>
+<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$debug_cookie_name">Zebra_Database::$debug_cookie_name</a><span>If debugging is enabled on the fly via the presence of a query string argument (see the <a href="Zebra_Database/Zebra_Database.html#var$debug">debug</a> property),   a cookie is set so that the query string is not required to be present in subsequent requests.</span></dd>
 <dt>$debug_show_backtrace</dt>
-<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$debug_show_backtrace">Zebra_Database::$debug_show_backtrace</a><span>Indicates <a href="http://php.net/manual/en/function.debug-backtrace.php">backtrace</a> information should be shown   in the debugging console.</span></dd>
+<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$debug_show_backtrace">Zebra_Database::$debug_show_backtrace</a><span>Indicates whether <a href="http://php.net/manual/en/function.debug-backtrace.php">backtrace</a> information should be shown   in the debugging console.</span></dd>
 <dt>$debug_show_explain</dt>
 <dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$debug_show_explain">Zebra_Database::$debug_show_explain</a><span>Indicates whether queries should be <a href="http://dev.mysql.com/doc/refman/5.0/en/explain.html">EXPLAIN</a>ed in the   debugging console.</span></dd>
 <dt>$debug_show_globals</dt>
