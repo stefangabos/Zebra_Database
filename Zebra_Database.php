@@ -745,7 +745,7 @@ class Zebra_Database {
         if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest')
 
             // show the debug console when script execution ends
-            register_shutdown_function(array($this, '_debug'));
+            register_shutdown_function(array($this, '_show_debugging_console'));
 
     }
 
@@ -4264,7 +4264,7 @@ class Zebra_Database {
      *
      *  @return void
      */
-    function _debug() {
+    public function _show_debugging_console() {
 
         // if debugging is on
         if ($this->_is_debugging_enabled()) {
