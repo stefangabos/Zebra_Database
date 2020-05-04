@@ -43,7 +43,7 @@ class Zebra_Database {
      *
      *  @var boolean
      */
-    public $auto_quote_replacements;
+    public $auto_quote_replacements = true;
 
     /**
      *  Path (with trailing slash) where to cache queries results.
@@ -102,7 +102,7 @@ class Zebra_Database {
      *
      *  @var string
      */
-    public $caching_method;
+    public $caching_method = 'disk';
 
     /**
      *  Turns debugging on or off.
@@ -166,7 +166,7 @@ class Zebra_Database {
      *
      *  @var boolean
      */
-    public $debug;
+    public $debug = true;
 
     /**
      *  Indicates {@link http://php.net/manual/en/function.debug-backtrace.php backtrace} information should be shown
@@ -178,7 +178,7 @@ class Zebra_Database {
      *
      *  @var boolean
      */
-    public $debug_show_backtrace;
+    public $debug_show_backtrace = true;
 
     /**
      *  Indicates whether queries should be {@link http://dev.mysql.com/doc/refman/5.0/en/explain.html EXPLAIN}ed in the
@@ -190,7 +190,7 @@ class Zebra_Database {
      *
      *  @var boolean
      */
-    public $debug_show_explain;
+    public $debug_show_explain = true;
 
     /**
      *  Indicates whether $_REQUEST, $_POST, $_GET, $_SESSION, $_COOKIE, $_FILES and $_SERVER globals should be available
@@ -217,7 +217,7 @@ class Zebra_Database {
      *
      *  @var mixed
      */
-    public $debug_show_globals;
+    public $debug_show_globals = true;
 
     /**
      *  Sets the number records returned by SELECT queries to be shown in the debugging console.
@@ -244,7 +244,7 @@ class Zebra_Database {
      *
      *  @var integer
      */
-    public $debug_show_records;
+    public $debug_show_records = 20;
 
     /**
      *  An array of IP addresses for which to show the debugging console / write to log file, if the {@link debug} property
@@ -261,7 +261,7 @@ class Zebra_Database {
      *
      *  @var array
      */
-    public $debugger_ip;
+    public $debugger_ip = array();
 
     /**
      *  By default, if {@link set_charset()} method is not called, a warning message will be displayed in the debugging
@@ -272,11 +272,11 @@ class Zebra_Database {
      *
      *  If you don't want to call this method nor do you want to see the warning, set this property to FALSE.
      *
-     *  Default is TRUE.
+     *  Default is FALSE.
      *
      *  @var boolean
      */
-    public $disable_warnings;
+    public $disable_warnings = false;
 
     /**
      *  After running a SELECT query through {@link select()}, {@link query()} or {@link query_unbuffered()} methods and
@@ -338,7 +338,7 @@ class Zebra_Database {
      *
      *  @var  boolean
      */
-    public $halt_on_errors;
+    public $halt_on_errors = true;
 
     /**
      *  Path where to store the log files when the {@link debug} property is set to an array OR a callback function to
@@ -367,7 +367,7 @@ class Zebra_Database {
      *
      *  @var string
      */
-    public $log_path;
+    public $log_path = '';
 
     /**
      *  Time (in seconds) after which a query will be considered as running for too long.
@@ -384,7 +384,7 @@ class Zebra_Database {
      *
      *  @var integer
      */
-    public $max_query_time;
+    public $max_query_time = 10;
 
     /**
      *  Setting this property to TRUE will instruct to library to compress (using zlib) the cached results.
@@ -399,7 +399,7 @@ class Zebra_Database {
      *
      *  @var boolean
      */
-    public $memcache_compressed;
+    public $memcache_compressed = false;
 
     /**
      *  The host where memcache is listening for connections.
@@ -412,7 +412,7 @@ class Zebra_Database {
      *
      *  @var mixed
      */
-    public $memcache_host;
+    public $memcache_host = false;
 
     /**
      *  The port where memcache is listening for connections.
@@ -425,7 +425,7 @@ class Zebra_Database {
      *
      *  @var mixed
      */
-    public $memcache_port;
+    public $memcache_port = false;
 
     /**
      *  The prefix for the keys used to identify cached queries in memcache. This allows separate caching of the same
@@ -440,7 +440,7 @@ class Zebra_Database {
      *
      *  @var string
      */
-    public $memcache_key_prefix;
+    public $memcache_key_prefix = '';
 
     /**
      *  By setting this property to TRUE a minimized version of the debugging console will be shown by default, instead
@@ -457,7 +457,7 @@ class Zebra_Database {
      *
      *  @var boolean
      */
-    public $minimize_console;
+    public $minimize_console = true;
 
     /**
      *  Email address to which notification emails to be sent when a query's execution time exceeds the number of
@@ -471,7 +471,7 @@ class Zebra_Database {
      *
      *  @var string
      */
-    public $notification_address;
+    public $notification_address = '';
 
     /**
      *  Domain name to be used in the subject of notification emails sent when a query's execution time exceeds the number
@@ -488,7 +488,7 @@ class Zebra_Database {
      *
      *  @var string
      */
-    public $notifier_domain;
+    public $notifier_domain = '';
 
     /**
      *  After running a SELECT query through {@link select()}, {@link query()} or {@link query_unbuffered()} methods, this
@@ -540,14 +540,14 @@ class Zebra_Database {
      *
      *  @access private
      */
-    private $cached_results;
+    private $cached_results = array();
 
     /**
      *  MySQL link identifier.
      *
      *  @access private
      */
-    private $connection;
+    private $connection = false;
 
     /**
      *  Array that will store the database connection credentials
@@ -561,7 +561,7 @@ class Zebra_Database {
      *
      *  @access private
      */
-    private $debug_info;
+    private $debug_info = array();
 
     /**
      *  The language to be used in the debugging console.
@@ -570,7 +570,7 @@ class Zebra_Database {
      *
      *  @access private
      */
-    private $language;
+    private $language = 'english';
 
     /**
      *  Instance of an opened memcache server connection.
@@ -579,7 +579,7 @@ class Zebra_Database {
      *
      *  @access private
      */
-    private $memcache;
+    private $memcache = false;
 
     /**
      *  Stores extra connect options that affect behavior for a connection.
@@ -588,7 +588,7 @@ class Zebra_Database {
      *
      *  @access private
      */
-    private $options;
+    private $options = array();
 
     /**
      *  Absolute path to the library, used for includes
@@ -602,7 +602,7 @@ class Zebra_Database {
      *
      *  @access private
      */
-    private $total_execution_time;
+    private $total_execution_time = 0;
 
     /**
      *  Tells whether a transaction is in progress or not.
@@ -615,14 +615,14 @@ class Zebra_Database {
      *
      *  @access private
      */
-    private $transaction_status;
+    private $transaction_status = 0;
 
     /**
      *  Flag telling the library whether to use unbuffered queries or not
      *
      *  @access private
      */
-    private $unbuffered;
+    private $unbuffered = false;
 
     /**
      *  Array of warnings, generated by the script, to be shown to the user in the debugging console
@@ -714,23 +714,7 @@ class Zebra_Database {
         // public properties
         $this->cache_path = $this->path . '/cache/';
 
-        $this->debug_show_records = 20;
-
-        $this->debug = $this->debug_show_backtrace = $this->debug_show_explain = $this->debug_show_globals = $this->halt_on_errors = $this->minimize_console = $this->auto_quote_replacements = true;
-
-        $this->language('english');
-
-        $this->max_query_time = 10;
-
-        $this->log_path = $this->notification_address = $this->notifier_domain = $this->memcache_key_prefix = '';
-
-        $this->total_execution_time = $this->transaction_status = 0;
-
-        $this->caching_method = 'disk';
-
-        $this->cached_results = $this->debug_info = $this->debugger_ip = $this->options = array();
-
-        $this->connection = $this->memcache = $this->memcache_host = $this->memcache_port = $this->memcache_compressed = $this->unbuffered = false;
+        $this->language($this->language);
 
         // set default warnings:
         $this->warnings = array(
