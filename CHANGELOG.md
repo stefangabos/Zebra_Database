@@ -1,6 +1,7 @@
 ## version 2.10.0 (TBA)
 
 - added option for enabling debugging on the fly via a query string parameter - see [documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug)
+- the default value of [disable_warnings](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$disable_warnings) is now FALSE
 - updated German language; thanks to [Bernhard Morgenstern](https://github.com/bmorg)!
 
 ## version 2.9.14 (April 30, 2020)
