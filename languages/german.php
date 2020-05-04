@@ -3,8 +3,9 @@
     /**
     * German language file for the Zebra_Database class, by Stefan Gabos <contact@stefangabos.ro>.
     *
-    * @version      1.0
+    * @version      2.0
     * @author       etb09
+    * @author       Bernhard Morgenstern (https://github.com/bmorg)
     *
     */
 
