@@ -49,7 +49,7 @@ Package: <strong>Zebra_Database</strong>
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.9.14 (last revision: April 30, 2020)</li>
+<li>2.10.0 (last revision: May 04, 2020)</li>
 </ul>
 <h4>Copyright:</h4>
 <ul>
@@ -133,6 +133,7 @@ Package: <strong>Zebra_Database</strong>
 <li><a href="#methodtransaction_start">transaction_start</a></li>
 <li><a href="#methodtruncate">truncate</a></li>
 <li><a href="#methodupdate">update</a></li>
+<li><a href="#method_show_debugging_console">_show_debugging_console</a></li>
 </ul>
 </div>
 <div class="clear"></div>
@@ -246,7 +247,11 @@ methods like <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()
 <p>Turns debugging on or off.</p>
 <p>The property can take one of the following values:</p><p><ul><li><strong>boolean TRUE</strong><br>
 Setting this property to a boolean TRUE will instruct the library to generate debugging information for each
-query it executes and show the information on the screen when script's execution ends.</li></ul> <ul><li><strong>an array([bool]daily, [bool]hourly, [bool]backtrace)</strong><br>
+query it executes and show the information on the screen when script's execution ends.</li></ul> <ul><li><strong>a string</strong><br>
+Setting this property to a string will instruct the library to turn debugging on when the given string is
+present in the query string part of the URL and has the value of <strong>1</strong> (i.e ?show_debug=1)
+<br><br><div class="highlight">Useful for turning debugging on on the fly. If you decide to use this in production, make
+sure to not use an easily guessable value!</div></li></ul> <ul><li><strong>an array([bool]daily, [bool]hourly, [bool]backtrace)</strong><br>
 Setting this property to an array like above, will instruct the library to generate debugging information for
 each query it executes and write the information to a log file when the script's execution ends.</li></ul> <ul><li>the value of the first entry (daily) indicates whether the log files should be grouped by days or not;
 if set to TRUE, log files will have their name in the form of &quot;log_ymd.txt&quot;, where &quot;y&quot;, &quot;m&quot; and &quot;d&quot;
@@ -267,9 +272,17 @@ the debugging information consumes a lot of resources and is meant to be used *o
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;disable&nbsp;the&nbsp;generation&nbsp;of&nbsp;debugging&nbsp;information</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a>&nbsp;</span>=&nbsp;<span class="src-id">false</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;turn&nbsp;debugging&nbsp;on&nbsp;when&nbsp;in&nbsp;the&nbsp;&quot;debug_db&quot;&nbsp;is&nbsp;found&nbsp;in&nbsp;the&nbsp;query&nbsp;string&nbsp;and&nbsp;has&nbsp;the&nbsp;value&nbsp;&quot;1&quot;</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;(meaning&nbsp;that&nbsp;you&nbsp;have&nbsp;to&nbsp;have&nbsp;?debug_db=1&nbsp;in&nbsp;your&nbsp;URL)</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a>&nbsp;</span>=&nbsp;<span class="src-str">'debug_db'</span><span class="src-sym">;</span></div></li>
 </ol><p>Default is TRUE.</p>
 <h5>Tags:</h5>
 <table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>since:</strong>&nbsp;&nbsp;</td>
+<td valign="top">enabling debugging via query string is available since 2.10.0</td>
+</tr>
 <tr>
 <td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
 <td valign="top">public</td>
@@ -685,7 +698,7 @@ be 0!</em></p><p>See <a href="../Zebra_Database/Zebra_Database.html#var$found_ro
 <a name="class_methods"></a>
 <h3>Class methods</h3>
 <a name="method__construct"></a>
-<h4 class="method"><span><em>constructor</em></span> __construct() <span class="smalllinenumber">[line 692]</span></h4>
+<h4 class="method"><span><em>constructor</em></span> __construct() <span class="smalllinenumber">[line 704]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -704,7 +717,7 @@ __construct (
 <div class="clear"></div>
 </div>
 <a name="method__destruct"></a>
-<h4 class="method"><span><em>destructor</em></span> __destruct() <span class="smalllinenumber">[line 5161]</span></h4>
+<h4 class="method"><span><em>destructor</em></span> __destruct() <span class="smalllinenumber">[line 5193]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -727,7 +740,7 @@ __destruct (
 <div class="clear"></div>
 </div>
 <a name="methodclose"></a>
-<h4 class="method"><span><em>method</em></span> close() <span class="smalllinenumber">[line 755]</span></h4>
+<h4 class="method"><span><em>method</em></span> close() <span class="smalllinenumber">[line 767]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -766,7 +779,7 @@ $reset_options
 <div class="clear"></div>
 </div>
 <a name="methodconnect"></a>
-<h4 class="method"><span><em>method</em></span> connect() <span class="smalllinenumber">[line 824]</span></h4>
+<h4 class="method"><span><em>method</em></span> connect() <span class="smalllinenumber">[line 836]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -857,7 +870,7 @@ $connect
 <div class="clear"></div>
 </div>
 <a name="methoddcount"></a>
-<h4 class="method"><span><em>method</em></span> dcount() <span class="smalllinenumber">[line 904]</span></h4>
+<h4 class="method"><span><em>method</em></span> dcount() <span class="smalllinenumber">[line 916]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -950,7 +963,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddelete"></a>
-<h4 class="method"><span><em>method</em></span> delete() <span class="smalllinenumber">[line 973]</span></h4>
+<h4 class="method"><span><em>method</em></span> delete() <span class="smalllinenumber">[line 985]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -1027,7 +1040,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddlookup"></a>
-<h4 class="method"><span><em>method</em></span> dlookup() <span class="smalllinenumber">[line 1047]</span></h4>
+<h4 class="method"><span><em>method</em></span> dlookup() <span class="smalllinenumber">[line 1059]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1121,7 +1134,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddmax"></a>
-<h4 class="method"><span><em>method</em></span> dmax() <span class="smalllinenumber">[line 1134]</span></h4>
+<h4 class="method"><span><em>method</em></span> dmax() <span class="smalllinenumber">[line 1146]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1214,7 +1227,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoddsum"></a>
-<h4 class="method"><span><em>method</em></span> dsum() <span class="smalllinenumber">[line 1219]</span></h4>
+<h4 class="method"><span><em>method</em></span> dsum() <span class="smalllinenumber">[line 1231]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1307,7 +1320,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methoderror"></a>
-<h4 class="method"><span><em>method</em></span> error() <span class="smalllinenumber">[line 1286]</span></h4>
+<h4 class="method"><span><em>method</em></span> error() <span class="smalllinenumber">[line 1298]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -1355,7 +1368,7 @@ $return_error_number
 <div class="clear"></div>
 </div>
 <a name="methodescape"></a>
-<h4 class="method"><span><em>method</em></span> escape() <span class="smalllinenumber">[line 1339]</span></h4>
+<h4 class="method"><span><em>method</em></span> escape() <span class="smalllinenumber">[line 1351]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>string</em>
@@ -1411,7 +1424,7 @@ is ON.</em></p><p><ol class="code"><li><div class="src-line"><span class="src-co
 <div class="clear"></div>
 </div>
 <a name="methodfetch_assoc"></a>
-<h4 class="method"><span><em>method</em></span> fetch_assoc() <span class="smalllinenumber">[line 1375]</span></h4>
+<h4 class="method"><span><em>method</em></span> fetch_assoc() <span class="smalllinenumber">[line 1387]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1456,7 +1469,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfetch_assoc_all"></a>
-<h4 class="method"><span><em>method</em></span> fetch_assoc_all() <span class="smalllinenumber">[line 1451]</span></h4>
+<h4 class="method"><span><em>method</em></span> fetch_assoc_all() <span class="smalllinenumber">[line 1463]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1511,7 +1524,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfetch_obj"></a>
-<h4 class="method"><span><em>method</em></span> fetch_obj() <span class="smalllinenumber">[line 1541]</span></h4>
+<h4 class="method"><span><em>method</em></span> fetch_obj() <span class="smalllinenumber">[line 1553]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1560,7 +1573,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfetch_obj_all"></a>
-<h4 class="method"><span><em>method</em></span> fetch_obj_all() <span class="smalllinenumber">[line 1623]</span></h4>
+<h4 class="method"><span><em>method</em></span> fetch_obj_all() <span class="smalllinenumber">[line 1635]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1615,7 +1628,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodfree_result"></a>
-<h4 class="method"><span><em>method</em></span> free_result() <span class="smalllinenumber">[line 1701]</span></h4>
+<h4 class="method"><span><em>method</em></span> free_result() <span class="smalllinenumber">[line 1713]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -1651,7 +1664,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodget_columns"></a>
-<h4 class="method"><span><em>method</em></span> get_columns() <span class="smalllinenumber">[line 1753]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_columns() <span class="smalllinenumber">[line 1765]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1697,7 +1710,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodget_link"></a>
-<h4 class="method"><span><em>method</em></span> get_link() <span class="smalllinenumber">[line 1811]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_link() <span class="smalllinenumber">[line 1823]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>identifier</em>
@@ -1733,7 +1746,7 @@ get_link (
 <div class="clear"></div>
 </div>
 <a name="methodget_selected_database"></a>
-<h4 class="method"><span><em>method</em></span> get_selected_database() <span class="smalllinenumber">[line 1829]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_selected_database() <span class="smalllinenumber">[line 1841]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -1760,7 +1773,7 @@ get_selected_database (
 <div class="clear"></div>
 </div>
 <a name="methodget_tables"></a>
-<h4 class="method"><span><em>method</em></span> get_tables() <span class="smalllinenumber">[line 1934]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_tables() <span class="smalllinenumber">[line 1946]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -1802,7 +1815,7 @@ $database
 <div class="clear"></div>
 </div>
 <a name="methodget_table_columns"></a>
-<h4 class="method"><span><em>method</em></span> get_table_columns() <span class="smalllinenumber">[line 1857]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_table_columns() <span class="smalllinenumber">[line 1869]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -1844,7 +1857,7 @@ method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodget_table_status"></a>
-<h4 class="method"><span><em>method</em></span> get_table_status() <span class="smalllinenumber">[line 1897]</span></h4>
+<h4 class="method"><span><em>method</em></span> get_table_status() <span class="smalllinenumber">[line 1909]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>array</em>
@@ -1889,7 +1902,7 @@ calling this method.</em></p><p>% may be used as a wildcard in table's name to g
 <div class="clear"></div>
 </div>
 <a name="methodimplode"></a>
-<h4 class="method"><span><em>method</em></span> implode() <span class="smalllinenumber">[line 1992]</span></h4>
+<h4 class="method"><span><em>method</em></span> implode() <span class="smalllinenumber">[line 2004]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>string</em>
@@ -1951,7 +1964,7 @@ arrays directly in the replacement array became possible in version 2.8.6</em></
 <div class="clear"></div>
 </div>
 <a name="methodinsert"></a>
-<h4 class="method"><span><em>method</em></span> insert() <span class="smalllinenumber">[line 2148]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert() <span class="smalllinenumber">[line 2160]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2097,7 +2110,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodinsert_bulk"></a>
-<h4 class="method"><span><em>method</em></span> insert_bulk() <span class="smalllinenumber">[line 2337]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert_bulk() <span class="smalllinenumber">[line 2349]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2286,7 +2299,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodinsert_id"></a>
-<h4 class="method"><span><em>method</em></span> insert_id() <span class="smalllinenumber">[line 2402]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert_id() <span class="smalllinenumber">[line 2414]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2313,7 +2326,7 @@ insert_id (
 <div class="clear"></div>
 </div>
 <a name="methodinsert_update"></a>
-<h4 class="method"><span><em>method</em></span> insert_update() <span class="smalllinenumber">[line 2523]</span></h4>
+<h4 class="method"><span><em>method</em></span> insert_update() <span class="smalllinenumber">[line 2535]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2422,7 +2435,7 @@ In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#method
 <div class="clear"></div>
 </div>
 <a name="methodlanguage"></a>
-<h4 class="method"><span><em>method</em></span> language() <span class="smalllinenumber">[line 2604]</span></h4>
+<h4 class="method"><span><em>method</em></span> language() <span class="smalllinenumber">[line 2616]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2458,7 +2471,7 @@ $language
 <div class="clear"></div>
 </div>
 <a name="methodoptimize"></a>
-<h4 class="method"><span><em>method</em></span> optimize() <span class="smalllinenumber">[line 2636]</span></h4>
+<h4 class="method"><span><em>method</em></span> optimize() <span class="smalllinenumber">[line 2648]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2498,7 +2511,7 @@ calling this method.</em></p><p>% may be used as a wildcard in table's name to o
 <div class="clear"></div>
 </div>
 <a name="methodoption"></a>
-<h4 class="method"><span><em>method</em></span> option() <span class="smalllinenumber">[line 2690]</span></h4>
+<h4 class="method"><span><em>method</em></span> option() <span class="smalllinenumber">[line 2702]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2559,7 +2572,7 @@ the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> 
 <div class="clear"></div>
 </div>
 <a name="methodparse_file"></a>
-<h4 class="method"><span><em>method</em></span> parse_file() <span class="smalllinenumber">[line 2734]</span></h4>
+<h4 class="method"><span><em>method</em></span> parse_file() <span class="smalllinenumber">[line 2746]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2599,7 +2612,7 @@ try the following:</em></p><p><ol class="code"><li><div class="src-line"><span c
 <div class="clear"></div>
 </div>
 <a name="methodquery"></a>
-<h4 class="method"><span><em>method</em></span> query() <span class="smalllinenumber">[line 2870]</span></h4>
+<h4 class="method"><span><em>method</em></span> query() <span class="smalllinenumber">[line 2882]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2700,7 +2713,7 @@ be 0!</em></p><p>Default is FALSE.</p></td>
 <div class="clear"></div>
 </div>
 <a name="methodquery_unbuffered"></a>
-<h4 class="method"><span><em>method</em></span> query_unbuffered() <span class="smalllinenumber">[line 3430]</span></h4>
+<h4 class="method"><span><em>method</em></span> query_unbuffered() <span class="smalllinenumber">[line 3442]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -2725,7 +2738,7 @@ sync&quot; error unless you call the <a href="../Zebra_Database/Zebra_Database.h
 <div class="clear"></div>
 </div>
 <a name="methodseek"></a>
-<h4 class="method"><span><em>method</em></span> seek() <span class="smalllinenumber">[line 3462]</span></h4>
+<h4 class="method"><span><em>method</em></span> seek() <span class="smalllinenumber">[line 3474]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2773,7 +2786,7 @@ $resource
 <div class="clear"></div>
 </div>
 <a name="methodselect"></a>
-<h4 class="method"><span><em>method</em></span> select() <span class="smalllinenumber">[line 3658]</span></h4>
+<h4 class="method"><span><em>method</em></span> select() <span class="smalllinenumber">[line 3670]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>mixed</em>
@@ -2923,7 +2936,7 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <div class="clear"></div>
 </div>
 <a name="methodselect_database"></a>
-<h4 class="method"><span><em>method</em></span> select_database() <span class="smalllinenumber">[line 3701]</span></h4>
+<h4 class="method"><span><em>method</em></span> select_database() <span class="smalllinenumber">[line 3713]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -2963,7 +2976,7 @@ $database
 <div class="clear"></div>
 </div>
 <a name="methodset_charset"></a>
-<h4 class="method"><span><em>method</em></span> set_charset() <span class="smalllinenumber">[line 3740]</span></h4>
+<h4 class="method"><span><em>method</em></span> set_charset() <span class="smalllinenumber">[line 3752]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>void</em>
@@ -3009,7 +3022,7 @@ $collation
 <div class="clear"></div>
 </div>
 <a name="methodtable_exists"></a>
-<h4 class="method"><span><em>method</em></span> table_exists() <span class="smalllinenumber">[line 3892]</span></h4>
+<h4 class="method"><span><em>method</em></span> table_exists() <span class="smalllinenumber">[line 3904]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3051,7 +3064,7 @@ calling this method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodtransaction_complete"></a>
-<h4 class="method"><span><em>method</em></span> transaction_complete() <span class="smalllinenumber">[line 3770]</span></h4>
+<h4 class="method"><span><em>method</em></span> transaction_complete() <span class="smalllinenumber">[line 3782]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3087,7 +3100,7 @@ transaction_complete (
 <div class="clear"></div>
 </div>
 <a name="methodtransaction_start"></a>
-<h4 class="method"><span><em>method</em></span> transaction_start() <span class="smalllinenumber">[line 3846]</span></h4>
+<h4 class="method"><span><em>method</em></span> transaction_start() <span class="smalllinenumber">[line 3858]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3135,7 +3148,7 @@ $test_only
 <div class="clear"></div>
 </div>
 <a name="methodtruncate"></a>
-<h4 class="method"><span><em>method</em></span> truncate() <span class="smalllinenumber">[line 3928]</span></h4>
+<h4 class="method"><span><em>method</em></span> truncate() <span class="smalllinenumber">[line 3940]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3188,7 +3201,7 @@ calling this method.</em></p></td>
 <div class="clear"></div>
 </div>
 <a name="methodupdate"></a>
-<h4 class="method"><span><em>method</em></span> update() <span class="smalllinenumber">[line 4055]</span></h4>
+<h4 class="method"><span><em>method</em></span> update() <span class="smalllinenumber">[line 4067]</span></h4>
 <div class="doc_block">
 <p class="code">
 <em>boolean</em>
@@ -3314,12 +3327,32 @@ column IN (?)</em> conditions. See second example <a href="../Zebra_Database/Zeb
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
+<a name="method_show_debugging_console"></a>
+<h4 class="method"><span><em>method</em></span> _show_debugging_console() <span class="smalllinenumber">[line 4267]</span></h4>
+<div class="doc_block">
+<p class="code">
+<em>void</em>
+_show_debugging_console (
+)
+</p>
+<p>Shows the debugging console (or writes debugging information to the log file) when the script ends, if   necessary conditions are met.</p>
+<p><em>This is a public method because it's used with register_shutdown_function.</em></p>
+<h5>Tags:</h5>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td valign="top"><strong>access:</strong>&nbsp;&nbsp;</td>
+<td valign="top">public</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
 </div>
 </td>
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Thu, 30 Apr 20</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+Documentation generated on <span>Mon, 04 May 20</span> by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 </div>
 </div>
 <!-- Global site tag (gtag.js) - Google Analytics -->
