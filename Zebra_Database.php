@@ -115,9 +115,13 @@ class Zebra_Database {
      *
      *  -   <b>a string</b><br>
      *      Setting this property to a string will instruct the library to turn debugging on when the given string is
-     *      present in the query string part of the URL and has the value of <b>1</b> (i.e ?show_debug=1)
+     *      present as argument in the query string (in the URL) and has the value of <b>1</b> (i.e ?show_debug=1)
      *      <br><br><samp>Useful for turning debugging on on the fly. If you decide to use this in production, make
-     *      sure to not use an easily guessable value!</samp>
+     *      sure to not use an easily guessable value!</samp><br>
+     *      When debugging is turned on this way, a session cookie (a cookie that expires when the browser is closed) will
+     *      also be set so that the query string argument doesn't need to be present for subsequent requests. Debugging
+     *      can also be turned off by setting said query string argument to <b>0</b> (i.e ?show_debug=0). The cookie's
+     *      name is set via the {@link debug_cookie_name} property.
      *
      *  -   <b>an array([bool]daily, [bool]hourly, [bool]backtrace)</b><br>
      *      Setting this property to an array like above, will instruct the library to generate debugging information for
@@ -169,7 +173,20 @@ class Zebra_Database {
     public $debug = true;
 
     /**
-     *  Indicates {@link http://php.net/manual/en/function.debug-backtrace.php backtrace} information should be shown
+     *  If debugging is enabled on the fly via the presence of a query string argument (see the {@link debug} property),
+     *  a cookie is set so that the query string is not required to be present in subsequent requests.
+     *
+     *  This property sets that cookie's name.
+     *
+     *  Default value is <b>zebra_db</b>
+     *
+     *  @since 2.10.0
+     *
+     *  @var string
+     */
+    public $debug_cookie_name = 'zebra_db';
+
+    /**
      *  Indicates whether {@link http://php.net/manual/en/function.debug-backtrace.php backtrace} information should be shown
      *  in the debugging console.
      *
@@ -4833,6 +4850,34 @@ class Zebra_Database {
      */
     private function _is_debugging_enabled() {
 
+        // assume this is false
+        $debugger_enabled_via_query_string = false;
+
+        // if debugging is handled via a parameter in the query string
+        // and argument is present in the query string
+        if (is_string($this->debug) && isset($_GET[$this->debug])) {
+
+            // if debugging needs to be turned on
+            if ($_GET[$this->debug] === '1') {
+
+                // set flag
+                $debugger_enabled_via_query_string = true;
+
+                // set cookie which expires when the browser is closed
+                setcookie($this->debug_cookie_name, '1', 0, '/', '', false, true);
+
+            // consider turning debugging off
+            } else
+
+                // remove cookie
+                setcookie($this->debug_cookie_name, '', time() - 3600, '/', '', false, true);
+
+            // if cookie is already set
+        } elseif (isset($_COOKIE[$this->debug_cookie_name]))
+
+            // set flag
+            $debugger_enabled_via_query_string = true;
+
         // debugging is on if
         return
 
@@ -4842,7 +4887,7 @@ class Zebra_Database {
                 $this->debug === true ||
 
                 // debugging is enabled on the fly via the presence of the required value in the query string (in the URL)
-                (is_string($this->debug) && isset($_GET[$this->debug]) && $_GET[$this->debug] == '1') ||
+                $debugger_enabled_via_query_string ||
 
                 // debugging is enabled but needs to be logged instead of being shown on the screen
                 (is_array($this->debug) && empty(array_filter($this->debug, function($value) { return !(is_bool($value) || $value === 0 || $value === 1); })))
