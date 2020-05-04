@@ -4253,7 +4253,7 @@ class Zebra_Database {
      *
      *  @return void
      */
-    public function _show_debugging_console() {
+    function _show_debugging_console() {
 
         // if debugging is on
         if ($this->_is_debugging_enabled()) {
