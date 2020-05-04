@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.9.14 (last revision: April 30, 2020)
+ *  @version    2.10.0 (last revision: May 04, 2020)
  *  @copyright  (c) 2006 - 2020 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -113,6 +113,12 @@ class Zebra_Database {
      *      Setting this property to a boolean TRUE will instruct the library to generate debugging information for each
      *      query it executes and show the information on the screen when script's execution ends.
      *
+     *  -   <b>a string</b><br>
+     *      Setting this property to a string will instruct the library to turn debugging on when the given string is
+     *      present in the query string part of the URL and has the value of <b>1</b> (i.e ?show_debug=1)
+     *      <br><br><samp>Useful for turning debugging on on the fly. If you decide to use this in production, make
+     *      sure to not use an easily guessable value!</samp>
+     *
      *  -   <b>an array([bool]daily, [bool]hourly, [bool]backtrace)</b><br>
      *      Setting this property to an array like above, will instruct the library to generate debugging information for
      *      each query it executes and write the information to a log file when the script's execution ends.
@@ -148,9 +154,15 @@ class Zebra_Database {
      *
      *  // disable the generation of debugging information
      *  $db->debug = false;
+     *
+     *  // turn debugging on when in the "debug_db" is found in the query string and has the value "1"
+     *  // (meaning that you have to have ?debug_db=1 in your URL)
+     *  $db->debug = 'debug_db';
      *  </code>
      *
      *  Default is TRUE.
+     *
+     *  @since  enabling debugging via query string is available since 2.10.0
      *
      *  @var boolean
      */
@@ -3247,7 +3259,7 @@ class Zebra_Database {
                 $this->last_result->calc_rows = true;
 
             // if debugging is on
-            if ($this->debug !== false) {
+            if ($this->_is_debugging_enabled()) {
 
                 $warning = '';
 
@@ -4254,27 +4266,10 @@ class Zebra_Database {
      */
     function _debug() {
 
-        // if
-        if (
+        // if debugging is on
+        if ($this->_is_debugging_enabled()) {
 
-            // debug is enabled AND
-            $this->debug !== false
-
-            // debugger_ip is an array AND
-            && is_array($this->debugger_ip)
-
-                && (
-
-                    // debugger_ip is an empty array OR
-                    empty($this->debugger_ip)
-
-                    // the viewer's IP is the allowed array
-                    || in_array($_SERVER['REMOTE_ADDR'], $this->debugger_ip)
-
-                )
-
-        ) {
-
+            // if data is to be written to a log file instead of being shown on the screen
             if (is_array($this->debug)) return call_user_func_array(array($this, '_write_log'), $this->debug);
 
             // include the SqlFormatter library, if available
@@ -4843,6 +4838,43 @@ class Zebra_Database {
     }
 
     /**
+     *  Checks whether debugging is enabled
+     *
+     *  @access private
+     */
+    private function _is_debugging_enabled() {
+
+        // debugging is on if
+        return
+
+            (
+
+                // debug is boolean TRUE
+                $this->debug === true ||
+
+                // debugging is enabled on the fly via the presence of the required value in the query string (in the URL)
+                (is_string($this->debug) && isset($_GET[$this->debug]) && $_GET[$this->debug] == '1') ||
+
+                // debugging is enabled but needs to be logged instead of being shown on the screen
+                (is_array($this->debug) && empty(array_filter($this->debug, function($value) { return !(is_bool($value) || $value === 0 || $value === 1); })))
+
+            // AND
+            ) && (
+
+                // debugger_ip is not an array
+                !is_array($this->debugger_ip) ||
+
+                // debugger_ip is an array and is empty
+                empty($this->debugger_ip) ||
+
+                // debugger_ip is an array and the viewer's IP is whitelisted
+                in_array($_SERVER['REMOTE_ADDR'], $this->debugger_ip)
+
+            );
+
+    }
+
+    /**
      *  Handles saving of debug information and halts the execution of the script on fatal error or if the
      *  {@link halt_on_errors} property is set to TRUE
      *
@@ -4851,7 +4883,7 @@ class Zebra_Database {
     private function _log($category, $data, $fatal = true) {
 
         // if debugging is on
-        if ($this->debug !== false) {
+        if ($this->_is_debugging_enabled()) {
 
             // if category is different than "warnings"
             // (warnings are generated internally)
@@ -4920,7 +4952,7 @@ class Zebra_Database {
             $this->found_rows = $this->returned_rows = $resource->num_rows;
 
             // if debugging to the console is turned on
-            if ($this->debug === true) {
+            if ($this->_is_debugging_enabled()) {
 
                 // update the number of returned rows in the debugging console
                 $this->debug_info['successful-queries'][$resource->log_index]['returned_rows'] = $resource->num_rows;
@@ -4950,7 +4982,7 @@ class Zebra_Database {
             }
 
         // if it was not the last row, debugging to the console is turned on and we've not yet reached the limit imposed by debug_show_records
-        } elseif ($this->debug === true && count($this->debug_info['successful-queries'][$resource->log_index]['records']) < $this->debug_show_records)
+        } elseif ($this->_is_debugging_enabled() && count($this->debug_info['successful-queries'][$resource->log_index]['records']) < $this->debug_show_records)
 
             // add row data to the debugging console
             $this->debug_info['successful-queries'][$resource->log_index]['records'][] = $result;
