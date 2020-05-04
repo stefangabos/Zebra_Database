@@ -4255,8 +4255,8 @@ class Zebra_Database {
     }
 
     /**
-     *  Shows the debugging console when the script ends, <i>if</i> {@link debug} is TRUE and the viewer's IP address is
-     *  in the {@link debugger_ip} array (or <i>$debugger_ip</i> is an empty array).
+     *  Shows the debugging console (or writes debugging information to the log file) when the script ends, if
+     *  necessary conditions are met.
      *
      *  <i>This is a public method because it's used with register_shutdown_function.</i>
      *
@@ -4920,7 +4920,7 @@ class Zebra_Database {
 
             return false;
 
-        // if there are any unsuccessful queries or other errors and no debugging
+        // if there are any unsuccessful queries or other errors and debugging is OFF
         } elseif (($category == 'unsuccessful-queries' || $category == 'errors') && $this->debug === false) {
 
             // get backtrace information
