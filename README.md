@@ -51,12 +51,14 @@ For using **memcache** as caching method, PHP must be compiled with the [memcach
 Download the latest version, unpack it, and load it in your project
 
 ```php
+<?php
+
 require_once 'Zebra_Database.php';
 ```
 
 ## Installation with Composer
 You can install Zebra_Database via [Composer](https://packagist.org/packages/stefangabos/zebra_database)
-```
+```shell
 composer require stefangabos/zebra_database
 ```
 
@@ -65,6 +67,8 @@ composer require stefangabos/zebra_database
 ##### Connecting to a database
 
 ```php
+<?php
+
 // instantiate the library
 $db = new Zebra_Database();
 
@@ -75,6 +79,8 @@ $db->connect('host', 'username', 'password', 'database');
 ##### Running queries
 
 ```php
+<?php
+
 // question marks will re replaced automatically with the escaped values from the array
 // I ENCOURAGE YOU TO WRITE YOUR QUERIES IN A READABLE FORMAT, LIKE BELOW
 $db->query('
@@ -109,6 +115,8 @@ while ($row = $db->fetch_assoc()) {
 ##### An INSERT statement
 
 ```php
+<?php
+
 // notice that you can use MySQL functions in values
 $db->insert(
     'tablename',
