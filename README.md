@@ -1,6 +1,6 @@
 <img src="https://github.com/stefangabos/zebrajs/blob/master/docs/images/logo.png" alt="zebrajs" align="right">
 
-# Zebra_Database
+# Zebra Database
 
 *A compact (one-file only), lightweight yet feature-rich PHP MySQLi database wrapper providing methods for interacting with MySQL databases that are more secure, powerful and intuitive than PHP's default ones.*
 
@@ -14,13 +14,19 @@ It encourages developers to write maintainable code and provides a better defaul
 
 The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to E_ALL.
 
-:books: Check out the [awesome documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)!
+## :notebook_with_decorative_cover: Documentation
 
-## Support the development of this library
+Check out the [awesome documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)!
 
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3WTC6RTC7496Q)
+## :heart: Support the development of this library
 
-## Features
+If you like this project please star it on GitHub.<br>
+If you are feeling very generous, you can also buy me a coffee through PayPal.<br>
+Thank you!
+
+[<img src="https://img.shields.io/github/stars/stefangabos/zebra_database?color=green&label=star%20it%20on%20GitHub" width="132" height="20" alt="Star it on GitHub">](https://github.com/stefangabos/Zebra_Database) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3WTC6RTC7496Q)
+
+## :wrench: Features
 
 - it uses the [mysqli extension](http://www.php.net/manual/en/book.mysqli.php) extension for communicating with the database instead of the old *mysql* extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; **this is not a wrapper for the PDO extension which is already a wrapper in itself!**
 
