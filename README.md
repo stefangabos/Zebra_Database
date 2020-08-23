@@ -18,7 +18,7 @@ The code is heavily commented and generates no warnings/errors/notices when PHP'
 
 Check out the [awesome documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)!
 
-## :heart: Support the development of this library
+## Support the development of this library
 
 If you like this project please star it on GitHub.<br>
 If you are feeling very generous, you can also buy me a coffee through PayPal.<br>
@@ -26,7 +26,7 @@ Thank you!
 
 [<img src="https://img.shields.io/github/stars/stefangabos/zebra_database?color=green&label=star%20it%20on%20GitHub" width="132" height="20" alt="Star it on GitHub">](https://github.com/stefangabos/Zebra_Database) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3WTC6RTC7496Q)
 
-## :wrench: Features
+## Features
 
 - it uses the [mysqli extension](http://www.php.net/manual/en/book.mysqli.php) extension for communicating with the database instead of the old *mysql* extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; **this is not a wrapper for the PDO extension which is already a wrapper in itself!**
 
@@ -57,8 +57,6 @@ For using **memcache** as caching method, PHP must be compiled with the [memcach
 Download the latest version, unpack it, and load it in your project
 
 ```php
-<?php
-
 require_once 'Zebra_Database.php';
 ```
 
@@ -73,8 +71,6 @@ composer require stefangabos/zebra_database
 ##### Connecting to a database
 
 ```php
-<?php
-
 // instantiate the library
 $db = new Zebra_Database();
 
@@ -85,8 +81,6 @@ $db->connect('host', 'username', 'password', 'database');
 ##### Running queries
 
 ```php
-<?php
-
 // question marks will re replaced automatically with the escaped values from the array
 // I ENCOURAGE YOU TO WRITE YOUR QUERIES IN A READABLE FORMAT, LIKE BELOW
 $db->query('
@@ -121,8 +115,6 @@ while ($row = $db->fetch_assoc()) {
 ##### An INSERT statement
 
 ```php
-<?php
-
 // notice that you can use MySQL functions in values
 $db->insert(
     'tablename',
