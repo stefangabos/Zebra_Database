@@ -7,17 +7,17 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.10.0 (last revision: May 04, 2020)
+ *  @version    2.10.0 (last revision: November 17, 2020)
  *  @copyright  (c) 2006 - 2020 Stefan Gabos
- *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
+ *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
  */
 class Zebra_Database {
 
     /**
-     *  The number of rows affected after running an INSERT, UPDATE, REPLACE or DELETE query.
+     *  The number of rows affected after running an `INSERT`, `UPDATE`, `REPLACE` or `DELETE` query.
      *
-     *  See the {@link returned_rows} property for getting the number of rows returned by SELECT queries.
+     *  See the {@link returned_rows} property for getting the number of rows returned by `SELECT` queries.
      *
      *  <code>
      *  // update some columns in a table
@@ -37,7 +37,7 @@ class Zebra_Database {
     /**
      *  Should escaped variable be also enclosed in single quotes?
      *
-     *  Default is TRUE.
+     *  Default is `TRUE`
      *
      *  @since  2.9.13
      *
@@ -46,9 +46,9 @@ class Zebra_Database {
     public $auto_quote_replacements = true;
 
     /**
-     *  Path (with trailing slash) where to cache queries results.
+     *  Path where to store cached queries results.
      *
-     *  <i>The path must be relative to your working path and not the class' path!</i>
+     *  *The path must be relative to your working path and not the path of this library!*
      *
      *  @var string
      */
@@ -59,27 +59,26 @@ class Zebra_Database {
      *
      *  Can be either:
      *
-     *  - <b>disk</b>     - query results are cached as files on the disk at the path specified by {@link cache_path}.
-     *  - <b>session</b>  - query results are cached in the session (use this only for small data sets). Note that when
-     *                      using this method for caching results, the library expects an active session, or will trigger
-     *                      a fatal error otherwise!
-     *  - <b>memcache</b> - query results are cached using a {@link http://memcached.org/about memcache} server; when
-     *                      using this method make sure to also set the appropriate values for {@link memcache_host},
-     *                       {@link memcache_port} and optionally {@link memcache_compressed}.
-     *                      <br>
-     *                      <i>For using memcache as caching method, PHP must be compiled with the
-     *                      {@link http://pecl.php.net/package/memcache memcache} extension and, if {@link memcache_compressed}
-     *                      property is set to TRUE, needs to be configured with </i><b>--with-zlib[=DIR]</b><i>.</i>
+     *  - **disk**      -   query results are cached as files on the disk at the path specified by {@link cache_path}
      *
-     *  If caching method is set to "memcache", {@link memcache_host}, {@link memcache_port} and optionally
-     *  {@link memcache_compressed} must be set <b>prior</b> to calling the {@link connect()} method! Failing to do so
-     *  will disable caching.
+     *  - **session**   -   query results are cached in the session (use this only for smaller data sets)<br>
+     *                      *When using this method, the library expects an active session and will trigger a fatal error
+     *                      otherwise!*
+     *
+     *  - **memcache**  -   query results are cached using a {@link https://memcached.org/about memcache} server<br>
+     *                      When using this method make sure to also set the appropriate values for {@link memcache_host},
+     *                      {@link memcache_port} and optionally {@link memcache_compressed} **prior** to calling the
+     *                      {@link connect()} method! Failing to do so will disable caching.
+     *                      <br>
+     *                      *When using this method, PHP must be compiled with the {@link https://pecl.php.net/package/memcache memcache}
+     *                      extension and, if {@link memcache_compressed} property is set to `TRUE`, needs to be configured
+     *                      with **--with-zlib[=DIR]***
      *
      *  <code>
      *  // the host where memcache is listening for connections
      *  $db->memcache_host = 'localhost';
      *
-     *  // the port where memcache is listening for connections
+     *  // the port on which memcache is listening for connections
      *  $db->memcache_port = 11211;
      *
      *  // for this to work, PHP needs to be configured with --with-zlib[=dir] !
@@ -93,10 +92,10 @@ class Zebra_Database {
      *  $db->connect(...)
      *  </code>
      *
-     *  <i>Caching is done on a per-query basis by setting the "cache" argument when calling some of the library's
-     *  methods like {@link query()}, {@link select()}, {@link dcount()}, {@link dlookup()}, {@link dmax()} and {@link dsum()}!</i>
+     *  *Caching is done on a per-query basis by setting the `cache` argument when calling some of the library's methods
+     *  like {@link query()}, {@link select()}, {@link dcount()}, {@link dlookup()}, {@link dmax()} and {@link dsum()}!*
      *
-     *  Default is "disk".
+     *  Default is `disk`
      *
      *  @since  2.7
      *
@@ -109,68 +108,85 @@ class Zebra_Database {
      *
      *  The property can take one of the following values:
      *
-     *  -   <b>boolean TRUE</b><br>
-     *      Setting this property to a boolean TRUE will instruct the library to generate debugging information for each
-     *      query it executes and show the information on the screen when script's execution ends.
+     *  -   **boolean TRUE**<br>
+     *      Setting this property to a boolean `TRUE` will instruct the library to generate debugging information for each
+     *      query it executes and show the information on the screen when script execution ends.
      *
-     *  -   <b>a string</b><br>
+     *  -   **a string**<br>
      *      Setting this property to a string will instruct the library to turn debugging on when the given string is
-     *      present as argument in the query string (in the URL) and has the value of <b>1</b> (i.e ?show_debug=1)
-     *      <br><br><samp>Useful for turning debugging on on the fly. If you decide to use this in production, make
-     *      sure to not use an easily guessable value!</samp><br>
+     *      present as argument in the query string (in the URL) and has the value of `1` (i.e `?show_debug=1`)
+     *      <br><br>*Useful for turning debugging on on the fly. If you decide to use this in production, make
+     *      sure to not use an easily guessable value!*<br><br>
      *      When debugging is turned on this way, a session cookie (a cookie that expires when the browser is closed) will
      *      also be set so that the query string argument doesn't need to be present for subsequent requests. Debugging
-     *      can also be turned off by setting said query string argument to <b>0</b> (i.e ?show_debug=0). The cookie's
-     *      name is set via the {@link debug_cookie_name} property.
+     *      can also be turned off by setting said query string argument to `0` (i.e `?show_debug=0`). The cookie's name
+     *      can be set via the {@link debug_cookie_name} property.
      *
-     *  -   <b>an array([bool]daily, [bool]hourly, [bool]backtrace)</b><br>
-     *      Setting this property to an array like above, will instruct the library to generate debugging information for
-     *      each query it executes and write the information to a log file when the script's execution ends.
+     *  -   **an array([bool]daily, [bool]hourly, [bool]backtrace)**<br>
+     *      Setting this property to an array like above will instruct the library to generate debugging information for
+     *      each query it executes and write the information to a log file when script execution ends.
      *
      *          -   the value of the first entry (daily) indicates whether the log files should be grouped by days or not;
-     *              if set to TRUE, log files will have their name in the form of "log_ymd.txt", where "y", "m" and "d"
-     *              represent two digit values for year, month and day, respectively.
+     *              if set to `TRUE`, log files will have their name in the form of `log_ymd.txt`, where `y`, `m` and `d`
+     *              represent the two digit values of year, month and day, respectively.
      *
      *          -   the value of the second entry (hourly) indicates whether the log files should be grouped by hours or not;
-     *              if set to TRUE, log files will have their name in the form of "log_ymd_h.txt", where "y", "m" and "d"
-     *              represent two digit values for year, month and day, respectively, while "h" represents the two digit
-     *              value for hour.<br>
-     *              <i>Note that if this argument is set to TRUE, the first entry will be automatically considered as TRUE.</i>
+     *              if set to `TRUE`, log files will have their name in the form of `log_ymd_h.txt`, where `y`, `m` and `d`
+     *              represent the two digit values of year, month and day, respectively, while `h` represents the two digit
+     *              value of the hour.<br>
+     *              *Note that if this argument is set to `TRUE`, the first argument will be automatically considered as `TRUE`*
      *
      *          -   the value of the third entry (backtrace) indicates whether backtrace information (where the query was
      *              called from) should also be written to the log file.<br><br>
-     *              <i>the default values for all the entries is FALSE and all are optional, therefore setting the value
-     *              of this property to an empty array is equivalent of setting it to array(false, false, false)</i>
+     *              *The default values for all the entries is `FALSE` and all are optional, therefore setting the value of
+     *              this property to an empty array is equivalent of setting it to `array(false, false, false)`*
      *
-     *  -   <b>boolean FALSE</b><br>
-     *      Setting this property to FALSE will instruct the library to not generate debugging information for any of the
-     *      queries it executes. Even so, if an error occurs the library will try to write information to PHP's error log
-     *      file, if your environment is {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors
+     *  -   **boolean FALSE**<br>
+     *      Setting this property to `FALSE` will instruct the library to not generate debugging information for any of the
+     *      queries it executes. Even so, if an error occurs the library will try to log the error to PHP's error log
+     *      file, if your environment is {@link https://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors
      *      configured to do so} !
      *
-     *  <samp>It is highly recommended to set the value of this property to FALSE on the production environment. Generating
-     *  the debugging information consumes a lot of resources and is meant to be used *only* in the development process!</samp>
+     *  >   It is highly recommended to set the value of this property to `FALSE` on the production environment. Generating
+     *  the debugging information may consume a lot of resources and is meant to be used **only** in the development process!
      *
      *  <code>
      *  // log debug information instead of showing it on screen
      *  // log everything in one single file (not by day/hour) and also show backtrace information
-     *  $db->debug = array(false, false, true);
+     *  $db->`debug = array(false,` false, true)
      *
      *  // disable the generation of debugging information
      *  $db->debug = false;
      *
-     *  // turn debugging on when in the "debug_db" is found in the query string and has the value "1"
+     *  // turn debugging on when "debug_db" is found in the query string and has the value "1"
      *  // (meaning that you have to have ?debug_db=1 in your URL)
      *  $db->debug = 'debug_db';
      *  </code>
      *
-     *  Default is TRUE.
+     *  Default is `TRUE`
      *
-     *  @since  enabling debugging via query string is available since 2.10.0
+     *  @since  turning debugging on/off via a query string is available since 2.10.0
      *
      *  @var boolean
      */
     public $debug = true;
+
+    /**
+     *  An array of IP addresses for which to show the debugging console / write to log file, if the {@link debug} property
+     *  is **not** set to `FALSE`.
+     *
+     *  <code>
+     *  // show the debugging console only to specific IPs
+     *  $db->debugger_ip = array('xxx.xxx.xxx.xxx', 'yyy.yyy.yyy.yyy');
+     *  </code>
+     *
+     *  Default is an empty array
+     *
+     *  @since  1.0.6
+     *
+     *  @var array
+     */
+    public $debugger_ip = array();
 
     /**
      *  If debugging is enabled on the fly via the presence of a query string argument (see the {@link debug} property),
@@ -178,7 +194,7 @@ class Zebra_Database {
      *
      *  This property sets that cookie's name.
      *
-     *  Default value is <b>zebra_db</b>
+     *  Default value is `zebra_db`
      *
      *  @since 2.10.0
      *
@@ -187,10 +203,10 @@ class Zebra_Database {
     public $debug_cookie_name = 'zebra_db';
 
     /**
-     *  Indicates whether {@link http://php.net/manual/en/function.debug-backtrace.php backtrace} information should be shown
-     *  in the debugging console.
+     *  Indicates whether {@link https://php.net/manual/en/function.debug-backtrace.php backtrace} information should be
+     *  shown in the debugging console.
      *
-     *  Default is TRUE.
+     *  Default is `TRUE`
      *
      *  @since  2.5.9
      *
@@ -199,10 +215,10 @@ class Zebra_Database {
     public $debug_show_backtrace = true;
 
     /**
-     *  Indicates whether queries should be {@link http://dev.mysql.com/doc/refman/5.0/en/explain.html EXPLAIN}ed in the
+     *  Indicates whether queries should be {@link https://dev.mysql.com/doc/refman/8.0/en/explain.html EXPLAIN}ed in the
      *  debugging console.
      *
-     *  Default is TRUE.
+     *  Default is `TRUE`
      *
      *  @since  2.5.9
      *
@@ -211,10 +227,10 @@ class Zebra_Database {
     public $debug_show_explain = true;
 
     /**
-     *  Indicates whether $_REQUEST, $_POST, $_GET, $_SESSION, $_COOKIE, $_FILES and $_SERVER globals should be available
-     *  in the debugging console, under the "globals" section.
+     *  Indicates which of `$_REQUEST`, `$_POST`, `$_GET`, `$_SESSION`, `$_COOKIE`, `$_FILES` and `$_SERVER` superglobals
+     *  should be available in the debugging console, under the *globals* section.
      *
-     *  Can be set to either boolean TRUE or FALSE, as a global setting, or as an associative array where each option's
+     *  Can be set to either boolean `TRUE` or `FALSE` as a global setting, or as an associative array where each option's
      *  visibility can be individually be set, like in the example below:
      *
      *  <code>
@@ -229,7 +245,7 @@ class Zebra_Database {
      *  ));
      *  </code>
      *
-     *  Default is TRUE.
+     *  Default is `TRUE`
      *
      *  @since  2.9.14
      *
@@ -238,25 +254,25 @@ class Zebra_Database {
     public $debug_show_globals = true;
 
     /**
-     *  Sets the number records returned by SELECT queries to be shown in the debugging console.
+     *  Sets the number of records returned by `SELECT` queries to be shown in the debugging console.
      *
-     *  Setting this to 0 or FALSE will disable this feature.
+     *  Setting this to `0` or `FALSE` will disable this feature.
      *
      *  <code>
      *  // show 50 records
      *  $db->debug_show_records(50);
      *  </code>
      *
-     *  <i>Be aware that having this property set to a high number (hundreds), and having queries that return that many
-     *  rows, can cause your script to crash due to memory limitations. In this case you should either lower the value
-     *  of this property or try and set PHP's memory limit higher using:</i>
+     *  *Be aware that having this property set to a high number (hundreds) and having queries that di return that many
+     *  rows can cause your script to crash due to memory limitations. In this case you should either lower the value
+     *  of this property or try and set PHP's memory limit higher using:*
      *
      *  <code>
      *  // set PHP's memory limit to 20 MB
      *  ini_set('memory_limit','20M');
      *  </code>
      *
-     *  Default is 20.
+     *  Default is `20`
      *
      *  @since  1.0.9
      *
@@ -265,54 +281,35 @@ class Zebra_Database {
     public $debug_show_records = 20;
 
     /**
-     *  An array of IP addresses for which to show the debugging console / write to log file, if the {@link debug} property
-     *  is <b>not</b> set to FALSE.
-     *
-     *  <code>
-     *  // show the debugging console only to specific IPs
-     *  $db->debugger_ip = array('xxx.xxx.xxx.xxx', 'yyy.yyy.yyy.yyy');
-     *  </code>
-     *
-     *  Default is an empty array.
-     *
-     *  @since  1.0.6
-     *
-     *  @var array
-     */
-    public $debugger_ip = array();
-
-    /**
      *  By default, if {@link set_charset()} method is not called, a warning message will be displayed in the debugging
      *  console.
      *
      *  The ensure that data is both properly saved and retrieved to and from the database, this method should be called
-     *  first thing after connecting to the database.
+     *  first thing after connecting to a database.
      *
-     *  If you don't want to call this method nor do you want to see the warning, set this property to TRUE.
+     *  If you don't want to call this method nor do you want to see the warning, set this property to `TRUE`
      *
-     *  Default is FALSE.
+     *  Default is `FALSE`
      *
      *  @var boolean
      */
     public $disable_warnings = false;
 
     /**
-     *  After running a SELECT query through {@link select()}, {@link query()} or {@link query_unbuffered()} methods and
-     *  having the <i>calc_rows</i> argument set to TRUE, this property will contain the number of records that <b>would</b>
-     *  have been returned <b>if</b> there was no LIMIT applied to the query.
+     *  After running a `SELECT` query through {@link select()}, {@link query()} or {@link query_unbuffered()} methods and
+     *  having the *calc_rows* argument set to `TRUE`, this property will contain the number of records that **would** have
+     *  been returned **if** there was no `LIMIT` applied to the query.
      *
-     *  If <i>calc_rows</i> is FALSE or is TRUE but there is no LIMIT applied to the query, this property's value will
-     *  be the same as the value of the {@link returned_rows} property.
+     *  If *calc_rows* is `FALSE`, or it is `TRUE` but there is no `LIMIT` applied to the query, this property's value
+     *  will be the same as the value of the {@link returned_rows} property.
      *
-     *  <i>For {@link query_unbuffered unbuffered} queries the value of this property will be available only after
-     *  iterating over all the records with either {@link fetch_assoc()} or {@link fetch_obj()} methods. Until then, the
-     *  value will be 0!</i>
+     *  *For {@link query_unbuffered unbuffered queries} the value of this property will be available **only** after
+     *  iterating over **all** the records with either {@link fetch_assoc()} or {@link fetch_obj()} methods. Until then,
+     *  the value will be **0**!*
      *
      *  <code>
-     *  // let's assume that "table" has 100 rows
-     *  // but we're only selecting the first 10 of those
-     *  // the last argument of the method tells the library
-     *  // to get the total number of records in the table
+`     *  // let's assume` that "table" has 100 rows but we're only selecting the first 10 of thos
+     *  // the last argument of the method tells the library to get the total number of records in the table
      *  $db->query('
      *      SELECT
      *          *
@@ -340,9 +337,9 @@ class Zebra_Database {
     public $found_rows;
 
     /**
-     *  When the value of this property is set to TRUE, the execution of the script will be halted for any unsuccessful
-     *  query and the debugging console will be shown (or debug information will be written to the log file if configured
-     *  so), <b>if</b> the value of the {@link debug} property is <b>not</b> FALSE and the viewer's IP address is in the
+     *  When the value of this property is set to `TRUE`, the execution of the script will be halted after the first
+     *  unsuccessful query and the debugging console will be shown (or debug information will be written to the log file if configured
+     *  so), **if** the value of the {@link debug} property is **not** `FALSE` and the viewer's IP address is in the
      *  {@link debugger_ip} array (or {@link debugger_ip} is an empty array).
      *
      *  <code>
@@ -350,7 +347,7 @@ class Zebra_Database {
      *  $db->halt_on_errors = false;
      *  </code>
      *
-     *  Default is TRUE.
+     *  Default is `TRUE`
      *
      *  @since  1.0.5
      *
@@ -360,28 +357,28 @@ class Zebra_Database {
 
     /**
      *  Path where to store the log files when the {@link debug} property is set to an array OR a callback function to
-     *  pass the log information to, instead of being written to a file.
+     *  pass the log information to instead of being written to a file.
      *
-     *  <b>The path is relative to your working directory.</b>
+     *  **The path is relative to your working directory.**
      *
-     *  <b>Use "." (dot) for the current directory instead of an empty string or the log file will be written to the
-     *  server's root.</b>
+     *  *Use `.` (dot) for the current directory instead of an empty string or the log file will be written to the server's
+     *  root.*
      *
-     *  If a full path is specified (including an extension) the log file's name will be used from there. Otherwise,
-     *  the log file's name will be <i>log.txt</i>
+     *  If a full path is specified (including an extension) the log file's name will be used from there. Otherwise, the
+     *  log file's name will be `log.txt`
      *
-     *  <i>At the given path the library will attempt to create a file named "log.txt" (or variations as described
-     *  {@link debug here}). Remember to grant the appropriate rights to the script!</i>
+     *  *At the given path the library will attempt to create a file named "log.txt" (or variations as described
+     *  {@link debug here}) so the appropriate rights will need to be granted to the script!*
      *
-     *  <b>IF YOU'RE LOGGING, MAKE SURE YOU HAVE A CRON JOB OR SOMETHING THAT DELETES THE LOG FILE FROM TIME TO TIME!</b>
+     *  **IF YOU'RE LOGGING, MAKE SURE YOU HAVE A CRON JOB THAT DELETES THE LOG FILES FROM TIME TO TIME!**
      *
-     *  Default is "" (an empty string) - log files are created in the root of your server.
+     *  Default is `""` (an empty string) - log files are created in the root of your server.
      *
-     *  If you are using a callback function, the function receives two arguments:
+     *  If you are using a callback function, the function receives the following arguments:
      *
      *  -   the debug information, as a string, just like it would go into the log file
      *  -   the backtrace information, as a string, just like it would go into the log file - if {@link debug_show_backtrace}
-     *      is set to FALSE, this will be an empty string
+     *      is set to `FALSE`, this will be an empty string
      *
      *  @var string
      */
@@ -390,7 +387,7 @@ class Zebra_Database {
     /**
      *  Time (in seconds) after which a query will be considered as running for too long.
      *
-     *  If a query's execution time exceeds this number, a notification email will be automatically sent to the address
+     *  If a query's execution time exceeds this number a notification email will be automatically sent to the address
      *  defined by {@link notification_address}, having {@link notifier_domain} in subject.
      *
      *  <code>
@@ -398,20 +395,20 @@ class Zebra_Database {
      *  $db->max_query_time = 5;
      *  </code>
      *
-     *  Default is 10.
+     *  Default is `10`
      *
      *  @var integer
      */
     public $max_query_time = 10;
 
     /**
-     *  Setting this property to TRUE will instruct to library to compress (using zlib) the cached results.
+     *  Setting this property to `TRUE` will instruct to library to compress the cached results (using `zlib`).
      *
-     *  <i>For this to work, PHP needs to be configured with </i> <b>--with-zlib[=DIR]</b> <i>!</i>
+     *  *For this to work, PHP needs to be configured with **--with-zlib[=DIR]**!*
      *
-     *  <i>Set this property only if you are using "memcache" as {@link caching_method}.</i>
+     *  *Set this property only if you are using `memcache` as {@link caching_method}.*
      *
-     *  Default is FALSE.
+     *  Default is `FALSE`
      *
      *  @since  2.7
      *
@@ -422,9 +419,9 @@ class Zebra_Database {
     /**
      *  The host where memcache is listening for connections.
      *
-     *  <i>Set this property only if you are using "memcache" as {@link caching_method}.</i>
+     *  *Set this property only if you are using `memcache` as {@link caching_method}.*
      *
-     *  Default is FALSE.
+     *  Default is `FALSE`
      *
      *  @since  2.7
      *
@@ -433,26 +430,13 @@ class Zebra_Database {
     public $memcache_host = false;
 
     /**
-     *  The port where memcache is listening for connections.
-     *
-     *  <i>Set this property only if you are using "memcache" as {@link caching_method}.</i>
-     *
-     *  Default is FALSE.
-     *
-     *  @since  2.7
-     *
-     *  @var mixed
-     */
-    public $memcache_port = false;
-
-    /**
      *  The prefix for the keys used to identify cached queries in memcache. This allows separate caching of the same
      *  queries by multiple instances of the libraries, or the same instance handling multiple domains on the same
      *  memcache server.
      *
-     *  <i>Set this property only if you are using "memcache" as {@link caching_method}.</i>
+     *  *Set this property only if you are using `memcache` as {@link caching_method}.*
      *
-     *  Default is "" (an empty string).
+     *  Default is `""` (an empty string)
      *
      *  @since  2.8.4
      *
@@ -461,15 +445,28 @@ class Zebra_Database {
     public $memcache_key_prefix = '';
 
     /**
-     *  By setting this property to TRUE a minimized version of the debugging console will be shown by default, instead
+     *  The port on which memcache is listening for connections.
+     *
+     *  *Set this property only if you are using `memcache` as {@link caching_method}.*
+     *
+     *  Default is `FALSE`
+     *
+     *  @since  2.7
+     *
+     *  @var mixed
+     */
+    public $memcache_port = false;
+
+    /**
+     *  By setting this property to `TRUE` a minimized version of the debugging console will be shown by default instead
      *  of the full-sized one.
      *
      *  Clicking on it will show the full debugging console.
      *
-     *  For quick and easy debugging, setting the <i>highlight</i> argument of a method that has it will result in the
-     *  debugging console being shown at full size and with the respective query visible for inspecting.
+     *  For quick and easy debugging, setting the `highlight` argument of a method that has it will result in the debugging
+     *  console being shown at full size and with the respective query visible for inspecting.
      *
-     *  Default is TRUE
+     *  Default is `TRUE`
      *
      *  @since  1.0.4
      *
@@ -478,9 +475,11 @@ class Zebra_Database {
     public $minimize_console = true;
 
     /**
-     *  Email address to which notification emails to be sent when a query's execution time exceeds the number of
-     *  seconds set by {@link max_query_time}. The notification email will be automatically sent to the address defined
-     *  by {@link notification_address} and having {@link notifier_domain} in subject.
+     *  Email address to which notification emails to be sent when a query's execution time exceeds the number of seconds
+     *  set by {@link max_query_time}. The notification email will be automatically sent to the address defined by
+     *  {@link notification_address} and having {@link notifier_domain} in subject.
+     *
+     *  >   Mails are sent using PHP's {@link https://www.php.net/manual/en/function.mail.php mail} function.
      *
      *  <code>
      *  // the email address where to send an email when there are slow queries
@@ -499,6 +498,8 @@ class Zebra_Database {
      *  will be automatically sent to the address defined by {@link notification_address} and having {@link notifier_domain}
      *  in subject.
      *
+     *  >   Mails are sent using PHP's {@link https://www.php.net/manual/en/function.mail.php mail} function.
+     *
      *  <code>
      *  // set a domain name so that you'll know where the email comes from
      *  $db->notifier_domain = 'yourdomain.com';
@@ -509,12 +510,21 @@ class Zebra_Database {
     public $notifier_domain = '';
 
     /**
-     *  After running a SELECT query through {@link select()}, {@link query()} or {@link query_unbuffered()} methods, this
-     *  property will contain the number returned rows.
+     *  Path to parent of public folder containing the `css` and `javascript` folders.
      *
-     *  <i>For {@link query_unbuffered unbuffered} queries the value of this property will be available only after iterating
-     *  over all the records with either {@link fetch_assoc()} or {@link fetch_obj()} methods. Until then, the value will
-     *  be 0!</i>
+     *  >   The path must be relative to your `$_SERVER['DOCUMENT_ROOT']`
+     *
+     *  @var string
+     */
+    public $resource_path;
+
+    /**
+     *  After running a `SELECT` query through {@link select()}, {@link query()} or {@link query_unbuffered()} methods,
+     *  this property will contain the number of returned rows.
+     *
+     *  *For {@link query_unbuffered unbuffered queries} the value of this property will be available **only** after
+     *  iterating over **all** the records with either {@link fetch_assoc()} or {@link fetch_obj()} methods. Until then,
+     *  the value will be **0**!*
      *
      *  See {@link found_rows} also.
      *
@@ -541,15 +551,6 @@ class Zebra_Database {
      *  @var integer
      */
     public $returned_rows;
-
-    /**
-     *  Path (without leading slash) to parent of public folder containing the css and javascript folders.
-     *
-     *  <i>The path must be relative to your $_SERVER['DOCUMENT_ROOT'] and not the class' path!</i>
-     *
-     *  @var string
-     */
-    public $resource_path;
 
     /**
      *  Array with cached results.
@@ -654,7 +655,7 @@ class Zebra_Database {
     private $warnings;
 
     /**
-     *  All MySQL functions as per {@link https://dev.mysql.com/doc/refman/5.7/en/func-op-summary-ref.html}
+     *  All MySQL functions as per {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html}
      *
      */
     private $mysql_functions = array(
@@ -734,7 +735,7 @@ class Zebra_Database {
 
         // sets default values for the class' properties
         // public properties
-        $this->cache_path = $this->path . '/cache/';
+        $this->cache_path = rtrim($this->path, '/') . '/cache/';
 
         $this->language($this->language);
 
@@ -757,18 +758,18 @@ class Zebra_Database {
 
     /**
      *  Closes the MySQL connection and optionally unsets the connection options previously set with the {@link option()}
-     *  method.
+     *  method
      *
-     *  @param  boolean $reset_options  If set to TRUE the library will also unsets the connection options previously
+     *  @param  boolean $reset_options  If set to `TRUE` the library will also unset the connection options previously
      *                                  set with the {@link option()} method.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *                                  <i>This option was added in 2.9.5</i>
+     *                                  *This option was added in 2.9.5*
      *
      *  @since  1.1.0
      *
-     *  @return boolean     Returns TRUE on success or FALSE on failure.
+     *  @return boolean     Returns `TRUE` on success or `FALSE` on failure
      */
     public function close($reset_options = false) {
 
@@ -791,13 +792,13 @@ class Zebra_Database {
     }
 
     /**
-     *  Opens a connection to a MySQL Server and optionally selects a database.
+     *  Opens a connection to a MySQL server and optionally selects a database
      *
-     *  Since the library is using <i>lazy connection</i> (it is not actually connecting to the database until the first
-     *  query is executed), the object representing the connection to the MySQL server is not available at this time. If
-     *  you need it, use the {@link get_link()} method.
+     *  Since the library is using *lazy connection* (it is not actually connecting to the database until the first query
+     *  is executed), the object representing the connection to the MySQL server is not available at this time. In case
+     *  you need it before running any queries, use the {@link get_link()} method.
      *
-     *  If you need the connection to the database to be made right away, set the <i>connect</i> argument to TRUE.
+     *  If you want the connection to the database to be made right away, set the `connect` argument to `TRUE`
      *
      *  <code>
      *  // create the database object
@@ -807,35 +808,37 @@ class Zebra_Database {
      *  $db->connect('host', 'username', 'password', 'database');
      *  </code>
      *
-     *  @param  string  $host       The address of the MySQL server to connect to (i.e. localhost).
+     *  @param  string  $host       The address of the MySQL server to connect to (i.e. localhost)
      *
-     *                              Prepending host by <b>p:</b> opens a persistent connection.
+     *                              Prepending `p:` to the host opens a persistent connection
      *
-     *  @param  string  $user       The user name used for authentication when connecting to the MySQL server.
+     *  @param  string  $user       The user name used for authentication when connecting to the MySQL server
      *
-     *  @param  string  $password   The password used for authentication when connecting to the MySQL server.
+     *  @param  string  $password   The password used for authentication when connecting to the MySQL server
      *
-     *  @param  string  $database   (Optional) The database to be selected after the connection is established.
+     *  @param  string  $database   (Optional) The database to be selected after the connection is established
      *
-     *                              This can also be set later with the {@link select_database()} method.
+     *                              This `can also be set later` with the {@link select_database()} metho
      *
-     *  @param  string  $port       (Optional) The port number to attempt to connect to the MySQL server.
+     *                              Default is `""` (empty string)
      *
-     *                              Leave as empty string to use the default as returned by ini_get("mysqli.default_port").
+     *  @param  string  $port       (Optional) The port number to use when connecting to the MySQL server
+     *
+     *                              Default is `""` (empty string) which defaults to the value returned by `ini_get('mysqli.default_port')`
      *
      *  @param  string  $socket     (Optional) The socket or named pipe that should be used.
      *
-     *                              Leave as empty string to use the default as returned by ini_get("mysqli.default_socket").
-     *
      *                              Specifying the socket parameter will not explicitly determine the type of connection
      *                              to be used when connecting to the MySQL server. How the connection is made to the MySQL
-     *                              database is determined by the <i>host</i> argument.
+     *                              database is determined by the *host* argument.
      *
-     *  @param  boolean $connect    (Optional) Setting this argument to TRUE will force the library to connect to the
-     *                              database right away instead of using a "lazy connection" where the actual connection
-     *                              to the database will be made when the first query is run.
+     *                              Default is `""` (empty string) which defaults to the value returned by `ini_get('mysqli.default_socket')`
      *
-     *                              Default is FALSE.
+     *  @param  boolean $connect    (Optional) Setting this argument to `TRUE` will force the library to connect to the
+     *                              database right away instead of using a *lazy connection* and not connecting the
+     *                              database until the first query is run.
+     *
+     *                              Default is `FALSE`
      *
      *  @return void
      */
@@ -865,7 +868,7 @@ class Zebra_Database {
     }
 
     /**
-     *  Counts the values in a column of a table.
+     *  Counts the values in a column of a table
      *
      *  <code>
      *  // count male users
@@ -876,48 +879,49 @@ class Zebra_Database {
      *  $users = $db->dcount('id', 'users', 'gender = ?', array($gender));
      *  </code>
      *
-     *  @param  string  $column         Name of the column in which to do the counting.
+     *  @param  string  $column         Name of the column in which to do the counting
      *
-     *  @param  string  $table          Name of the table containing the column.
+     *  @param  string  $table          Name of the table containing the column
      *
-     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                                  calling this method.</i>
+     *                                  calling this method.*
      *
-     *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
+     *  @param  string  $where          (Optional) A MySQL `WHERE` clause (without the `WHERE` keyword)
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
-     *                                  will replace the corresponding "?". Can also include an array as an item, case in
-     *                                  which each value from the array will automatically {@link escape()}-ed and then
-     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
-     *                                  column IN (?)</i> conditions. See second example {@link query here}.
+     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
+     *                                  will replace the corresponding `?`.<br>
+     *                                  An item may also be an array, case in which each value from the array will be
+     *                                  automatically {@link escape escaped} and concatenated with the other elements from
+     *                                  the array - useful when using *WHERE column IN (?)* conditions. See second example
+     *                                  {@link query here}.
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query's results
-     *                                  or not. Can be either FALSE - meaning no caching - or an integer representing the
-     *                                  number of seconds after which the cache will be considered expired and the query
-     *                                  executed again.
+     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query results or
+     *                                  not. Can be either `FALSE` - no caching - or an integer representing the number
+     *                                  of seconds after which the cache will be considered as expired and the query will
+     *                                  be executed again.
      *
-     *                                  The caching method is specified by the value of the {@link caching_method} property.
+     *                                  The caching method is specified through the {@link caching_method} property.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @return mixed                   Returns the number of counted records or FALSE if no records matching the given
-     *                                  criteria (if any) were found. It also returns FALSE if there are no records in
-     *                                  the table or if there was an error.
+     *  @return mixed                   Returns the number of counted records or `FALSE` if no records matching the given
+     *                                  criteria (if any) were found. It also returns `FALSE` if there are no records in
+     *                                  the table, or if there was an error.
      *
-     *                                  <i>This method may return boolean FALSE but may also return a non-boolean value
-     *                                  which evaluates to FALSE, such as 0. Use the === operator for testing the return
-     *                                  value of this method.</i>
+     *                                  *This method may return boolean `FALSE` but may also return a non-boolean value
+     *                                  which evaluates to `FALSE`, such as `0`. Use the `===` operator for testing the
+     *                                  return value of this method.*
      */
     public function dcount($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
@@ -949,7 +953,7 @@ class Zebra_Database {
     }
 
     /**
-     *  Deletes rows from a table.
+     *  Deletes rows from a table
      *
      *  <code>
      *  // delete male users
@@ -960,33 +964,34 @@ class Zebra_Database {
      *  $db->delete('users', 'gender = ?', array($gender));
      *  </code>
      *
-     *  @param  string  $table          Table from which to delete.
+     *  @param  string  $table          Table from which to delete
      *
-     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                                  calling this method.</i>
+     *                                  calling this method.*
      *
-     *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
+     *  @param  string  $where          (Optional) A MySQL `WHERE` clause (without the `WHERE` keyword)
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
-     *                                  will replace the corresponding "?". Can also include an array as an item, case in
-     *                                  which each value from the array will automatically {@link escape()}-ed and then
-     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
-     *                                  column IN (?)</i> conditions. See second example {@link query here}.
+     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
+     *                                  will replace the corresponding `?`.<br>
+     *                                  An item may also be an array, case in which each value from the array will be
+     *                                  automatically {@link escape escaped} and concatenated with the other elements from
+     *                                  the array - useful when using *WHERE column IN (?)* conditions. See second example
+     *                                  {@link query here}.
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
      *  @since  1.0.9
      *
-     *  @return boolean                 Returns TRUE on success or FALSE on error.
+     *  @return boolean                 Returns `TRUE` on success or `FALSE` on error
      */
     public function delete($table, $where = '', $replacements = '', $highlight = false) {
 
@@ -1005,7 +1010,7 @@ class Zebra_Database {
     }
 
     /**
-     *  Returns one or more columns from ONE row of a table.
+     *  Returns one or more columns from **ONE** row of a table
      *
      *  <code>
      *  // get name, surname and age of all male users
@@ -1016,51 +1021,51 @@ class Zebra_Database {
      *  $result = $db->dlookup('name, surname, age', 'users', 'gender = ?', array($gender));
      *  </code>
      *
-     *  @param  string  $column         One or more columns to return data from.
+     *  @param  string  $column         One or more columns to return data from
      *
-     *                                  <i>If only one column is specified the returned result will be the specified
+     *                                  >   If only one column is specified, the returned result will be the specified
      *                                  column's value. If more columns are specified the returned result will be an
-     *                                  associative array!</i>
+     *                                  associative array!
      *
-     *                                  <i>You may use "*" (without the quotes) to return all the columns from the
-     *                                  row.</i>
+     *                                  *You may use `*` (asterisk) to return all the columns from the row.*
      *
-     *  @param  string  $table          Name of the table in which to search.
+     *  @param  string  $table          Name of the table in which to search
      *
-     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                                  calling this method.</i>
+     *                                  calling this method.*
      *
-     *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
+     *  @param  string  $where          (Optional) A MySQL `WHERE` clause (without the `WHERE` keyword)
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
-     *                                  will replace the corresponding "?". Can also include an array as an item, case in
-     *                                  which each value from the array will automatically {@link escape()}-ed and then
-     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
-     *                                  column IN (?)</i> conditions. See second example {@link query here}.
+     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
+     *                                  will replace the corresponding `?`.<br>
+     *                                  An item may also be an array, case in which each value from the array will be
+     *                                  automatically {@link escape escaped} and concatenated with the other elements from
+     *                                  the array - useful when using *WHERE column IN (?)* conditions. See second example
+     *                                  {@link query here}.
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query's results
-     *                                  or not. Can be either FALSE - meaning no caching - or an integer representing the
-     *                                  number of seconds after which the cache will be considered expired and the query
-     *                                  executed again.
+     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query results or
+     *                                  not. Can be either `FALSE` - no caching - or an integer representing the number
+     *                                  of seconds after which the cache will be considered as expired and the query will
+     *                                  be executed again.
      *
-     *                                  The caching method is specified by the value of the {@link caching_method} property.
+     *                                  The caching method is specified through the {@link caching_method} property.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @return mixed                   Found value/values or FALSE if no records matching the given criteria (if any)
-     *                                  were found. It also returns FALSE if there are no records in the table or if there
-     *                                  was an error.
+     *  @return mixed                   Returns the found value/values or `FALSE` if no records matching the given criteria
+     *                                  (if any) were found. It also returns `FALSE` if there are no records in the table,
+     *                                  or if there was an error.
      */
     public function dlookup($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
@@ -1095,7 +1100,7 @@ class Zebra_Database {
     }
 
     /**
-     *  Looks up the maximum value in a column of a table.
+     *  Looks up the maximum value in a column of a table
      *
      *  <code>
      *  // get the maximum age of male users
@@ -1106,48 +1111,49 @@ class Zebra_Database {
      *  $result = $db->dmax('age', 'users', 'gender = ?', array($gender));
      *  </code>
      *
-     *  @param  string  $column         Name of the column in which to search.
+     *  @param  string  $column         Name of the column in which to search
      *
-     *  @param  string  $table          Name of table in which to search.
+     *  @param  string  $table          Name of table in which to search
      *
-     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                                  calling this method.</i>
+     *                                  calling this method.*
      *
-     *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
+     *  @param  string  $where          (Optional) A MySQL `WHERE` clause (without the `WHERE` keyword)
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
-     *                                  will replace the corresponding "?". Can also include an array as an item, case in
-     *                                  which each value from the array will automatically {@link escape()}-ed and then
-     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
-     *                                  column IN (?)</i> conditions. See second example {@link query here}.
+     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
+     *                                  will replace the corresponding `?`.<br>
+     *                                  An item may also be an array, case in which each value from the array will be
+     *                                  automatically {@link escape escaped} and concatenated with the other elements from
+     *                                  the array - useful when using *WHERE column IN (?)* conditions. See second example
+     *                                  {@link query here}.
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query's results
-     *                                  or not. Can be either FALSE - meaning no caching - or an integer representing the
-     *                                  number of seconds after which the cache will be considered expired and the query
-     *                                  executed again.
+     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query results or
+     *                                  not. Can be either `FALSE` - no caching - or an integer representing the number
+     *                                  of seconds after which the cache will be considered as expired and the query will
+     *                                  be executed again.
      *
-     *                                  The caching method is specified by the value of the {@link caching_method} property.
+     *                                  The caching method is specified through the {@link caching_method} property.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @return mixed                   The maximum value in the column or FALSE if no records matching the given criteria
-     *                                  (if any) were found. It also returns FALSE if there are no records in the table
-     *                                  or if there was an error.
+     *  @return mixed                   Returns the maximum value in the column or `FALSE` if no records matching the
+     *                                  given criteria (if any) were found. It also returns `FALSE` if there are no
+     *                                  records in the table, or if there was an error.
      *
-     *                                  <i>This method may return boolean FALSE but may also return a non-boolean value
-     *                                  which evaluates to FALSE, such as 0. Use the === operator for testing the return
-     *                                  value of this method.</i>
+     *                                  *This method may return boolean `FALSE` but may also return a non-boolean value
+     *                                  which evaluates to `FALSE`, such as `0`. Use the `===` operator for testing the return
+     *                                  value of this method.*
      */
     public function dmax($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
@@ -1179,9 +1185,7 @@ class Zebra_Database {
     }
 
     /**
-     *  Sums the values in a column of a table.
-     *
-     *  Example:
+     *  Sums the values in a column of a table
      *
      *  <code>
      *  // get the total logins of all male users
@@ -1192,47 +1196,49 @@ class Zebra_Database {
      *  $result = $db->dsum('login_count', 'users', 'gender = ?', array($gender));
      *  </code>
      *
-     *  @param  string  $column         Name of the column in which to sum values.
+     *  @param  string  $column         Name of the column in which to sum values
      *
-     *  @param  string  $table          Name of the table in which to search.
+     *  @param  string  $table          Name of the table in which to search
      *
-     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                                  calling this method.</i>
+     *                                  calling this method.*
      *
-     *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
+     *  @param  string  $where          (Optional) A MySQL `WHERE` clause (without the `WHERE` keyword)
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
-     *                                  will replace the corresponding "?". Can also include an array as an item, case in
-     *                                  which each value from the array will automatically {@link escape()}-ed and then
-     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
-     *                                  column IN (?)</i> conditions. See second example {@link query here}.
+     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
+     *                                  will replace the corresponding `?`.<br>
+     *                                  An item may also be an array, case in which each value from the array will be
+     *                                  automatically {@link escape escaped} and concatenated with the other elements from
+     *                                  the array - useful when using *WHERE column IN (?)* conditions. See second example
+     *                                  {@link query here}.
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query's results
-     *                                  or not. Can be either FALSE - meaning no caching - or an integer representing the
-     *                                  number of seconds after which the cache will be considered expired and the query
-     *                                  executed again.
+     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query results or
+     *                                  not. Can be either `FALSE` - no caching - or an integer representing the number
+     *                                  of seconds after which the cache will be considered as expired and the query will
+     *                                  be executed again.
      *
-     *                                  The caching method is specified by the value of the {@link caching_method} property.
+     *                                  The caching method is specified through the {@link caching_method} property.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @return mixed                   Returns the sum, or FALSE if no records matching the given criteria (if any) were
-     *                                  found. It also returns FALSE if there are no records in the table or on error.
+     *  @return mixed                   Returns the summed values or `FALSE` if no records matching the given criteria
+     *                                  (if any) were found. It also returns `FALSE` if there are no records in the table,
+     *                                  or if there was an error.
      *
-     *                                  <i>This method may return boolean FALSE but may also return a non-boolean value
-     *                                  which evaluates to FALSE, such as 0. Use the === operator for testing the return
-     *                                  value of this method.</i>
+     *                                  *This method may return boolean `FALSE` but may also return a non-boolean value
+     *                                  which evaluates to `FALSE`, such as `0`. Use the `===` operator for testing the return
+     *                                  value of this method.*
      */
     public function dsum($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
@@ -1264,12 +1270,12 @@ class Zebra_Database {
     }
 
     /**
-     *  Returns the description of the last error, or an empty string if no error occurred.
+     *  Returns the description of the last error, or an empty string if no error occurred
      *
      *  In most cases you should not need this method as any errors are shown in the debugging console as long as the
-     *  {@link debug} property is set to TRUE, or available in PHP's error log file (if your environment is
-     *  {@link http://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors configured to do so}) when set to
-     *  FALSE. Alternatively, debugging information can be found in the log file.
+     *  {@link debug debugging} is on, or available in PHP's error log file (if your environment is
+     *  {@link https://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors configured to do so}) when set to
+     *  `FALSE`.
      *
      *  If, for some reasons, none of the above is available, you can use this method to see errors.
      *
@@ -1288,7 +1294,7 @@ class Zebra_Database {
      *
      *  @param  boolean $return_error_number    Indicates whether the error number should also be returned.
      *
-     *                                          If set to TRUE, the method returns an array in the form of
+     *                                          If set to `TRUE`, the method returns an array in the form of
      *
      *                                          <code>
      *                                          Array(
@@ -1299,7 +1305,7 @@ class Zebra_Database {
      *
      *                                          ...or an empty string if no error occurred.
      *
-     *                                          Default is FALSE.
+     *                                          Default is `FALSE`
      */
     public function error($return_error_number = false) {
 
@@ -1318,12 +1324,13 @@ class Zebra_Database {
     }
 
     /**
-     *  Escapes special characters in a string that's to be used in an SQL statement in order to prevent SQL injections.
+     *  Escapes special characters in a string making it safe to be used in an MySQL statement, in order to prevent SQL
+     *  injections
      *
-     *  <i>This method also encloses given string in single quotes!</i>
+     *  >   This method also encloses given string in single quotes!
      *
-     *  <i>Works even if {@link http://www.php.net/manual/en/info.configuration.php#ini.magic-quotes-gpc magic_quotes}
-     *  is ON.</i>
+     *  *Works even if {@link https://www.php.net/manual/en/info.configuration.php#ini.magic-quotes-gpc magic_quotes}
+     *  is ON.*
      *
      *  <code>
      *  // use the method in a query
@@ -1349,10 +1356,10 @@ class Zebra_Database {
      *  ', array($gender));
      *  </code>
      *
-     *  @param  string  $string     String to be quoted and escaped.
+     *  @param  string  $string     String to be quoted and escaped
      *
-     *  @return string              Returns the quoted string with special characters escaped in order to prevent SQL
-     *                              injections.     .
+     *  @return string              Returns the original string enclosed in single quotes and with special characters
+     *                              escaped in order to prevent SQL injections.     .
      */
     public function escape($string) {
 
@@ -1383,12 +1390,12 @@ class Zebra_Database {
      *  }
      *  </code>
      *
-     *  @param  resource    $resource   (Optional) Resource to fetch.
+     *  @param  resource    $resource   (Optional) Resource to fetch
      *
-     *                                  <i>If not specified, the resource returned by the last run query is used.</i>
+     *                                  >   If not specified, the resource returned by the last run query is used
      *
      *  @return mixed                   Returns an associative array that corresponds to the fetched row and moves the
-     *                                  internal data pointer ahead, or FALSE if there are no more rows.
+     *                                  internal data pointer ahead, or `FALSE` if there are no more rows.
      */
     public function fetch_assoc($resource = '') {
 
@@ -1439,7 +1446,7 @@ class Zebra_Database {
 
     /**
      *  Returns an associative array containing all the rows from the resource created by the previous query or from the
-     *  resource given as argument and moves the internal pointer to the end.
+     *  resource given as argument and moves the internal pointer to the end
      *
      *  <code>
      *  // run a query
@@ -1449,22 +1456,22 @@ class Zebra_Database {
      *  $records = $db->fetch_assoc_all();
      *  </code>
      *
-     *  @param  string      $index      (Optional) Name of a column containing unique values.
+     *  @param  string      $index      (Optional) Name of a column containing unique values
      *
      *                                  If specified, the returned associative array's keys will be the values from this
      *                                  column.
      *
-     *                                  <i>If not specified, returned array will have numerical indexes, starting from 0.</i>
+     *                                  *If not specified, returned array will have numerical indexes, starting from 0.*
      *
-     *  @param  resource    $resource   (Optional) Resource to fetch.
+     *  @param  resource    $resource   (Optional) Resource to fetch
      *
-     *                                  <i>If not specified, the resource returned by the last run query is used.</i>
+     *                                  >   If not specified, the resource returned by the last run query is used
      *
      *  @since  1.1.2
      *
      *  @return mixed                   Returns an associative array containing all the rows from the resource created
      *                                  by the previous query or from the resource given as argument and moves the
-     *                                  internal pointer to the end. Returns FALSE on error.
+     *                                  internal pointer to the end. Returns `FALSE` on error.
      */
     public function fetch_assoc_all($index = '', $resource = '') {
 
@@ -1547,14 +1554,14 @@ class Zebra_Database {
      *  }
      *  </code>
      *
-     *  @param  resource    $resource   (Optional) Resource to fetch.
+     *  @param  resource    $resource   (Optional) Resource to fetch
      *
-     *                                  <i>If not specified, the resource returned by the last run query is used.</i>
+     *                                  >   If not specified, the resource returned by the last run query is used
      *
      *  @since  1.0.8
      *
      *  @return mixed                   Returns an object with properties that correspond to the fetched row and moves
-     *                                  the internal data pointer ahead, or FALSE if there are no more rows.
+     *                                  the internal data pointer ahead, or `FALSE` if there are no more rows.
      */
     public function fetch_obj($resource = '') {
 
@@ -1611,7 +1618,7 @@ class Zebra_Database {
 
     /**
      *  Returns an associative array containing all the rows (as objects) from the resource created by the previous query
-     *  or from the resource given as argument and moves the internal pointer to the end.
+     *  or from the resource given as argument and moves the internal pointer to the end
      *
      *  <code>
      *  // run a query
@@ -1621,22 +1628,22 @@ class Zebra_Database {
      *  $records = $db->fetch_obj_all();
      *  </code>
      *
-     *  @param  string      $index      (Optional) A column name from the records, containing unique values.
+     *  @param  string      $index      (Optional) A column name from the records, containing unique values
      *
      *                                  If specified, the returned associative array's keys will be the values from this
      *                                  column.
      *
-     *                                  <i>If not specified, returned array will have numerical indexes, starting from 0.</i>
+     *                                  *If not specified, returned array will have numerical indexes, starting from 0.*
      *
-     *  @param  resource    $resource   (Optional) Resource to fetch.
+     *  @param  resource    $resource   (Optional) Resource to fetch
      *
-     *                                  <i>If not specified, the resource returned by the last run query is used.</i>
+     *                                  >   If not specified, the resource returned by the last run query is used
      *
      *  @since  1.1.2
      *
      *  @return mixed                   Returns an associative array containing all the rows (as objects) from the resource
      *                                  created by the previous query or from the resource given as argument and moves
-     *                                  the internal pointer to the end. Returns FALSE on error.
+     *                                  the internal pointer to the end. Returns `FALSE` on error.
      */
     public function fetch_obj_all($index = '', $resource = '') {
 
@@ -1706,11 +1713,11 @@ class Zebra_Database {
     /**
      *  Frees the memory associated with a result
      *
-     *  <samp>You should always free your result with {@link free_result()}, when your result object is not needed anymore.</samp>
+     *  >   You should always free your result with {@link free_result()}, when your result object is not needed anymore
      *
-     *  @param  resource    $resource   (Optional) A valid resource.
+     *  @param  resource    $resource   (Optional) A valid resource
      *
-     *                                  <i>If not specified, the resource returned by the last run query is used.</i>
+     *                                  >   If not specified, the resource returned by the last run query is used
      *
      *  @since  2.9.1
      *
@@ -1732,7 +1739,7 @@ class Zebra_Database {
 
     /**
      *  Returns an array of associative arrays with information about the columns in the MySQL result associated with
-     *  the specified result identifier.
+     *  the specified result identifier
      *
      *  Each entry will have the column's name as key and, associated, an array with the following keys:
      *
@@ -1761,12 +1768,12 @@ class Zebra_Database {
      *
      *  @param  resource    $resource   (Optional) Resource to fetch columns information from.
      *
-     *                                  <i>If not specified, the resource returned by the last run query is used.</i>
+     *                                  >   If not specified, the resource returned by the last run query is used
      *
      *  @since  2.0
      *
      *  @return mixed                   Returns an associative array with information about the columns in the MySQL
-     *                                  result associated with the specified result identifier, or FALSE on error.
+     *                                  result associated with the specified result identifier, or `FALSE` on error.
      */
     public function get_columns($resource = '') {
 
@@ -1806,9 +1813,9 @@ class Zebra_Database {
     }
 
     /**
-     *  Returns the MySQL link identifier associated with the current connection to the MySQL server.
+     *  Returns the MySQL link identifier associated with the current connection to the MySQL server
      *
-     *  Why a separate method? Because the library uses <i>lazy connection</i> (it is not actually connecting to the database
+     *  Why a separate method? Because the library uses *lazy connection* (it is not actually connecting to the database
      *  until the first query is executed) there's no link identifier available when calling the {@link connect()} method.
      *
      *  <code>
@@ -1838,11 +1845,11 @@ class Zebra_Database {
     }
 
     /**
-    *   Returns the name of the currently selected database.
+    *   Returns the name of the currently selected database
     *
     *   @since 2.8.7
     *
-    *   @return mixed   Returns the name of the currently selected database, or FALSE if there's no active connection.
+    *   @return mixed   Returns the name of the currently selected database, or `FALSE` if there's no active connection.
     */
     public function get_selected_database() {
 
@@ -1855,18 +1862,53 @@ class Zebra_Database {
     }
 
     /**
-     *  Returns information about the columns of a given table, as an associative array.
+     *  Returns an array with all the tables in a database
+     *
+     *  <code>
+     *  // get all tables from the currently selected database
+     *  $tables = get_tables();
+     *  </code>
+     *
+     *  @param  string  $database   (Optional) The name of the database from which to return the names of existing tables
+     *
+     *                              If not specified, the tables from the currently selected database will be returned.
+     *
+     *                              *This option was added in 2.9.5*
+     *
+     *  @since  1.1.2
+     *
+     *  @return array   Returns an array with all the tables in the specified database
+     */
+    public function get_tables($database = '') {
+
+        // fetch all the tables in the database
+        $result = $this->fetch_assoc_all('', $this->query('
+            SHOW TABLES' . ($database != '' ? ' IN ' . $this->_escape($database) : '')));
+
+        $tables = array();
+
+        // as the results returned by default are quite odd
+        // translate them to a more usable array
+        foreach ($result as $tableName) $tables[] = array_pop($tableName);
+
+        // return the array with the table names
+        return $tables;
+
+    }
+
+    /**
+     *  Returns information about the columns of a given table as an associative array
      *
      *  <code>
      *  // get column information for a table named "table_name"
      *  $db->get_table_columns('table_name');
      *  </code>
      *
-     *  @param  string  $table  Name of table to return column information for.
+     *  @param  string  $table  Name of table to return column information for
      *
-     *                          <i>May also be given like databasename.tablename if a database was not explicitly selected
+     *                          *May also be given like databasename.tablename if a database was not explicitly selected
      *                          with the {@link connect()} or {@link select_database()} methods prior to calling this
-     *                          method.</i>
+     *                          method.*
      *
      *  @since  2.6
      *
@@ -1887,7 +1929,7 @@ class Zebra_Database {
     }
 
     /**
-     *  Returns an associative array with a lot of useful information on all or specific tables only.
+     *  Returns an associative array with a lot of useful information on all or specific tables only
      *
      *  <code>
      *  // return status information on tables in the currently
@@ -1895,13 +1937,13 @@ class Zebra_Database {
      *  $tables = get_table_status('users%');
      *  </code>
      *
-     *  @param  string  $table      (Optional) Table for which to return information for.
+     *  @param  string  $table      (Optional) Table for which to return information for
      *
-     *                              <i>May also be given like databasename.tablename if a database was not explicitly
+     *                              *May also be given like databasename.tablename if a database was not explicitly
      *                              selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                              calling this method.</i>
+     *                              calling this method.*
      *
-     *                              % may be used as a wildcard in table's name to get information about all the tables
+     *                              `%` may be used as a wildcard in table's name to get information about all the tables
      *                              matching the pattern.
      *
      *                              If not specified, information will be returned for all the tables in the currently
@@ -1910,7 +1952,7 @@ class Zebra_Database {
      *  @since  1.1.2
      *
      *  @return array               Returns an associative array with a lot of useful information on all or specific
-     *                              tables only.
+     *                              tables only
      */
     public function get_table_status($table = '') {
 
@@ -1932,46 +1974,11 @@ class Zebra_Database {
     }
 
     /**
-     *  Returns an array with all the tables in a database.
+     *  Works similarly to PHP's `implode()` function with the difference that the *glue* is always the comma and that
+     *  all the values are automatically {@link escape() escaped}
      *
-     *  <code>
-     *  // get all tables from the currently selected database
-     *  $tables = get_tables();
-     *  </code>
-     *
-     *  @param  string  $database   (Optional) The name of the database from which to return the names of existing tables.
-     *
-     *                              If not specified, the tables from the currently selected database will be returned.
-     *
-     *                              <i>This option was added in 2.9.5</i>
-     *
-     *  @since  1.1.2
-     *
-     *  @return array   An array with all the tables in the current database.
-     */
-    public function get_tables($database = '') {
-
-        // fetch all the tables in the database
-        $result = $this->fetch_assoc_all('', $this->query('
-            SHOW TABLES' . ($database != '' ? ' IN ' . $this->_escape($database) : '')));
-
-        $tables = array();
-
-        // as the results returned by default are quite odd
-        // translate them to a more usable array
-        foreach ($result as $tableName) $tables[] = array_pop($tableName);
-
-        // return the array with the table names
-        return $tables;
-
-    }
-
-    /**
-     *  Works similarly to PHP's implode() function with the difference that the "glue" is always the comma, and that
-     *  this method {@link escape()}'s arguments.
-     *
-     *  <i>This was useful for escaping an array's values used in SQL statements with the "IN" keyword, before adding
-     *  arrays directly in the replacement array became possible in version 2.8.6</i>
+     *  >   This was useful for escaping an array's values to be used in an SQL statements having the `IN` keyword,
+     *      before adding arrays directly in the replacement array became possible in version 2.8.6
      *
      *  <code>
      *  $array = array(1,2,3,4);
@@ -1999,33 +2006,32 @@ class Zebra_Database {
      *  ', array($array));
      *  </code>
      *
-     *
-     *  @param  array   $pieces     An array with items to be "glued" together
+     *  @param  array   $items      An array with items to be *glued* together
      *
      *  @since  2.0
      *
      *  @return string              Returns the string representation of all the array elements in the same order,
      *                              escaped and with commas between each element.
      */
-    public function implode($pieces) {
+    public function implode($items) {
 
         $result = '';
 
         // iterate through the array's items and "glue" items together
-        foreach ($pieces as $piece) $result .= ($result != '' ? ',' : '') . '\'' . $this->escape($piece) . '\'';
+        foreach ($items as $item) $result .= ($result != '' ? ',' : '') . '\'' . $this->escape($items) . '\'';
 
         return $result;
 
     }
 
     /**
-     *  Shorthand for INSERT queries with additional IGNORE / ON DUPLICATE KEY support.
+     *  Shorthand for `INSERT` queries with additional `IGNORE / ON DUPLICATE KEY` support
      *
-     *  <samp>This method inserts a single row of data. For inserting multiple rows of data see the {@link insert_bulk()}
-     *  method</samp>
+     *  >   This method inserts a single row of data. For inserting multiple rows of data see the {@link insert_bulk()}
+     *      method
      *
-     *  When using this method column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
-     *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
+     *  When using this method column names will be automatically {@link escape escaped} in order to prevent SQL injections and
+     *  will be enclosed in ``` (grave accents), allowing the usage of reserved words.
      *
      *  <code>
      *  // simple insert
@@ -2101,67 +2107,69 @@ class Zebra_Database {
      *  ));
      *  </code>
      *
-     *  @param  string  $table          Table in which to insert.
+     *  @param  string  $table          Table in which to insert
      *
-     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                                  calling this method.</i>
+     *                                  calling this method.*
      *
      *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
      *                                  array's values represent the values to be inserted in each respective column.
      *
-     *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
-     *                                  usage of reserved words as column names) and values will be automatically
-     *                                  {@link escape()}d in order to prevent SQL injections.
+     *                                  Column names will be enclosed in grave accents ``` (thus allowing the usage of
+     *                                  reserved words) and will be automatically {@link escape() escaped} in order to
+     *                                  prevent SQL injections.
      *
-     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
-     *                                  as <i>values</i>.
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  as *values*.
      *
-     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
-     *                                  without being escaped! While this is ok when using a function without any arguments
-     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
-     *                                  In this case make sure you {@link escape} the values yourself!</samp>
+     *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
+     *                                      without being escaped! While this is ok when using a function without any
+     *                                      arguments like `NOW()`, this may pose a security concern if the argument(s)
+     *                                      come from user input. In this case make sure you {@link escape} the values
+     *                                      yourself!
      *
-     *  @param  mixed $update           (Optional) By default, calling this method with this argument set to boolean TRUE
+     *  @param  mixed $update           (Optional) By default, calling this method with this argument set to boolean `TRUE`
      *                                  or to an empty array will result in a simple insert which will fail in case of
      *                                  duplicate keys.
      *
-     *                                  Setting this argument to boolean FALSE will create an INSERT IGNORE query where
+     *                                  Setting this argument to boolean `FALSE` will create an `INSERT IGNORE` query where
      *                                  when trying to insert a record that would cause a duplicate entry for a key,
-     *                                  would skip the row instead of creating an error.
+     *                                  the row would be skipped instead.
      *
      *                                  Setting this argument to an array of column names will create a query where, on
      *                                  duplicate key, these given columns will be updated with their respective values
-     *                                  from the <i>$values</i> argument.
+     *                                  from the *$values* argument.
      *
      *                                  Alternatively, this argument can also be an associative array where the array's
      *                                  keys represent column names and the array's values represent the values to update
      *                                  the columns' values to if the inserted row would cause a duplicate key.
      *
-     *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
-     *                                  usage of reserved words as column names) and values will be automatically
-     *                                  {@link escape()}d.
+     *                                  Column names will be enclosed in grave accents ``` (thus allowing the usage of
+     *                                  reserved words) and will be automatically {@link escape() escaped} in order to
+     *                                  prevent SQL injections.
      *
-     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
-     *                                  as <i>values</i>.
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  as *values*.
      *
-     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
-     *                                  without being escaped! While this is ok when using a function without any arguments
-     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
-     *                                  In this case make sure you {@link escape} the values yourself!</samp>
+     *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
+     *                                      without being escaped! While this is ok when using a function without any
+     *                                      arguments like `NOW()`, this may pose a security concern if the argument(s)
+     *                                      come from user input. In this case make sure you {@link escape} the values
+     *                                      yourself!
      *
-     *                                  For more information see {@link https://dev.mysql.com/doc/refman/5.5/en/insert-on-duplicate.html MySQL's INSERT ... ON DUPLICATE KEY syntax}.
+     *                                  For more information see {@link https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html MySQL's INSERT ... ON DUPLICATE KEY syntax}.
      *
-     *                                  Default is TRUE.
+     *                                  Default is `TRUE`
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
      *  @since  1.0.9
      *
-     *  @return boolean                 Returns TRUE on success of FALSE on error.
+     *  @return boolean                 Returns `TRUE` on success of `FALSE` on error.
      */
     public function insert($table, $columns, $update = true, $highlight = false) {
 
@@ -2170,10 +2178,10 @@ class Zebra_Database {
     }
 
     /**
-     *  Shorthand for inserting multiple rows in a single query with additional IGNORE / ON DUPLICATE KEY support.
+     *  Shorthand for inserting multiple rows in a single query with additional `IGNORE / ON DUPLICATE KEY` support
      *
-     *  When using this method column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
-     *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
+     *  When using this method column names will be enclosed in grave accents ``` (thus allowing the usage of reserved
+     *  words) and will be automatically {@link escape() escaped} in order to prevent SQL injections.
      *
      *  <code>
      *
@@ -2287,70 +2295,73 @@ class Zebra_Database {
      *
      *  </code>
      *
-     *  @param  string  $table          Table in which to insert.
+     *  @param  string  $table          Table in which to insert
      *
-     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                                  calling this method.</i>
+     *                                  calling this method.*
      *
-     *  @param  array   $columns        An array with columns to insert values into.
+     *  @param  array   $columns        An array with columns to insert values into
      *
-     *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
-     *                                  usage of reserved words as column names).
+     *                                  Column names will be enclosed in grave accents ``` (thus allowing the usage of
+     *                                  reserved words) and will be automatically {@link escape() escaped} in order to
+     *                                  prevent SQL injections.
      *
      *  @param  array   $values         An array of an unlimited number of arrays with values to be inserted. The arrays
-     *                                  must have the same number of items as you in the <i>$columns</i> argument.
+     *                                  must have the same number of items as you in the *$columns* argument.
      *
      *                                  Values will be automatically {@link escape()}d in order to prevent SQL injections.
      *
-     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
-     *                                  as <i>values</i>.
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  as *values*.
      *
-     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
-     *                                  without being escaped! While this is ok when using a function without any arguments
-     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
-     *                                  In this case make sure you {@link escape} the values yourself!</samp>
+     *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
+     *                                      without being escaped! While this is ok when using a function without any
+     *                                      arguments like `NOW()`, this may pose a security concern if the argument(s)
+     *                                      come from user input. In this case make sure you {@link escape} the values
+     *                                      yourself!
      *
-     *  @param  mixed $update           (Optional) By default, calling this method with this argument set to boolean TRUE
+     *  @param  mixed $update           (Optional) By default, calling this method with this argument set to boolean `TRUE`
      *                                  or to an empty array will result in a simple multi-row insert which will fail in
      *                                  case of duplicate keys.
      *
-     *                                  Setting this argument to boolean FALSE will create an INSERT IGNORE query where
+     *                                  Setting this argument to boolean `FALSE` will create an `INSERT IGNORE` query where
      *                                  when trying to insert a record that would cause a duplicate entry for a key,
-     *                                  would skip the row instead of creating an error.
+     *                                  the row would be skipped instead.
      *
      *                                  Setting this argument to an array of column names will create a query where, on
      *                                  duplicate key, these given columns will be updated with their respective values
-     *                                  from the <i>$values</i> argument.
+     *                                  from the *$values* argument.
      *
      *                                  Alternatively, this argument can also be an associative array where the array's
      *                                  keys represent column names and the array's values represent the values to update
      *                                  the columns' values to if the inserted row would cause a duplicate key.
      *
-     *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
-     *                                  usage of reserved words as column names) and values will be automatically
-     *                                  {@link escape()}d.
+     *                                  Column names will be enclosed in grave accents ``` (thus allowing the usage of
+     *                                  reserved words) and will be automatically {@link escape() escaped} in order to
+     *                                  prevent SQL injections.
      *
-     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
-     *                                  as <i>values</i>.
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  as *values*.
      *
-     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
-     *                                  without being escaped! While this is ok when using a function without any arguments
-     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
-     *                                  In this case make sure you {@link escape} the values yourself!</samp>
+     *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
+     *                                      without being escaped! While this is ok when using a function without any
+     *                                      arguments like `NOW()`, this may pose a security concern if the argument(s)
+     *                                      come from user input. In this case make sure you {@link escape} the values
+     *                                      yourself!
      *
-     *                                  For more information see {@link https://dev.mysql.com/doc/refman/5.5/en/insert-on-duplicate.html MySQL's INSERT ... ON DUPLICATE KEY syntax}.
+     *                                  For more information see {@link https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html MySQL's INSERT ... ON DUPLICATE KEY syntax}.
      *
-     *                                  Default is TRUE.
+     *                                  Default is `TRUE`
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
      *  @since  2.1
      *
-     *  @return boolean                 Returns TRUE on success of FALSE on error.
+     *  @return boolean                 Returns `TRUE` on success of `FALSE` on error
      */
     public function insert_bulk($table, $columns, $values, $update = true, $highlight = false) {
 
@@ -2360,7 +2371,7 @@ class Zebra_Database {
             // save debug information
             return $this->_log('errors', array(
 
-                'message'   => $this->language['data_not_an_array'],
+                'message'   => $this->language['data`_not_an_array']
 
             ));
 
@@ -2409,12 +2420,12 @@ class Zebra_Database {
     }
 
     /**
-     *  Retrieves the ID generated for an AUTO_INCREMENT column by the previous INSERT query.
+     *  Retrieves the ID generated for an `AUTO_INCREMENT` column by the previous `INSERT` query
      *
      *  @since  1.0.4
      *
-     *  @return mixed   The ID generated for an AUTO_INCREMENT column by the previous INSERT query on success,
-     *                  '0' if the previous query does not generate an AUTO_INCREMENT value, or FALSE if there was
+     *  @return mixed   Returns the ID generated for an `AUTO_INCREMENT` column by the previous `INSERT` query on success,
+     *                  `0` if the previous query did not generate an `AUTO_INCREMENT` value, or `FALSE` if there was
      *                  no MySQL connection.
      */
     public function insert_id() {
@@ -2436,15 +2447,15 @@ class Zebra_Database {
     }
 
     /**
-     *  <samp>This method is deprecated since 2.12.0 and will be removed in 3.0. Please use the {@link insert_bulk()} method.</samp>
+     *  >   This method is deprecated since 2.9.12 and will be removed in 3.0. Please use the {@link insert_bulk()} method
      *
-     *  When using this method, if a row is inserted that would cause a duplicate value in a UNIQUE index or PRIMARY KEY,
-     *  an UPDATE of the old row is performed.
+     *  When using this method, if an inserted row would cause a duplicate value in a `UNIQUE` index or `PRIMARY KEY`,
+     *  an `UPDATE` of the existing row is performed.
      *
-     *  Read more {@link http://dev.mysql.com/doc/refman/5.0/en/insert-on-duplicate.html here}.
+     *  Read more {@link https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html here}.
      *
-     *  When using this method, column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
-     *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
+     *  When using this method column names will be enclosed in grave accents ``` (thus allowing the usage of reserved
+     *  words) and will be automatically {@link escape() escaped} in order to prevent SQL injections.
      *
      *  <code>
      *  // presuming article_id is a UNIQUE index or PRIMARY KEY, the statement below will
@@ -2480,63 +2491,65 @@ class Zebra_Database {
      *  );
      *  </code>
      *
-     *  @param  string  $table          Table in which to insert/update.
+     *  @param  string  $table          Table in which to insert/update
      *
-     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                                  calling this method.</i>
+     *                                  calling this method.*
      *
      *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
      *                                  array's values represent the values to be inserted in each respective column.
      *
-     *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
-     *                                  usage of reserved words as column names) and values will be automatically
-     *                                  {@link escape()}d.
+     *                                  Column names will be enclosed in grave accents ``` (thus allowing the usage of
+     *                                  reserved words) and will be automatically {@link escape() escaped} in order to
+     *                                  prevent SQL injections.
      *
-     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
-     *                                  as <i>values</i>.
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  as *values*.
      *
-     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
-     *                                  without being escaped! While this is ok when using a function without any arguments
-     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
-     *                                  In this case make sure you {@link escape} the values yourself!</samp>
+     *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
+     *                                      without being escaped! While this is ok when using a function without any
+     *                                      arguments like `NOW()`, this may pose a security concern if the argument(s)
+     *                                      come from user input. In this case make sure you {@link escape} the values
+     *                                      yourself!
      *
      *  @param  array   $update         (Optional) An associative array where the array's keys represent the columns names
      *                                  and the array's values represent the values to update the columns' values to.
      *
      *                                  This array represents the columns/values to be updated if the inserted row would
-     *                                  cause a duplicate value in a UNIQUE index or PRIMARY KEY.
+     *                                  cause a duplicate value in a `UNIQUE` index or `PRIMARY KEY`.
      *
-     *                                  If an empty array is given, the values in <i>$columns</i> will be used.
+     *                                  If an empty array is given, the values in *$columns* will be used.
      *
-     *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
-     *                                  usage of reserved words as column names) and values will be automatically
-     *                                  {@link escape()}d.
+     *                                  Column names will be enclosed in grave accents ``` (thus allowing the usage of
+     *                                  reserved words) and will be automatically {@link escape() escaped} in order to
+     *                                  prevent SQL injections.
      *
-     *                                  A special value may also be used for when a column's value needs to be
-     *                                  incremented or decremented. In this case, use <i>INC(value)</i> where <i>value</i>
-     *                                  is the value to increase the column's value with. Use <i>INC(-value)</i> to decrease
-     *                                  the column's value. See {@link update()} for an example.
+     *                                  A special value may also be used for when a column's value needs to be incremented
+     *                                  or decremented. In this case, use `INC(value)` where *value* is the value to
+     *                                  increase the column's value with. Use `INC(-value)` to decrease the column's value.
+     *                                  See {@link update()} for an example.
      *
-     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
-     *                                  as <i>values</i>.
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  as *values*.
      *
-     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
-     *                                  without being escaped! While this is ok when using a function without any arguments
-     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
-     *                                  In this case make sure you {@link escape} the values yourself!</samp>
+     *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
+     *                                      without being escaped! While this is ok when using a function without any
+     *                                      arguments like `NOW()`, this may pose a security concern if the argument(s)
+     *                                      come from user input. In this case make sure you {@link escape} the values
+     *                                      yourself!
      *
-     *                                  Default is an empty array.
+     *                                  Default is an empty array
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
      *  @since  2.1
-     *  @deprecated                     since 2.12.0, will be removed in 3.0
+     *  @deprecated                     Deprecated starting with 2.9.12, will be removed in 3.0
      *
-     *  @return boolean                 Returns TRUE on success of FALSE on error.
+     *  @return boolean                 Returns `TRUE` on success of `FALSE` on error
      */
     public function insert_update($table, $columns, $update = array(), $highlight = false) {
 
@@ -2601,19 +2614,19 @@ class Zebra_Database {
     }
 
     /**
-     *  Sets the language to be used for the messages in the debugging console and in the log files.
+     *  Sets the language to be used for the messages in the debugging console and in the log files
      *
      *  <code>
      *  // show messages in German
      *  $db->language('german');
      *  </code>
      *
-     *  @param  string  $language   The name of the PHP language file from the "languages" subdirectory.
+     *  @param  string  $language   The name of the language file from the `languages` subdirectory
      *
      *                              Must be specified without the extension!
      *                              (i.e. "german" for the german language not "german.php")
      *
-     *                              Default is "english".
+     *                              Default is "english"
      *
      *  @since  1.0.6
      *
@@ -2627,25 +2640,25 @@ class Zebra_Database {
     }
 
     /**
-     *  Optimizes all tables that have overhead (unused, lost space) in a database.
+     *  Optimizes all tables that have overhead (unused, lost space) in a database
      *
      *  <code>
      *  // optimize all tables in the currently selected database
      *  $db->optimize();
      *  </code>
      *
-     *  @param  string  $table      (Optional) Table to optimize.
+     *  @param  string  $table      (Optional) Table to optimize
      *
-     *                              <i>May also be given like databasename.tablename if a database was not explicitly
+     *                              *May also be given like databasename.tablename if a database was not explicitly
      *                              selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                              calling this method.</i>
+     *                              calling this method.*
      *
-     *                              % may be used as a wildcard in table's name to optimize only the tables matching the
+     *                              `%` may be used as a wildcard in table's name to optimize only the tables matching the
      *                              pattern.
      *
      *                              If not specified, all the tables in the currently selected database will be optimized.
      *
-     *                              <i>This option was added in 2.9.5</i>
+     *                              *This option was added in 2.9.5*
      *
      *  @since  1.1.2
      *
@@ -2665,16 +2678,17 @@ class Zebra_Database {
     }
 
     /**
-     *  Sets one or more options that affect the behavior of a connection.
+     *  Sets one or more options that affect the behavior of a connection
      *
-     *  See {@link http://php.net/manual/en/mysqli.options.php the options} that can be set.
+     *  See {@link https://www.php.net/manual/en/mysqli.options.php the options} that can be set.
      *
-     *  <samp>This method must to be called before connecting to a MySQL server. Keep in mind that because the library
-     *  uses "lazy connection", it will not actually connect to the given MySQL server until the first query is run, unless
-     *  the {@link connect()} method is called with the "connect" argument set to TRUE. Therefore, you can call it after
-     *  the {@link connect()} method but only if you run no queries until calling this method.</samp>
+     *  >   Usually, this method must to be called before connecting to a MySQL server because the library uses "lazy
+     *      connection" and it will not actually connect to the MySQL server until the first query is run, unless the
+     *      {@link connect()} method is called with the `connect` argument set to `TRUE`. As such, you may also call
+     *      this method after the {@link connect()} method but **only** if no queries were run before calling this
+     *      method.
      *
-     *  <i>This method may be called multiple times to set several options.</i>
+     *  *This method may be called multiple times to set several options.*
      *
      *  <code>
      *  // instantiate the library
@@ -2690,11 +2704,11 @@ class Zebra_Database {
      *  ));
      *
      *  // connect to a MySQL server using the options set above
-     *  $db->connect(...)
+     *  $db->`connect(...)
      *
-     *  </code>
+     *  </`code
      *
-     *  @param  mixed   $option     One of the valid values described {@link http://php.net/manual/en/mysqli.options.php here},
+     *  @param  mixed   $option     One of the valid values described {@link https://www.php.net/manual/en/mysqli.options.php here},
      *                              or an array of key/value pairs where the keys are valid values described in the previous
      *                              link.
      *
@@ -2732,10 +2746,10 @@ class Zebra_Database {
     }
 
     /**
-     *  Parses a MySQL dump file (like an export from phpMyAdmin).
+     *  Parses a MySQL dump file (like an export from phpMyAdmin)
      *
-     *  <i>If you must parse a very large file and your script crashed due to timeout or because of memory limitations,
-     *  try the following:</i>
+     *  *If you must parse a very large file and your script crashed due to timeout or because of memory limitations,
+     *  try the following:*
      *
      *  <code>
      *  // prevent script timeout
@@ -2745,9 +2759,9 @@ class Zebra_Database {
      *  ini_set('memory_limit','128M');
      *  </code>
      *
-     *  @param  string  $path   Path to the file to be parsed.
+     *  @param  string  $path   Path to the file to be parsed
      *
-     *  @return boolean         Returns TRUE on success or FALSE on failure.
+     *  @return boolean         Returns `TRUE` on success or `FALSE` on failure
      */
     public function parse_file($path) {
 
@@ -2802,16 +2816,16 @@ class Zebra_Database {
     }
 
     /**
-     *  Runs a MySQL query.
+     *  Runs a MySQL query
      *
-     *  After a SELECT query you can get the number of returned rows by reading the {@link returned_rows} property.
+     *  After a `SELECT` query you can get the number of returned rows by reading the {@link returned_rows} property.
      *
-     *  After an UPDATE, INSERT or DELETE query you can get the number of affected rows by reading the
+     *  After an `UPDATE`, `INSERT` or `DELETE` query you can get the number of affected rows by reading the
      *  {@link affected_rows} property.
      *
-     *  <b>Note that you don't need to return the result of this method in a variable for using it later with
-     *  a fetch method like {@link fetch_assoc()} or {@link fetch_obj()}, as all these methods, if called without the
-     *  resource arguments, work on the LAST returned result resource!</b>
+     *  >   Note that you don't necessarily need to store the result of this method in a variable for using it with a fetch
+     *      method like {@link fetch_assoc()} or {@link fetch_obj()}, as all these methods, when called without the
+     *      `resource` argument, work on the LAST returned result resource!
      *
      *  <code>
      *  // run a query
@@ -2836,54 +2850,60 @@ class Zebra_Database {
      *  ', array('f', array(1, 2, 3)));
      *  </code>
      *
-     *  @param  string  $sql            MySQL statement to execute.
+     *  @param  string  $sql            MySQL statement to execute
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$sql</i>. Each item will be automatically {@link escape()}-ed and
-     *                                  will replace the corresponding "?". Can also include an array as an item, case in
-     *                                  which each value from the array will automatically {@link escape()}-ed and then
-     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
-     *                                  column IN (?)</i> conditions.
+     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
+     *                                  will replace the corresponding `?`.<br>
+     *                                  An item may also be an array, case in which each value from the array will be
+     *                                  automatically {@link escape escaped} and concatenated with the other elements from
+     *                                  the array - useful when using *WHERE column IN (?)* conditions. See second example
+     *                                  {@link query here}.
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query's results
-     *                                  or not. Can be either FALSE - meaning no caching - or an integer representing the
-     *                                  number of seconds after which the cache will be considered expired and the query
-     *                                  executed again.
+     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query results or
+     *                                  not. Can be either `FALSE` - no caching - or an integer representing the number
+     *                                  of seconds after which the cache will be considered as expired and the query will
+     *                                  be executed again.
      *
-     *                                  The caching method is specified by the value of the {@link caching_method} property.
+     *                                  The caching method is specified through the {@link caching_method} property.
      *
-     *                                  <i>For {@link query_unbuffered unbuffered} queries this argument is always FALSE!</i>
+     *                                  *For {@link query_unbuffered unbuffered queries} this argument is always `FALSE`!*
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @param  boolean $calc_rows      (Optional) If query is a SELECT query, this argument is set to TRUE, and there is
-     *                                  a LIMIT applied to the query, the value of the {@link found_rows} property (after
-     *                                  the query was run) will represent the number of records that would have been
-     *                                  returned if there was no LIMIT applied to the query.
+     *  @param  boolean $calc_rows      (Optional) If query is a `SELECT` query, this argument is set to `TRUE`, and
+     *                                  there is a `LIMIT` applied to the query, the value of the {@link found_rows}
+     *                                  property (after the query was run) will represent the number of records that
+     *                                  *would* have been returned if there was no `LIMIT` applied to the query.
      *
      *                                  This is very useful for creating pagination or computing averages. Also, note
      *                                  that this information will be available without running an extra query.
-     *                                  {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows Here's how}
+     *                                  {@link https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows Here's how}
      *
-     *                                  <i>For {@link query_unbuffered unbuffered} queries the value of this property
-     *                                  will be available only after iterating over all the records with either
+     *                                  *For {@link query_unbuffered unbuffered queries} the value of this property will
+     *                                  be available **only** after iterating over **all** the records with either
      *                                  {@link fetch_assoc()} or {@link fetch_obj()} methods. Until then, the value will
-     *                                  be 0!</i>
+     *                                  be **0**!*
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *                                  >   This argument is deprecated since 2.10.0 and will be removed in 3.0 because
+     *                                      the technique used for it was {@link https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows deprecated in MySQL 8.0.17}
+     *                                      and is pending removal in a future version. Please use the solution provided
+     *                                      in the MySQL documentation instead.
      *
-     *                                  Default is FALSE.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
      *
-     *  @return mixed                   On success, returns a resource or an array (if results are taken from the cache)
-     *                                  or FALSE on error.
+     *                                  Default is `FALSE`
      *
-     *                                  <i>If query results are taken from cache, the returned result will be a pointer to
-     *                                  the actual results of the query!</i>
+     *  @return mixed                   Returns a resource or an array (if results are taken from the cache) upon success,
+     *                                  or `FALSE` on error.
+     *
+     *                                  *If query results are taken from cache, the returned result will be a `pointer` to
+     *                                  the actual results of the query!*
      */
     public function query($sql, $replacements = '', $cache = false, $calc_rows = false, $highlight = false) {
 
@@ -3434,14 +3454,16 @@ class Zebra_Database {
     }
 
     /**
-     *  Runs a MySQL {@link http://php.net/manual/en/mysqlinfo.concepts.buffering.php unbuffered} query.
+     *  Runs a MySQL {@link https://www.php.net/manual/en/mysqlinfo.concepts.buffering.php unbuffered query}.
      *
      *  The method's arguments are the same as for the {@link query()} method.
      *
-     *  <i>For unbuffered queries the values returned by {@link returned_rows} and {@link found_rows} is always 0.</i>
+     *  *For unbuffered queries the values returned by {@link returned_rows} and {@link found_rows} properties will be
+     *  available **only** after iterating over **all** the records with either {@link fetch_assoc()} or {@link fetch_obj()}
+     *  methods, and will be **0** until then!*
      *
-     *  <samp>Note that until you iterate over all the results, all subsequent queries will return a "Commands out of
-     *  sync" error unless you call the {@link free_result()} method.</samp>
+     *  >   Until you iterate over the entire resultset, all subsequent queries will return a `Commands out of sync` error
+     *      unless the {@link free_result()} method is called
      *
      *  @since 2.9.4
      */
@@ -3459,23 +3481,23 @@ class Zebra_Database {
 
     /**
      *  Moves the internal row pointer of the MySQL result associated with the specified result identifier to the
-     *  specified row number.
+     *  specified row number
      *
      *  The next call to a fetch method like {@link fetch_assoc()} or {@link fetch_obj()} would return that row.
      *
-     *  @param  integer     $row        The row you want to move the pointer to.
+     *  @param  integer     $row        The row you want to move the pointer to
      *
-     *                                  <i>$row</i> starts at 0.
+     *                                  *$row* starts at `0`.
      *
-     *                                  <i>$row</i> should be a value in the range from 0 to {@link returned_rows}
+     *                                  *$row* should be a value in the range from `0` to {@link returned_rows}
      *
-     *  @param  resource    $resource   (Optional) Resource to fetch.
+     *  @param  resource    $resource   (Optional) Resource to fetch
      *
-     *                                  <i>If not specified, the resource returned by the last run query is used.</i>
+     *                                  >   If not specified, the resource returned by the last run query is used
      *
      *  @since  1.1.0
      *
-     *  @return boolean                 Returns TRUE on success or FALSE on failure.
+     *  @return boolean                 Returns `TRUE` on success or `FALSE` on failure
      */
     public function seek($row, $resource = '') {
 
@@ -3564,12 +3586,12 @@ class Zebra_Database {
     }
 
     /**
-     *  Shorthand for simple SELECT queries.
+     *  Shorthand for simple `SELECT` queries
      *
-     *  For complex queries (using UNION, JOIN, etc) use the {@link query()} method.
+     *  For complex queries (using `UNION`, `JOIN`, etc) use the {@link query()} method.
      *
-     *  When using this method, column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
-     *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
+     *  When using this method column names will be enclosed in grave accents ``` (thus allowing the usage of reserved
+     *  words) and will be automatically {@link escape() escaped} in order to prevent SQL injections.
      *
      *  <code>
      *  $db->select(
@@ -3599,79 +3621,84 @@ class Zebra_Database {
      *  </code>
      *
      *  @param  mixed  $columns         A string with comma separated values or an array representing valid column names
-     *                                  as used in a SELECT statement.
+     *                                  as used in a `SELECT` statement.
      *
-     *                                  <samp>If given as a string it will be enclosed in grave accents, so make sure you
-     *                                  are only using column names and not things like "tablename.*" or MySQL functions!
-     *                                  Use this argument as an array if you want MySQL functions to be properly skipped
-     *                                  from this process.</samp>
+     *                                  >   If given as a string it will be enclosed in grave accents, so make sure you
+     *                                      are only using column names and not things like "tablename.*" or MySQL
+     *                                      functions!<br>
+     *                                      Use this argument as an array if you want values (like MySQL functions) to
+     *                                      be skipped from this process.
      *
-     *                                  <samp>You may also use "*" instead of column names to select all columns from a
-     *                                  table.</samp>
+     *                                  You may also use `*` (asterisk) to select all the columns of a table.
      *
-     *  @param  string  $table          Table in which to search.
+     *  @param  string  $table          Table in which to search
      *
-     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                                  calling this method.</i>
+     *                                  calling this method.*
      *
-     *                                  <i>Note that table name (and database name, if provided) will be enclosed in grave
-     *                                  accents " ` " and thus only one table name should be used! For anything but a
-     *                                  simple select query use the {@link query()} method.</i>
+     *                                  *Note that table name (and database name, if provided) will be enclosed in grave
+     *                                  accents ``` and thus only one table name must be used!*
      *
-     *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
+     *  @param  string  $where          (Optional) A MySQL `WHERE` clause (without the `WHERE` keyword)
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
-     *                                  will replace the corresponding "?". Can also include an array as an item, case in
-     *                                  which each value from the array will automatically {@link escape()}-ed and then
-     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
-     *                                  column IN (?)</i> conditions. See second example {@link query here}.
+     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
+     *                                  will replace the corresponding `?`.<br>
+     *                                  An item may also be an array, case in which each value from the array will be
+     *                                  automatically {@link escape escaped} and concatenated with the other elements from
+     *                                  the array - useful when using *WHERE column IN (?)* conditions. See second example
+     *                                  {@link query here}.
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  string  $order          (Optional) A MySQL ORDER BY clause (without the ORDER BY keyword).
+     *  @param  string  $order          (Optional) A MySQL `ORDER BY` clause (without the `ORDER BY` keyword)
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  mixed   $limit          (Optional) A MySQL LIMIT clause (without the LIMIT keyword).
+     *  @param  mixed   $limit          (Optional) A MySQL `LIMIT` clause (without the `LIMIT` keyword)
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query's results
-     *                                  or not. Can be either FALSE - meaning no caching - or an integer representing the
-     *                                  number of seconds after which the cache will be considered expired and the query
-     *                                  executed again.
+     *  @param  mixed   $cache          (Optional) Instructs the library on whether it should cache the query results or
+     *                                  not. Can be either `FALSE` - no caching - or an integer representing the number
+     *                                  of seconds after which the cache will be considered as expired and the query will
+     *                                  be executed again.
      *
-     *                                  The caching method is specified by the value of the {@link caching_method} property.
+     *                                  The caching method is specified through the {@link caching_method} property.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @param  boolean $calc_rows      (Optional) If this argument is set to TRUE, and there is a LIMIT applied to the
+     *  @param  boolean $calc_rows      (Optional) If this argument is set to `TRUE`, and there is a LIMIT applied to the
      *                                  query, the value of the {@link found_rows} property (after the query was run)
      *                                  will represent the number of records that would have been returned if there was
      *                                  no LIMIT applied to the query.
      *
      *                                  This is very useful for creating pagination or computing averages. Also, note
      *                                  that this information will be available without running an extra query.
-     *                                  {@link http://dev.mysql.com/doc/refman/5.0/en/information-functions.html#function_found-rows Here's how}
+     *                                  {@link https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows Here's how}
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *                                  >   This argument is deprecated since 2.10.0 and will be removed in 3.0 because
+     *                                      the technique used for it was {@link https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows deprecated in MySQL 8.0.17}
+     *                                      and is pending removal in a future version. Please use the solution provided
+     *                                      in the MySQL documentation instead.
      *
-     *                                  Default is FALSE.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
+     *
+     *                                  Default is `FALSE`
      *
      *  @since  2.0
      *
-     *  @return mixed                   On success, returns a resource or an array (if results are taken from the cache)
-     *                                  or FALSE on error.
+     *  @return mixed                   Returns a resource or an array (if results are taken from the cache) upon success,
+     *                                  or `FALSE` on error.
      *
-     *                                  <i>If query results are taken from cache, the returned result will be a pointer to
-     *                                  the actual results of the query!</i>
+     *                                  *If query results are taken from cache, the returned result will be a `pointer`
+     *                                  to the actual results of the query!*
      */
     public function select($columns, $table, $where = '', $replacements = '', $order = '', $limit = '', $cache = false, $calc_rows = false, $highlight = false) {
 
@@ -3703,18 +3730,18 @@ class Zebra_Database {
     }
 
     /**
-     *  Selects the default database for queries.
+     *  Selects the default database for queries
      *
      *  <code>
      *  // set the default database for queries
      *  $db->select_database('database_name');
      *  </code>
      *
-     *  @param  string  $database   Name of database to select as the default database for queries.
+     *  @param  string  $database   Name of the database to select as the default database for queries
      *
      *  @since 2.9.4
      *
-     *  @return boolean     Returns TRUE on success or FALSE on failure.
+     *  @return boolean     Returns `TRUE` on success or `FALSE` on failure
      */
     public function select_database($database) {
 
@@ -3730,7 +3757,7 @@ class Zebra_Database {
     }
 
     /**
-     *  Sets MySQL character set and collation.
+     *  Sets MySQL character set and collation
      *
      *  The ensure that data is both properly saved and retrieved from the database you should call this method first
      *  thing after connecting to the database.
@@ -3739,17 +3766,17 @@ class Zebra_Database {
      *
      *  Warnings can be disabled by setting the {@link disable_warnings} property.
      *
-     *  @param  string  $charset    (Optional) The character set to be used by the database.
+     *  @param  string  $charset    (Optional) The character set to be used by the database
      *
-     *                              Default is 'utf8'.
+     *                              Default is `utf8`
      *
-     *                              See the {@link http://dev.mysql.com/doc/refman/5.1/en/charset-charsets.html list of possible values}
+     *                              See the {@link https://dev.mysql.com/doc/refman/8.0/en/charset-charsets.html list of possible values}
      *
-     *  @param  string  $collation  (Optional) The collation to be used by the database.
+     *  @param  string  $collation  (Optional) The collation to be used by the database
      *
-     *                              Default is 'utf8_general_ci'.
+     *                              Default is `utf8_general_ci`
      *
-     *                              See the {@link http://dev.mysql.com/doc/refman/5.1/en/charset-charsets.html list of possible values}
+     *                              See the {@link https://dev.mysql.com/doc/refman/8.0/en/charset-charsets.html list of possible values}
      *
      *  @since  2.0
      *
@@ -3766,9 +3793,39 @@ class Zebra_Database {
     }
 
     /**
-     *  Ends a transaction which means that if all the queries since {@link transaction_start()} are valid, it writes
-     *  the data to the database, but if any of the queries had an error, ignore all queries and treat them as if they
-     *  never happened.
+     *  Checks whether a table exists in a database
+     *
+     *  <code>
+     *  // checks whether table "users" exists
+     *  table_exists('users');
+     *  </code>
+     *
+     *  @param  string  $table      The name of the table to check if it exists in the database.
+     *
+     *                              *May also be given like databasename.tablename if a database was not explicitly
+     *                              selected with the {@link connect()} or {@link select_database()} methods prior to
+     *                              calling this method.*
+     *
+     *  @since  2.3
+     *
+     *  @return boolean             Returns `TRUE` if table given as argument exists in the database, or `FALSE` if it
+     *                              does not
+     */
+    public function table_exists($table) {
+
+        // if table argument contains the database name, extract it
+        if (strpos($table, '.') !== false) list($database, $table) = explode('.', $table);
+
+        // check if table exists in the database
+        return is_array($this->fetch_assoc($this->query('SHOW TABLES' . (isset($database) ? ' IN ' . $database : '') . ' LIKE ?', array($table))));
+
+    }
+
+    /**
+     *  Ends a transaction
+     *
+     *  This means that if all the queries since {@link transaction_start()} are valid, it updates the data in the
+     *  database, but if any of the queries failed, it ignores all queries and treats them as if they never happened.
      *
      *  <code>
      *  // start transactions
@@ -3783,7 +3840,7 @@ class Zebra_Database {
      *
      *  @since  2.1
      *
-     *  @return boolean                     Returns TRUE on success or FALSE on error.
+     *  @return boolean     Returns `TRUE` on success or `FALSE` on error
      */
     public function transaction_complete() {
 
@@ -3833,11 +3890,11 @@ class Zebra_Database {
     /**
      *  Starts the transaction system.
      *
-     *  Transactions work only with databases that support transaction-safe table types. In MySQL, these are InnoDB or
-     *  BDB table types. Working with MyISAM tables will not raise any errors but statements will be executed
+     *  Transactions work only with databases that support transaction-safe table types. In MySQL, these are `InnoDB` or
+     *  `BDB` table types. Working with `MyISAM` tables will not raise any errors but statements will be executed
      *  automatically as soon as they are called (just like if there was no transaction).
      *
-     *  If you are not familiar with transactions, have a look at {@link http://dev.mysql.com/doc/refman/5.0/en/commit.html here}
+     *  If you are not familiar with transactions, have a look {@link https://dev.mysql.com/doc/refman/8.0/en/commit.html here}
      *  and try to find a good online resource for more specific information.
      *
      *  <code>
@@ -3853,13 +3910,13 @@ class Zebra_Database {
      *
      *  @param  boolean     $test_only      (Optional) Starts the transaction system in "test mode" causing the queries
      *                                      to be rolled back (when {@link transaction_complete()} is called) - even if
-     *                                      all queries are valid.
+     *                                      all queries are valid
      *
-     *                                      Default is FALSE.
+     *                                      Default is `FALSE`
      *
      *  @since  2.1
      *
-     *  @return boolean                     Returns TRUE on success or FALSE on error.
+     *  @return boolean                     Returns `TRUE` on success or `FALSE` on error
      */
     public function transaction_start($test_only = false) {
 
@@ -3890,58 +3947,30 @@ class Zebra_Database {
     }
 
     /**
-     *  Checks whether a table exists in the current database.
+     *  Shorthand for `TRUNCATE` queries
      *
-     *  <code>
-     *  // checks whether table "users" exists
-     *  table_exists('users');
-     *  </code>
-     *
-     *  @param  string  $table      The name of the table to check if it exists in the database.
-     *
-     *                              <i>May also be given like databasename.tablename if a database was not explicitly
-     *                              selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                              calling this method.</i>
-     *
-     *  @since  2.3
-     *
-     *  @return boolean             Returns TRUE if table given as argument exists in the database or FALSE if not.
-     */
-    public function table_exists($table) {
-
-        // if table argument contains the database name, extract it
-        if (strpos($table, '.') !== false) list($database, $table) = explode('.', $table);
-
-        // check if table exists in the database
-        return is_array($this->fetch_assoc($this->query('SHOW TABLES' . (isset($database) ? ' IN ' . $database : '') . ' LIKE ?', array($table))));
-
-    }
-
-    /**
-     *  Shorthand for truncating tables.
-     *
-     *  <i>Truncating a table is quicker then deleting all rows, as stated in the
-     *  {@link http://dev.mysql.com/doc/refman/4.1/en/truncate-table.html MySQL documentation}. Truncating a table also
-     *  resets the value of the AUTO INCREMENT column.</i>
+     *  *Truncating a table is quicker then deleting all rows, as stated in the
+     *  {@link https://dev.mysql.com/doc/refman/8.0/en/truncate-table.html MySQL documentation}. Truncating a table also
+     *  resets the value of the AUTO INCREMENT column.*
      *
      *  <code>
      *  $db->truncate('table');
      *  </code>
      *
-     *  @param  string  $table          Table to truncate.
+     *  @param  string  $table          Table to truncate
      *
-     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                                  calling this method.</i>
+     *                                  calling this method.*
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
      *  @since  1.0.9
      *
-     *  @return boolean                 Returns TRUE on success of FALSE on error.
+     *  @return boolean                 Returns `TRUE` on success of `FALSE` on error
      */
     public function truncate($table, $highlight = false) {
 
@@ -3959,10 +3988,10 @@ class Zebra_Database {
     }
 
     /**
-     *  Shorthand for UPDATE queries.
+     *  Shorthand for `UPDATE` queries
      *
-     *  When using this method column names will be enclosed in grave accents " ` " (thus, allowing seamless usage of
-     *  reserved words as column names) and values will be automatically {@link escape()}d in order to prevent SQL injections.
+     *  When using this method column names will be enclosed in grave accents ``` (thus allowing the usage of reserved
+     *  words) and will be automatically {@link escape() escaped} in order to prevent SQL injections.
      *
      *  After an update check {@link affected_rows} to find out how many rows were affected.
      *
@@ -3995,22 +4024,22 @@ class Zebra_Database {
      *  );
      *  </code>
      *
-     *  @param  string  $table          Table in which to update.
+     *  @param  string  $table          Table in which to update
      *
-     *                                  <i>May also be given like databasename.tablename if a database was not explicitly
+     *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
-     *                                  calling this method.</i>
+     *                                  calling this method.*
      *
      *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
      *                                  array's values represent the values to be inserted in each respective column.
      *
-     *                                  Column names will be enclosed in grave accents " ` " (thus, allowing seamless
-     *                                  usage of reserved words as column names) and values will be automatically
-     *                                  {@link escape()}d.
+     *                                  Column names will be enclosed in grave accents ``` (thus allowing the usage of
+     *                                  reserved words) and will be automatically {@link escape() escaped} in order to
+     *                                  prevent SQL injections.
      *
      *                                  A special value may also be used for when a column's value needs to be
-     *                                  incremented or decremented. In this case, use <i>INC(value)</i> where <i>value</i>
-     *                                  is the value to increase the column's value with. Use <i>INC(-value)</i> to decrease
+     *                                  incremented or decremented. In this case, use `INC(value)` where *value*
+     *                                  is the value to increase the column's value with. Use `INC(-value)` to decrease
      *                                  the column's value:
      *
      *                                  <code>
@@ -4040,35 +4069,37 @@ class Zebra_Database {
      *                                  ', array($value, $criteria));
      *                                  </code>
      *
-     *                                  You may also use any of {@link http://www.techonthenet.com/mysql/functions/ MySQL's functions}
-     *                                  as <i>values</i>.
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  as *values*.
      *
-     *                                  <samp>Be aware that when using MySQL functions, the value will be used as it is
-     *                                  without being escaped! While this is ok when using a function without any arguments
-     *                                  like NOW(), this may pose a security concern if the argument(s) come from user input.
-     *                                  In this case make sure you {@link escape} the values yourself!</samp>
+     *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
+     *                                      without being escaped! While this is ok when using a function without any
+     *                                      arguments like `NOW()`, this may pose a security concern if the argument(s)
+     *                                      come from user input. In this case make sure you {@link escape} the values
+     *                                      yourself!
      *
-     *  @param  string  $where          (Optional) A MySQL WHERE clause (without the WHERE keyword).
+     *  @param  string  $where          (Optional) A MySQL `WHERE` clause (without the `WHERE` keyword)
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers ("?", question
-     *                                  marks) in <i>$where</i>. Each item will be automatically {@link escape()}-ed and
-     *                                  will replace the corresponding "?". Can also include an array as an item, case in
-     *                                  which each value from the array will automatically {@link escape()}-ed and then
-     *                                  concatenated with the other elements from the array - useful when using <i>WHERE
-     *                                  column IN (?)</i> conditions. See second example {@link query here}.
+     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
+     *                                  will replace the corresponding `?`.<br>
+     *                                  An item may also be an array, case in which each value from the array will be
+     *                                  automatically {@link escape escaped} and concatenated with the other elements from
+     *                                  the array - useful when using *WHERE column IN (?)* conditions. See second example
+     *                                  {@link query here}.
      *
-     *                                  Default is "" (an empty string).
+     *                                  Default is `""` (an empty string)
      *
-     *  @param  boolean $highlight      (Optional) If set to TRUE the debugging console will be opened automatically
-     *                                  and the query will be shown - really useful for quick and easy debugging.
+     *  @param  boolean $highlight      (Optional) If set to `TRUE` the debugging console will be opened automatically
+     *                                  and the query will be shown - useful for quickly debugging specific queries.
      *
-     *                                  Default is FALSE.
+     *                                  Default is `FALSE`
      *
      *  @since  1.0.9
      *
-     *  @return boolean                 Returns TRUE on success of FALSE on error
+     *  @return boolean                 Returns `TRUE` on success of `FALSE` on error
      */
     public function update($table, $columns, $where = '', $replacements = '', $highlight = false) {
 
@@ -4104,8 +4135,8 @@ class Zebra_Database {
 
     /**
      *  Given an associative array where the array's keys represent column names and the array's values represent the
-     *  values to be associated with each respective column, this method will enclose column names in grave accents " ` "
-     *  (thus, allowing seamless usage of reserved words as column names) and automatically {@link escape()} value.
+     *  values to be associated with each respective column, this method will enclose column names in grave accents ```
+     *  (thus, allowing the usage of reserved words) and will automatically {@link escape escape} values.
      *
      *  It will also take care of particular cases where the INC keyword is used in the values, where the INC keyword is
      *  used with a parameter marker ("?", question mark) or where a value is a single question mark - which throws an
@@ -4264,7 +4295,7 @@ class Zebra_Database {
      *  Shows the debugging console (or writes debugging information to the log file) when the script ends, if
      *  necessary conditions are met.
      *
-     *  <i>This is a public method because it's used with register_shutdown_function.</i>
+     *  *This is a public method because it's used with register_shutdown_function.*
      *
      *  @access private
      *
@@ -4723,7 +4754,7 @@ class Zebra_Database {
             // use the provided resource path for stylesheets and javascript (if any)
             if (!is_null($this->resource_path))
 
-                $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . $this->resource_path), '/');
+                $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . trim($this->resource_path, '/')), '/');
 
             // if path not provided, determine the path automatically
             else
@@ -4910,7 +4941,7 @@ class Zebra_Database {
 
     /**
      *  Handles saving of debug information and halts the execution of the script on fatal error or if the
-     *  {@link halt_on_errors} property is set to TRUE
+     *  {@link halt_on_errors} property is set to `TRUE`
      *
      *  @access private
      */
@@ -5218,7 +5249,7 @@ class Zebra_Database {
     }
 
     /**
-     *  Frees the memory associated with the last result.
+     *  Frees the memory associated with the last result
      *
      *  @since 2.8
      *
