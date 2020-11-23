@@ -17,6 +17,7 @@
         'close_all'                             => 'закрыть все',
         'could_not_connect_to_database'         => 'Невозможно приконнектится к базе данных',
         'could_not_connect_to_memcache_server'  => 'Невозможно приконнектится к memcache',
+        'could_not_connect_to_redis_server'     => 'Could not connect to the redis server',
         'could_not_seek'                        => 'невозможно перейти на указанную запись',
         'could_not_select_database'             => 'Невозможно выбрать базу данных',
         'could_not_write_to_log'                => 'Невозможно записать в лог файл. Убедитесь в его доступности',
@@ -37,11 +38,15 @@
         'line'                                  => 'строка',
         'memcache_extension_not_installed'      => 'расширение Memcache не найдено.<br><span>
                                                     Для использования memcache в качестве кэширующего средства, PHP должен быть не ниже 4.3.3, скомпилирован
-                                                    с <a href="http://pecl.php.net/package/memcache">memcached</a>, и настроен с опцией <em>--with-zlib[=DIR]</em>.</span>',
+                                                    с <a href="https://pecl.php.net/package/memcache">memcached</a>, и настроен с опцией <em>--with-zlib[=DIR]</em>.</span>',
+        'redis_extension_not_installed'         => 'Redis extension not found.<br><span>
+                                                    For using redis as caching method, PHP version must be 4.3.3+, must be compiled with the
+                                                    <a href="https://pecl.php.net/package/redis">reids</a> extension, and needs to be
+                                                    configured with <em>--with-zlib[=DIR]</em>.</span>',
         'milliseconds'                          => 'мс.',
         'mysql_error'                           => 'Ошибка MySQL',
         'no'                                    => 'Нет',
-        'no_active_session'                     => 'Вы выбрали кэширование результатов запросоа в сессии, но активных сессий не найдено. Перед использованием библиотеки используйте <a href="http://php.net/manual/en/function.session-start.php" target="_blank">session_start()</a>!',
+        'no_active_session'                     => 'Вы выбрали кэширование результатов запросоа в сессии, но активных сессий не найдено. Перед использованием библиотеки используйте <a href="https://php.net/manual/en/function.session-start.php" target="_blank">session_start()</a>!',
         'no_transaction_in_progress'            => 'Нет активных транзакций.',
         'not_a_valid_resource'                  => 'Недопустимый ресурс (убедитесь что вы указали ресурс в качестве аргумента для fetch_assoc()/fetch_obj() если вы выполняете запрос внутри цикла)',
         'optimization_needed'                   => '<strong>ВНИМАНИЕ</strong>: Несколько первых результатов текущего запроса такие же как у <strong>%s</strong> других запросов!',
@@ -56,7 +61,8 @@
         'unsuccessful_queries'                  => 'неуспешных запросов',
         'unusable_method_unbuffered_queries'    => 'Mетод %s() не может быть использован наряду с небуферизованными запросами',
         'warning_charset'                       => 'Значения по умолчанию для charset и collation небыли установлены. Вызовите set_charset() после подключения к базе.',
-        'warning_memcache'                      => 'Расширение "memcache" доступно на вашем сервере, рассмотрите возможность использования memcache для кэширования результатов ваших запросов.<br>Подробности в <a href="http://stefangabos.ro/wp-content/docs/Zebra_Database/Zebra_Database/Zebra_Database.html#var$caching_method">документации</a>.',
+        'warning_memcache'                      => 'Расширение "memcache" доступно на вашем сервере, рассмотрите возможность использования memcache для кэширования результатов ваших запросов.<br>Подробности в <a href="https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$caching_method">документации</a>.',
+        'warning_redis'                         => 'The "redis" extension is available on your server - consider using redis for caching query results.<br>See <a href="https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$caching_method">the documentation</a> for more information.',
         'warning_replacements_not_array'        => '<em>$replacements</em> должен быть массивом значений',
         'warning_replacements_wrong_number'     => 'количество значений для замены отличается от количества значений в массиве <em>$replacements</em>',
         'warning_wait_timeout'                  => 'Значение переменной MySQL <em>wait_timeout</em> установлено в %s.
@@ -66,9 +72,9 @@
  													будущего использования тем же пользователем, требующим подключение к базе
  													(обычное поведение, когда пользователи пользуются веб-сайтом). Значение <em>wait_timeout</em>
  													по умолчанию 28800 секунд или 8 часов. В случае, когда у вас большое количество пользователей это приводит
- 													к ошибке <em><a href="http://dev.mysql.com/doc/refman/5.5/ru/too-many-connections.html" target="_blank">
+ 													к ошибке <em><a href="https://dev.mysql.com/doc/refman/8.0/en/too-many-connections.html" target="_blank">
 													Слишком много соединений</a></em>, и возможны ситуации, когда нет возможности настроить максимальное количество
-													<a href="http://dev.mysql.com/doc/refman/5.5/en/server-system-variables.html#sysvar_max_connections" target="_blank">свободных подключений</a>.
+													<a href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_connections" target="_blank">свободных подключений</a>.
 													Рекомендуемое значение - 300 секунд (5 минут).',
         'warning'                               => 'Предупреждение',
         'warnings'                              => 'предупреждения',

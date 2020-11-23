@@ -74,6 +74,15 @@ class Zebra_Database {
      *                      extension and, if {@link memcache_compressed} property is set to `TRUE`, needs to be configured
      *                      with **--with-zlib[=DIR]***
      *
+     *  - **redis**     -   query results are cached using a {@link https://redis.io/ redis} server<br>
+     *                      When using this method make sure to also set the appropriate values for {@link redis_host},
+     *                      {@link redis_port} and optionally {@link redis_compressed} **prior** to calling the
+     *                      {@link connect()} method! Failing to do so will disable caching.
+     *                      <br>
+     *                      *When using this method, PHP must be compiled with the {@link https://pecl.php.net/package/redis redis}
+     *                      extension and, if {@link redis_compressed} property is set to `TRUE`, needs to be configured
+     *                      with **--with-zlib[=DIR]***
+     *
      *  <code>
      *  // the host where memcache is listening for connections
      *  $db->memcache_host = 'localhost';
@@ -417,7 +426,7 @@ class Zebra_Database {
     public $memcache_compressed = false;
 
     /**
-     *  The host where memcache is listening for connections.
+     *  The host where the memcache server is listening for connections.
      *
      *  *Set this property only if you are using `memcache` as {@link caching_method}.*
      *
@@ -445,7 +454,7 @@ class Zebra_Database {
     public $memcache_key_prefix = '';
 
     /**
-     *  The port on which memcache is listening for connections.
+     *  The port on which the memcache server is listening for connections.
      *
      *  *Set this property only if you are using `memcache` as {@link caching_method}.*
      *
@@ -508,6 +517,62 @@ class Zebra_Database {
      *  @var string
      */
     public $notifier_domain = '';
+
+    /**
+     *  Setting this property to `TRUE` will instruct to library to compress the cached results (using `zlib`).
+     *
+     *  *For this to work, PHP needs to be configured with **--with-zlib[=DIR]**!*
+     *
+     *  *Set this property only if you are using `redis` as {@link caching_method}.*
+     *
+     *  Default is `FALSE`
+     *
+     *  @since  2.7
+     *
+     *  @var boolean
+     */
+    public $redis_compressed = false;
+
+    /**
+     *  The host where the redis server is listening for connections.
+     *
+     *  *Set this property only if you are using `redis` as {@link caching_method}.*
+     *
+     *  Default is `FALSE`
+     *
+     *  @since  2.7
+     *
+     *  @var mixed
+     */
+    public $redis_host = false;
+
+    /**
+     *  The prefix for the keys used to identify cached queries in redis. This allows separate caching of the same
+     *  queries by multiple instances of the libraries, or the same instance handling multiple domains on the same
+     *  redis server.
+     *
+     *  *Set this property only if you are using `redis` as {@link caching_method}.*
+     *
+     *  Default is `""` (an empty string)
+     *
+     *  @since  2.8.4
+     *
+     *  @var string
+     */
+    public $redis_key_prefix = '';
+
+    /**
+     *  The port on which the redis server is listening for connections.
+     *
+     *  *Set this property only if you are using `redis` as {@link caching_method}.*
+     *
+     *  Default is `FALSE`
+     *
+     *  @since  2.7
+     *
+     *  @var mixed
+     */
+    public $redis_port = false;
 
     /**
      *  Path to parent of public folder containing the `css` and `javascript` folders.
@@ -617,6 +682,15 @@ class Zebra_Database {
      *  @access private
      */
     private $path;
+
+    /**
+     *  Instance of an opened redis server connection.
+     *
+     *  @since 2.10.0
+     *
+     *  @access private
+     */
+    private $redis = false;
 
     /**
      *  Keeps track of the total time used to execute queries
@@ -743,6 +817,7 @@ class Zebra_Database {
         $this->warnings = array(
             'charset'   => true,   // set_charset not called
             'memcache'  => true,   // memcache is available but it is not used
+            'redis'     => true,   // redis is available but it is not used
         );
 
         // this is used in the "escape" method
@@ -849,6 +924,12 @@ class Zebra_Database {
 
             // suppress the warning telling the developer to use memcache for caching query results
             unset($this->warnings['memcache']);
+
+        // if the "redis" extension is loaded and the caching method is set to "redis"
+        if (!extension_loaded('redis') || $this->caching_method == 'redis')
+
+            // suppress the warning telling the developer to use redis for caching query results
+            unset($this->warnings['redis']);
 
         // we are using lazy-connection
         // that is, we are not going to actually connect to the database until we execute the first query
@@ -3039,6 +3120,27 @@ class Zebra_Database {
 
                 }
 
+            // if caching method is "redis"
+            } elseif ($this->caching_method == 'redis') {
+
+                // the key to identify this particular information (prefix it if required)
+                $redis_key = md5($this->redis_key_prefix . $sql);
+
+                // if there is a cached version of what we're looking for, and data is valid
+                if (($result = $this->redis->get($redis_key)) && $cached_result = @unserialize(gzuncompress(base64_decode($result)))) {
+
+                    // put results in the right place
+                    // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
+                    $this->cached_results[] = $cached_result;
+
+                    // assign to the last_result property the pointer to the position where the array was added
+                    $this->last_result = count($this->cached_results) - 1;
+
+                    // reset the pointer of the array
+                    reset($this->cached_results[$this->last_result]);
+
+                }
+
             // if caching method is "session"
             } elseif ($this->caching_method == 'session') {
 
@@ -3218,6 +3320,12 @@ class Zebra_Database {
 
                         // cache query data
                         $this->memcache->set($memcache_key, $content, ($this->memcache_compressed ? MEMCACHE_COMPRESSED : false), $cache);
+
+                    // if caching method is "redis" and redis is enabled
+                    elseif ($this->caching_method == 'redis' && $this->redis)
+
+                        // cache query data
+                        $this->redis->setEx($redis_key, $cache, $content);
 
                     // if caching method is "session"
                     elseif ($this->caching_method == 'session') {
@@ -4279,6 +4387,37 @@ class Zebra_Database {
                     $this->_log('errors', array(
 
                         'message'   => $this->language['memcache_extension_not_installed']
+
+                    ));
+
+            // if caching is to be done to a redis server and we don't yet have a connection
+            } elseif ($this->caching_method == 'redis' && !$this->redis && $this->redis_host !== false && $this->redis_port !== false) {
+
+                // if redis extension is installed
+                if (class_exists('Redis')) {
+
+                    // instance to the redis object
+                    $redis = new Redis();
+
+                    // try to connect to the redis server
+                    if (!$redis->connect($this->redis_host, $this->redis_port))
+
+                        // if connection could not be established, save debug information
+                        $this->_log('errors', array(
+
+                            'message'   => $this->language['could_not_connect_to_redis_server']
+
+                        ));
+
+                    else $this->redis = $redis;
+
+                // if redis extension is not installed
+                } else
+
+                    // if connection could not be established, save debug information
+                    $this->_log('errors', array(
+
+                        'message'   => $this->language['redis_extension_not_installed']
 
                     ));
 
