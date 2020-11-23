@@ -527,7 +527,7 @@ class Zebra_Database {
      *
      *  Default is `FALSE`
      *
-     *  @since  2.7
+     *  @since  2.10.0
      *
      *  @var boolean
      */
@@ -540,7 +540,7 @@ class Zebra_Database {
      *
      *  Default is `FALSE`
      *
-     *  @since  2.7
+     *  @since  2.10.0
      *
      *  @var mixed
      */
@@ -555,7 +555,7 @@ class Zebra_Database {
      *
      *  Default is `""` (an empty string)
      *
-     *  @since  2.8.4
+     *  @since  2.10.0
      *
      *  @var string
      */
@@ -568,7 +568,7 @@ class Zebra_Database {
      *
      *  Default is `FALSE`
      *
-     *  @since  2.7
+     *  @since  2.10.0
      *
      *  @var mixed
      */
