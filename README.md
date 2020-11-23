@@ -6,11 +6,11 @@
 
 [![Latest Stable Version](https://poser.pugx.org/stefangabos/zebra_database/v/stable)](https://packagist.org/packages/stefangabos/zebra_database) [![Total Downloads](https://poser.pugx.org/stefangabos/zebra_database/downloads)](https://packagist.org/packages/stefangabos/zebra_database) [![Monthly Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/monthly)](https://packagist.org/packages/stefangabos/zebra_database) [![Daily Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/daily)](https://packagist.org/packages/stefangabos/zebra_database) [![License](https://poser.pugx.org/stefangabos/zebra_database/license)](https://packagist.org/packages/stefangabos/zebra_database)
 
-Zebra_Database supports [transactions](https://dev.mysql.com/doc/refman/5.7/en/glossary.html#glos_transaction) and provides ways for caching query results either by saving cached data to the disk, in the session, or by using [memcache](http://memcached.org/).
+Zebra_Database supports [transactions](https://dev.mysql.com/doc/refman/5.7/en/glossary.html#glos_transaction) and provides ways for caching query results either by saving cached data to the disk, in the session, by using [memcache](https://memcached.org/) or [redis](https://redis.io/).
 
-The library provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, backtrace information, etc. It can also automatically [EXPLAIN](http://dev.mysql.com/doc/refman/5.0/en/explain.html) SELECT queries *(so you don't miss those keys again!)*.
+The library provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, backtrace information, etc. It can also automatically [EXPLAIN](https://dev.mysql.com/doc/refman/8.0/en/explain.html) SELECT queries *(so you don't miss those keys again!)*.
 
-It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of *prepared statements*, where parameters are automatically [escaped](http://www.php.net/manual/en/mysqli.real-escape-string.php).
+It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of *prepared statements*, where parameters are automatically [escaped](https://www.php.net/manual/en/mysqli.real-escape-string.php).
 
 The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to E_ALL.
 
@@ -28,17 +28,17 @@ Thank you!
 
 ## Features
 
-- it uses the [mysqli extension](http://www.php.net/manual/en/book.mysqli.php) extension for communicating with the database instead of the old *mysql* extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; **this is not a wrapper for the PDO extension which is already a wrapper in itself!**
+- it uses the [mysqli extension](https://www.php.net/manual/en/book.mysqli.php) extension for communicating with the database instead of the old *mysql* extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; **this is not a wrapper for the PDO extension which is already a wrapper in itself!**
 
 - offers [lots of powerful methods](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html) for easier interaction with MySQL
 
-- supports [unbuffered queries](http://php.net/manual/en/mysqlinfo.concepts.buffering.php)
+- supports [unbuffered queries](https://www.php.net/manual/en/mysqlinfo.concepts.buffering.php)
 
 - provides a better security layer by encouraging the use of prepared statements, where parameters are automatically escaped
 
-- provides a very detailed debugging interface with lots of useful information about executed queries; it also automatically [EXPLAIN](http://dev.mysql.com/doc/refman/5.7/en/explain.html)s each SELECT query
+- provides a very detailed debugging interface with lots of useful information about executed queries; it also automatically [EXPLAIN](https://dev.mysql.com/doc/refman/8.0/en/explain.html)s each SELECT query
 
-- supports caching of query results to the disk, in the session, or to a [memcache](http://memcached.org/) server
+- supports caching of query results to the disk, in the session, or to a [memcache](https://memcached.org/) or to a [redis](https://redis.io/) server
 
 - has [really good documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)
 
@@ -50,7 +50,9 @@ Thank you!
 
 PHP 5.4.0+ with the **mysqli extension** activated, MySQL 4.1.22+
 
-For using **memcache** as caching method, PHP must be compiled with the [memcache](http://pecl.php.net/package/memcache) extension and, if [memcache_compressed](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$memcache_compressed) property is set to TRUE, needs to be configured with `–with-zlib[=DIR]`
+For using **memcache** as caching method, PHP must be compiled with the [memcache](https://pecl.php.net/package/memcache) extension and, if [memcache_compressed](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$memcache_compressed) property is set to TRUE, needs to be configured with `–with-zlib[=DIR]`
+
+For using **redis** as caching method, PHP must be compiled with the [redis](https://pecl.php.net/package/redis) extension and, if [redis_compressed](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$redis_compressed) property is set to TRUE, needs to be configured with `–with-zlib[=DIR]`
 
 ## Installation
 
