@@ -65,7 +65,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.10.0 (last revision: November 16, 2020)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
+<li>2.10.0 (last revision: November 17, 2020)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
 </ul>
 <h4>License:</h4>
 <ul>
@@ -102,6 +102,10 @@ I have a few other projects that you might be interested in — <a href="https:/
 <li><a href="#var$minimize_console">$minimize_console</a></li>
 <li><a href="#var$notification_address">$notification_address</a></li>
 <li><a href="#var$notifier_domain">$notifier_domain</a></li>
+<li><a href="#var$redis_compressed">$redis_compressed</a></li>
+<li><a href="#var$redis_host">$redis_host</a></li>
+<li><a href="#var$redis_key_prefix">$redis_key_prefix</a></li>
+<li><a href="#var$redis_port">$redis_port</a></li>
 <li><a href="#var$resource_path">$resource_path</a></li>
 <li><a href="#var$returned_rows">$returned_rows</a></li>
 </ul>
@@ -207,6 +211,13 @@ When using this method make sure to also set the appropriate values for <a href=
 <br>
 <em>When using this method, PHP must be compiled with the <a href="https://pecl.php.net/package/memcache">memcache</a>
 extension and, if <a href="../Zebra_Database/Zebra_Database.html#var$memcache_compressed">memcache_compressed</a> property is set to <code>TRUE</code>, needs to be configured
+with <strong>--with-zlib[=DIR]</strong></em></li></ul> <ul><li><strong>redis</strong>     -   query results are cached using a <a href="https://redis.io/">redis</a> server<br>
+When using this method make sure to also set the appropriate values for <a href="../Zebra_Database/Zebra_Database.html#var$redis_host">redis_host</a>,
+<a href="../Zebra_Database/Zebra_Database.html#var$redis_port">redis_port</a> and optionally <a href="../Zebra_Database/Zebra_Database.html#var$redis_compressed">redis_compressed</a> <strong>prior</strong> to calling the
+<a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> method! Failing to do so will disable caching.
+<br>
+<em>When using this method, PHP must be compiled with the <a href="https://pecl.php.net/package/redis">redis</a>
+extension and, if <a href="../Zebra_Database/Zebra_Database.html#var$redis_compressed">redis_compressed</a> property is set to <code>TRUE</code>, needs to be configured
 with <strong>--with-zlib[=DIR]</strong></em></li></ul>   <ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;the&nbsp;host&nbsp;where&nbsp;memcache&nbsp;is&nbsp;listening&nbsp;for&nbsp;connections</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$memcache_host">memcache_host</a>&nbsp;</span>=&nbsp;<span class="src-str">'localhost'</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
@@ -464,7 +475,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 </div>
 <h4 id="var$memcache_host" class="variable"><span><em>mixed</em></span> $memcache_host =  <span class="value">false</span></h4>
 <div class="doc_block">
-<p>The host where memcache is listening for connections.</p>
+<p>The host where the memcache server is listening for connections.</p>
 <p><em>Set this property only if you are using <code>memcache</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
 <h5>Tags</h5>
 <table>
@@ -492,7 +503,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 </div>
 <h4 id="var$memcache_port" class="variable"><span><em>mixed</em></span> $memcache_port =  <span class="value">false</span></h4>
 <div class="doc_block">
-<p>The port on which memcache is listening for connections.</p>
+<p>The port on which the memcache server is listening for connections.</p>
 <p><em>Set this property only if you are using <code>memcache</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
 <h5>Tags</h5>
 <table>
@@ -533,6 +544,62 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <p>If a query's execution time exceeds the number of seconds set by <a href="../Zebra_Database/Zebra_Database.html#var$max_query_time">max_query_time</a>, a notification email   will be automatically sent to the address defined by <a href="../Zebra_Database/Zebra_Database.html#var$notification_address">notification_address</a> and having <a href="../Zebra_Database/Zebra_Database.html#var$notifier_domain">notifier_domain</a>   in subject.</p><p class="highlight">Mails are sent using PHP's <a href="https://www.php.net/manual/en/function.mail.php">mail</a> function.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;set&nbsp;a&nbsp;domain&nbsp;name&nbsp;so&nbsp;that&nbsp;you'll&nbsp;know&nbsp;where&nbsp;the&nbsp;email&nbsp;comes&nbsp;from</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$notifier_domain">notifier_domain</a>&nbsp;</span>=&nbsp;<span class="src-str">'yourdomain.com'</span><span class="src-sym">;</span></div></li>
 </ol>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<h4 id="var$redis_compressed" class="variable"><span><em>boolean</em></span> $redis_compressed =  <span class="value">false</span></h4>
+<div class="doc_block">
+<p>Setting this property to <code>TRUE</code> will instruct to library to compress the cached results (using <code>zlib</code>).</p>
+<p><em>For this to work, PHP needs to be configured with <strong>--with-zlib[=DIR]</strong>!</em></p><p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
+<h5>Tags</h5>
+<table>
+<tr>
+<td><strong>since:</strong>&nbsp;&nbsp;</td>
+<td>2.10.0</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<h4 id="var$redis_host" class="variable"><span><em>mixed</em></span> $redis_host =  <span class="value">false</span></h4>
+<div class="doc_block">
+<p>The host where the redis server is listening for connections.</p>
+<p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
+<h5>Tags</h5>
+<table>
+<tr>
+<td><strong>since:</strong>&nbsp;&nbsp;</td>
+<td>2.10.0</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<h4 id="var$redis_key_prefix" class="variable"><span><em>string</em></span> $redis_key_prefix =  <span class="value">''</span></h4>
+<div class="doc_block">
+<p>The prefix for the keys used to identify cached queries in redis. This allows separate caching of the same   queries by multiple instances of the libraries, or the same instance handling multiple domains on the same   redis server.</p>
+<p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>&quot;&quot;</code> (an empty string)</p>
+<h5>Tags</h5>
+<table>
+<tr>
+<td><strong>since:</strong>&nbsp;&nbsp;</td>
+<td>2.10.0</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<h4 id="var$redis_port" class="variable"><span><em>mixed</em></span> $redis_port =  <span class="value">false</span></h4>
+<div class="doc_block">
+<p>The port on which the redis server is listening for connections.</p>
+<p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
+<h5>Tags</h5>
+<table>
+<tr>
+<td><strong>since:</strong>&nbsp;&nbsp;</td>
+<td>2.10.0</td>
+</tr>
+</table>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
@@ -3046,7 +3113,7 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Tue, 17 Nov 20</span>
+Documentation generated on <span>Mon, 23 Nov 20</span>
 </div>
 </div>
 <!-- Global site tag (gtag.js) - Google Analytics -->

@@ -241,11 +241,11 @@ I have a few other projects that you might be interested in — <a href="https:/
 <dt>$memcache_compressed</dt>
 <dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$memcache_compressed">Zebra_Database::$memcache_compressed</a><span>Setting this property to <code>TRUE</code> will instruct to library to compress the cached results (using <code>zlib</code>).</span></dd>
 <dt>$memcache_host</dt>
-<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$memcache_host">Zebra_Database::$memcache_host</a><span>The host where memcache is listening for connections.</span></dd>
+<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$memcache_host">Zebra_Database::$memcache_host</a><span>The host where the memcache server is listening for connections.</span></dd>
 <dt>$memcache_key_prefix</dt>
 <dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$memcache_key_prefix">Zebra_Database::$memcache_key_prefix</a><span>The prefix for the keys used to identify cached queries in memcache. This allows separate caching of the same   queries by multiple instances of the libraries, or the same instance handling multiple domains on the same   memcache server.</span></dd>
 <dt>$memcache_port</dt>
-<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$memcache_port">Zebra_Database::$memcache_port</a><span>The port on which memcache is listening for connections.</span></dd>
+<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$memcache_port">Zebra_Database::$memcache_port</a><span>The port on which the memcache server is listening for connections.</span></dd>
 <dt>$minimize_console</dt>
 <dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$minimize_console">Zebra_Database::$minimize_console</a><span>By setting this property to <code>TRUE</code> a minimized version of the debugging console will be shown by default instead   of the full-sized one.</span></dd>
 </dl>
@@ -297,6 +297,14 @@ I have a few other projects that you might be interested in — <a href="https:/
 <div class="doc_index">
 <h3 id="r">r</h3>
 <dl>
+<dt>$redis_compressed</dt>
+<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$redis_compressed">Zebra_Database::$redis_compressed</a><span>Setting this property to <code>TRUE</code> will instruct to library to compress the cached results (using <code>zlib</code>).</span></dd>
+<dt>$redis_host</dt>
+<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$redis_host">Zebra_Database::$redis_host</a><span>The host where the redis server is listening for connections.</span></dd>
+<dt>$redis_key_prefix</dt>
+<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$redis_key_prefix">Zebra_Database::$redis_key_prefix</a><span>The prefix for the keys used to identify cached queries in redis. This allows separate caching of the same   queries by multiple instances of the libraries, or the same instance handling multiple domains on the same   redis server.</span></dd>
+<dt>$redis_port</dt>
+<dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$redis_port">Zebra_Database::$redis_port</a><span>The port on which the redis server is listening for connections.</span></dd>
 <dt>$resource_path</dt>
 <dd>in file <em>Zebra_Database.php</em>, variable <a href="Zebra_Database/Zebra_Database.html#var$resource_path">Zebra_Database::$resource_path</a><span>Path to parent of public folder containing the <code>css</code> and <code>javascript</code> folders.</span></dd>
 <dt>$returned_rows</dt>
@@ -361,7 +369,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Tue, 17 Nov 20</span>
+Documentation generated on <span>Mon, 23 Nov 20</span>
 </div>
 </div>
 <!-- Global site tag (gtag.js) - Google Analytics -->
