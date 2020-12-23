@@ -1,4 +1,4 @@
-## version 2.10.0 (TBA)
+## version 2.10.0 (December 23, 2020)
 
 - added option for enabling debugging on the fly via a query string parameter - see [documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug)
 - added support for caching query results to a [redis](https://redis.io/) server
