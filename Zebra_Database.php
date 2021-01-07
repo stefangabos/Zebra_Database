@@ -2099,7 +2099,7 @@ class Zebra_Database {
         $result = '';
 
         // iterate through the array's items and "glue" items together
-        foreach ($items as $item) $result .= ($result != '' ? ',' : '') . '\'' . $this->escape($items) . '\'';
+        foreach ($items as $item) $result .= ($result != '' ? ',' : '') . '\'' . $this->escape($item) . '\'';
 
         return $result;
 
