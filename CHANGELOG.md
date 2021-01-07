@@ -1,3 +1,6 @@
+## version 2.10.1 (January 07, 2021)
+
+- fixed bug introduced in previous release, for the [implode](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodimplode) method; see [#65](https://github.com/stefangabos/Zebra_Database/issues/65), thanks [pbm845](https://github.com/pbm845)
 ## version 2.10.0 (December 23, 2020)
 
 - added option for enabling debugging on the fly via a query string parameter - see [documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug)
