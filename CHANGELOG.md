@@ -1,4 +1,4 @@
-## version 2.10.2 (March 07, 2021)
+## version 2.10.2 (TBA)
 
 - fixed a potential bug with `INC` keyword being incorrectly detected in strings looking like `INC(foo)`
 ## version 2.10.1 (January 07, 2021)
