@@ -72,7 +72,7 @@ class Zebra_Database {
      *                      <br>
      *                      *When using this method, PHP must be compiled with the {@link https://pecl.php.net/package/memcache memcache}
      *                      extension and, if {@link memcache_compressed} property is set to `TRUE`, needs to be configured
-     *                      with **--with-zlib[=DIR]***
+     *                      with `--with-zlib[=DIR]`*
      *
      *  - **redis**     -   query results are cached using a {@link https://redis.io/ redis} server<br>
      *                      When using this method make sure to also set the appropriate values for {@link redis_host},
@@ -81,7 +81,7 @@ class Zebra_Database {
      *                      <br>
      *                      *When using this method, PHP must be compiled with the {@link https://pecl.php.net/package/redis redis}
      *                      extension and, if {@link redis_compressed} property is set to `TRUE`, needs to be configured
-     *                      with **--with-zlib[=DIR]***
+     *                      with `--with-zlib[=DIR]`*
      *
      *  <code>
      *  // the host where memcache is listening for connections
@@ -413,7 +413,7 @@ class Zebra_Database {
     /**
      *  Setting this property to `TRUE` will instruct to library to compress the cached results (using `zlib`).
      *
-     *  *For this to work, PHP needs to be configured with **--with-zlib[=DIR]**!*
+     *  *For this to work, PHP needs to be configured with `--with-zlib[=DIR]`!*
      *
      *  *Set this property only if you are using `memcache` as {@link caching_method}.*
      *
@@ -521,7 +521,7 @@ class Zebra_Database {
     /**
      *  Setting this property to `TRUE` will instruct to library to compress the cached results (using `zlib`).
      *
-     *  *For this to work, PHP needs to be configured with **--with-zlib[=DIR]**!*
+     *  *For this to work, PHP needs to be configured with `--with-zlib[=DIR]`*!
      *
      *  *Set this property only if you are using `redis` as {@link caching_method}.*
      *
@@ -893,7 +893,7 @@ class Zebra_Database {
      *
      *  @param  string  $database   (Optional) The database to be selected after the connection is established
      *
-     *                              This `can also be set later` with the {@link select_database()} metho
+     *                              This *can also be set later* with the {@link select_database()} metho
      *
      *                              Default is `""` (empty string)
      *
@@ -2705,7 +2705,7 @@ class Zebra_Database {
      *  @param  string  $language   The name of the language file from the `languages` subdirectory
      *
      *                              Must be specified without the extension!
-     *                              (i.e. "german" for the german language not "german.php")
+     *                              (i.e. `german` for the german language not `german.php`)
      *
      *                              Default is "english"
      *
