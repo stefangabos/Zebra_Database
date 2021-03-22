@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.10.1 (last revision: January 07, 2021)
+ *  @version    2.10.2 (last revision: March 22, 2021)
  *  @copyright  (c) 2006 - 2021 Stefan Gabos
  *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -4275,7 +4275,7 @@ class Zebra_Database {
                 ));
 
             // if special INC() keyword is used
-            if (preg_match('/INC\((\-{1})?(.*?)\)/i', $value, $matches) > 0) {
+            if (preg_match('/^INC\((\-{1})?([0-9]+)\)/i', $value, $matches) > 0) {
 
                 // translate to SQL
                 $sql .= '`' . $column_name . '` = `' . $column_name . '` ' . ($matches[1] == '-' ? '-' : '+') . ' ?';
