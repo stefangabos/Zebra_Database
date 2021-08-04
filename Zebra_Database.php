@@ -2466,7 +2466,7 @@ class Zebra_Database {
 
         // prepare the values
         $sql .= implode(', ', array_map(function($row) {
-            return '(' . implode(', ', array_map(function($value) { return $this->_is_mysql_function($value) ? (is_null($value) ? 'NULL' : $value) : '"' . $this->escape($value) . '"'; }, $row)) . ')' . "\n";
+            return '(' . implode(', ', array_map(function($value) { return $this->_is_mysql_function($value) ? (is_null($value) ? 'NULL' : $value) : ($value===false ? 'false' :  '"' .  $this->escape($value) . '"'); }, $row)) . ')' . "\n";
         }, $values));
 
         // if $update is an array and is not empty
@@ -2488,7 +2488,7 @@ class Zebra_Database {
                 else
 
                     // it means we have probably given a static value
-                    return '`' . $column . '` = ' . ($this->_is_mysql_function($value) ? (is_null($value) ? 'NULL' : $value) : '"' . $this->escape($value) . '"');
+                    return '`' . $column . '` = ' . ($this->_is_mysql_function($value) ? (is_null($value) ? 'NULL' : $value) : ($value===false ? 'false' :  '"' .  $this->escape($value) . '"'));
 
             }, array_keys($update), array_values($update)));
 
