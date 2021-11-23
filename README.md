@@ -57,16 +57,20 @@ For using **redis** as caching method, PHP must be compiled with the [redis](htt
 
 ## Installation
 
-Download the latest version, unpack it, and load it in your project
+You can install Zebra Database via [Composer](https://packagist.org/packages/stefangabos/zebra_database)
 
-```php
-require_once 'Zebra_Database.php';
+```bash
+# get the latest stable release
+composer require stefangabos/zebra_database
+
+# get the latest commit
+composer require stefangabos/zebra_database:dev-master
 ```
 
-## Installation with Composer
-You can install Zebra Database via [Composer](https://packagist.org/packages/stefangabos/zebra_database)
-```shell
-composer require stefangabos/zebra_database
+Or you can install it manually by downloading the latest version, unpacking it, and then including it in your project
+
+```php
+require_once 'path/to/Zebra_Database.php';
 ```
 
 ## How to use
