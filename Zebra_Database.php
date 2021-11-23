@@ -1,7 +1,7 @@
 <?php
 
 /**
- *  A compact (one-file only), lightweight yet feature-rich PHP MySQLi database wrapper providing methods for interacting
+ *  A compact, lightweight yet feature-rich PHP MySQLi database wrapper providing methods for interacting
  *  with MySQL databases that are more secure, powerful and intuitive than PHP's default ones.
  *
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
