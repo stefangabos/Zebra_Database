@@ -14,19 +14,6 @@ It encourages developers to write maintainable code and provides a better defaul
 
 The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to E_ALL.
 
-## :notebook_with_decorative_cover: Documentation
-
-Check out the [awesome documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)!
-
-## 🎂 Support the development of this project
-
-Your support means a lot and it keeps me motivated to keep working on open source projects.<br>
-If you like this project please ⭐ it by clicking on the star button at the top of the page.<br>
-If you are feeling generous, you can buy me a coffee by donating through PayPal, or you can become a sponsor.<br>
-Either way - **Thank you!** 🎉
-
-[<img src="https://img.shields.io/github/stars/stefangabos/zebra_database?color=green&label=star%20it%20on%20GitHub" width="132" height="20" alt="Star it on GitHub">](https://github.com/stefangabos/Zebra_Database) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3WTC6RTC7496Q) [<img src="https://img.shields.io/badge/-Sponsor-fafbfc?logo=GitHub%20Sponsors">](https://github.com/sponsors/stefangabos)
-
 ## Features
 
 - it uses the [mysqli extension](https://www.php.net/manual/en/book.mysqli.php) extension for communicating with the database instead of the old *mysql* extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; **this is not a wrapper for the PDO extension which is already a wrapper in itself!**
@@ -46,6 +33,19 @@ Either way - **Thank you!** 🎉
 - code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to **E_ALL**
 
 ![Zebra_Database's debugging console](http://stefangabos.ro/zebra-database-debug-console.png)
+
+## :notebook_with_decorative_cover: Documentation
+
+Check out the [awesome documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)!
+
+## 🎂 Support the development of this project
+
+Your support means a lot and it keeps me motivated to keep working on open source projects.<br>
+If you like this project please ⭐ it by clicking on the star button at the top of the page.<br>
+If you are feeling generous, you can buy me a coffee by donating through PayPal, or you can become a sponsor.<br>
+Either way - **Thank you!** 🎉
+
+[<img src="https://img.shields.io/github/stars/stefangabos/zebra_database?color=green&label=star%20it%20on%20GitHub" width="132" height="20" alt="Star it on GitHub">](https://github.com/stefangabos/Zebra_Database) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3WTC6RTC7496Q) [<img src="https://img.shields.io/badge/-Sponsor-fafbfc?logo=GitHub%20Sponsors">](https://github.com/sponsors/stefangabos)
 
 ## Requirements
 
