@@ -1,6 +1,6 @@
 <img src="https://github.com/stefangabos/zebrajs/blob/master/docs/images/logo.png" alt="zebrajs" align="right">
 
-# Zebra Database &nbsp;[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=A+compact,+lightweight+and+feature-rich+PHP+MySQLi+database+wrapper+%23php&url=https://github.com/stefangabos/Zebra_Database&via=stefangabos)
+# Zebra Database &nbsp;[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=A+compact,+lightweight+and+feature-rich+PHP+MySQLi+database+wrapper&url=https://github.com/stefangabos/Zebra_Database&via=stefangabos&hashtags=php,mysqli,mysql)
 
 *A compact, lightweight yet feature-rich PHP MySQLi database wrapper providing methods for interacting with MySQL databases that are more secure, powerful and intuitive than PHP's default ones.*
 
