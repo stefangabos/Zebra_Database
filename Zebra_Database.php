@@ -5042,8 +5042,8 @@ class Zebra_Database {
                 // remove cookie
                 setcookie($this->debug_cookie_name, '', time() - 3600, '/', '', false, true);
 
-            // if cookie is already set
-        } elseif (isset($_COOKIE[$this->debug_cookie_name]))
+            // if debugging is handled via a parameter in the query string and the cookie is already set
+        } elseif (is_string($this->debug) && isset($_COOKIE[$this->debug_cookie_name]))
 
             // set flag
             $debugger_enabled_via_query_string = true;
