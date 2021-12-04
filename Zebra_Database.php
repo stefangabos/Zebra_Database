@@ -3486,7 +3486,7 @@ class Zebra_Database {
                         && $this->_is_result($this->last_result)
 
                         // MySQL could explain it
-                        && ($explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $sql))
+                        && ($explain_resource = mysqli_query($this->connection, 'EXPLAIN ' . $sql))
 
                     )
 
@@ -5176,7 +5176,7 @@ class Zebra_Database {
                 if (isset($resource->explain) && $resource->explain) {
 
                     // do that now
-                    $explain_resource = mysqli_query($this->connection, 'EXPLAIN EXTENDED ' . $resource->query);
+                    $explain_resource = mysqli_query($this->connection, 'EXPLAIN ' . $resource->query);
 
                     // update information in the debugging console
                     while ($row = mysqli_fetch_assoc($explain_resource)) $this->debug_info['successful-queries'][$resource->log_index]['explain'][] = $row;
