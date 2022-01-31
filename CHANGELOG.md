@@ -1,6 +1,9 @@
 ## version 2.10.2 (TBA)
 
 - fixed a potential bug with `INC` keyword being incorrectly detected in strings looking like `INC(foo)`
+- fixed EXPLAIN not working in the debug console
+- fixed debug console being always show once enabled via string
+
 ## version 2.10.1 (January 07, 2021)
 
 - fixed bug introduced in previous release, for the [implode](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodimplode) method; see [#65](https://github.com/stefangabos/Zebra_Database/issues/65), thanks [pbm845](https://github.com/pbm845)
