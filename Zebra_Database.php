@@ -7,8 +7,8 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.10.2 (last revision: March 22, 2021)
- *  @copyright  © 2006 - 2021 Stefan Gabos
+ *  @version    2.10.2 (last revision: January 31, 2022)
+ *  @copyright  © 2006 - 2022 Stefan Gabos
  *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
  */
@@ -3817,7 +3817,7 @@ class Zebra_Database {
         foreach ($columns as $key => $value)
 
             // and escape everyone except the * character
-            if (trim($value) != '*') $columns[$key] = $this->_escape($value);
+            if (null !== $value && trim($value) != '*') $columns[$key] = $this->_escape($value);
 
         // run the query
         return $this->query('
@@ -4265,7 +4265,7 @@ class Zebra_Database {
             $sql .= ($sql != '' ? ', ' : '');
 
             // if value is just a parameter marker ("?", question mark)
-            if (trim($value) == '?')
+            if (null !== $value && trim($value) == '?')
 
                 // throw an error
                 return $this->_log('unsuccessful-queries', array(
@@ -4275,7 +4275,7 @@ class Zebra_Database {
                 ));
 
             // if special INC() keyword is used
-            if (preg_match('/^INC\((\-{1})?([0-9]+)\)/i', $value, $matches) > 0) {
+            if (null !== $value && preg_match('/^INC\((\-{1})?([0-9]+)\)/i', $value, $matches) > 0) {
 
                 // translate to SQL
                 $sql .= '`' . $column_name . '` = `' . $column_name . '` ' . ($matches[1] == '-' ? '-' : '+') . ' ?';
@@ -4726,7 +4726,7 @@ class Zebra_Database {
 
                                 $output .= '<tr>';
 
-                                foreach (array_values($row) as $column) $output .= '<td>' . htmlspecialchars($column, ENT_QUOTES, 'UTF-8') . '</td>';
+                                foreach (array_values($row) as $column) $output .= '<td>' . (null !== $column ? htmlspecialchars($column, ENT_QUOTES, 'UTF-8') : '') . '</td>';
 
                                 $output .= '</tr>';
 
@@ -4942,7 +4942,7 @@ class Zebra_Database {
             $entry = array_map(function($value) {
 
                 // trim ticks and whitespace
-                $value = trim(trim($value, '`'));
+                $value = null !== $value ? trim(trim($value, '`')) : $value;
 
                 // if not * or a MySQL function
                 if ($value !== '*' && !$this->_is_mysql_function($value)) {
@@ -5034,13 +5034,13 @@ class Zebra_Database {
                 $debugger_enabled_via_query_string = true;
 
                 // set cookie which expires when the browser is closed
-                setcookie($this->debug_cookie_name, '1', 0, '/', '', false, true);
+                @setcookie($this->debug_cookie_name, '1', 0, '/', '', false, true);
 
             // consider turning debugging off
             } else
 
                 // remove cookie
-                setcookie($this->debug_cookie_name, '', time() - 3600, '/', '', false, true);
+                @setcookie($this->debug_cookie_name, '', time() - 3600, '/', '', false, true);
 
             // if debugging is handled via a parameter in the query string and the cookie is already set
         } elseif (is_string($this->debug) && isset($_COOKIE[$this->debug_cookie_name]))
@@ -5247,6 +5247,9 @@ class Zebra_Database {
             $file_name .= $extension;
 
         }
+
+        print_r(getcwd());
+        print_r($file_name);
 
         // all the labels that may be used in a log entry
         $labels = array(
