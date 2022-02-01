@@ -5248,9 +5248,6 @@ class Zebra_Database {
 
         }
 
-        print_r(getcwd());
-        print_r($file_name);
-
         // all the labels that may be used in a log entry
         $labels = array(
             strtoupper($this->language['date']),
