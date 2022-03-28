@@ -6,7 +6,7 @@
 
 [![Latest Stable Version](https://poser.pugx.org/stefangabos/zebra_database/v)](https://packagist.org/packages/stefangabos/zebra_database) [![Total Downloads](https://poser.pugx.org/stefangabos/zebra_database/downloads)](https://packagist.org/packages/stefangabos/zebra_database) [![Monthly Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/monthly)](https://packagist.org/packages/stefangabos/zebra_database) [![Daily Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/daily)](https://packagist.org/packages/stefangabos/zebra_database) [![License](https://poser.pugx.org/stefangabos/zebra_database/license)](https://packagist.org/packages/stefangabos/zebra_database)
 
-Zebra_Database supports [transactions](https://dev.mysql.com/doc/refman/5.7/en/glossary.html#glos_transaction) and provides ways for caching query results either by saving cached data to the disk, in the session, by using [memcache](https://memcached.org/) or [redis](https://redis.io/).
+Zebra_Database supports [transactions](https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_transaction) and provides ways for caching query results either by saving cached data to the disk, in the session, by using [memcache](https://memcached.org/) or [redis](https://redis.io/).
 
 The library provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, backtrace information, etc. It can also automatically [EXPLAIN](https://dev.mysql.com/doc/refman/8.0/en/explain.html) SELECT queries *(so you don't miss those keys again!)*.
 
