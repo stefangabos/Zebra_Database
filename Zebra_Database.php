@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.10.2 (last revision: January 31, 2022)
+ *  @version    2.10.2 (last revision: April 14, 2022)
  *  @copyright  © 2006 - 2022 Stefan Gabos
  *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -317,7 +317,7 @@ class Zebra_Database {
      *  the value will be **0**!*
      *
      *  <code>
-`     *  // let's assume` that "table" has 100 rows but we're only selecting the first 10 of thos
+`     *  // let's assume` that "table" has 100 rows but we're only selecting the first 10 of those
      *  // the last argument of the method tells the library to get the total number of records in the table
      *  $db->query('
      *      SELECT
@@ -893,7 +893,7 @@ class Zebra_Database {
      *
      *  @param  string  $database   (Optional) The database to be selected after the connection is established
      *
-     *                              This *can also be set later* with the {@link select_database()} metho
+     *                              This *can also be set later* with the {@link select_database()} method
      *
      *                              Default is `""` (empty string)
      *
