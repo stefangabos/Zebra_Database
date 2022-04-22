@@ -32,7 +32,7 @@ The code is heavily commented and generates no warnings/errors/notices when PHP'
 
 - code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to **E_ALL**
 
-![Zebra_Database's debugging console](http://stefangabos.ro/zebra-database-debug-console.png)
+![Zebra_Database's debugging console](https://raw.githubusercontent.com/stefangabos/Zebra_Database/master/docs/media/zebra-database-debug-console.png)
 
 ## :notebook_with_decorative_cover: Documentation
 
