@@ -7,7 +7,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.10.2 (last revision: May 13, 2022)
+ *  @version    2.11.0 (last revision: May 13, 2022)
  *  @copyright  © 2006 - 2022 Stefan Gabos
  *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
