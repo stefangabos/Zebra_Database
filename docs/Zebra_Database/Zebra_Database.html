@@ -65,7 +65,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.10.2 (last revision: May 13, 2022)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
+<li>2.11.0 (last revision: May 13, 2022)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
 </ul>
 <h4>License:</h4>
 <ul>
@@ -87,6 +87,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 <li><a href="#var$debugger_ip">$debugger_ip</a></li>
 <li><a href="#var$debug_cookie_name">$debug_cookie_name</a></li>
 <li><a href="#var$debug_show_backtrace">$debug_show_backtrace</a></li>
+<li><a href="#var$debug_show_database_manager">$debug_show_database_manager</a></li>
 <li><a href="#var$debug_show_explain">$debug_show_explain</a></li>
 <li><a href="#var$debug_show_globals">$debug_show_globals</a></li>
 <li><a href="#var$debug_show_records">$debug_show_records</a></li>
@@ -179,7 +180,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </div>
 <h4 id="var$auto_quote_replacements" class="variable"><span><em>boolean</em></span> $auto_quote_replacements =  <span class="value">true</span></h4>
 <div class="doc_block">
-<p>Should escaped variable be also enclosed in single quotes?</p>
+<p>Should escaped variables be also enclosed in single quotes?</p>
 <p>Default is <code>TRUE</code></p>
 <h5>Tags</h5>
 <table>
@@ -330,6 +331,21 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
 <td>2.5.9</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<h4 id="var$debug_show_database_manager" class="variable"><span><em>string</em></span> $debug_show_database_manager =  <span class="value">false</span></h4>
+<div class="doc_block">
+<p>Show a link for editing the query in your favorite database manager like (like <a href="https://www.phpmyadmin.net/">phpMyAdmin</a>   or <a href="https://www.adminer.org/">Adminer</a>).</p>
+<p>It should be an HTML anchor (a link) to your favorite database manager where you build the query string according   to the requirements of said database manager using the following placeholders:</p><p><ul><li>%host%</li><li>%user%</li><li>%password%</li><li>%database%</li><li>%port%</li><li>%socket%</li><li>%query%</li></ul><p>   ...were any of those placeholders will be replaced by the values you have passed on to <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect</a>, except   for the <em>%query%</em> placeholder which will be replaced by the respective query.</p><p>Here's how to set up the value for opening the query in <a href="https://www.adminer.org/">Adminer</a>:</p><ol class="code"><li><div class="src-line">&lt;<span class="src-id">a&nbsp;href</span>=<span class="src-str">&quot;path/to/adminer.php?server=%host%:%port%&amp;username=%user%&amp;db=%database%&amp;sql=%query%&quot;&nbsp;</span><span class="src-id">target</span>=<span class="src-str">&quot;adminer&quot;</span>&gt;<span class="src-id">edit&nbsp;in&nbsp;adminer</span>&lt;/<span class="src-id">a</span>&gt;</div></li>
+</ol><p><em>I don't use <a href="https://www.phpmyadmin.net/">phpMyAdmin</a> so if you manage to set it up, please share the result   with me so I can add it to the docs. Thanks!</em></p><p class="highlight">Because you will have to use the password when building your links, be <strong>VERY CAREFUL</strong> with this feature       and make sure you don't expose your credentials to malicious participants!</p><p>Setting it to <code>false</code> will disable the feature.</p><p>Default is a link to the documentation on how to set the link up.</p>
+<h5>Tags</h5>
+<table>
+<tr>
+<td><strong>since:</strong>&nbsp;&nbsp;</td>
+<td>2.11.0</td>
 </tr>
 </table>
 <a href="#top" class="top">top</a>
@@ -3094,7 +3110,7 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Fri, 13 May 22</span>
+Documentation generated on <span>Thu, 13 May 43</span>
 </div>
 </div>
 <!-- Global site tag (gtag.js) - Google Analytics -->
