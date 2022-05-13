@@ -58,7 +58,7 @@
 #zdc .zdc-cache                     { background-image: url('cache.png'); background-color: #FFFFCC; color: #222 }
 #zdc .zdc-unbuffered                { background-image: url('unbuffered.png'); background-color: #CCFF99; color: #222 }
 #zdc .zdc-top                       { background-image: url('top.png') }
-#zdc .zdc-close                     { background-image: url('close.png') }
+#zdc .zdc-close                     { background-image: url('close.png'); background-position: 5px 6px !important }
 #zdc .zdc-records                   { background-image: url('records.png') }
 #zdc .zdc-affected                  { background-image: url('affected.png') }
 #zdc .zdc-explain                   { background-image: url('explain.png') }
@@ -84,5 +84,5 @@
 
 /* MINI CONSOLE */
 #zdc-mini                           { position: absolute; top: 0; right: 0; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 13px; text-align: left; display: block }
-#zdc-mini a                         { background: #151C24 url('db.gif') no-repeat 10px 12px; display: block; padding: 12px 12px 12px 35px; color: #FFF; text-decoration: none }
+#zdc-mini a                         { background: #151C24 url('db.png') no-repeat 10px 12px; display: block; padding: 12px 12px 12px 35px; color: #FFF; text-decoration: none }
 #zdc-mini a span                    { font-weight: bold; background-color: #C40000; padding: 0 5px 0 5px; margin: 0px 4px 0 4px }
