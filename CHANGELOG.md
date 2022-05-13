@@ -1,3 +1,8 @@
+## version 2.11.0 (May 13, 2022)
+
+- added a new [debug_show_database_manager](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager) property for editing queries in your favorite database manager
+- updated icons as the old ones were put there 16 years ago :)
+
 ## version 2.10.2 (May 13, 2022)
 
 - fixed a deprecation warning shown in PHP 8.1+; see [#70](https://github.com/stefangabos/Zebra_Database/issues/70), thanks [Harry](https://github.com/Dibbyo456)
