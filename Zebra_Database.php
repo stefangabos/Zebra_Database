@@ -35,7 +35,7 @@ class Zebra_Database {
     public $affected_rows;
 
     /**
-     *  Should escaped variable be also enclosed in single quotes?
+     *  Should escaped variables be also enclosed in single quotes?
      *
      *  Default is `TRUE`
      *
