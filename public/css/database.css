@@ -31,7 +31,7 @@
 #zdc .zdc-entry                     { margin: 1px; background: #9CA68F; width: 99.9% }
 #zdc .zdc-box                       { background: #EEE; padding: 10px }
 #zdc .zdc-counter                   { background: #9CA68F; filter: brightness(75%); padding: 5px; color: #FFF }
-#zdc .zdc-data                      { width: 100%; padding: 5px }
+#zdc .zdc-data                      { width: 100%; padding: 3px }
 #zdc .zdc-error                     { background: #CC3333; color: #FFF; font-weight: bold }
 #zdc .zdc-error pre,
 #zdc .zdc-error span,
@@ -49,10 +49,8 @@
 #zdc .zdc-highlight .zdc-counter    { background: #926492 }
 
 #zdc .zdc-actions                   { padding: 2px; background: #CDD8BF; color: #151C24; margin-top: 1px }
-#zdc .zdc-actions ul li,
-#zdc .zdc-actions ul li a           { color: #151C24 !important; background-repeat: no-repeat; background-position: 5px center; margin-right: 0px }
-#zdc .zdc-actions ul li             { padding: 5px 5px 5px 28px }
-#zdc .zdc-actions ul li a           { text-decoration: underline; padding-left: 28px; margin-left: -28px }
+#zdc .zdc-actions ul li             { color: #151C24 !important; padding: 5px 5px 5px 28px; background-repeat: no-repeat; background-position: 5px center }
+#zdc .zdc-actions ul li a           { color: #151C24 !important; text-decoration: underline }
 
 #zdc .zdc-time                      { background-image: url('clock.png') }
 #zdc .zdc-cache                     { background-image: url('cache.png'); background-color: #FFFFCC; color: #222 }

@@ -4630,8 +4630,8 @@ class Zebra_Database {
 
                                 // button for reviewing returned rows
                                 $output .= '
-                                    <li>
-                                        ' . (!empty($debug_info['records']) ? '<a href="javascript: void(0)" class="zdc-records zdc-toggle zdc-records-table">' : '') .
+                                    <li class="zdc-records">
+                                        ' . (!empty($debug_info['records']) ? '<a href="javascript: void(0)" class="zdc-toggle zdc-records-table">' : '') .
                                             $this->language['returned_rows'] . ': <strong>' . $debug_info['returned_rows'] . '</strong>
                                         ' . (!empty($debug_info['records']) ? '</a>' : '') . '
                                     </li>
@@ -4652,8 +4652,8 @@ class Zebra_Database {
 
                                 // button for reviewing EXPLAIN results
                                 $output .= '
-                                    <li>
-                                        <a href="javascript: void(0)" class="zdc-explain zdc-toggle zdc-explain-table">' .
+                                    <li class="zdc-explain">
+                                        <a href="javascript: void(0)" class="zdc-toggle zdc-explain-table">' .
                                             $this->language['explain'] . '
                                         </a>
                                     </li>
@@ -4665,8 +4665,8 @@ class Zebra_Database {
                         if (isset($debug_info['backtrace']))
 
                             $output .= '
-                                <li>
-                                    <a href="javascript: void(0)" class="zdc-backtrace zdc-toggle zdc-backtrace-table">' .
+                                <li class="zdc-backtrace">
+                                    <a href="javascript: void(0)" class="zdc-toggle zdc-backtrace-table">' .
                                         $this->language['backtrace'] . '
                                     </a>
                                 </li>
@@ -4674,13 +4674,13 @@ class Zebra_Database {
 
                         // common actions (to top, close all)
                         $output .= '
-                            <li>
-                                <a href="' . preg_replace('/\#zdc\-top$/i', '', $_SERVER['REQUEST_URI']) . '#zdc-top" class="zdc-top">' .
+                            <li class="zdc-top">
+                                <a href="' . preg_replace('/\#zdc\-top$/i', '', $_SERVER['REQUEST_URI']) . '#zdc-top">' .
                                     $this->language['to_top'] . '
                                 </a>
                             </li>
-                            <li>
-                                <a href="javascript: void(0)" class="zdc-close">' .
+                            <li class="zdc-close">
+                                <a href="javascript: void(0)">' .
                                     $this->language['close_all'] . '
                                 </a>
                             </li>
