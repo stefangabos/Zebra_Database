@@ -49,8 +49,8 @@
 #zdc .zdc-highlight .zdc-counter    { background: #926492 }
 
 #zdc .zdc-actions                   { padding: 2px; background: #CDD8BF; color: #151C24; margin-top: 1px }
-#zdc .zdc-actions ul li             { color: #151C24 !important; padding: 5px 5px 5px 28px; background-repeat: no-repeat; background-position: 5px center }
-#zdc .zdc-actions ul li a           { color: #151C24 !important; text-decoration: underline }
+#zdc .zdc-actions ul li             { color: #151C24; padding: 5px 5px 5px 28px; background-repeat: no-repeat; background-position: 5px center }
+#zdc .zdc-actions ul li a           { color: #151C24; text-decoration: underline }
 
 #zdc .zdc-time                      { background-image: url('clock.png') }
 #zdc .zdc-cache                     { background-image: url('cache.png'); background-color: #FFFFCC; color: #222 }
@@ -61,6 +61,7 @@
 #zdc .zdc-affected                  { background-image: url('affected.png') }
 #zdc .zdc-explain                   { background-image: url('explain.png') }
 #zdc .zdc-backtrace                 { background-image: url('backtrace.png') }
+#zdc .zdc-database-manager          { background-image: url('db-manager.png') }
 
 /* DATA TABLES */
 #zdc .zdc-data-table                { background: #FFF }

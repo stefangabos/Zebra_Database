@@ -224,6 +224,46 @@ class Zebra_Database {
     public $debug_show_backtrace = true;
 
     /**
+     *  Show a link for editing the query in your favorite database manager like (like {@link https://www.phpmyadmin.net/ phpMyAdmin}
+     *  or {@link https://www.adminer.org/ Adminer}).
+     *
+     *  It should be an HTML anchor (a link) to your favorite database manager where you build the query string according
+     *  to the requirements of said database manager using the following placeholders:
+     *
+     *  - %host%
+     *  - %user%
+     *  - %password%
+     *  - %database%
+     *  - %port%
+     *  - %socket%
+     *  - %query%
+     *
+     *  ...were any of those placeholders will be replaced by the values you have passed on to {@link connect}, except
+     *  for the *%query%* placeholder which will be replaced by the respective query.
+     *
+     *  Here's how to set up the value for opening the query in {@link https://www.adminer.org/ Adminer}:
+     *
+     *  <code>
+     *  <a href="path/to/adminer.php?server=%host%:%port%&username=%user%&db=%database%&sql=%query%" target="adminer">edit in adminer</a>
+     *  </code>
+     *
+     *  *I don't use {@link https://www.phpmyadmin.net/ phpMyAdmin} so if you manage to set it up, please share the result
+     *  with me so I can add it to the docs. Thanks!*
+     *
+     *  >   Because you will have to use the password when building your links, be **VERY CAREFUL** with this feature
+     *      and make sure you don't expose your credentials to malicious participants!
+     *
+     *  Setting it to `false` will disable the feature.
+     *
+     *  Default is a link to the documentation on how to set the link up.
+     *
+     *  @since 2.11.0
+     *
+     *  @var string
+     */
+    public $debug_show_database_manager = false;
+
+    /**
      *  Indicates whether queries should be {@link https://dev.mysql.com/doc/refman/8.0/en/explain.html EXPLAIN}ed in the
      *  debugging console.
      *
@@ -810,6 +850,9 @@ class Zebra_Database {
         // sets default values for the class' properties
         // public properties
         $this->cache_path = rtrim($this->path, '/') . '/cache/';
+
+        // let developers know about this feature
+        $this->debug_show_database_manager = '<a href="https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager" style="color: #C40000">SET UP</a>';
 
         $this->language($this->language);
 
@@ -4671,6 +4714,40 @@ class Zebra_Database {
                                     </a>
                                 </li>
                             ';
+
+                        // if we are need to show a link to a database manager to open the query in
+                        if (($block == 'successful-queries' || $block == 'unsuccessful-queries') && $this->debug_show_database_manager) {
+
+                            // print_r('<pre>');
+                            // print_r($debug_info['raw_query']);
+
+                            $output .= '
+                                <li class="zdc-database-manager">
+                                    ' . str_replace(
+                                            array(
+                                                '%host%',
+                                                '%user%',
+                                                '%password%',
+                                                '%database%',
+                                                '%port%',
+                                                '%socket%',
+                                                '%query%',
+                                            ),
+                                            array(
+                                                urlencode($this->credentials['host']),
+                                                urlencode($this->credentials['user']),
+                                                urlencode($this->credentials['password']),
+                                                urlencode($this->credentials['database']),
+                                                urlencode($this->credentials['port']),
+                                                urlencode($this->credentials['socket']),
+                                                urlencode(html_entity_decode(strip_tags($debug_info['query']))),
+                                            ),
+                                            $this->debug_show_database_manager
+                                        ) . '
+                                </li>
+                            ';
+
+                        }
 
                         // common actions (to top, close all)
                         $output .= '
