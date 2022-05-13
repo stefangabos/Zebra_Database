@@ -1,4 +1,4 @@
-## version 2.10.2 (TBA)
+## version 2.10.2 (May 13, 2022)
 
 - fixed a deprecation warning shown in PHP 8.1+; see [#70](https://github.com/stefangabos/Zebra_Database/issues/70), thanks [Harry](https://github.com/Dibbyo456)
 - fixed a potential bug with `INC` keyword being incorrectly detected in strings looking like `INC(foo)`
