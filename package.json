@@ -1,0 +1,17 @@
+{
+  "devDependencies": {
+    "grunt": "^1.5.2",
+    "grunt-cli": "^1.4.3",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-cssmin": "^3.0.0",
+    "grunt-contrib-jshint": "^3.2.0",
+    "grunt-contrib-uglify": "^4.0.1",
+    "grunt-contrib-watch": "*",
+    "grunt-eslint": "^24.0.0",
+    "grunt-newer": "*",
+    "grunt-notify": "*",
+    "grunt-sass": "^3.1.0",
+    "node-sass": "^7.0.1",
+    "time-grunt": "^2.0.0"
+  }
+}

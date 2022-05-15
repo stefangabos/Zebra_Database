@@ -1,0 +1,278 @@
+$main_menu_background_color: #178ACC;
+$main_menu_background_color_hover: darken($main_menu_background_color, 20%);
+$main_menu_text_color: #FFF;
+$main_menu_text_color_hover: #FFF;
+$min_menu_badge_background_color: orange;
+$min_menu_badge_text_color: #000;
+
+$globals_submenu_background_color: #403D32;
+$globals_submenu_background_color_hover: lighten($globals_submenu_background_color, 20%);
+$globals_submenu_text_color: #FFF;
+$globals_submenu_text_color_hover: #FFF;
+
+$entry_border_color: #9CA68F;
+
+$entry_counter_background_color: darken($entry_border_color, 20%);
+$entry_counter_text_color: #FFF;
+$entry_counter_transaction_background_color: #888;
+$entry_counter_transaction_text_color: #FFF;
+$entry_counter_highlight_background_color: #926492;
+$entry_counter_highlight_text_color: #FFF;
+
+$entry_box_error_background_color: #CC3333;
+$entry_box_error_text_color: #FFF;
+
+$entry_box_actions_menu_background_color: lighten($entry_border_color, 20%);
+$entry_box_actions_menu_cached_accent_background_color: #CCFF99;
+$entry_box_actions_menu_cached_accent_text_color: #222;
+$entry_box_actions_menu_unbuffered_accent_background_color: #FFFFCC;
+$entry_box_actions_menu_unbuffered_accent_text_color: #222;
+
+$entry_syntax_highlighter_background_color: #EEE;
+$entry_syntax_highlighter_line_height: 1.5;
+$entry_syntax_highlighter_keyword: #990099;
+$entry_syntax_highlighter_string: #008000;
+$entry_syntax_highlighter_symbol: #FF00FF;
+
+$entry_data_table_header_text_color: #F0F0F0;
+$entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_background_color, 5%);
+
+#zdc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    text-align: left;
+    padding-top: 26px;
+
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: inherit;
+        font-size: inherit;
+    }
+
+    /* --------------------------------------------------------------------------------------------------------------------*/
+    /* GLOBALS                                                                                                             */
+    /* --------------------------------------------------------------------------------------------------------------------*/
+
+    .zdc-visible {
+        display: block;
+    }
+
+    a {
+        color: #000;
+        text-decoration: none;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: block;
+        width: 100%;
+
+        &:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        li {
+            float: left;
+
+            a {
+                display: block;
+                float: left;
+            }
+        }
+    }
+
+    table {
+        border-collapse: collapse;
+        td, th {
+            padding: 4px;
+            border: none;
+            vertical-align: top;
+        }
+    }
+
+    /* --------------------------------------------------------------------------------------------------------------------*/
+    /* ENTRIES                                                                                                             */
+    /* --------------------------------------------------------------------------------------------------------------------*/
+
+    .zdc-entry {
+        background: $entry_border_color;
+        border-top: 1px solid #FFF;
+        .zdc-counter {
+            background: $entry_counter_background_color;
+            color: $entry_counter_text_color;
+        }
+        &.zdc-transaction .zdc-counter {
+            background: $entry_counter_transaction_background_color;
+            color: $entry_counter_transaction_text_color;
+        }
+        &.zdc-highlight .zdc-counter {
+            background: $entry_counter_highlight_background_color;
+            color: $entry_counter_highlight_text_color;
+        }
+        .zdc-data {
+            width: 100%;
+            padding: 5px;
+            .zdc-box {
+                background: $entry_syntax_highlighter_background_color;
+                padding: 8px;
+                &.zdc-error                     {
+                    background: $entry_box_error_background_color;
+                    color: $entry_box_error_text_color;
+                    font-weight: bold;
+                    a {
+                        text-decoration: underline;
+                        color: inherit;
+                    }
+                }
+                &.zdc-actions {
+                    background: $entry_box_actions_menu_background_color;
+                    padding: 2px;
+                    ul li {
+                        padding: 5px 5px 5px 28px;
+                        background-repeat: no-repeat;
+                        background-position: 5px center;
+                        &.zdc-time {
+                            background-image: url('clock.png');
+                        }
+                        &.zdc-cache {
+                            background-image: url('cache.png');
+                            background-color: $entry_box_actions_menu_cached_accent_background_color;
+                            color: $entry_box_actions_menu_cached_accent_text_color;
+                        }
+                        &.zdc-unbuffered {
+                            background-image: url('unbuffered.png');
+                            background-color: $entry_box_actions_menu_unbuffered_accent_background_color;
+                            color: $entry_box_actions_menu_unbuffered_accent_text_color;
+                        }
+                        &.zdc-top {
+                            background-image: url('top.png');
+                        }
+                        &.zdc-close {
+                            background-image: url('close.png');
+                            background-position: 5px 6px !important;
+                        }
+                        &.zdc-records {
+                            background-image: url('records.png');
+                        }
+                        &.zdc-affected {
+                            background-image: url('affected.png');
+                        }
+                        &.zdc-explain {
+                            background-image: url('explain.png');
+                        }
+                        &.zdc-backtrace {
+                            background-image: url('backtrace.png');
+                        }
+                        &.zdc-database-manager {
+                            background-image: url('db-manager.png');
+                        }
+                        a {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+                &.zdc-data-table {
+                    tr:nth-child(even) {
+                        background: $entry_data_table_odd_row_background_color;
+                    }
+                    th, td {
+                        border: 1px solid #888;
+                    }
+                    th {
+                        background: $entry_border_color;
+                        color: $entry_data_table_header_text_color;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* --------------------------------------------------------------------------------------------------------------------*/
+/* MAIN MENU                                                                                                           */
+/* --------------------------------------------------------------------------------------------------------------------*/
+
+#zdc-main {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: $main_menu_background_color;
+    font-size: 12px;
+    display: block !important;
+    z-index: 9998;
+    a {
+    border-right: 1px solid $main_menu_text_color;
+        color: $main_menu_text_color;
+        padding: 6px;
+        &:hover {
+            background: $main_menu_background_color_hover;
+            color: $main_menu_text_color_hover;
+        }
+    }
+    span {
+        background: $min_menu_badge_background_color;
+        padding: 2px 5px;
+        font-weight: bold;
+        color: $min_menu_badge_text_color;
+        margin: 0 0 0 4px;
+    }
+}
+
+/* --------------------------------------------------------------------------------------------------------------------*/
+/* GLOBALS SUBMENU                                                                                                     */
+/* --------------------------------------------------------------------------------------------------------------------*/
+
+#zdc-globals-submenu {
+    background: $globals_submenu_background_color;
+    a {
+        padding: 6px;
+        color: $globals_submenu_text_color;
+        &:hover  {
+            background: $globals_submenu_background_color_hover;
+            color: $globals_submenu_text_color_hover;
+        }
+    }
+}
+
+/* --------------------------------------------------------------------------------------------------------------------*/
+/* SYNTAX HIGHLIGHTING                                                                                                 */
+/* --------------------------------------------------------------------------------------------------------------------*/
+
+.zdc-syntax-highlight {
+    pre {
+        line-height: $entry_syntax_highlighter_line_height;
+        background: $entry_syntax_highlighter_background_color !important;
+        border: transparent !important;
+    }
+    .keyword {
+        font-weight: bold;
+        color: $entry_syntax_highlighter_keyword;
+        text-transform: uppercase;
+    }
+    .string {
+        font-weight: bold;
+        color: $entry_syntax_highlighter_string;
+    }
+    .symbol {
+        font-weight: bold;
+        color: $entry_syntax_highlighter_symbol;
+    }
+}
+
+#zdc-globals-submenu,
+.zdc-entry,
+.zdc-records-table,
+.zdc-explain-table,
+.zdc-backtrace-table {
+    display: none;
+    overflow: auto;
+}

@@ -4623,7 +4623,7 @@ class Zebra_Database {
                         if (isset($debug_info['query']) )
 
                             $output .= '
-                                <div class="zdc-box">' .
+                                <div class="zdc-box zdc-syntax-highlight">' .
                                     preg_replace('/^\<br\>/', '', html_entity_decode($debug_info['query'])) . '
                                 </div>
                             ';
@@ -4766,7 +4766,6 @@ class Zebra_Database {
                         // wrap up actions bar
                         $output .= '
                                 </ul>
-                                <div class="clear"></div>
                             </div>
                         ';
 
@@ -4851,7 +4850,6 @@ class Zebra_Database {
                     // finish building the submenu
                     $output .= '
                             </ul>
-                            <div class="clear"></div>
                         </div>
                     ';
 
@@ -4950,7 +4948,6 @@ class Zebra_Database {
             // wrap up debugging console's menu
             $output .= '
                 </ul>
-                <div class="clear"></div>
             ';
 
             foreach (array_keys($blocks) as $block) $output .= $blocks[$block]['generated'];
@@ -4980,10 +4977,10 @@ class Zebra_Database {
                 $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen(realpath($_SERVER['DOCUMENT_ROOT'])))), '/');
 
             // link the required javascript
-            $output = '<script type="text/javascript" src="' . $path . '/public/javascript/database.js"></script>' . $output;
+            $output = '<script type="text/javascript" src="' . $path . '/public/javascript/zebra_database.min.js"></script>' . $output;
 
             // link the required css file
-            $output = '<link rel="stylesheet" href="' . $path . '/public/css/database.css" type="text/css">' . $output;
+            $output = '<link rel="stylesheet" href="' . $path . '/public/css/default/zebra_database.min.css" type="text/css">' . $output;
 
             // show generated output
             echo $output;

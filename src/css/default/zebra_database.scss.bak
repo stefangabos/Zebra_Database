@@ -1,4 +1,4 @@
-#zdc                                { position: absolute; top: 0; left:0; width: 100%; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 13px; text-align: left; z-index: 9998; overflow: hidden }
+#zdc                                { position: absolute; top: 0; left: 0; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 13px; text-align: left }
 #zdc *                              { margin: 0; padding: 0; font-family: inherit; font-size: inherit; color: #000 }
 
 /* COMMON */
@@ -15,11 +15,11 @@
 #zdc .clear                         { clear: both }
 
 /* MAIN MENU */
-#zdc-main                           { background: #151C24; display: none !important }
+#zdc-main                           { position: fixed; top: 0; left: 0; background: #178ACC; font-size: 12px; display: none !important; z-index: 9998 }
 #zdc-main li                        { border-right: 1px solid #9CA68F }
-#zdc-main li a                      { color: #FFF; padding: 12px }
+#zdc-main li a                      { color: #FFF; padding: 6px }
 #zdc-main li a:hover                { background: #403D32 }
-#zdc-main li span                   { background: orange; padding: 2px 5px; font-weight: bold; color: #000; margin: 0 4px }
+#zdc-main li span                   { background: orange; padding: 2px 5px; font-weight: bold; color: #000; margin: 0 0 0 4px }
 
 /* GLOBALS SUBMENU */
 #zdc-globals-submenu                { border: 1px solid #403D32 }
@@ -28,7 +28,7 @@
 #zdc-globals-submenu ul li a:hover  { background: #73705D }
 
 /* ENTRIES */
-#zdc .zdc-entry                     { margin: 1px; background: #9CA68F; width: 99.9% }
+#zdc .zdc-entry                     { background: #9CA68F; border-bottom: 1px solid #fff }
 #zdc .zdc-box                       { background: #EEE; padding: 10px }
 #zdc .zdc-counter                   { background: #9CA68F; filter: brightness(75%); padding: 5px; color: #FFF }
 #zdc .zdc-data                      { width: 100%; padding: 3px }
@@ -82,6 +82,6 @@
 .zdc-backtrace-table                { display: none; overflow: auto }
 
 /* MINI CONSOLE */
-#zdc-mini                           { position: absolute; top: 0; right: 0; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 13px; text-align: left; display: block }
-#zdc-mini a                         { background: #151C24 url('db.png') no-repeat 10px 12px; display: block; padding: 12px 12px 12px 35px; color: #FFF; text-decoration: none }
+#zdc-mini                           { position: fixed; top: 0; right: 0; z-index: 9999; font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 13px; text-align: left; display: block }
+#zdc-mini a                         { background: #178ACC url('db.png') no-repeat 10px 12px; display: block; padding: 12px 12px 12px 35px; color: #FFF; text-decoration: none }
 #zdc-mini a span                    { font-weight: bold; background-color: #C40000; padding: 0 5px 0 5px; margin: 0px 4px 0 4px }
