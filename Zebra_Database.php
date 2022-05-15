@@ -769,8 +769,9 @@ class Zebra_Database {
     private $warnings;
 
     /**
-     *  All MySQL functions as per {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html}
+     *  All MySQL functions as per {@link https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html}
      *
+     *  @access private
      */
     private $mysql_functions = array(
 
