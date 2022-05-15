@@ -59,7 +59,7 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
     /* --------------------------------------------------------------------------------------------------------------------*/
 
     .zdc-visible {
-        display: block;
+        display: block !important;
     }
 
     a {
@@ -207,7 +207,7 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
     left: 0;
     background: $main_menu_background_color;
     font-size: 12px;
-    display: block !important;
+    display: none !important;
     z-index: 9998;
     a {
     border-right: 1px solid $main_menu_text_color;
@@ -268,6 +268,37 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
     }
 }
 
+/* --------------------------------------------------------------------------------------------------------------------*/
+/* MINI CONSOLE                                                                                                             */
+/* --------------------------------------------------------------------------------------------------------------------*/
+
+#zdc-mini {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    text-align: left;
+    display: block;
+    a {
+        background: #178ACC url('db.png') no-repeat 10px center;
+        display: block;
+        padding: 6px 6px 6px 35px;
+        color: #FFF;
+        text-decoration: none;
+        span {
+            font-weight: bold;
+            background-color: #C40000;
+            padding: 0 5px 0 5px;
+            margin: 0px 4px 0 4px;
+        }
+    }
+}
+
+/* --------------------------------------------------------------------------------------------------------------------*/
+/* ALL IS COLLAPSED BY DEFAULT                                                                                                             */
+/* --------------------------------------------------------------------------------------------------------------------*/
 #zdc-globals-submenu,
 .zdc-entry,
 .zdc-records-table,

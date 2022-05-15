@@ -15,7 +15,7 @@
     font-size: inherit
 }
 #zdc .zdc-visible {
-    display: block
+    display: block!important
 }
 #zdc a {
     color: #000;
@@ -146,7 +146,7 @@
     left: 0;
     background: #178acc;
     font-size: 12px;
-    display: block!important;
+    display: none!important;
     z-index: 9998
 }
 #zdc-main a {
@@ -193,6 +193,29 @@
 .zdc-syntax-highlight .symbol {
     font-weight: 700;
     color: #f0f
+}
+#zdc-mini {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    font-family: Tahoma,Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    text-align: left;
+    display: block
+}
+#zdc-mini a {
+    background: url(db.png) 10px center no-repeat #178acc;
+    display: block;
+    padding: 6px 6px 6px 35px;
+    color: #fff;
+    text-decoration: none
+}
+#zdc-mini a span {
+    font-weight: 700;
+    background-color: #c40000;
+    padding: 0 5px;
+    margin: 0 4px
 }
 #zdc-globals-submenu,
 .zdc-backtrace-table,
