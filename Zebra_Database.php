@@ -4916,12 +4916,18 @@ class Zebra_Database {
                         number_format($this->total_execution_time, 5) . ' ' . $this->language['seconds'] . ')
                     </a>
                 </li>
-                <li>
-                    <a href="javascript: void(0)" class="zdc-toggle zdc-unsuccessful-queries">' .
-                        $this->language['unsuccessful_queries'] . ': <span>' . $blocks['unsuccessful-queries']['counter'] . '</span>
-                    </a>
-                </li>
             ';
+
+            // if there are any unsuccessful queries
+            if ($blocks['unsuccessful-queries']['counter'] > 0)
+
+                $output .= '
+                    <li>
+                        <a href="javascript: void(0)" class="zdc-toggle zdc-unsuccessful-queries">' .
+                            $this->language['unsuccessful_queries'] . ': <span>' . $blocks['unsuccessful-queries']['counter'] . '</span>
+                        </a>
+                    </li>
+                ';
 
             // if there are any warnings
             if (isset($this->debug_info['warnings']))
