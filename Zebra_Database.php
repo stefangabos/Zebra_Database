@@ -853,7 +853,7 @@ class Zebra_Database {
         $this->cache_path = rtrim($this->path, '/') . '/cache/';
 
         // let developers know about this feature
-        $this->debug_show_database_manager = '<a href="https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager" style="color: #C40000">SET UP</a>';
+        $this->debug_show_database_manager = '<a href="https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager" style="color: #C40000" title="Open in favorite database manager">SET UP</a>';
 
         $this->language($this->language);
 
