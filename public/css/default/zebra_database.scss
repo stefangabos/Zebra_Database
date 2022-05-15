@@ -1,5 +1,5 @@
-$main_menu_background_color: #178ACC;
-$main_menu_background_color_hover: darken($main_menu_background_color, 20%);
+$main_menu_background_color: #151C24;
+$main_menu_background_color_hover: lighten($main_menu_background_color, 20%);
 $main_menu_text_color: #FFF;
 $main_menu_text_color_hover: #FFF;
 $min_menu_badge_background_color: orange;
@@ -43,9 +43,9 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
     left: 0;
     width: 100%;
     font-family: Tahoma, Arial, Helvetica, sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     text-align: left;
-    padding-top: 26px;
+    padding-top: 32px;
 
     * {
         margin: 0;
@@ -127,7 +127,7 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
                 &.zdc-error                     {
                     background: $entry_box_error_background_color;
                     color: $entry_box_error_text_color;
-                    font-weight: bold;
+                    padding: 5px;
                     a {
                         text-decoration: underline;
                         color: inherit;
@@ -206,13 +206,13 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
     top: 0;
     left: 0;
     background: $main_menu_background_color;
-    font-size: 12px;
+    font-size: 13px;
     display: none !important;
     z-index: 9998;
     a {
     border-right: 1px solid $main_menu_text_color;
         color: $main_menu_text_color;
-        padding: 6px;
+        padding: 8px;
         &:hover {
             background: $main_menu_background_color_hover;
             color: $main_menu_text_color_hover;
@@ -220,10 +220,11 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
     }
     span {
         background: $min_menu_badge_background_color;
-        padding: 2px 5px;
+        padding: 2px 4px;
         font-weight: bold;
         color: $min_menu_badge_text_color;
-        margin: 0 0 0 4px;
+        margin: 0 0 0 2px;
+        border-radius: 2px;
     }
 }
 
@@ -234,7 +235,7 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
 #zdc-globals-submenu {
     background: $globals_submenu_background_color;
     a {
-        padding: 6px;
+        padding: 8px;
         color: $globals_submenu_text_color;
         &:hover  {
             background: $globals_submenu_background_color_hover;
@@ -278,13 +279,13 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
     right: 0;
     z-index: 9999;
     font-family: Tahoma, Arial, Helvetica, sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     text-align: left;
     display: block;
     a {
         background: $main_menu_background_color url('db.png') no-repeat 10px center;
         display: block;
-        padding: 6px 6px 6px 35px;
+        padding: 8px 8px 8px 35px;
         color: $main_menu_text_color;
         text-decoration: none;
         span {
@@ -292,6 +293,7 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
             background-color: $entry_box_error_background_color;
             margin: 0 0 0 6px;
             padding: 2px 7px;
+            border-radius: 2px;
         }
     }
 }

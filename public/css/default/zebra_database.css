@@ -4,9 +4,9 @@
     left: 0;
     width: 100%;
     font-family: Tahoma,Arial,Helvetica,sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     text-align: left;
-    padding-top: 26px
+    padding-top: 32px
 }
 #zdc * {
     margin: 0;
@@ -76,7 +76,7 @@
 #zdc .zdc-entry .zdc-data .zdc-box.zdc-error {
     background: #c33;
     color: #fff;
-    font-weight: 700
+    padding: 5px
 }
 #zdc .zdc-entry .zdc-data .zdc-box.zdc-error a {
     text-decoration: underline;
@@ -144,32 +144,33 @@
     position: fixed;
     top: 0;
     left: 0;
-    background: #178acc;
-    font-size: 12px;
+    background: #151c24;
+    font-size: 13px;
     display: none!important;
     z-index: 9998
 }
 #zdc-main a {
     border-right: 1px solid #fff;
     color: #fff;
-    padding: 6px
+    padding: 8px
 }
 #zdc-main a:hover {
-    background: #0d4c70;
+    background: #3b4e64;
     color: #fff
 }
 #zdc-main span {
     background: orange;
-    padding: 2px 5px;
+    padding: 2px 4px;
     font-weight: 700;
     color: #000;
-    margin: 0 0 0 4px
+    margin: 0 0 0 2px;
+    border-radius: 2px
 }
 #zdc-globals-submenu {
     background: #403d32
 }
 #zdc-globals-submenu a {
-    padding: 6px;
+    padding: 8px;
     color: #fff
 }
 #zdc-globals-submenu a:hover {
@@ -200,14 +201,14 @@
     right: 0;
     z-index: 9999;
     font-family: Tahoma,Arial,Helvetica,sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     text-align: left;
     display: block
 }
 #zdc-mini a {
-    background: url(db.png) 10px center no-repeat #178acc;
+    background: url(db.png) 10px center no-repeat #151c24;
     display: block;
-    padding: 6px 6px 6px 35px;
+    padding: 8px 8px 8px 35px;
     color: #fff;
     text-decoration: none
 }
@@ -215,7 +216,8 @@
     font-weight: 700;
     background-color: #c33;
     margin: 0 0 0 6px;
-    padding: 2px 7px
+    padding: 2px 7px;
+    border-radius: 2px
 }
 #zdc-globals-submenu,
 .zdc-backtrace-table,
