@@ -104,6 +104,8 @@ class Zebra_Database {
      *  *Caching is done on a per-query basis by setting the `cache` argument when calling some of the library's methods
      *  like {@link query()}, {@link select()}, {@link dcount()}, {@link dlookup()}, {@link dmax()} and {@link dsum()}!*
      *
+     *  >   Warnings related to the presence of memcache and redis can be disabled by setting the {@link disable_warnings} property.
+     *
      *  Default is `disk`
      *
      *  @since  2.7
@@ -330,8 +332,9 @@ class Zebra_Database {
     public $debug_show_records = 20;
 
     /**
-     *  By default, if {@link set_charset()} method is not called, a warning message will be displayed in the debugging
-     *  console.
+     *  By default, if {@link set_charset()} method is not called, caching is used and {@link https://memcached.org/about memcache}
+     *  or {@link https://redis.io/ redis} are available but none of them is used, a warning message will be displayed
+     *  in the debugging console.
      *
      *  The ensure that data is both properly saved and retrieved to and from the database, this method should be called
      *  first thing after connecting to a database.
@@ -3916,7 +3919,7 @@ class Zebra_Database {
      *
      *  If this method is not called a warning message will be displayed in the debugging console.
      *
-     *  Warnings can be disabled by setting the {@link disable_warnings} property.
+     *  >   Warnings can be disabled by setting the {@link disable_warnings} property.
      *
      *  @param  string  $charset    (Optional) The character set to be used by the database
      *

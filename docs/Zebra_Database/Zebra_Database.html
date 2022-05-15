@@ -233,7 +233,7 @@ with <code>--with-zlib[=DIR]</code></em></li></ul>   <ol class="code"><li><div c
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;only&nbsp;now&nbsp;it&nbsp;is&nbsp;the&nbsp;time&nbsp;to&nbsp;connect</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect</a><span class="src-sym">(</span>...<span class="src-sym">)</span></div></li>
-</ol><p><em>Caching is done on a per-query basis by setting the <code>cache</code> argument when calling some of the library's methods   like <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()</a>, <a href="../Zebra_Database/Zebra_Database.html#methodselect">select()</a>, <a href="../Zebra_Database/Zebra_Database.html#methoddcount">dcount()</a>, <a href="../Zebra_Database/Zebra_Database.html#methoddlookup">dlookup()</a>, <a href="../Zebra_Database/Zebra_Database.html#methoddmax">dmax()</a> and <a href="../Zebra_Database/Zebra_Database.html#methoddsum">dsum()</a>!</em></p><p>Default is <code>disk</code></p>
+</ol><p><em>Caching is done on a per-query basis by setting the <code>cache</code> argument when calling some of the library's methods   like <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()</a>, <a href="../Zebra_Database/Zebra_Database.html#methodselect">select()</a>, <a href="../Zebra_Database/Zebra_Database.html#methoddcount">dcount()</a>, <a href="../Zebra_Database/Zebra_Database.html#methoddlookup">dlookup()</a>, <a href="../Zebra_Database/Zebra_Database.html#methoddmax">dmax()</a> and <a href="../Zebra_Database/Zebra_Database.html#methoddsum">dsum()</a>!</em></p><p class="highlight">Warnings related to the presence of memcache and redis can be disabled by setting the <a href="../Zebra_Database/Zebra_Database.html#var$disable_warnings">disable_warnings</a> property.</p><p>Default is <code>disk</code></p>
 <h5>Tags</h5>
 <table>
 <tr>
@@ -408,7 +408,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 </div>
 <h4 id="var$disable_warnings" class="variable"><span><em>boolean</em></span> $disable_warnings =  <span class="value">false</span></h4>
 <div class="doc_block">
-<p>By default, if <a href="../Zebra_Database/Zebra_Database.html#methodset_charset">set_charset()</a> method is not called, a warning message will be displayed in the debugging   console.</p>
+<p>By default, if <a href="../Zebra_Database/Zebra_Database.html#methodset_charset">set_charset()</a> method is not called, caching is used and <a href="https://memcached.org/about">memcache</a>   or <a href="https://redis.io/">redis</a> are available but none of them is used, a warning message will be displayed   in the debugging console.</p>
 <p>The ensure that data is both properly saved and retrieved to and from the database, this method should be called   first thing after connecting to a database.</p><p>If you don't want to call this method nor do you want to see the warning, set this property to <code>TRUE</code></p><p>Default is <code>FALSE</code></p>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
@@ -2778,7 +2778,7 @@ boolean
 </div>
 <h4 id="methodset_charset" class="method"><span><em>method</em></span> set_charset()</h4>
 <p>Sets MySQL character set and collation</p>
-<p>The ensure that data is both properly saved and retrieved from the database you should call this method first   thing after connecting to the database.</p><p>If this method is not called a warning message will be displayed in the debugging console.</p><p>Warnings can be disabled by setting the <a href="../Zebra_Database/Zebra_Database.html#var$disable_warnings">disable_warnings</a> property.</p>
+<p>The ensure that data is both properly saved and retrieved from the database you should call this method first   thing after connecting to the database.</p><p>If this method is not called a warning message will be displayed in the debugging console.</p><p class="highlight">Warnings can be disabled by setting the <a href="../Zebra_Database/Zebra_Database.html#var$disable_warnings">disable_warnings</a> property.</p>
 <div class="doc_block">
 <p class="code">
 void
@@ -3110,7 +3110,7 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Thu, 13 May 43</span>
+Documentation generated on <span>Sun, 15 May 22</span>
 </div>
 </div>
 <!-- Global site tag (gtag.js) - Google Analytics -->
