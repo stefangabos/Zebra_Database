@@ -213,9 +213,9 @@
 }
 #zdc-mini a span {
     font-weight: 700;
-    background-color: #c40000;
-    padding: 0 5px;
-    margin: 0 4px
+    background-color: #c33;
+    margin: 0 0 0 6px;
+    padding: 2px 7px
 }
 #zdc-globals-submenu,
 .zdc-backtrace-table,
