@@ -4583,7 +4583,7 @@ class Zebra_Database {
                             <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry' .
 
                                 // should this query be highlighted or is a transaction
-                                ($block == 'unsuccessful-queries' && isset($debug_info['error']) ? ' zdc-visible' : (isset($debug_info['highlight']) && $debug_info['highlight'] == 1 ? ' zdc-highlight zdc-visible' : (isset($debug_info['transaction']) && $debug_info['transaction'] ? ' zdc-transaction' : ''))) .
+                                ($block == 'unsuccessful-queries' || $block == 'errors' && isset($debug_info['error']) ? ' zdc-visible' : (isset($debug_info['highlight']) && $debug_info['highlight'] == 1 ? ' zdc-highlight zdc-visible' : (isset($debug_info['transaction']) && $debug_info['transaction'] ? ' zdc-transaction' : ''))) .
 
                             '">
                                 <tr>
