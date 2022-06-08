@@ -121,7 +121,7 @@ class Zebra_Database {
      *
      *  -   **boolean TRUE**<br>
      *      Setting this property to a boolean `TRUE` will instruct the library to generate debugging information for each
-     *      query it executes and show the information on the screen when script execution ends.
+     *      query it executes and show the information *on the screen* when script execution ends.
      *
      *  -   **a string**<br>
      *      Setting this property to a string will instruct the library to turn debugging on when the given string is
@@ -5358,11 +5358,11 @@ class Zebra_Database {
             // if the label is longer than the longest label so far
             if (strlen($label) > $longest_label_length)
 
-                // this is the longes label, so far
+                // this is the longest label, so far
                 // we use utf8_decode so that strlen counts correctly with accented chars
                 $longest_label_length = strlen(utf8_decode($label));
 
-        $longest_label_length--;
+        $longest_label_length++;
 
         // the following regular expressions strips newlines and indenting from the MySQL string, so that
         // we have it in a single line
@@ -5450,7 +5450,7 @@ class Zebra_Database {
                         }
 
                         // if we are writing the logs to a file, finish writing to the log file by adding a bottom border
-                        if (!$this->log_path_is_function) fwrite($handle, str_pad('', $longest_label_length + 1, '-', STR_PAD_RIGHT) . "\n");
+                        if (!$this->log_path_is_function) fwrite($handle, str_pad('', $longest_label_length + 21, '-', STR_PAD_RIGHT) . "\n");
 
                         // if we are using a callback to manage logs, pass log information to the log file
                         else call_user_func_array($this->log_path, array($output, $backtrace_output));
