@@ -4,7 +4,7 @@
 - the "unsuccessful queries" tab is now open by default if there are any unsuccessful queries
 - fixed an issue where having the `debug` property set to a `string` but debugging not being activated, would result in errors not being logged
 - fixed a potential issue when encountering connection errors
-- update the CSS and the icons for the debug interface
+- updated the CSS and the icons for the debug interface
 
 ## version 2.10.2 (May 13, 2022)
 
