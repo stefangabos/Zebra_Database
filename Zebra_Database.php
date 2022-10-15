@@ -5209,7 +5209,7 @@ class Zebra_Database {
             return false;
 
         // if there are any unsuccessful queries or other errors and debugging is OFF
-        } elseif (($category == 'unsuccessful-queries' || $category == 'errors') && $this->debug === false) {
+        } elseif (($category == 'unsuccessful-queries' || $category == 'errors') && !$this->_is_debugging_enabled()) {
 
             // get backtrace information
             $backtraceInfo = debug_backtrace();
