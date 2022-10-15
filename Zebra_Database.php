@@ -2248,7 +2248,7 @@ class Zebra_Database {
      *                                  reserved words) and will be automatically {@link escape() escaped} in order to
      *                                  prevent SQL injections.
      *
-     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html MySQL's functions}
      *                                  as *values*.
      *
      *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
@@ -2277,7 +2277,7 @@ class Zebra_Database {
      *                                  reserved words) and will be automatically {@link escape() escaped} in order to
      *                                  prevent SQL injections.
      *
-     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html MySQL's functions}
      *                                  as *values*.
      *
      *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
@@ -2440,7 +2440,7 @@ class Zebra_Database {
      *
      *                                  Values will be automatically {@link escape()}d in order to prevent SQL injections.
      *
-     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html MySQL's functions}
      *                                  as *values*.
      *
      *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
@@ -2469,7 +2469,7 @@ class Zebra_Database {
      *                                  reserved words) and will be automatically {@link escape() escaped} in order to
      *                                  prevent SQL injections.
      *
-     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html MySQL's functions}
      *                                  as *values*.
      *
      *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
@@ -2632,7 +2632,7 @@ class Zebra_Database {
      *                                  reserved words) and will be automatically {@link escape() escaped} in order to
      *                                  prevent SQL injections.
      *
-     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html MySQL's functions}
      *                                  as *values*.
      *
      *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
@@ -2658,7 +2658,7 @@ class Zebra_Database {
      *                                  increase the column's value with. Use `INC(-value)` to decrease the column's value.
      *                                  See {@link update()} for an example.
      *
-     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html MySQL's functions}
      *                                  as *values*.
      *
      *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
@@ -4224,7 +4224,7 @@ class Zebra_Database {
      *                                  ', array($value, $criteria));
      *                                  </code>
      *
-     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html MySQL's functions}
+     *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html MySQL's functions}
      *                                  as *values*.
      *
      *                                  >   Be aware that when using MySQL functions, the value will be used as it is,
