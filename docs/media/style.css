@@ -38,7 +38,7 @@ h6 {
 #doc_header {
     color: #fff;
     background: #24292e;
-    padding: 1em 1em 1em 55px;
+    padding: 20px 1em 20px 75px;
 }
 
 #doc_header a.projects-homepage {
@@ -204,7 +204,7 @@ h4.variable span.value {
     border: 1px solid #dedede;
     padding: 1em;
     font-size: 100%;
-    margin: 1.5em 0;
+    margin: 1em 0;
 }
 
 .doc_index {

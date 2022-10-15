@@ -65,7 +65,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.11.0 (last revision: May 13, 2022)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
+<li>2.11.0 (last revision: October 15, 2022)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
 </ul>
 <h4>License:</h4>
 <ul>
@@ -249,7 +249,7 @@ with <code>--with-zlib[=DIR]</code></em></li></ul>   <ol class="code"><li><div c
 <p>Turns debugging on or off.</p>
 <p>The property can take one of the following values:</p><p><ul><li><strong>boolean TRUE</strong><br>
 Setting this property to a boolean <code>TRUE</code> will instruct the library to generate debugging information for each
-query it executes and show the information on the screen when script execution ends.</li></ul> <ul><li><strong>a string</strong><br>
+query it executes and show the information <em>on the screen</em> when script execution ends.</li></ul> <ul><li><strong>a string</strong><br>
 Setting this property to a string will instruct the library to turn debugging on when the given string is
 present as argument in the query string (in the URL) and has the value of <code>1</code> (i.e <code>?show_debug=1</code>)
 <br><br><em>Useful for turning debugging on on the fly. If you decide to use this in production, make
@@ -656,18 +656,17 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 </div>
 <h3 id="class_methods">Class methods</h3>
 <h4 id="method__construct" class="method"><span><em>constructor</em></span> __construct()</h4>
-<p>Constructor of the class</p>
 <div class="doc_block">
 <p class="code">
 void
 <span class="src-var">__construct</span>
 ()
 </p>
+<p>Constructor of the class</p>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
 <h4 id="methodclose" class="method"><span><em>method</em></span> close()</h4>
-<p>Closes the MySQL connection and optionally unsets the connection options previously set with the <a href="../Zebra_Database/Zebra_Database.html#methodoption">option()</a>   method</p>
 <div class="doc_block">
 <p class="code">
 boolean
@@ -681,6 +680,7 @@ boolean
 ]
 ) 
 </p>
+<p>Closes the MySQL connection and optionally unsets the connection options previously set with the <a href="../Zebra_Database/Zebra_Database.html#methodoption">option()</a>   method</p>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -704,13 +704,6 @@ boolean
 <div class="clear"></div>
 </div>
 <h4 id="methodconnect" class="method"><span><em>method</em></span> connect()</h4>
-<p>Opens a connection to a MySQL server and optionally selects a database</p>
-<p>Since the library is using <em>lazy connection</em> (it is not actually connecting to the database until the first query   is executed), the object representing the connection to the MySQL server is not available at this time. In case   you need it before running any queries, use the <a href="../Zebra_Database/Zebra_Database.html#methodget_link">get_link()</a> method.</p><p>If you want the connection to the database to be made right away, set the <code>connect</code> argument to <code>TRUE</code></p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;create&nbsp;the&nbsp;database&nbsp;object</span></div></li>
-<li><div class="src-line"><span class="src-var">$db&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html">Zebra_Database</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;notice&nbsp;that&nbsp;we're&nbsp;not&nbsp;doing&nbsp;any&nbsp;error&nbsp;checking.&nbsp;errors&nbsp;will&nbsp;be&nbsp;shown&nbsp;in&nbsp;the&nbsp;debugging&nbsp;console</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect</a><span class="src-sym">(</span><span class="src-str">'host'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'username'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'password'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'database'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 void
@@ -754,6 +747,13 @@ void
 ]
 ) 
 </p>
+<p>Opens a connection to a MySQL server and optionally selects a database</p>
+<p>Since the library is using <em>lazy connection</em> (it is not actually connecting to the database until the first query   is executed), the object representing the connection to the MySQL server is not available at this time. In case   you need it before running any queries, use the <a href="../Zebra_Database/Zebra_Database.html#methodget_link">get_link()</a> method.</p><p>If you want the connection to the database to be made right away, set the <code>connect</code> argument to <code>TRUE</code></p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;create&nbsp;the&nbsp;database&nbsp;object</span></div></li>
+<li><div class="src-line"><span class="src-var">$db&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html">Zebra_Database</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;notice&nbsp;that&nbsp;we're&nbsp;not&nbsp;doing&nbsp;any&nbsp;error&nbsp;checking.&nbsp;errors&nbsp;will&nbsp;be&nbsp;shown&nbsp;in&nbsp;the&nbsp;debugging&nbsp;console</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect</a><span class="src-sym">(</span><span class="src-str">'host'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'username'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'password'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'database'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -796,14 +796,6 @@ void
 <div class="clear"></div>
 </div>
 <h4 id="methoddcount" class="method"><span><em>method</em></span> dcount()</h4>
-<p>Counts the values in a column of a table</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;count&nbsp;male&nbsp;users</span></div></li>
-<li><div class="src-line"><span class="src-var">$male&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddcount">dcount</a><span class="src-sym">(</span><span class="src-str">'id'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;&quot;M&quot;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;working&nbsp;with&nbsp;variables&nbsp;you&nbsp;should&nbsp;use&nbsp;the&nbsp;following&nbsp;syntax</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;this&nbsp;way&nbsp;you&nbsp;will&nbsp;stay&nbsp;clear&nbsp;of&nbsp;SQL&nbsp;injections</span></div></li>
-<li><div class="src-line"><span class="src-var">$users&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddcount">dcount</a><span class="src-sym">(</span><span class="src-str">'id'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 mixed
@@ -844,6 +836,14 @@ mixed
 ]
 ) 
 </p>
+<p>Counts the values in a column of a table</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;count&nbsp;male&nbsp;users</span></div></li>
+<li><div class="src-line"><span class="src-var">$male&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddcount">dcount</a><span class="src-sym">(</span><span class="src-str">'id'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;&quot;M&quot;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;working&nbsp;with&nbsp;variables&nbsp;you&nbsp;should&nbsp;use&nbsp;the&nbsp;following&nbsp;syntax</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;this&nbsp;way&nbsp;you&nbsp;will&nbsp;stay&nbsp;clear&nbsp;of&nbsp;SQL&nbsp;injections</span></div></li>
+<li><div class="src-line"><span class="src-var">$users&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddcount">dcount</a><span class="src-sym">(</span><span class="src-str">'id'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -888,14 +888,6 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methoddelete" class="method"><span><em>method</em></span> delete()</h4>
-<p>Deletes rows from a table</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;delete&nbsp;male&nbsp;users</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddelete">delete</a><span class="src-sym">(</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;&quot;M&quot;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;working&nbsp;with&nbsp;variables&nbsp;you&nbsp;should&nbsp;use&nbsp;the&nbsp;following&nbsp;syntax</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;this&nbsp;way&nbsp;you&nbsp;will&nbsp;stay&nbsp;clear&nbsp;of&nbsp;SQL&nbsp;injections</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddelete">delete</a><span class="src-sym">(</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 boolean
@@ -926,6 +918,14 @@ boolean
 ]
 ) 
 </p>
+<p>Deletes rows from a table</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;delete&nbsp;male&nbsp;users</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddelete">delete</a><span class="src-sym">(</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;&quot;M&quot;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;working&nbsp;with&nbsp;variables&nbsp;you&nbsp;should&nbsp;use&nbsp;the&nbsp;following&nbsp;syntax</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;this&nbsp;way&nbsp;you&nbsp;will&nbsp;stay&nbsp;clear&nbsp;of&nbsp;SQL&nbsp;injections</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddelete">delete</a><span class="src-sym">(</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -964,14 +964,6 @@ boolean
 <div class="clear"></div>
 </div>
 <h4 id="methoddlookup" class="method"><span><em>method</em></span> dlookup()</h4>
-<p>Returns one or more columns from <strong>ONE</strong> row of a table</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;get&nbsp;name,&nbsp;surname&nbsp;and&nbsp;age&nbsp;of&nbsp;all&nbsp;male&nbsp;users</span></div></li>
-<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddlookup">dlookup</a><span class="src-sym">(</span><span class="src-str">'name,&nbsp;surname,&nbsp;age'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;&quot;M&quot;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;working&nbsp;with&nbsp;variables&nbsp;you&nbsp;should&nbsp;use&nbsp;the&nbsp;following&nbsp;syntax</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;this&nbsp;way&nbsp;you&nbsp;will&nbsp;stay&nbsp;clear&nbsp;of&nbsp;SQL&nbsp;injections</span></div></li>
-<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddlookup">dlookup</a><span class="src-sym">(</span><span class="src-str">'name,&nbsp;surname,&nbsp;age'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 mixed
@@ -1012,6 +1004,14 @@ mixed
 ]
 ) 
 </p>
+<p>Returns one or more columns from <strong>ONE</strong> row of a table</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;get&nbsp;name,&nbsp;surname&nbsp;and&nbsp;age&nbsp;of&nbsp;all&nbsp;male&nbsp;users</span></div></li>
+<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddlookup">dlookup</a><span class="src-sym">(</span><span class="src-str">'name,&nbsp;surname,&nbsp;age'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;&quot;M&quot;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;working&nbsp;with&nbsp;variables&nbsp;you&nbsp;should&nbsp;use&nbsp;the&nbsp;following&nbsp;syntax</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;this&nbsp;way&nbsp;you&nbsp;will&nbsp;stay&nbsp;clear&nbsp;of&nbsp;SQL&nbsp;injections</span></div></li>
+<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddlookup">dlookup</a><span class="src-sym">(</span><span class="src-str">'name,&nbsp;surname,&nbsp;age'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1056,14 +1056,6 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methoddmax" class="method"><span><em>method</em></span> dmax()</h4>
-<p>Looks up the maximum value in a column of a table</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;get&nbsp;the&nbsp;maximum&nbsp;age&nbsp;of&nbsp;male&nbsp;users</span></div></li>
-<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddmax">dmax</a><span class="src-sym">(</span><span class="src-str">'age'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;&quot;M&quot;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;working&nbsp;with&nbsp;variables&nbsp;you&nbsp;should&nbsp;use&nbsp;the&nbsp;following&nbsp;syntax</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;this&nbsp;way&nbsp;you&nbsp;will&nbsp;stay&nbsp;clear&nbsp;of&nbsp;SQL&nbsp;injections</span></div></li>
-<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddmax">dmax</a><span class="src-sym">(</span><span class="src-str">'age'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 mixed
@@ -1104,6 +1096,14 @@ mixed
 ]
 ) 
 </p>
+<p>Looks up the maximum value in a column of a table</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;get&nbsp;the&nbsp;maximum&nbsp;age&nbsp;of&nbsp;male&nbsp;users</span></div></li>
+<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddmax">dmax</a><span class="src-sym">(</span><span class="src-str">'age'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;&quot;M&quot;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;working&nbsp;with&nbsp;variables&nbsp;you&nbsp;should&nbsp;use&nbsp;the&nbsp;following&nbsp;syntax</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;this&nbsp;way&nbsp;you&nbsp;will&nbsp;stay&nbsp;clear&nbsp;of&nbsp;SQL&nbsp;injections</span></div></li>
+<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddmax">dmax</a><span class="src-sym">(</span><span class="src-str">'age'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1148,14 +1148,6 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methoddsum" class="method"><span><em>method</em></span> dsum()</h4>
-<p>Sums the values in a column of a table</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;get&nbsp;the&nbsp;total&nbsp;logins&nbsp;of&nbsp;all&nbsp;male&nbsp;users</span></div></li>
-<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddsum">dsum</a><span class="src-sym">(</span><span class="src-str">'login_count'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;&quot;M&quot;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;working&nbsp;with&nbsp;variables&nbsp;you&nbsp;should&nbsp;use&nbsp;the&nbsp;following&nbsp;syntax</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;this&nbsp;way&nbsp;you&nbsp;will&nbsp;stay&nbsp;clear&nbsp;of&nbsp;SQL&nbsp;injections</span></div></li>
-<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddsum">dsum</a><span class="src-sym">(</span><span class="src-str">'login_count'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 mixed
@@ -1196,6 +1188,14 @@ mixed
 ]
 ) 
 </p>
+<p>Sums the values in a column of a table</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;get&nbsp;the&nbsp;total&nbsp;logins&nbsp;of&nbsp;all&nbsp;male&nbsp;users</span></div></li>
+<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddsum">dsum</a><span class="src-sym">(</span><span class="src-str">'login_count'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;&quot;M&quot;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;working&nbsp;with&nbsp;variables&nbsp;you&nbsp;should&nbsp;use&nbsp;the&nbsp;following&nbsp;syntax</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;this&nbsp;way&nbsp;you&nbsp;will&nbsp;stay&nbsp;clear&nbsp;of&nbsp;SQL&nbsp;injections</span></div></li>
+<li><div class="src-line"><span class="src-var">$result&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoddsum">dsum</a><span class="src-sym">(</span><span class="src-str">'login_count'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'users'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'gender&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1240,16 +1240,6 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methoderror" class="method"><span><em>method</em></span> error()</h4>
-<p>Returns the description of the last error, or an empty string if no error occurred</p>
-<p>In most cases you should not need this method as any errors are shown in the debugging console as long as the   <a href="../Zebra_Database/Zebra_Database.html#var$debug">debugging</a> is on, or available in PHP's error log file (if your environment is   <a href="https://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors">configured to do so</a>) when set to   <code>FALSE</code>.</p><p>If, for some reasons, none of the above is available, you can use this method to see errors.</p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;SELECT</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;FROM</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;users</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;WHERE</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;invalid_column&nbsp;=&nbsp;?</span></div></li>
-<li><div class="src-line"><span class="src-str">'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$value</span><span class="src-sym">))&nbsp;</span><span class="src-key">or&nbsp;</span><span class="src-key">die</span><span class="src-sym">(</span><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoderror">error</a><span class="src-sym">(</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 void
@@ -1263,6 +1253,16 @@ void
 ]
 ) 
 </p>
+<p>Returns the description of the last error, or an empty string if no error occurred</p>
+<p>In most cases you should not need this method as any errors are shown in the debugging console as long as the   <a href="../Zebra_Database/Zebra_Database.html#var$debug">debugging</a> is on, or available in PHP's error log file (if your environment is   <a href="https://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors">configured to do so</a>) when set to   <code>FALSE</code>.</p><p>If, for some reasons, none of the above is available, you can use this method to see errors.</p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;SELECT</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;FROM</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;users</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;WHERE</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;invalid_column&nbsp;=&nbsp;?</span></div></li>
+<li><div class="src-line"><span class="src-str">'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$value</span><span class="src-sym">))&nbsp;</span><span class="src-key">or&nbsp;</span><span class="src-key">die</span><span class="src-sym">(</span><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methoderror">error</a><span class="src-sym">(</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1286,6 +1286,15 @@ void
 <div class="clear"></div>
 </div>
 <h4 id="methodescape" class="method"><span><em>method</em></span> escape()</h4>
+<div class="doc_block">
+<p class="code">
+string
+<span class="src-var">escape</span>
+(
+<span class="src-key">string</span>
+<span class="src-var">$string</span>
+) 
+</p>
 <p>Escapes special characters in a string making it safe to be used in an MySQL statement, in order to prevent SQL   injections</p>
 <p><p class="highlight">This method also encloses given string in single quotes!</p><p><em>Works even if <a href="https://www.php.net/manual/en/info.configuration.php#ini.magic-quotes-gpc">magic_quotes</a>   is ON.</em></p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;use&nbsp;the&nbsp;method&nbsp;in&nbsp;a&nbsp;query</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;THIS&nbsp;IS&nbsp;NOT&nbsp;THE&nbsp;RECOMMENDED&nbsp;METHOD!</span></div></li>
@@ -1309,15 +1318,6 @@ void
 <li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gender&nbsp;=&nbsp;?</span></div></li>
 <li><div class="src-line"><span class="src-str">'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
 </ol>
-<div class="doc_block">
-<p class="code">
-string
-<span class="src-var">escape</span>
-(
-<span class="src-key">string</span>
-<span class="src-var">$string</span>
-) 
-</p>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1337,17 +1337,6 @@ string
 <div class="clear"></div>
 </div>
 <h4 id="methodfetch_assoc" class="method"><span><em>method</em></span> fetch_assoc()</h4>
-<p>Returns an associative array that corresponds to the fetched row and moves the internal data pointer ahead. The   data is taken from the resource created by the previous query or from the resource given as argument.</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;table&nbsp;WHERE&nbsp;criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;iterate&nbsp;through&nbsp;the&nbsp;found&nbsp;records</span></div></li>
-<li><div class="src-line"><span class="src-key">while&nbsp;</span><span class="src-sym">(</span><span class="src-var">$row&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc</a><span class="src-sym">(</span><span class="src-sym">))&nbsp;</span><span class="src-sym">{</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;code&nbsp;goes&nbsp;here</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-sym">}</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 mixed
@@ -1361,6 +1350,17 @@ mixed
 ]
 ) 
 </p>
+<p>Returns an associative array that corresponds to the fetched row and moves the internal data pointer ahead. The   data is taken from the resource created by the previous query or from the resource given as argument.</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;table&nbsp;WHERE&nbsp;criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;iterate&nbsp;through&nbsp;the&nbsp;found&nbsp;records</span></div></li>
+<li><div class="src-line"><span class="src-key">while&nbsp;</span><span class="src-sym">(</span><span class="src-var">$row&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc</a><span class="src-sym">(</span><span class="src-sym">))&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;code&nbsp;goes&nbsp;here</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-sym">}</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1380,13 +1380,6 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methodfetch_assoc_all" class="method"><span><em>method</em></span> fetch_assoc_all()</h4>
-<p>Returns an associative array containing all the rows from the resource created by the previous query or from the   resource given as argument and moves the internal pointer to the end</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;table&nbsp;WHERE&nbsp;criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;fetch&nbsp;all&nbsp;the&nbsp;rows&nbsp;as&nbsp;an&nbsp;associative&nbsp;array</span></div></li>
-<li><div class="src-line"><span class="src-var">$records&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc_all">fetch_assoc_all</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 mixed
@@ -1407,6 +1400,13 @@ mixed
 ]
 ) 
 </p>
+<p>Returns an associative array containing all the rows from the resource created by the previous query or from the   resource given as argument and moves the internal pointer to the end</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;table&nbsp;WHERE&nbsp;criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;fetch&nbsp;all&nbsp;the&nbsp;rows&nbsp;as&nbsp;an&nbsp;associative&nbsp;array</span></div></li>
+<li><div class="src-line"><span class="src-var">$records&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc_all">fetch_assoc_all</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1435,17 +1435,6 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methodfetch_obj" class="method"><span><em>method</em></span> fetch_obj()</h4>
-<p>Returns an object with properties that correspond to the fetched row and moves the internal data pointer ahead.</p>
-<p>The data is taken from the resource created by the previous query or from the resource given as argument.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;table&nbsp;WHERE&nbsp;criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;iterate&nbsp;through&nbsp;the&nbsp;found&nbsp;records</span></div></li>
-<li><div class="src-line"><span class="src-key">while&nbsp;</span><span class="src-sym">(</span><span class="src-var">$row&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj</a><span class="src-sym">(</span><span class="src-sym">))&nbsp;</span><span class="src-sym">{</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;code&nbsp;goes&nbsp;here</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-sym">}</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 mixed
@@ -1459,6 +1448,17 @@ mixed
 ]
 ) 
 </p>
+<p>Returns an object with properties that correspond to the fetched row and moves the internal data pointer ahead.</p>
+<p>The data is taken from the resource created by the previous query or from the resource given as argument.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;table&nbsp;WHERE&nbsp;criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;iterate&nbsp;through&nbsp;the&nbsp;found&nbsp;records</span></div></li>
+<li><div class="src-line"><span class="src-key">while&nbsp;</span><span class="src-sym">(</span><span class="src-var">$row&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj</a><span class="src-sym">(</span><span class="src-sym">))&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;code&nbsp;goes&nbsp;here</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-sym">}</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1482,13 +1482,6 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methodfetch_obj_all" class="method"><span><em>method</em></span> fetch_obj_all()</h4>
-<p>Returns an associative array containing all the rows (as objects) from the resource created by the previous query   or from the resource given as argument and moves the internal pointer to the end</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;table&nbsp;WHERE&nbsp;criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;fetch&nbsp;all&nbsp;the&nbsp;rows&nbsp;as&nbsp;an&nbsp;associative&nbsp;array</span></div></li>
-<li><div class="src-line"><span class="src-var">$records&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj_all">fetch_obj_all</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 mixed
@@ -1509,6 +1502,13 @@ mixed
 ]
 ) 
 </p>
+<p>Returns an associative array containing all the rows (as objects) from the resource created by the previous query   or from the resource given as argument and moves the internal pointer to the end</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;table&nbsp;WHERE&nbsp;criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;fetch&nbsp;all&nbsp;the&nbsp;rows&nbsp;as&nbsp;an&nbsp;associative&nbsp;array</span></div></li>
+<li><div class="src-line"><span class="src-var">$records&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj_all">fetch_obj_all</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1537,8 +1537,6 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methodfree_result" class="method"><span><em>method</em></span> free_result()</h4>
-<p>Frees the memory associated with a result</p>
-<p><p class="highlight">You should always free your result with <a href="../Zebra_Database/Zebra_Database.html#methodfree_result">free_result()</a>, when your result object is not needed anymore</p>
 <div class="doc_block">
 <p class="code">
 void
@@ -1552,6 +1550,8 @@ void
 ]
 ) 
 </p>
+<p>Frees the memory associated with a result</p>
+<p><p class="highlight">You should always free your result with <a href="../Zebra_Database/Zebra_Database.html#methodfree_result">free_result()</a>, when your result object is not needed anymore</p>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1571,14 +1571,6 @@ void
 <div class="clear"></div>
 </div>
 <h4 id="methodget_columns" class="method"><span><em>method</em></span> get_columns()</h4>
-<p>Returns an array of associative arrays with information about the columns in the MySQL result associated with   the specified result identifier</p>
-<p>Each entry will have the column's name as key and, associated, an array with the following keys:</p><p><ul><li>name</li><li>table</li><li>def</li><li>max_length</li><li>not_null</li><li>primary_key</li><li>multiple_key</li><li>unique_key</li><li>numeric</li><li>blob</li><li>type</li><li>unsigned</li><li>zerofill</li></ul>   <ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;table'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;print&nbsp;information&nbsp;about&nbsp;the&nbsp;columns</span></div></li>
-<li><div class="src-line"><a href="http://www.php.net/print_r">print_r</a><span class="src-sym">(</span><span class="src-str">'&lt;pre&gt;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line"><a href="http://www.php.net/print_r">print_r</a><span class="src-sym">(</span><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodget_columns">get_columns</a><span class="src-sym">(</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 mixed
@@ -1592,6 +1584,14 @@ mixed
 ]
 ) 
 </p>
+<p>Returns an array of associative arrays with information about the columns in the MySQL result associated with   the specified result identifier</p>
+<p>Each entry will have the column's name as key and, associated, an array with the following keys:</p><p><ul><li>name</li><li>table</li><li>def</li><li>max_length</li><li>not_null</li><li>primary_key</li><li>multiple_key</li><li>unique_key</li><li>numeric</li><li>blob</li><li>type</li><li>unsigned</li><li>zerofill</li></ul>   <ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'SELECT&nbsp;*&nbsp;FROM&nbsp;table'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;print&nbsp;information&nbsp;about&nbsp;the&nbsp;columns</span></div></li>
+<li><div class="src-line"><a href="http://www.php.net/print_r">print_r</a><span class="src-sym">(</span><span class="src-str">'&lt;pre&gt;'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a href="http://www.php.net/print_r">print_r</a><span class="src-sym">(</span><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodget_columns">get_columns</a><span class="src-sym">(</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1615,6 +1615,12 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methodget_link" class="method"><span><em>method</em></span> get_link()</h4>
+<div class="doc_block">
+<p class="code">
+identifier
+<span class="src-var">get_link</span>
+()
+</p>
 <p>Returns the MySQL link identifier associated with the current connection to the MySQL server</p>
 <p>Why a separate method? Because the library uses <em>lazy connection</em> (it is not actually connecting to the database   until the first query is executed) there's no link identifier available when calling the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> method.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;create&nbsp;the&nbsp;database&nbsp;object</span></div></li>
 <li><div class="src-line"><span class="src-var">$db&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html">Zebra_Database</a></span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
@@ -1625,12 +1631,6 @@ mixed
 <li><div class="src-line"><span class="src-comm">//&nbsp;get&nbsp;the&nbsp;link&nbsp;identifier</span></div></li>
 <li><div class="src-line"><span class="src-var">$link&nbsp;</span>=&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodget_link">get_link</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol>
-<div class="doc_block">
-<p class="code">
-identifier
-<span class="src-var">get_link</span>
-()
-</p>
 <h5>Tags</h5>
 <table>
 <tr>
@@ -1646,13 +1646,13 @@ identifier
 <div class="clear"></div>
 </div>
 <h4 id="methodget_selected_database" class="method"><span><em>method</em></span> get_selected_database()</h4>
-<p>Returns the name of the currently selected database</p>
 <div class="doc_block">
 <p class="code">
 mixed
 <span class="src-var">get_selected_database</span>
 ()
 </p>
+<p>Returns the name of the currently selected database</p>
 <h5>Tags</h5>
 <table>
 <tr>
@@ -1668,10 +1668,6 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methodget_tables" class="method"><span><em>method</em></span> get_tables()</h4>
-<p>Returns an array with all the tables in a database</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;get&nbsp;all&nbsp;tables&nbsp;from&nbsp;the&nbsp;currently&nbsp;selected&nbsp;database</span></div></li>
-<li><div class="src-line"><span class="src-var">$tables&nbsp;</span>=&nbsp;<a href="../Zebra_Database/Zebra_Database.html#methodget_tables">get_tables</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 array
@@ -1685,6 +1681,10 @@ array
 ]
 ) 
 </p>
+<p>Returns an array with all the tables in a database</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;get&nbsp;all&nbsp;tables&nbsp;from&nbsp;the&nbsp;currently&nbsp;selected&nbsp;database</span></div></li>
+<li><div class="src-line"><span class="src-var">$tables&nbsp;</span>=&nbsp;<a href="../Zebra_Database/Zebra_Database.html#methodget_tables">get_tables</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1708,10 +1708,6 @@ array
 <div class="clear"></div>
 </div>
 <h4 id="methodget_table_columns" class="method"><span><em>method</em></span> get_table_columns()</h4>
-<p>Returns information about the columns of a given table as an associative array</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;get&nbsp;column&nbsp;information&nbsp;for&nbsp;a&nbsp;table&nbsp;named&nbsp;&quot;table_name&quot;</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodget_table_columns">get_table_columns</a><span class="src-sym">(</span><span class="src-str">'table_name'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 array
@@ -1721,6 +1717,10 @@ array
 <span class="src-var">$table</span>
 ) 
 </p>
+<p>Returns information about the columns of a given table as an associative array</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;get&nbsp;column&nbsp;information&nbsp;for&nbsp;a&nbsp;table&nbsp;named&nbsp;&quot;table_name&quot;</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodget_table_columns">get_table_columns</a><span class="src-sym">(</span><span class="src-str">'table_name'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1744,11 +1744,6 @@ array
 <div class="clear"></div>
 </div>
 <h4 id="methodget_table_status" class="method"><span><em>method</em></span> get_table_status()</h4>
-<p>Returns an associative array with a lot of useful information on all or specific tables only</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;return&nbsp;status&nbsp;information&nbsp;on&nbsp;tables&nbsp;in&nbsp;the&nbsp;currently</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;selected&nbsp;database&nbsp;having&nbsp;their&nbsp;name&nbsp;starting&nbsp;with&nbsp;&quot;users&quot;</span></div></li>
-<li><div class="src-line"><span class="src-var">$tables&nbsp;</span>=&nbsp;<a href="../Zebra_Database/Zebra_Database.html#methodget_table_status">get_table_status</a><span class="src-sym">(</span><span class="src-str">'users%'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 array
@@ -1762,6 +1757,11 @@ array
 ]
 ) 
 </p>
+<p>Returns an associative array with a lot of useful information on all or specific tables only</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;return&nbsp;status&nbsp;information&nbsp;on&nbsp;tables&nbsp;in&nbsp;the&nbsp;currently</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;selected&nbsp;database&nbsp;having&nbsp;their&nbsp;name&nbsp;starting&nbsp;with&nbsp;&quot;users&quot;</span></div></li>
+<li><div class="src-line"><span class="src-var">$tables&nbsp;</span>=&nbsp;<a href="../Zebra_Database/Zebra_Database.html#methodget_table_status">get_table_status</a><span class="src-sym">(</span><span class="src-str">'users%'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1785,6 +1785,15 @@ array
 <div class="clear"></div>
 </div>
 <h4 id="methodimplode" class="method"><span><em>method</em></span> implode()</h4>
+<div class="doc_block">
+<p class="code">
+string
+<span class="src-var">implode</span>
+(
+<span class="src-key">array</span>
+<span class="src-var">$items</span>
+) 
+</p>
 <p>Works similarly to PHP's <code>implode()</code> function with the difference that the <em>glue</em> is always the comma and that   all the values are automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a></p>
 <p><p class="highlight">This was useful for escaping an array's values to be used in an SQL statements having the <code>IN</code> keyword,       before adding arrays directly in the replacement array became possible in version 2.8.6</p><ol class="code"><li><div class="src-line"><span class="src-var">$array&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">1</span><span class="src-sym">,</span><span class="src-num">2</span><span class="src-sym">,</span><span class="src-num">3</span><span class="src-sym">,</span><span class="src-num">4</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
@@ -1810,15 +1819,6 @@ array
 <li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;column&nbsp;IN&nbsp;(?)</span></div></li>
 <li><div class="src-line"><span class="src-str">'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$array</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
 </ol>
-<div class="doc_block">
-<p class="code">
-string
-<span class="src-var">implode</span>
-(
-<span class="src-key">array</span>
-<span class="src-var">$items</span>
-) 
-</p>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1842,6 +1842,32 @@ string
 <div class="clear"></div>
 </div>
 <h4 id="methodinsert" class="method"><span><em>method</em></span> insert()</h4>
+<div class="doc_block">
+<p class="code">
+boolean
+<span class="src-var">insert</span>
+(
+<span class="src-key">string</span>
+<span class="src-var">$table</span>
+, 
+<span class="src-key">array</span>
+<span class="src-var">$columns</span>
+, 
+[ 
+<span class="src-key">mixed</span>
+<span class="src-var">$update</span>
+=
+<span class="src-key">true</span>
+]
+, 
+[ 
+<span class="src-key">boolean</span>
+<span class="src-var">$highlight</span>
+=
+<span class="src-key">false</span>
+]
+) 
+</p>
 <p>Shorthand for <code>INSERT</code> queries with additional <code>IGNORE / ON DUPLICATE KEY</code> support</p>
 <p><p class="highlight">This method inserts a single row of data. For inserting multiple rows of data see the <a href="../Zebra_Database/Zebra_Database.html#methodinsert_bulk">insert_bulk()</a>       method</p><p>When using this method column names will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to prevent SQL injections and   will be enclosed in <code>&grave;</code> (grave accents), allowing the usage of reserved words.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;simple&nbsp;insert</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodinsert">insert</a><span class="src-sym">(</span></div></li>
@@ -1915,32 +1941,6 @@ string
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'date_updated'&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'NOW()'</span><span class="src-sym">,</span></div></li>
 <li><div class="src-line"><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
 </ol>
-<div class="doc_block">
-<p class="code">
-boolean
-<span class="src-var">insert</span>
-(
-<span class="src-key">string</span>
-<span class="src-var">$table</span>
-, 
-<span class="src-key">array</span>
-<span class="src-var">$columns</span>
-, 
-[ 
-<span class="src-key">mixed</span>
-<span class="src-var">$update</span>
-=
-<span class="src-key">true</span>
-]
-, 
-[ 
-<span class="src-key">boolean</span>
-<span class="src-var">$highlight</span>
-=
-<span class="src-key">false</span>
-]
-) 
-</p>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -1951,12 +1951,12 @@ boolean
 <tr>
 <td><em>array</em></td>
 <td><strong>$columns</strong></td>
-<td><p>An associative array where the array's keys represent the columns names and the                                   array's values represent the values to be inserted in each respective column.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p></td>
+<td><p>An associative array where the array's keys represent the columns names and the                                   array's values represent the values to be inserted in each respective column.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$update</strong></td>
-<td><p>(Optional) By default, calling this method with this argument set to boolean <code>TRUE</code>                                   or to an empty array will result in a simple insert which will fail in case of                                   duplicate keys.</p><p>Setting this argument to boolean <code>FALSE</code> will create an <code>INSERT IGNORE</code> query where                                   when trying to insert a record that would cause a duplicate entry for a key,                                   the row would be skipped instead.</p><p>Setting this argument to an array of column names will create a query where, on                                   duplicate key, these given columns will be updated with their respective values                                   from the <em>$values</em> argument.</p><p>Alternatively, this argument can also be an associative array where the array's                                   keys represent column names and the array's values represent the values to update                                   the columns' values to if the inserted row would cause a duplicate key.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>For more information see <a href="https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html">MySQL's INSERT ... ON DUPLICATE KEY syntax</a>.</p><p>Default is <code>TRUE</code></p></td>
+<td><p>(Optional) By default, calling this method with this argument set to boolean <code>TRUE</code>                                   or to an empty array will result in a simple insert which will fail in case of                                   duplicate keys.</p><p>Setting this argument to boolean <code>FALSE</code> will create an <code>INSERT IGNORE</code> query where                                   when trying to insert a record that would cause a duplicate entry for a key,                                   the row would be skipped instead.</p><p>Setting this argument to an array of column names will create a query where, on                                   duplicate key, these given columns will be updated with their respective values                                   from the <em>$values</em> argument.</p><p>Alternatively, this argument can also be an associative array where the array's                                   keys represent column names and the array's values represent the values to update                                   the columns' values to if the inserted row would cause a duplicate key.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>For more information see <a href="https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html">MySQL's INSERT ... ON DUPLICATE KEY syntax</a>.</p><p>Default is <code>TRUE</code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
@@ -1979,6 +1979,35 @@ boolean
 <div class="clear"></div>
 </div>
 <h4 id="methodinsert_bulk" class="method"><span><em>method</em></span> insert_bulk()</h4>
+<div class="doc_block">
+<p class="code">
+boolean
+<span class="src-var">insert_bulk</span>
+(
+<span class="src-key">string</span>
+<span class="src-var">$table</span>
+, 
+<span class="src-key">array</span>
+<span class="src-var">$columns</span>
+, 
+<span class="src-key">array</span>
+<span class="src-var">$values</span>
+, 
+[ 
+<span class="src-key">mixed</span>
+<span class="src-var">$update</span>
+=
+<span class="src-key">true</span>
+]
+, 
+[ 
+<span class="src-key">boolean</span>
+<span class="src-var">$highlight</span>
+=
+<span class="src-key">false</span>
+]
+) 
+</p>
 <p>Shorthand for inserting multiple rows in a single query with additional <code>IGNORE / ON DUPLICATE KEY</code> support</p>
 <p>When using this method column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of reserved   words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to prevent SQL injections.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;simple,&nbsp;multi-row&nbsp;insert</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodinsert_bulk">insert_bulk</a><span class="src-sym">(</span></div></li>
@@ -2088,35 +2117,6 @@ boolean
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">)</span></div></li>
 <li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol>
-<div class="doc_block">
-<p class="code">
-boolean
-<span class="src-var">insert_bulk</span>
-(
-<span class="src-key">string</span>
-<span class="src-var">$table</span>
-, 
-<span class="src-key">array</span>
-<span class="src-var">$columns</span>
-, 
-<span class="src-key">array</span>
-<span class="src-var">$values</span>
-, 
-[ 
-<span class="src-key">mixed</span>
-<span class="src-var">$update</span>
-=
-<span class="src-key">true</span>
-]
-, 
-[ 
-<span class="src-key">boolean</span>
-<span class="src-var">$highlight</span>
-=
-<span class="src-key">false</span>
-]
-) 
-</p>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2132,12 +2132,12 @@ boolean
 <tr>
 <td><em>array</em></td>
 <td><strong>$values</strong></td>
-<td><p>An array of an unlimited number of arrays with values to be inserted. The arrays                                   must have the same number of items as you in the <em>$columns</em> argument.</p><p>Values will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape()</a>d in order to prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p></td>
+<td><p>An array of an unlimited number of arrays with values to be inserted. The arrays                                   must have the same number of items as you in the <em>$columns</em> argument.</p><p>Values will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$update</strong></td>
-<td><p>(Optional) By default, calling this method with this argument set to boolean <code>TRUE</code>                                   or to an empty array will result in a simple multi-row insert which will fail in                                   case of duplicate keys.</p><p>Setting this argument to boolean <code>FALSE</code> will create an <code>INSERT IGNORE</code> query where                                   when trying to insert a record that would cause a duplicate entry for a key,                                   the row would be skipped instead.</p><p>Setting this argument to an array of column names will create a query where, on                                   duplicate key, these given columns will be updated with their respective values                                   from the <em>$values</em> argument.</p><p>Alternatively, this argument can also be an associative array where the array's                                   keys represent column names and the array's values represent the values to update                                   the columns' values to if the inserted row would cause a duplicate key.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>For more information see <a href="https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html">MySQL's INSERT ... ON DUPLICATE KEY syntax</a>.</p><p>Default is <code>TRUE</code></p></td>
+<td><p>(Optional) By default, calling this method with this argument set to boolean <code>TRUE</code>                                   or to an empty array will result in a simple multi-row insert which will fail in                                   case of duplicate keys.</p><p>Setting this argument to boolean <code>FALSE</code> will create an <code>INSERT IGNORE</code> query where                                   when trying to insert a record that would cause a duplicate entry for a key,                                   the row would be skipped instead.</p><p>Setting this argument to an array of column names will create a query where, on                                   duplicate key, these given columns will be updated with their respective values                                   from the <em>$values</em> argument.</p><p>Alternatively, this argument can also be an associative array where the array's                                   keys represent column names and the array's values represent the values to update                                   the columns' values to if the inserted row would cause a duplicate key.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>For more information see <a href="https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html">MySQL's INSERT ... ON DUPLICATE KEY syntax</a>.</p><p>Default is <code>TRUE</code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
@@ -2160,13 +2160,13 @@ boolean
 <div class="clear"></div>
 </div>
 <h4 id="methodinsert_id" class="method"><span><em>method</em></span> insert_id()</h4>
-<p>Retrieves the ID generated for an <code>AUTO_INCREMENT</code> column by the previous <code>INSERT</code> query</p>
 <div class="doc_block">
 <p class="code">
 mixed
 <span class="src-var">insert_id</span>
 ()
 </p>
+<p>Retrieves the ID generated for an <code>AUTO_INCREMENT</code> column by the previous <code>INSERT</code> query</p>
 <h5>Tags</h5>
 <table>
 <tr>
@@ -2182,6 +2182,32 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methodinsert_update" class="method"><span><em>method</em></span> insert_update()</h4>
+<div class="doc_block">
+<p class="code">
+boolean
+<span class="src-var">insert_update</span>
+(
+<span class="src-key">string</span>
+<span class="src-var">$table</span>
+, 
+<span class="src-key">array</span>
+<span class="src-var">$columns</span>
+, 
+[ 
+<span class="src-key">array</span>
+<span class="src-var">$update</span>
+=
+array()
+]
+, 
+[ 
+<span class="src-key">boolean</span>
+<span class="src-var">$highlight</span>
+=
+<span class="src-key">false</span>
+]
+) 
+</p>
 <p class="highlight">This method is deprecated since 2.9.12 and will be removed in 3.0. Please use the <a href="../Zebra_Database/Zebra_Database.html#methodinsert_bulk">insert_bulk()</a> method</p>
 <p>When using this method, if an inserted row would cause a duplicate value in a <code>UNIQUE</code> index or <code>PRIMARY KEY</code>,   an <code>UPDATE</code> of the existing row is performed.</p><p>Read more <a href="https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html">here</a>.</p><p>When using this method column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of reserved   words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to prevent SQL injections.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;presuming&nbsp;article_id&nbsp;is&nbsp;a&nbsp;UNIQUE&nbsp;index&nbsp;or&nbsp;PRIMARY&nbsp;KEY,&nbsp;the&nbsp;statement&nbsp;below&nbsp;will</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;insert&nbsp;a&nbsp;new&nbsp;row&nbsp;for&nbsp;given&nbsp;$article_id&nbsp;and&nbsp;set&nbsp;the&nbsp;&quot;votes&quot;&nbsp;to&nbsp;0.&nbsp;But,&nbsp;if&nbsp;$article_id</span></div></li>
@@ -2215,32 +2241,6 @@ mixed
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">)</span></div></li>
 <li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol>
-<div class="doc_block">
-<p class="code">
-boolean
-<span class="src-var">insert_update</span>
-(
-<span class="src-key">string</span>
-<span class="src-var">$table</span>
-, 
-<span class="src-key">array</span>
-<span class="src-var">$columns</span>
-, 
-[ 
-<span class="src-key">array</span>
-<span class="src-var">$update</span>
-=
-array()
-]
-, 
-[ 
-<span class="src-key">boolean</span>
-<span class="src-var">$highlight</span>
-=
-<span class="src-key">false</span>
-]
-) 
-</p>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2251,12 +2251,12 @@ array()
 <tr>
 <td><em>array</em></td>
 <td><strong>$columns</strong></td>
-<td><p>An associative array where the array's keys represent the columns names and the                                   array's values represent the values to be inserted in each respective column.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p></td>
+<td><p>An associative array where the array's keys represent the columns names and the                                   array's values represent the values to be inserted in each respective column.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p></td>
 </tr>
 <tr>
 <td><em>array</em></td>
 <td><strong>$update</strong></td>
-<td><p>(Optional) An associative array where the array's keys represent the columns names                                   and the array's values represent the values to update the columns' values to.</p><p>This array represents the columns/values to be updated if the inserted row would                                   cause a duplicate value in a <code>UNIQUE</code> index or <code>PRIMARY KEY</code>.</p><p>If an empty array is given, the values in <em>$columns</em> will be used.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>A special value may also be used for when a column's value needs to be incremented                                   or decremented. In this case, use <code>INC(value)</code> where <em>value</em> is the value to                                   increase the column's value with. Use <code>INC(-value)</code> to decrease the column's value.                                   See <a href="../Zebra_Database/Zebra_Database.html#methodupdate">update()</a> for an example.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>Default is an empty array</p></td>
+<td><p>(Optional) An associative array where the array's keys represent the columns names                                   and the array's values represent the values to update the columns' values to.</p><p>This array represents the columns/values to be updated if the inserted row would                                   cause a duplicate value in a <code>UNIQUE</code> index or <code>PRIMARY KEY</code>.</p><p>If an empty array is given, the values in <em>$columns</em> will be used.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>A special value may also be used for when a column's value needs to be incremented                                   or decremented. In this case, use <code>INC(value)</code> where <em>value</em> is the value to                                   increase the column's value with. Use <code>INC(-value)</code> to decrease the column's value.                                   See <a href="../Zebra_Database/Zebra_Database.html#methodupdate">update()</a> for an example.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>Default is an empty array</p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
@@ -2283,10 +2283,6 @@ array()
 <div class="clear"></div>
 </div>
 <h4 id="methodlanguage" class="method"><span><em>method</em></span> language()</h4>
-<p>Sets the language to be used for the messages in the debugging console and in the log files</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;show&nbsp;messages&nbsp;in&nbsp;German</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodlanguage">language</a><span class="src-sym">(</span><span class="src-str">'german'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 void
@@ -2296,6 +2292,10 @@ void
 <span class="src-var">$language</span>
 ) 
 </p>
+<p>Sets the language to be used for the messages in the debugging console and in the log files</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;show&nbsp;messages&nbsp;in&nbsp;German</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodlanguage">language</a><span class="src-sym">(</span><span class="src-str">'german'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2315,10 +2315,6 @@ void
 <div class="clear"></div>
 </div>
 <h4 id="methodoptimize" class="method"><span><em>method</em></span> optimize()</h4>
-<p>Optimizes all tables that have overhead (unused, lost space) in a database</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;optimize&nbsp;all&nbsp;tables&nbsp;in&nbsp;the&nbsp;currently&nbsp;selected&nbsp;database</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodoptimize">optimize</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 void
@@ -2332,6 +2328,10 @@ void
 ]
 ) 
 </p>
+<p>Optimizes all tables that have overhead (unused, lost space) in a database</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;optimize&nbsp;all&nbsp;tables&nbsp;in&nbsp;the&nbsp;currently&nbsp;selected&nbsp;database</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodoptimize">optimize</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2351,8 +2351,6 @@ void
 <div class="clear"></div>
 </div>
 <h4 id="methodoption" class="method"><span><em>method</em></span> option()</h4>
-<p>Sets one or more options that affect the behavior of a connection</p>
-<p>See <a href="https://www.php.net/manual/en/mysqli.options.php">the options</a> that can be set.</p><p class="highlight">Usually, this method must to be called before connecting to a MySQL server because the library uses &quot;lazy       connection&quot; and it will not actually connect to the MySQL server until the first query is run, unless the       <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> method is called with the <code>connect</code> argument set to <code>TRUE</code>. As such, you may also call       this method after the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> method but <strong>only</strong> if no queries were run before calling this       method.</p><p><em>This method may be called multiple times to set several options.</em></p><p></p>
 <div class="doc_block">
 <p class="code">
 void
@@ -2369,6 +2367,8 @@ void
 ]
 ) 
 </p>
+<p>Sets one or more options that affect the behavior of a connection</p>
+<p>See <a href="https://www.php.net/manual/en/mysqli.options.php">the options</a> that can be set.</p><p class="highlight">Usually, this method must to be called before connecting to a MySQL server because the library uses &quot;lazy       connection&quot; and it will not actually connect to the MySQL server until the first query is run, unless the       <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> method is called with the <code>connect</code> argument set to <code>TRUE</code>. As such, you may also call       this method after the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> method but <strong>only</strong> if no queries were run before calling this       method.</p><p><em>This method may be called multiple times to set several options.</em></p><p></p>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2393,13 +2393,6 @@ void
 <div class="clear"></div>
 </div>
 <h4 id="methodparse_file" class="method"><span><em>method</em></span> parse_file()</h4>
-<p>Parses a MySQL dump file (like an export from phpMyAdmin)</p>
-<p><em>If you must parse a very large file and your script crashed due to timeout or because of memory limitations,   try the following:</em></p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;prevent&nbsp;script&nbsp;timeout</span></div></li>
-<li><div class="src-line"><a href="http://www.php.net/set_time_limit">set_time_limit</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;allow&nbsp;for&nbsp;more&nbsp;memory&nbsp;to&nbsp;be&nbsp;used&nbsp;by&nbsp;the&nbsp;script</span></div></li>
-<li><div class="src-line"><a href="http://www.php.net/ini_set">ini_set</a><span class="src-sym">(</span><span class="src-str">'memory_limit'</span><span class="src-sym">,</span><span class="src-str">'128M'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 boolean
@@ -2409,6 +2402,13 @@ boolean
 <span class="src-var">$path</span>
 ) 
 </p>
+<p>Parses a MySQL dump file (like an export from phpMyAdmin)</p>
+<p><em>If you must parse a very large file and your script crashed due to timeout or because of memory limitations,   try the following:</em></p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;prevent&nbsp;script&nbsp;timeout</span></div></li>
+<li><div class="src-line"><a href="http://www.php.net/set_time_limit">set_time_limit</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;allow&nbsp;for&nbsp;more&nbsp;memory&nbsp;to&nbsp;be&nbsp;used&nbsp;by&nbsp;the&nbsp;script</span></div></li>
+<li><div class="src-line"><a href="http://www.php.net/ini_set">ini_set</a><span class="src-sym">(</span><span class="src-str">'memory_limit'</span><span class="src-sym">,</span><span class="src-str">'128M'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2428,28 +2428,6 @@ boolean
 <div class="clear"></div>
 </div>
 <h4 id="methodquery" class="method"><span><em>method</em></span> query()</h4>
-<p>Runs a MySQL query</p>
-<p>After a <code>SELECT</code> query you can get the number of returned rows by reading the <a href="../Zebra_Database/Zebra_Database.html#var$returned_rows">returned_rows</a> property.</p><p>After an <code>UPDATE</code>, <code>INSERT</code> or <code>DELETE</code> query you can get the number of affected rows by reading the   <a href="../Zebra_Database/Zebra_Database.html#var$affected_rows">affected_rows</a> property.</p><p class="highlight">Note that you don't necessarily need to store the result of this method in a variable for using it with a fetch       method like <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a>, as all these methods, when called without the       <code>resource</code> argument, work on the LAST returned result resource!</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;SELECT</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;FROM</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;users</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;WHERE</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gender&nbsp;=&nbsp;?</span></div></li>
-<li><div class="src-line"><span class="src-str">'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;array&nbsp;as&nbsp;replacement,&nbsp;for&nbsp;use&nbsp;with&nbsp;WHERE-IN&nbsp;conditions</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;SELECT</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;FROM</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;users</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;WHERE</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gender&nbsp;=&nbsp;?&nbsp;AND</span></div></li>
-<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;IN&nbsp;(?)</span></div></li>
-<li><div class="src-line"><span class="src-str">'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'f'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">1</span><span class="src-sym">,&nbsp;</span><span class="src-num">2</span><span class="src-sym">,&nbsp;</span><span class="src-num">3</span><span class="src-sym">)))</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 mixed
@@ -2487,6 +2465,28 @@ mixed
 ]
 ) 
 </p>
+<p>Runs a MySQL query</p>
+<p>After a <code>SELECT</code> query you can get the number of returned rows by reading the <a href="../Zebra_Database/Zebra_Database.html#var$returned_rows">returned_rows</a> property.</p><p>After an <code>UPDATE</code>, <code>INSERT</code> or <code>DELETE</code> query you can get the number of affected rows by reading the   <a href="../Zebra_Database/Zebra_Database.html#var$affected_rows">affected_rows</a> property.</p><p class="highlight">Note that you don't necessarily need to store the result of this method in a variable for using it with a fetch       method like <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a>, as all these methods, when called without the       <code>resource</code> argument, work on the LAST returned result resource!</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;a&nbsp;query</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;SELECT</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;FROM</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;users</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;WHERE</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gender&nbsp;=&nbsp;?</span></div></li>
+<li><div class="src-line"><span class="src-str">'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$gender</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;array&nbsp;as&nbsp;replacement,&nbsp;for&nbsp;use&nbsp;with&nbsp;WHERE-IN&nbsp;conditions</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;SELECT</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;FROM</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;users</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;WHERE</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gender&nbsp;=&nbsp;?&nbsp;AND</span></div></li>
+<li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;IN&nbsp;(?)</span></div></li>
+<li><div class="src-line"><span class="src-str">'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'f'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-num">1</span><span class="src-sym">,&nbsp;</span><span class="src-num">2</span><span class="src-sym">,&nbsp;</span><span class="src-num">3</span><span class="src-sym">)))</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2526,14 +2526,14 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methodquery_unbuffered" class="method"><span><em>method</em></span> query_unbuffered()</h4>
-<p>Runs a MySQL <a href="https://www.php.net/manual/en/mysqlinfo.concepts.buffering.php">unbuffered query</a>.</p>
-<p>The method's arguments are the same as for the <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()</a> method.</p><p><em>For unbuffered queries the values returned by <a href="../Zebra_Database/Zebra_Database.html#var$returned_rows">returned_rows</a> and <a href="../Zebra_Database/Zebra_Database.html#var$found_rows">found_rows</a> properties will be   available <strong>only</strong> after iterating over <strong>all</strong> the records with either <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a>   methods, and will be <strong>0</strong> until then!</em></p><p class="highlight">Until you iterate over the entire resultset, all subsequent queries will return a <code>Commands out of sync</code> error       unless the <a href="../Zebra_Database/Zebra_Database.html#methodfree_result">free_result()</a> method is called</p>
 <div class="doc_block">
 <p class="code">
 void
 <span class="src-var">query_unbuffered</span>
 ()
 </p>
+<p>Runs a MySQL <a href="https://www.php.net/manual/en/mysqlinfo.concepts.buffering.php">unbuffered query</a>.</p>
+<p>The method's arguments are the same as for the <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()</a> method.</p><p><em>For unbuffered queries the values returned by <a href="../Zebra_Database/Zebra_Database.html#var$returned_rows">returned_rows</a> and <a href="../Zebra_Database/Zebra_Database.html#var$found_rows">found_rows</a> properties will be   available <strong>only</strong> after iterating over <strong>all</strong> the records with either <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a>   methods, and will be <strong>0</strong> until then!</em></p><p class="highlight">Until you iterate over the entire resultset, all subsequent queries will return a <code>Commands out of sync</code> error       unless the <a href="../Zebra_Database/Zebra_Database.html#methodfree_result">free_result()</a> method is called</p>
 <h5>Tags</h5>
 <table>
 <tr>
@@ -2545,8 +2545,6 @@ void
 <div class="clear"></div>
 </div>
 <h4 id="methodseek" class="method"><span><em>method</em></span> seek()</h4>
-<p>Moves the internal row pointer of the MySQL result associated with the specified result identifier to the   specified row number</p>
-<p>The next call to a fetch method like <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a> would return that row.</p>
 <div class="doc_block">
 <p class="code">
 boolean
@@ -2563,6 +2561,8 @@ boolean
 ]
 ) 
 </p>
+<p>Moves the internal row pointer of the MySQL result associated with the specified result identifier to the   specified row number</p>
+<p>The next call to a fetch method like <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a> would return that row.</p>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2591,32 +2591,6 @@ boolean
 <div class="clear"></div>
 </div>
 <h4 id="methodselect" class="method"><span><em>method</em></span> select()</h4>
-<p>Shorthand for simple <code>SELECT</code> queries</p>
-<p>For complex queries (using <code>UNION</code>, <code>JOIN</code>, etc) use the <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()</a> method.</p><p>When using this method column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of reserved   words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to prevent SQL injections.</p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodselect">select</a><span class="src-sym">(</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column1,&nbsp;column2'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">)</span></div></li>
-<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;or</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodselect">select</a><span class="src-sym">(</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'column1'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'column2'</span><span class="src-sym">)</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">)</span></div></li>
-<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;or</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodselect">select</a><span class="src-sym">(</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'*'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">)</span></div></li>
-<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 mixed
@@ -2678,6 +2652,32 @@ mixed
 ]
 ) 
 </p>
+<p>Shorthand for simple <code>SELECT</code> queries</p>
+<p>For complex queries (using <code>UNION</code>, <code>JOIN</code>, etc) use the <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()</a> method.</p><p>When using this method column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of reserved   words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to prevent SQL injections.</p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodselect">select</a><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column1,&nbsp;column2'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;or</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodselect">select</a><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-str">'column1'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'column2'</span><span class="src-sym">)</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;or</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodselect">select</a><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'*'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2741,10 +2741,6 @@ mixed
 <div class="clear"></div>
 </div>
 <h4 id="methodselect_database" class="method"><span><em>method</em></span> select_database()</h4>
-<p>Selects the default database for queries</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;set&nbsp;the&nbsp;default&nbsp;database&nbsp;for&nbsp;queries</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database</a><span class="src-sym">(</span><span class="src-str">'database_name'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 boolean
@@ -2754,6 +2750,10 @@ boolean
 <span class="src-var">$database</span>
 ) 
 </p>
+<p>Selects the default database for queries</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;set&nbsp;the&nbsp;default&nbsp;database&nbsp;for&nbsp;queries</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database</a><span class="src-sym">(</span><span class="src-str">'database_name'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2777,8 +2777,6 @@ boolean
 <div class="clear"></div>
 </div>
 <h4 id="methodset_charset" class="method"><span><em>method</em></span> set_charset()</h4>
-<p>Sets MySQL character set and collation</p>
-<p>The ensure that data is both properly saved and retrieved from the database you should call this method first   thing after connecting to the database.</p><p>If this method is not called a warning message will be displayed in the debugging console.</p><p class="highlight">Warnings can be disabled by setting the <a href="../Zebra_Database/Zebra_Database.html#var$disable_warnings">disable_warnings</a> property.</p>
 <div class="doc_block">
 <p class="code">
 void
@@ -2799,6 +2797,8 @@ void
 ]
 ) 
 </p>
+<p>Sets MySQL character set and collation</p>
+<p>The ensure that data is both properly saved and retrieved from the database you should call this method first   thing after connecting to the database.</p><p>If this method is not called a warning message will be displayed in the debugging console.</p><p class="highlight">Warnings can be disabled by setting the <a href="../Zebra_Database/Zebra_Database.html#var$disable_warnings">disable_warnings</a> property.</p>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2823,10 +2823,6 @@ void
 <div class="clear"></div>
 </div>
 <h4 id="methodtable_exists" class="method"><span><em>method</em></span> table_exists()</h4>
-<p>Checks whether a table exists in a database</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;checks&nbsp;whether&nbsp;table&nbsp;&quot;users&quot;&nbsp;exists</span></div></li>
-<li><div class="src-line"><a href="../Zebra_Database/Zebra_Database.html#methodtable_exists">table_exists</a><span class="src-sym">(</span><span class="src-str">'users'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 boolean
@@ -2836,6 +2832,10 @@ boolean
 <span class="src-var">$table</span>
 ) 
 </p>
+<p>Checks whether a table exists in a database</p>
+<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;checks&nbsp;whether&nbsp;table&nbsp;&quot;users&quot;&nbsp;exists</span></div></li>
+<li><div class="src-line"><a href="../Zebra_Database/Zebra_Database.html#methodtable_exists">table_exists</a><span class="src-sym">(</span><span class="src-str">'users'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2859,6 +2859,12 @@ boolean
 <div class="clear"></div>
 </div>
 <h4 id="methodtransaction_complete" class="method"><span><em>method</em></span> transaction_complete()</h4>
+<div class="doc_block">
+<p class="code">
+boolean
+<span class="src-var">transaction_complete</span>
+()
+</p>
 <p>Ends a transaction</p>
 <p>This means that if all the queries since <a href="../Zebra_Database/Zebra_Database.html#methodtransaction_start">transaction_start()</a> are valid, it updates the data in the   database, but if any of the queries failed, it ignores all queries and treats them as if they never happened.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;start&nbsp;transactions</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodtransaction_start">transaction_start</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
@@ -2869,12 +2875,6 @@ boolean
 <li><div class="src-line"><span class="src-comm">//&nbsp;if&nbsp;any&nbsp;of&nbsp;the&nbsp;queries&nbsp;had&nbsp;an&nbsp;error,&nbsp;ignore&nbsp;all&nbsp;queries&nbsp;and&nbsp;treat&nbsp;them&nbsp;as&nbsp;if&nbsp;they&nbsp;never&nbsp;happened</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodtransaction_complete">transaction_complete</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol>
-<div class="doc_block">
-<p class="code">
-boolean
-<span class="src-var">transaction_complete</span>
-()
-</p>
 <h5>Tags</h5>
 <table>
 <tr>
@@ -2890,16 +2890,6 @@ boolean
 <div class="clear"></div>
 </div>
 <h4 id="methodtransaction_start" class="method"><span><em>method</em></span> transaction_start()</h4>
-<p>Starts the transaction system.</p>
-<p>Transactions work only with databases that support transaction-safe table types. In MySQL, these are <code>InnoDB</code> or   <code>BDB</code> table types. Working with <code>MyISAM</code> tables will not raise any errors but statements will be executed   automatically as soon as they are called (just like if there was no transaction).</p><p>If you are not familiar with transactions, have a look <a href="https://dev.mysql.com/doc/refman/8.0/en/commit.html">here</a>   and try to find a good online resource for more specific information.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;start&nbsp;transactions</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodtransaction_start">transaction_start</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;queries</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;if&nbsp;all&nbsp;the&nbsp;queries&nbsp;since&nbsp;&quot;transaction_start&quot;&nbsp;are&nbsp;valid,&nbsp;write&nbsp;data&nbsp;to&nbsp;database;</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;if&nbsp;any&nbsp;of&nbsp;the&nbsp;queries&nbsp;had&nbsp;an&nbsp;error,&nbsp;ignore&nbsp;all&nbsp;queries&nbsp;and&nbsp;treat&nbsp;them&nbsp;as&nbsp;if&nbsp;they&nbsp;never&nbsp;happened</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodtransaction_complete">transaction_complete</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 boolean
@@ -2913,6 +2903,16 @@ boolean
 ]
 ) 
 </p>
+<p>Starts the transaction system.</p>
+<p>Transactions work only with databases that support transaction-safe table types. In MySQL, these are <code>InnoDB</code> or   <code>BDB</code> table types. Working with <code>MyISAM</code> tables will not raise any errors but statements will be executed   automatically as soon as they are called (just like if there was no transaction).</p><p>If you are not familiar with transactions, have a look <a href="https://dev.mysql.com/doc/refman/8.0/en/commit.html">here</a>   and try to find a good online resource for more specific information.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;start&nbsp;transactions</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodtransaction_start">transaction_start</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;run&nbsp;queries</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;if&nbsp;all&nbsp;the&nbsp;queries&nbsp;since&nbsp;&quot;transaction_start&quot;&nbsp;are&nbsp;valid,&nbsp;write&nbsp;data&nbsp;to&nbsp;database;</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;if&nbsp;any&nbsp;of&nbsp;the&nbsp;queries&nbsp;had&nbsp;an&nbsp;error,&nbsp;ignore&nbsp;all&nbsp;queries&nbsp;and&nbsp;treat&nbsp;them&nbsp;as&nbsp;if&nbsp;they&nbsp;never&nbsp;happened</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodtransaction_complete">transaction_complete</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2936,9 +2936,6 @@ boolean
 <div class="clear"></div>
 </div>
 <h4 id="methodtruncate" class="method"><span><em>method</em></span> truncate()</h4>
-<p>Shorthand for <code>TRUNCATE</code> queries</p>
-<p><em>Truncating a table is quicker then deleting all rows, as stated in the   <a href="https://dev.mysql.com/doc/refman/8.0/en/truncate-table.html">MySQL documentation</a>. Truncating a table also   resets the value of the AUTO INCREMENT column.</em></p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodtruncate">truncate</a><span class="src-sym">(</span><span class="src-str">'table'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 boolean
@@ -2955,6 +2952,9 @@ boolean
 ]
 ) 
 </p>
+<p>Shorthand for <code>TRUNCATE</code> queries</p>
+<p><em>Truncating a table is quicker then deleting all rows, as stated in the   <a href="https://dev.mysql.com/doc/refman/8.0/en/truncate-table.html">MySQL documentation</a>. Truncating a table also   resets the value of the AUTO INCREMENT column.</em></p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodtruncate">truncate</a><span class="src-sym">(</span><span class="src-str">'table'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -2983,34 +2983,6 @@ boolean
 <div class="clear"></div>
 </div>
 <h4 id="methodupdate" class="method"><span><em>method</em></span> update()</h4>
-<p>Shorthand for <code>UPDATE</code> queries</p>
-<p>When using this method column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of reserved   words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to prevent SQL injections.</p><p>After an update check <a href="../Zebra_Database/Zebra_Database.html#var$affected_rows">affected_rows</a> to find out how many rows were affected.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;notice&nbsp;that&nbsp;we're&nbsp;using&nbsp;a&nbsp;MySQL&nbsp;function&nbsp;as&nbsp;a&nbsp;value</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodupdate">update</a><span class="src-sym">(</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column1'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'value1'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column2'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'value2'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'date_updated'&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'NOW()'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">)</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">)</span></div></li>
-<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;using&nbsp;MySQL&nbsp;functions,&nbsp;the&nbsp;value&nbsp;will&nbsp;be&nbsp;used&nbsp;as&nbsp;it&nbsp;is&nbsp;without&nbsp;being&nbsp;escaped!</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;while&nbsp;this&nbsp;is&nbsp;ok&nbsp;when&nbsp;using&nbsp;a&nbsp;function&nbsp;without&nbsp;any&nbsp;arguments&nbsp;like&nbsp;NOW(),&nbsp;this&nbsp;may</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;pose&nbsp;a&nbsp;security&nbsp;concern&nbsp;if&nbsp;the&nbsp;argument(s)&nbsp;come&nbsp;from&nbsp;user&nbsp;input.</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;in&nbsp;this&nbsp;case&nbsp;we&nbsp;have&nbsp;to&nbsp;escape&nbsp;the&nbsp;value&nbsp;ourselves</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodupdate">update</a><span class="src-sym">(</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column1'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'TRIM(UCASE(&quot;'&nbsp;</span>.&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a><span class="src-sym">(</span><span class="src-var">$value1</span><span class="src-sym">)&nbsp;</span>.&nbsp;<span class="src-str">'&quot;))'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column2'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'value2'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'date_updated'&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'NOW()'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">)</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">)</span></div></li>
-<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol>
 <div class="doc_block">
 <p class="code">
 boolean
@@ -3044,6 +3016,34 @@ boolean
 ]
 ) 
 </p>
+<p>Shorthand for <code>UPDATE</code> queries</p>
+<p>When using this method column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of reserved   words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to prevent SQL injections.</p><p>After an update check <a href="../Zebra_Database/Zebra_Database.html#var$affected_rows">affected_rows</a> to find out how many rows were affected.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;notice&nbsp;that&nbsp;we're&nbsp;using&nbsp;a&nbsp;MySQL&nbsp;function&nbsp;as&nbsp;a&nbsp;value</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodupdate">update</a><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column1'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'value1'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column2'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'value2'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'date_updated'&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'NOW()'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">)</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;when&nbsp;using&nbsp;MySQL&nbsp;functions,&nbsp;the&nbsp;value&nbsp;will&nbsp;be&nbsp;used&nbsp;as&nbsp;it&nbsp;is&nbsp;without&nbsp;being&nbsp;escaped!</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;while&nbsp;this&nbsp;is&nbsp;ok&nbsp;when&nbsp;using&nbsp;a&nbsp;function&nbsp;without&nbsp;any&nbsp;arguments&nbsp;like&nbsp;NOW(),&nbsp;this&nbsp;may</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;pose&nbsp;a&nbsp;security&nbsp;concern&nbsp;if&nbsp;the&nbsp;argument(s)&nbsp;come&nbsp;from&nbsp;user&nbsp;input.</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;in&nbsp;this&nbsp;case&nbsp;we&nbsp;have&nbsp;to&nbsp;escape&nbsp;the&nbsp;value&nbsp;ourselves</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodupdate">update</a><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column1'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'TRIM(UCASE(&quot;'&nbsp;</span>.&nbsp;<span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a><span class="src-sym">(</span><span class="src-var">$value1</span><span class="src-sym">)&nbsp;</span>.&nbsp;<span class="src-str">'&quot;))'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'column2'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'value2'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'date_updated'&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-str">'NOW()'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">)</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'criteria&nbsp;=&nbsp;?'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$criteria</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol>
 <h5>Arguments</h5>
 <table>
 <tr>
@@ -3073,7 +3073,7 @@ boolean
 <li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;WHERE</span></div></li>
 <li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;criteria&nbsp;=&nbsp;?</span></div></li>
 <li><div class="src-line"><span class="src-str">'</span><span class="src-sym">,&nbsp;</span><span class="src-key">array</span><span class="src-sym">(</span><span class="src-var">$value</span><span class="src-sym">,&nbsp;</span><span class="src-var">$criteria</span><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
-</ol><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/sql-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p></td>
+</ol><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
@@ -3110,7 +3110,7 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Sun, 15 May 22</span>
+Documentation generated on <span>Sat, 15 Oct 22</span>
 </div>
 </div>
 <!-- Global site tag (gtag.js) - Google Analytics -->
