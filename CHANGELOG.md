@@ -1,6 +1,9 @@
-## version 2.11.0 (May 13, 2022)
+## version 2.11.0 (TBA)
 
 - added a new [debug_show_database_manager](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager) property for editing queries in your favorite database manager
+- the "unsuccessful queries" tab is now open by default if there are any unsuccessful queries
+- fixed an issue where having the `debug` property set to a `string` but debugging not being activated, would result in errors not being logged
+- fixed a potential issue when encountering connection errors
 - update the CSS and the icons for the debug interface
 
 ## version 2.10.2 (May 13, 2022)
