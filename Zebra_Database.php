@@ -2438,7 +2438,7 @@ class Zebra_Database {
      *  @param  array   $values         An array of an unlimited number of arrays with values to be inserted. The arrays
      *                                  must have the same number of items as you in the *$columns* argument.
      *
-     *                                  Values will be automatically {@link escape()}d in order to prevent SQL injections.
+     *                                  Values will be automatically {@link escape() escaped} in order to prevent SQL injections.
      *
      *                                  You may also use any of {@link https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html MySQL's functions}
      *                                  as *values*.
