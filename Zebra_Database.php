@@ -4362,7 +4362,7 @@ class Zebra_Database {
     private function _connected() {
 
         // if there's no connection to a MySQL database
-        if (!$this->connection) {
+        if (!$this->connection || $this->connection->connect_errno != 0) {
 
             // we need this because it is the only way we can set the connection options (if any)
             $this->connection = mysqli_init();
