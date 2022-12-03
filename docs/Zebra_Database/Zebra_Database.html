@@ -58,14 +58,14 @@ I have a few other projects that you might be interested in — <a href="https:/
 <h2>Class: <strong>Zebra_Database</strong></h2>
 <h6><strong>source file:</strong> /Zebra_Database.php</h6>
 <pre></pre>
-<p>A compact, lightweight yet feature-rich PHP MySQLi database wrapper providing methods for interacting   with MySQL databases that are more secure, powerful and intuitive than PHP's default ones.<p>Read more <a href="https://github.com/stefangabos/Zebra_Database">here</a></p>
+<p>A compact, lightweight yet feature-rich PHP MySQLi database wrapper providing methods for interacting   with MySQL databases that are more secure, powerful and intuitive than PHP's default ones.<p>Can provides debugging information when called from <strong>CLI</strong> (command-line interface) and supports logging queries   done through <strong>AJAX</strong> requests.</p><p>Read more <a href="https://github.com/stefangabos/Zebra_Database">here</a></p>
 <h4>Author(s):</h4>
 <ul>
 <li>Stefan Gabos <br><a href="mailto:contact@stefangabos.ro">contact@stefangabos.ro</a></li>
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.11.0 (last revision: October 15, 2022)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
+<li>2.11.0 (last revision: December 03, 2022)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
 </ul>
 <h4>License:</h4>
 <ul>
@@ -85,6 +85,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 <li><a href="#var$caching_method">$caching_method</a></li>
 <li><a href="#var$debug">$debug</a></li>
 <li><a href="#var$debugger_ip">$debugger_ip</a></li>
+<li><a href="#var$debug_ajax">$debug_ajax</a></li>
 <li><a href="#var$debug_cookie_name">$debug_cookie_name</a></li>
 <li><a href="#var$debug_show_backtrace">$debug_show_backtrace</a></li>
 <li><a href="#var$debug_show_database_manager">$debug_show_database_manager</a></li>
@@ -247,9 +248,9 @@ with <code>--with-zlib[=DIR]</code></em></li></ul>   <ol class="code"><li><div c
 <h4 id="var$debug" class="variable"><span><em>boolean</em></span> $debug =  <span class="value">true</span></h4>
 <div class="doc_block">
 <p>Turns debugging on or off.</p>
-<p>The property can take one of the following values:</p><p><ul><li><strong>boolean TRUE</strong><br>
+<p>See also <a href="../Zebra_Database/Zebra_Database.html#var$debug_ajax">$debug_ajax</a>.</p><p>The property can take one of the following values:</p><p><ul><li><strong>boolean TRUE</strong><br>
 Setting this property to a boolean <code>TRUE</code> will instruct the library to generate debugging information for each
-query it executes and show the information <em>on the screen</em> when script execution ends.</li></ul> <ul><li><strong>a string</strong><br>
+query it executes and show the information <em>on the screen</em> when script execution ends.</li></ul><p class="highlight">This is also works when called from CLI!</p><p><ul><li><strong>a string</strong><br>
 Setting this property to a string will instruct the library to turn debugging on when the given string is
 present as argument in the query string (in the URL) and has the value of <code>1</code> (i.e <code>?show_debug=1</code>)
 <br><br><em>Useful for turning debugging on on the fly. If you decide to use this in production, make
@@ -257,7 +258,7 @@ sure to not use an easily guessable value!</em><br><br>
 When debugging is turned on this way, a session cookie (a cookie that expires when the browser is closed) will
 also be set so that the query string argument doesn't need to be present for subsequent requests. Debugging
 can also be turned off by setting said query string argument to <code>0</code> (i.e <code>?show_debug=0</code>). The cookie's name
-can be set via the <a href="../Zebra_Database/Zebra_Database.html#var$debug_cookie_name">debug_cookie_name</a> property.</li></ul> <ul><li><strong>an array([bool]daily, [bool]hourly, [bool]backtrace)</strong><br>
+can be set via the <a href="../Zebra_Database/Zebra_Database.html#var$debug_cookie_name">debug_cookie_name</a> property.</li></ul><p class="highlight">This is also works when called from CLI!</p><p><ul><li><strong>an array([bool]daily, [bool]hourly, [bool]backtrace)</strong><br>
 Setting this property to an array like above will instruct the library to generate debugging information for
 each query it executes and write the information to a log file when script execution ends.</li></ul> <ul><li>the value of the first entry (daily) indicates whether the log files should be grouped by days or not;
 if set to <code>TRUE</code>, log files will have their name in the form of <code>log_ymd.txt</code>, where <code>y</code>, <code>m</code> and <code>d</code>
@@ -303,6 +304,20 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
 <td>1.0.6</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<h4 id="var$debug_ajax" class="variable"><span><em>mixed</em></span> $debug_ajax =  <span class="value">false</span></h4>
+<div class="doc_block">
+<p>Enables logging of queries done through AJAX requests.</p>
+<p>When set to <code>TRUE</code> all AJAX requests sent by your page will be captured and checked for logs generated by   <code>Zebra Database</code>.</p><p class="highlight">Note that when this is enabled HTML code will be appended to the result of the AJAX requests!<br>Therefore,       depending on your use-case, having this enabled could break some of your page's functionality.</p><p>Default is <code>FALSE</code></p>
+<h5>Tags</h5>
+<table>
+<tr>
+<td><strong>since:</strong>&nbsp;&nbsp;</td>
+<td>2.11.0</td>
 </tr>
 </table>
 <a href="#top" class="top">top</a>
@@ -3110,7 +3125,7 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Sat, 15 Oct 22</span>
+Documentation generated on <span>Sat, 03 Dec 22</span>
 </div>
 </div>
 <!-- Global site tag (gtag.js) - Google Analytics -->
