@@ -135,19 +135,19 @@ module.exports = function(grunt) {
         'jshint': {
             options: {
                 strict:     true,       //  requires all functions to run in ECMAScript 5's strict mode
-                asi:        false,      //  suppresses warnings about missing semicolons
+                asi:        true,       //  suppresses warnings about missing semicolons
                 globals: {              //  white list of global variables that are not formally defined in the source code
                     '$':                true,
                     'console':          true,
                     'jQuery':           true
                 },
+                esversion:  6,          //  allow arrow functions
                 browser:    true,       //  defines globals exposed by modern browsers (like `document` and `navigator`)
                 bitwise:    true,       //  prohibits the use of bitwise operators such as ^ (XOR), | (OR) and others
                 curly:      false,      //  whether to always put curly braces around blocks in loops and conditionals
                 eqeqeq:     true,       //  this options prohibits the use of == and != in favor of === and !==
                 freeze:     true,       //  this options prohibits overwriting prototypes of native objects such as Array, Date and so on
                 scripturl:  true,       //  allow use of scripts
-                nonew:      true,       //  this option prohibits the use of constructor functions without assigning them to a variable
                 loopfunc:   true,       //  allow functions to be defined inside loops
                 undef:      true        //  this option prohibits the use of explicitly undeclared variables
             },
