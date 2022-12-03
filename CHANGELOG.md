@@ -1,5 +1,7 @@
 ## version 2.11.0 (TBA)
 
+- the library can log queries run via AJAX requests; see the newly added [debug_ajax](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_ajax) property
+- debug information is now also shown when running in CLI (when [debugging](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug) is enabled, of course)
 - added a new [debug_show_database_manager](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager) property for editing queries in your favorite database manager
 - the "unsuccessful queries" tab is now open by default if there are any unsuccessful queries
 - fixed an issue where having the `debug` property set to a `string` but debugging not being activated, would result in errors not being logged
