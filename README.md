@@ -10,6 +10,8 @@ Zebra_Database supports [transactions](https://dev.mysql.com/doc/refman/8.0/en/g
 
 The library provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, backtrace information, etc. It can also automatically [EXPLAIN](https://dev.mysql.com/doc/refman/8.0/en/explain.html) SELECT queries *(so you don't miss those keys again!)*.
 
+Can provides debugging information when called from **CLI** (command-line interface) and supports logging queries done through **AJAX** requests.
+
 It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of *prepared statements*, where parameters are automatically [escaped](https://www.php.net/manual/en/mysqli.real-escape-string.php).
 
 The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to E_ALL.
@@ -17,6 +19,10 @@ The code is heavily commented and generates no warnings/errors/notices when PHP'
 ## Features
 
 - it uses the [mysqli extension](https://www.php.net/manual/en/book.mysqli.php) extension for communicating with the database instead of the old *mysql* extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; **this is not a wrapper for the PDO extension which is already a wrapper in itself!**
+
+- can provide debugging information even when called from **CLI** (command-line interface)
+
+- logs all queries, including those run through **AJAX**
 
 - offers [lots of powerful methods](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html) for easier interaction with MySQL
 
@@ -92,15 +98,15 @@ $db->connect('host', 'username', 'password', 'database');
 // I ENCOURAGE YOU TO WRITE YOUR QUERIES IN A READABLE FORMAT, LIKE BELOW
 $db->query('
     SELECT
-    	column1,
-        column2,
-        column3
+    	column1
+        , column2
+        , column3
     FROM
     	tablename1
     	LEFT JOIN tablename2 ON tablename1.column1 = tablename2.column1
     WHERE
-    	somecriteria = ? AND
-        someothercriteria = ?
+    	somecriteria = ?
+        AND someothercriteria = ?
 ', array($somevalue, $someothervalue));
 
 // any fetch method will work with the last result so
