@@ -1480,7 +1480,14 @@ class Zebra_Database {
             );
 
         // a string description of the last error, or an empty string if no error occurred
-        return mysqli_error($this->connection);
+        $error = mysqli_error($this->connection);
+
+        // If no error, check if mysqli connection is good and return error connection if detected
+        if (!$error && property_exists($this->connection, "connect_errno") && $this->connection->connect_errno) {
+            $error = $this->connection->error;
+        }
+
+        return $error;
 
     }
 
