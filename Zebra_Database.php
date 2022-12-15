@@ -910,6 +910,17 @@ class Zebra_Database {
         register_shutdown_function(array($this, '_show_debugging_console'));
 
     }
+    
+    
+    /**
+     * Verify if mysqli connection has an error 
+     *
+     * @return boolean
+     */
+    private function hasConnectionError() :bool
+    {
+        return property_exists($this->connection, "connect_errno") && $this->connection && $this->connection->connect_errno;
+    }
 
     /**
      *  Closes the MySQL connection and optionally unsets the connection options previously set with the {@link option()}
@@ -1469,6 +1480,10 @@ class Zebra_Database {
      *                                          Default is `FALSE`
      */
     public function error($return_error_number = false) {
+        
+        if($this->hasConnectionError()) {
+            return $this->connection->error;
+        }
 
         // if we also need to return the error number alongside the error message
         if ($return_error_number && mysqli_error($this->connection) != '')
@@ -4503,6 +4518,11 @@ class Zebra_Database {
 
             }
 
+        }
+
+        // return FALSE if connection error to abort process
+        if($this->hasConnectionError()) {
+            return false;
         }
 
         // return TRUE if there is no error
