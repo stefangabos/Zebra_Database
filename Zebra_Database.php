@@ -272,7 +272,7 @@ class Zebra_Database {
      *  Here's how to set up the value for opening the query in {@link https://www.adminer.org/ Adminer}:
      *
      *  <code>
-     *  <a href="path/to/adminer.php?server=%host%:%port%&username=%user%&db=%database%&sql=%query%" target="adminer">edit in adminer</a>
+     *  <a href="path/to/adminer.php?server=%host%:%port%&db=%database%&sql=%query%" target="adminer">edit in adminer</a>
      *  </code>
      *
      *  *I don't use {@link https://www.phpmyadmin.net/ phpMyAdmin} so if you manage to set it up, please share the result
