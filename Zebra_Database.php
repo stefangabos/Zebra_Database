@@ -278,8 +278,8 @@ class Zebra_Database {
      *  *I don't use {@link https://www.phpmyadmin.net/ phpMyAdmin} so if you manage to set it up, please share the result
      *  with me so I can add it to the docs. Thanks!*
      *
-     *  >   Because you will have to use the password when building your links, be **VERY CAREFUL** with this feature
-     *      and make sure you don't expose your credentials to malicious participants!
+     *  >   Be **VERY CAREFUL** when using this feature and make sure you **do not** expose your credentials in the links
+     *      you build.
      *
      *  Setting it to `false` will disable the feature.
      *
