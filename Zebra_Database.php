@@ -4429,16 +4429,20 @@ class Zebra_Database {
 
                         ));
 
-            // connect to the MySQL server
-            @mysqli_real_connect(
-                $this->connection,
-                $this->credentials['host'],
-                $this->credentials['user'],
-                $this->credentials['password'],
-                $this->credentials['database'],
-                $this->credentials['port'],
-                $this->credentials['socket']
-            );
+            // try to connect to the MySQL server
+            try {
+
+                mysqli_real_connect(
+                    $this->connection,
+                    $this->credentials['host'],
+                    $this->credentials['user'],
+                    $this->credentials['password'],
+                    $this->credentials['database'],
+                    $this->credentials['port'],
+                    $this->credentials['socket']
+                );
+
+            } catch (Exception $e) {}
 
             // tries to connect to the MySQL database
             if (mysqli_connect_errno())
