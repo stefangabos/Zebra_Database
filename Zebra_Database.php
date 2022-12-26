@@ -1476,20 +1476,19 @@ class Zebra_Database {
         try {
 
             // get error message and number
-            $error_message = mysqli_error($this->connection);
-            $error_number = mysqli_errno($this->connection);
+            $error_message = @mysqli_error($this->connection);
+            $error_number = @mysqli_errno($this->connection);
 
         // if the above fails, we might have a connection-level error and we got an "incomplete" mysqli object
-        } catch (Error $e) {
+        } catch (Error $e) {}
 
-            // if it looks like an attempt to initialize connection was already made
-            if ($this->connection !== false && $this->connection instanceof mysqli) {
+        // if PHP < 8, we're not going to catch the error above
+        // therefore we do this which works for all versions
+        if (!$error_message && $this->connection !== false && $this->connection instanceof mysqli) {
 
-                // extract values from the object
-                $error_message = $this->connection->connect_error;
-                $error_number = $this->connection->connect_errno;
-
-            }
+            // extract values from the object
+            $error_message = $this->connection->connect_error;
+            $error_number = $this->connection->connect_errno;
 
         }
 
@@ -1503,7 +1502,7 @@ class Zebra_Database {
             );
 
         // a string description of the last error, or an empty string if no error occurred
-        return $error_message;
+        return is_null($error_message) ? '' : $error_message;
 
     }
 
