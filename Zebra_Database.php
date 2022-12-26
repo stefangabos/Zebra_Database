@@ -10,7 +10,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.11.0 (last revision: December 03, 2022)
+ *  @version    2.11.0 (last revision: December 26, 2022)
  *  @copyright  © 2006 - 2022 Stefan Gabos
  *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -3565,13 +3565,26 @@ class Zebra_Database {
                         // query was successful
                         && $this->_is_result($this->last_result)
 
-                        // MySQL could explain it
-                        && ($explain_resource = mysqli_query($this->connection, 'EXPLAIN ' . $sql))
+                    ) {
 
-                    )
+                        // since only SELECT, DELETE, INSERT, REPLACE, and UPDATE queries can be explained
+                        // put the following code in a try/catch
+                        try {
 
-                        // put all the records returned by the explain query in an array
-                        while ($row = mysqli_fetch_assoc($explain_resource)) $explain[] = $row;
+                            // ask MySQL to EXPLAIN the query
+                            $explain_resource = mysqli_query($this->connection, 'EXPLAIN ' . $sql);
+
+                            // if MYSQL could explain the query
+                            if (!is_bool($explain_resource))
+
+                                // put all the records returned by the explain query in an array
+                                while ($row = mysqli_fetch_assoc($explain_resource)) $explain[] = $row;
+
+                        // if EXPLAIN is not available
+                        // (for something line SHOW TABLE for example) do nothing
+                        } catch (Exception $e) {}
+
+                    }
 
                     // if
                     if (
