@@ -1470,17 +1470,40 @@ class Zebra_Database {
      */
     public function error($return_error_number = false) {
 
+        $error_message = $error_number = '';
+
+        // try
+        try {
+
+            // get error message and number
+            $error_message = mysqli_error($this->connection);
+            $error_number = mysqli_errno($this->connection);
+
+        // if the above fails, we might have a connection-level error and we got an "incomplete" mysqli object
+        } catch (Error $e) {
+
+            // if it looks like an attempt to initialize connection was already made
+            if ($this->connection !== false && $this->connection instanceof mysqli) {
+
+                // extract values from the object
+                $error_message = $this->connection->connect_error;
+                $error_number = $this->connection->connect_errno;
+
+            }
+
+        }
+
         // if we also need to return the error number alongside the error message
-        if ($return_error_number && mysqli_error($this->connection) != '')
+        if ($return_error_number && $error_message !== '')
 
             // return as an array
             return array(
-                'number'    => mysqli_errno($this->connection),
-                'message'   => mysqli_error($this->connection),
+                'number'    => $error_number,
+                'message'   => $error_message,
             );
 
         // a string description of the last error, or an empty string if no error occurred
-        return mysqli_error($this->connection);
+        return $error_message;
 
     }
 
