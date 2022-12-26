@@ -1000,13 +1000,13 @@ class Zebra_Database {
     public function connect($host, $user, $password, $database = '', $port = '', $socket = '', $connect = false) {
 
         // if the "memcache" extension is loaded and the caching method is set to "memcache"
-        if (!extension_loaded('memcache') || $this->caching_method == 'memcache')
+        if (!extension_loaded('memcache') || $this->caching_method === 'memcache')
 
             // suppress the warning telling the developer to use memcache for caching query results
             unset($this->warnings['memcache']);
 
         // if the "redis" extension is loaded and the caching method is set to "redis"
-        if (!extension_loaded('redis') || $this->caching_method == 'redis')
+        if (!extension_loaded('redis') || $this->caching_method === 'redis')
 
             // suppress the warning telling the developer to use redis for caching query results
             unset($this->warnings['redis']);
@@ -1019,8 +1019,8 @@ class Zebra_Database {
             'user'      => $user,
             'password'  => $password,
             'database'  => $database,
-            'port'      => $port == '' ? ini_get('mysqli.default_port') : $port,
-            'socket'    => $socket == '' ? ini_get('mysqli.default_socket') : $socket,
+            'port'      => $port === '' ? ini_get('mysqli.default_port') : $port,
+            'socket'    => $socket === '' ? ini_get('mysqli.default_socket') : $socket,
         );
 
         // connect now, if we need to connect right away
@@ -1093,7 +1093,7 @@ class Zebra_Database {
                 COUNT(' . $column . ') AS counted
             FROM
                 ' . $this->_escape($table) .
-            ($where != '' ? ' WHERE ' . $where : '') . '
+            ($where !== '' ? ' WHERE ' . $where : '') . '
 
         ', $replacements, $cache, false, $highlight);
 
@@ -1161,7 +1161,7 @@ class Zebra_Database {
 
             DELETE FROM
                 ' . $this->_escape($table) .
-            ($where != '' ? ' WHERE ' . $where : '') . '
+            ($where !== '' ? ' WHERE ' . $where : '') . '
 
         ', $replacements, false, false, $highlight);
 
@@ -1236,7 +1236,7 @@ class Zebra_Database {
                 ' . $column . '
             FROM
                 ' . $this->_escape($table) .
-                ($where != '' ? ' WHERE ' . $where : '') . '
+                ($where !== '' ? ' WHERE ' . $where : '') . '
             LIMIT 1
         ', $replacements, $cache, false, $highlight);
 
@@ -1325,7 +1325,7 @@ class Zebra_Database {
                 MAX(' . $column . ') AS maximum
             FROM
                 ' . $this->_escape($table) .
-            ($where != '' ? ' WHERE ' . $where : '') . '
+            ($where !== '' ? ' WHERE ' . $where : '') . '
 
         ', $replacements, $cache, false, $highlight);
 
@@ -1410,7 +1410,7 @@ class Zebra_Database {
                 SUM(' . $column . ') AS total
             FROM
                 ' . $this->_escape($table) .
-            ($where != '' ? ' WHERE ' . $where : '') . '
+            ($where !== '' ? ' WHERE ' . $where : '') . '
 
         ', $replacements, $cache, false, $highlight);
 
@@ -1587,7 +1587,7 @@ class Zebra_Database {
         if (!$this->_connected()) return false;
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         // if $resource is a valid resource
         if ($this->_is_result($resource)) {
@@ -1664,7 +1664,7 @@ class Zebra_Database {
 
         // if only one argument was given
         // meaning that the first argument is either a valid resource or a pointer to an array taken from cache
-        if ($resource == '' && $this->_is_result($index) || (is_integer($index) && isset($this->cached_results[$index]))) {
+        if ($resource === '' && $this->_is_result($index) || (is_integer($index) && isset($this->cached_results[$index]))) {
 
             // use the first argument as the actual resource
             $resource = $index;
@@ -1675,7 +1675,7 @@ class Zebra_Database {
         }
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         if (
 
@@ -1698,7 +1698,7 @@ class Zebra_Database {
                 while ($row = $this->fetch_assoc($resource)) {
 
                     // if $index was specified and exists in the returned row, add data to the result
-                    if (trim($index) != '' && isset($row[$index])) $result[$row[$index]] = $row;
+                    if (trim($index) !== '' && isset($row[$index])) $result[$row[$index]] = $row;
 
                     // if $index was not specified or does not exists in the returned row, add data to the result
                     else $result[] = $row;
@@ -1753,7 +1753,7 @@ class Zebra_Database {
         if (!$this->_connected()) return false;
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         // if $resource is a valid resource, fetch and return next row from the result set
         if ($this->_is_result($resource)) {
@@ -1836,7 +1836,7 @@ class Zebra_Database {
 
         // if only one argument was given
         // meaning that the first argument is either a valid resource or a pointer to an array taken from cache
-        if ($resource == '' && $this->_is_result($index) || (is_integer($index) && isset($this->cached_results[$index]))) {
+        if ($resource === '' && $this->_is_result($index) || (is_integer($index) && isset($this->cached_results[$index]))) {
 
             // use the first argument as the actual resource
             $resource = $index;
@@ -1847,7 +1847,7 @@ class Zebra_Database {
         }
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         if (
 
@@ -1870,7 +1870,7 @@ class Zebra_Database {
                 while ($row = $this->fetch_obj($resource)) {
 
                     // if $index was specified and exists in the returned row, add data to the result
-                    if (trim($index) != '' && property_exists($row, $index)) $result[$row->{$index}] = $row;
+                    if (trim($index) !== '' && property_exists($row, $index)) $result[$row->{$index}] = $row;
 
                     // if $index was not specified or does not exists in the returned row, add data to the result
                     else $result[] = $row;
@@ -1913,7 +1913,7 @@ class Zebra_Database {
         if (!$this->_connected()) return false;
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         // if argument is a valid resource, free the result
         // (we mute it as it might have already been freed by a previous call to this method)
@@ -1965,7 +1965,7 @@ class Zebra_Database {
         if (!$this->_connected()) return false;
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         // if $resource is a valid resource
         if ($this->_is_result($resource)) {
@@ -2067,7 +2067,7 @@ class Zebra_Database {
 
         // fetch all the tables in the database
         $result = $this->fetch_assoc_all('', $this->query('
-            SHOW TABLES' . ($database != '' ? ' IN ' . $this->_escape($database) : '')));
+            SHOW TABLES' . ($database !== '' ? ' IN ' . $this->_escape($database) : '')));
 
         $tables = array();
 
@@ -2149,7 +2149,7 @@ class Zebra_Database {
             TABLE
             STATUS
             ' . (isset($database) ? ' IN ' . $this->_escape($database) : '') . '
-            ' . (trim($table) != '' ? 'LIKE ?' : '') . '
+            ' . (trim($table) !== '' ? 'LIKE ?' : '') . '
         ', array($table));
 
         // fetch and return data
@@ -2202,7 +2202,7 @@ class Zebra_Database {
         $result = '';
 
         // iterate through the array's items and "glue" items together
-        foreach ($items as $item) $result .= ($result != '' ? ',' : '') . '\'' . $this->escape($item) . '\'';
+        foreach ($items as $item) $result .= ($result !== '' ? ',' : '') . '\'' . $this->escape($item) . '\'';
 
         return $result;
 
@@ -2749,7 +2749,7 @@ class Zebra_Database {
         foreach ($columns as $column_name => $value) {
 
             // separate values by comma
-            $values .= ($values != '' ? ', ' : '');
+            $values .= ($values !== '' ? ', ' : '');
 
             // if value is a MySQL function
             if ($this->_is_mysql_function($value)) {
@@ -2964,7 +2964,7 @@ class Zebra_Database {
                 $tsql = trim($sql_line);
 
                 // if line content is not empty and is the line does not represent a comment
-                if ($tsql != '' && substr($tsql, 0, 2) != '--' && substr($tsql, 0, 1) != '#') {
+                if ($tsql !== '' && substr($tsql, 0, 2) !== '--' && substr($tsql, 0, 1) !== '#') {
 
                     // add to query string
                     $query .= $sql_line;
@@ -3097,7 +3097,7 @@ class Zebra_Database {
         unset($this->affected_rows);
 
         // if $replacements is specified but it's not an array
-        if ($replacements != '' && !is_array($replacements))
+        if ($replacements !== '' && !is_array($replacements))
 
             // save debug information
             return $this->_log('unsuccessful-queries', array(
@@ -3108,7 +3108,7 @@ class Zebra_Database {
             ));
 
         // if $replacements is specified and is an array
-        if ($replacements != '' && is_array($replacements) && !empty($replacements)) {
+        if ($replacements !== '' && is_array($replacements) && !empty($replacements)) {
 
             // found how many items to replace are there in the query string
             preg_match_all('/\?/', $sql, $matches, PREG_OFFSET_CAPTURE);
@@ -3203,7 +3203,7 @@ class Zebra_Database {
             $refreshed_cache = false;
 
             // if caching method is "memcache" and memcache is enabled
-            if ($this->caching_method == 'memcache' && $this->memcache) {
+            if ($this->caching_method === 'memcache' && $this->memcache) {
 
                 // the key to identify this particular information (prefix it if required)
                 $memcache_key = md5($this->memcache_key_prefix . $sql);
@@ -3224,7 +3224,7 @@ class Zebra_Database {
                 }
 
             // if caching method is "redis"
-            } elseif ($this->caching_method == 'redis') {
+            } elseif ($this->caching_method === 'redis') {
 
                 // the key to identify this particular information (prefix it if required)
                 $redis_key = md5($this->redis_key_prefix . $sql);
@@ -3245,7 +3245,7 @@ class Zebra_Database {
                 }
 
             // if caching method is "session"
-            } elseif ($this->caching_method == 'session') {
+            } elseif ($this->caching_method === 'session') {
 
                 // unique identifier of the current query
                 $key = md5($sql);
@@ -3428,19 +3428,19 @@ class Zebra_Database {
                     $content = base64_encode(gzcompress(serialize($cache_data)));
 
                     // if caching method is "memcache" and memcache is enabled
-                    if ($this->caching_method == 'memcache' && $this->memcache)
+                    if ($this->caching_method === 'memcache' && $this->memcache)
 
                         // cache query data
                         $this->memcache->set($memcache_key, $content, ($this->memcache_compressed ? MEMCACHE_COMPRESSED : false), $cache);
 
                     // if caching method is "redis" and redis is enabled
-                    elseif ($this->caching_method == 'redis' && $this->redis)
+                    elseif ($this->caching_method === 'redis' && $this->redis)
 
                         // cache query data
                         $this->redis->setEx($redis_key, $cache, $content);
 
                     // if caching method is "session"
-                    elseif ($this->caching_method == 'session') {
+                    elseif ($this->caching_method === 'session') {
 
                         // if there seems to be no active session
                         if (!isset($_SESSION))
@@ -3738,7 +3738,7 @@ class Zebra_Database {
         if (!$this->_connected()) return false;
 
         // if no resource was specified, and there was a previous call to the "query" method, assign the last resource
-        if ($resource == '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
 
         // check if given resource is valid
         if ($this->_is_result($resource)) {
@@ -3750,7 +3750,7 @@ class Zebra_Database {
                 $debug = debug_backtrace();
 
                 // if method was called by another internal method (like fetch_assoc_all, for example) report that method
-                if (isset($debug[1]) && isset($debug[1]['function']) && $debug[1]['class'] == 'Zebra_Database') $method = $debug[1]['function'];
+                if (isset($debug[1]) && isset($debug[1]['function']) && $debug[1]['class'] === 'Zebra_Database') $method = $debug[1]['function'];
 
                 // if this (seek) method was called, report this method
                 else $method = $debug[0]['function'];
@@ -3942,7 +3942,7 @@ class Zebra_Database {
         foreach ($columns as $key => $value)
 
             // and escape everyone except the * character
-            if (null !== $value && trim($value) != '*') $columns[$key] = $this->_escape($value);
+            if (null !== $value && trim($value) !== '*') $columns[$key] = $this->_escape($value);
 
         // run the query
         return $this->query('
@@ -3952,11 +3952,11 @@ class Zebra_Database {
             FROM
                 ' . $this->_escape($table) .
 
-            ($where != '' ? ' WHERE ' . $where : '') .
+            ($where !== '' ? ' WHERE ' . $where : '') .
 
-            ($order != '' ? ' ORDER BY ' . $order : '') .
+            ($order !== '' ? ' ORDER BY ' . $order : '') .
 
-            ($limit != '' ? ' LIMIT ' . $limit : '') . '
+            ($limit !== '' ? ' LIMIT ' . $limit : '') . '
 
         ', $replacements, $cache, $calc_rows, $highlight);
 
@@ -4337,7 +4337,7 @@ class Zebra_Database {
     public function update($table, $columns, $where = '', $replacements = '', $highlight = false) {
 
         // if $replacements is specified but it's not an array
-        if ($replacements != '' && !is_array($replacements))
+        if ($replacements !== '' && !is_array($replacements))
 
             // save debug information
             return $this->_log('unsuccessful-queries', array(
@@ -4357,9 +4357,9 @@ class Zebra_Database {
                 ' . $this->_escape($table) . '
             SET
                 ' . $cols .
-            ($where != '' ? ' WHERE ' . $where : '') . '
+            ($where !== '' ? ' WHERE ' . $where : '') . '
 
-        ', array_merge(array_values($columns), $replacements == '' ? array() : $replacements), false, false, $highlight);
+        ', array_merge(array_values($columns), $replacements === '' ? array() : $replacements), false, false, $highlight);
 
         // return TRUE if query was successful, or FALSE if it wasn't
         return isset($this->last_result) && $this->last_result !== false;
@@ -4387,10 +4387,10 @@ class Zebra_Database {
         foreach ($columns as $column_name => $value) {
 
             // separate values by comma
-            $sql .= ($sql != '' ? ', ' : '');
+            $sql .= ($sql !== '' ? ', ' : '');
 
             // if value is just a parameter marker ("?", question mark)
-            if (null !== $value && trim($value) == '?')
+            if (null !== $value && trim($value) === '?')
 
                 // throw an error
                 return $this->_log('unsuccessful-queries', array(
@@ -4403,11 +4403,11 @@ class Zebra_Database {
             if (null !== $value && preg_match('/^INC\((\-{1})?([0-9]+)\)/i', $value, $matches) > 0) {
 
                 // translate to SQL
-                $sql .= '`' . $column_name . '` = `' . $column_name . '` ' . ($matches[1] == '-' ? '-' : '+') . ' ?';
+                $sql .= '`' . $column_name . '` = `' . $column_name . '` ' . ($matches[1] === '-' ? '-' : '+') . ' ?';
 
                 // if INC() contains an actual value and not a parameter marker ("?", question mark)
                 // add the actual value to the array with the replacement values
-                if ($matches[2] != '?') $columns[$column_name] = $matches[2];
+                if ($matches[2] !== '?') $columns[$column_name] = $matches[2];
 
                 // if we have a parameter marker ("?", question mark) instead of a value, it means the replacement value
                 // is already in the array with the replacement values, and that we don't need it here anymore
@@ -4489,7 +4489,7 @@ class Zebra_Database {
                 ));
 
             // if caching is to be done to a memcache server and we don't yet have a connection
-            if ($this->caching_method == 'memcache' && !$this->memcache && $this->memcache_host !== false && $this->memcache_port !== false) {
+            if ($this->caching_method === 'memcache' && !$this->memcache && $this->memcache_host !== false && $this->memcache_port !== false) {
 
                 // if memcache extension is installed
                 if (class_exists('Memcache')) {
@@ -4520,7 +4520,7 @@ class Zebra_Database {
                     ));
 
             // if caching is to be done to a redis server and we don't yet have a connection
-            } elseif ($this->caching_method == 'redis' && !$this->redis && $this->redis_host !== false && $this->redis_port !== false) {
+            } elseif ($this->caching_method === 'redis' && !$this->redis && $this->redis_host !== false && $this->redis_port !== false) {
 
                 // if redis extension is installed
                 if (class_exists('Redis')) {
@@ -4676,7 +4676,7 @@ class Zebra_Database {
                                 <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry' .
 
                                     // should this query be highlighted or is a transaction
-                                    ($block == 'unsuccessful-queries' || $block == 'errors' && isset($debug_info['error']) ? ' zdc-visible' : (isset($debug_info['highlight']) && $debug_info['highlight'] == 1 ? ' zdc-highlight zdc-visible' : (isset($debug_info['transaction']) && $debug_info['transaction'] ? ' zdc-transaction' : ''))) .
+                                    ($block === 'unsuccessful-queries' || $block === 'errors' && isset($debug_info['error']) ? ' zdc-visible' : (isset($debug_info['highlight']) && $debug_info['highlight'] == 1 ? ' zdc-highlight zdc-visible' : (isset($debug_info['transaction']) && $debug_info['transaction'] ? ' zdc-transaction' : ''))) .
 
                                 '">
                                     <tr>
@@ -4685,7 +4685,7 @@ class Zebra_Database {
                             ';
 
                             // are there any error messages issued by the script?
-                            if (isset($debug_info['message']) && trim($debug_info['message']) != '')
+                            if (isset($debug_info['message']) && trim($debug_info['message']) !== '')
 
                                 $output .= '
                                     <div class="zdc-box zdc-error">
@@ -4694,7 +4694,7 @@ class Zebra_Database {
                                 ';
 
                             // are there any error messages issued by MySQL?
-                            if (isset($debug_info['error']) && trim($debug_info['error']) != '')
+                            if (isset($debug_info['error']) && trim($debug_info['error']) !== '')
 
                                 $output .= '
                                     <div class="zdc-box zdc-error">
@@ -4703,7 +4703,7 @@ class Zebra_Database {
                                 ';
 
                             // are there any warning messages issued by the script?
-                            if (isset($debug_info['warning']) && trim($debug_info['warning']) != '') {
+                            if (isset($debug_info['warning']) && trim($debug_info['warning']) !== '') {
 
                                 $output .= '
                                     <div class="zdc-box zdc-error">' .
@@ -4735,10 +4735,10 @@ class Zebra_Database {
                             if ($is_ajax) $output .= '<li class="zdc-ajax">AJAX</li>';
 
                             // actions specific to successful queries
-                            if ($block == 'successful-queries') {
+                            if ($block === 'successful-queries') {
 
                                 // info about whether the query results were taken from cache or not
-                                if ($debug_info['from_cache'] != 'nocache')
+                                if ($debug_info['from_cache'] !== 'nocache')
 
                                     $output .= '
                                         <li class="zdc-cache">
@@ -4816,7 +4816,7 @@ class Zebra_Database {
                                 ';
 
                             // if we are need to show a link to a database manager to open the query in
-                            if (($block == 'successful-queries' || $block == 'unsuccessful-queries') && $this->debug_show_database_manager) {
+                            if (($block === 'successful-queries' || $block === 'unsuccessful-queries') && $this->debug_show_database_manager) {
 
                                 // print_r('<pre>');
                                 // print_r($debug_info['raw_query']);
@@ -4923,7 +4923,7 @@ class Zebra_Database {
                     // (we need to render the HTML for successful/unsuccessful tabs either way because these may be populated from AJAX requests)
                     if ((isset($counter) && $counter > 0) || in_array($block, array('successful-queries', 'unsuccessful-queries'))) $blocks[$block]['generated'] = $is_ajax ? $output : '<div id="zdc-' . $block . '">' . $output . '</div>';
 
-                } elseif ($block == 'globals') {
+                } elseif ($block === 'globals') {
 
                     // globals to show
                     $globals =  $this->debug_show_globals === true ?
@@ -5290,7 +5290,7 @@ class Zebra_Database {
 
             // if category is different than "warnings"
             // (warnings are generated internally)
-            if ($category != 'warnings' && $this->debug_show_backtrace) {
+            if ($category !== 'warnings' && $this->debug_show_backtrace) {
 
                 // get backtrace information
                 $backtrace_data = debug_backtrace();
@@ -5324,7 +5324,7 @@ class Zebra_Database {
             return false;
 
         // if there are any unsuccessful queries or other errors and debugging is OFF
-        } elseif (($category == 'unsuccessful-queries' || $category == 'errors') && !$this->_is_debugging_enabled()) {
+        } elseif (($category === 'unsuccessful-queries' || $category === 'errors') && !$this->_is_debugging_enabled()) {
 
             // get backtrace information
             $backtraceInfo = debug_backtrace();
@@ -5514,13 +5514,13 @@ class Zebra_Database {
                             (isset($debug_info['execution_time']) ? $labels[2] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . ': ' . number_format($debug_info['execution_time'], 5) . ' ' . $this->language['seconds'] . "\n" : '') .
 
                             // if there is a warning message
-                            (isset($debug_info['warning']) && $debug_info['warning'] != '' ? $labels[3] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[3])), ' ', STR_PAD_RIGHT) . ': ' . strip_tags($debug_info['warning']) . "\n" : '') .
+                            (isset($debug_info['warning']) && $debug_info['warning'] !== '' ? $labels[3] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[3])), ' ', STR_PAD_RIGHT) . ': ' . strip_tags($debug_info['warning']) . "\n" : '') .
 
                             // if there is an error message
-                            (isset($debug_info['error']) && $debug_info['error'] != '' ? $labels[4] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[4])), ' ', STR_PAD_RIGHT) . ': ' . $debug_info['error'] . "\n" : '') .
+                            (isset($debug_info['error']) && $debug_info['error'] !== '' ? $labels[4] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[4])), ' ', STR_PAD_RIGHT) . ': ' . $debug_info['error'] . "\n" : '') .
 
                             // if not an action query, show whether the query was returned from the cache or was executed
-                            (isset($debug_info['affected_rows']) && $debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] != 'nocache' ? $labels[5] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '') .
+                            (isset($debug_info['affected_rows']) && $debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] !== 'nocache' ? $labels[5] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '') .
 
                             // if query was an unbuffered one
                             (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ? $labels[12] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '');
