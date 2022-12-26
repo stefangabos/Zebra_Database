@@ -4432,7 +4432,7 @@ class Zebra_Database {
             // try to connect to the MySQL server
             try {
 
-                mysqli_real_connect(
+                @mysqli_real_connect(
                     $this->connection,
                     $this->credentials['host'],
                     $this->credentials['user'],
