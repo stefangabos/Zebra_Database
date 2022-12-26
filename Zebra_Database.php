@@ -3287,8 +3287,17 @@ class Zebra_Database {
         // if query was not read from the cache
         if (!isset($this->last_result)) {
 
-            // run the query
-            $this->last_result = @mysqli_query($this->connection, $sql, $this->unbuffered ? MYSQLI_USE_RESULT : MYSQLI_STORE_RESULT);
+            try {
+
+                // run the query
+                $this->last_result = mysqli_query($this->connection, $sql, $this->unbuffered ? MYSQLI_USE_RESULT : MYSQLI_STORE_RESULT);
+
+            // if there was an error
+            } catch (Exception $e) {
+
+                $this->last_result = false;
+
+            }
 
             // if no test transaction, query was unsuccessful and a transaction is in progress
             if ($this->transaction_status !== 3 && !$this->last_result && $this->transaction_status !== 0)
