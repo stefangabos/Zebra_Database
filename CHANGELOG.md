@@ -6,6 +6,7 @@
 - the "unsuccessful queries" tab is now open by default if there are any unsuccessful queries
 - fixed an issue where having the `debug` property set to a `string` but debugging not being activated, would result in errors not being logged
 - fixed bug where the library would try to `EXPLAIN` queries that could not be explained; like `SHOW TABLE` for example; see [#76](https://github.com/stefangabos/Zebra_Database/issues/76) - thank you [cosinus90](https://github.com/cosinus90)!
+- fixed potential warnings being thrown in PHP 8; see [#74](https://github.com/stefangabos/Zebra_Database/pull/74) - thank you [Rémi](https://github.com/Revine-dev)!
 - fixed a potential issue when encountering connection errors
 - updated the CSS and the icons for the debug interface
 
