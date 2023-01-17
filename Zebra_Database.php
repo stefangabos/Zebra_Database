@@ -4650,8 +4650,8 @@ class Zebra_Database {
                 $output = '';
 
                 // if there is any information for the current block
-                // (we need to render the HTML for successful/unsuccessful tabs either way because these may be populated from AJAX requests)
-                if (isset($this->debug_info[$block]) || in_array($block, array('successful-queries', 'unsuccessful-queries'))) {
+                // (we need to render the HTML for errors/successful/unsuccessful tabs either way because these may be populated from AJAX requests)
+                if (isset($this->debug_info[$block]) || in_array($block, array('errors', 'successful-queries', 'unsuccessful-queries'))) {
 
                     // because we may be here for non-existing unsuccessful queries
                     if (isset($this->debug_info[$block]))
@@ -4919,8 +4919,8 @@ class Zebra_Database {
 
                     // if anything was generated for the current block
                     // enclose generated output in a special div (unless this is an AJAX request case in which we leave it as it is)
-                    // (we need to render the HTML for successful/unsuccessful tabs either way because these may be populated from AJAX requests)
-                    if ((isset($counter) && $counter > 0) || in_array($block, array('successful-queries', 'unsuccessful-queries'))) $blocks[$block]['generated'] = $is_ajax ? $output : '<div id="zdc-' . $block . '">' . $output . '</div>';
+                    // (we need to render the HTML for errors/successful/unsuccessful tabs either way because these may be populated from AJAX requests)
+                    if ((isset($counter) && $counter > 0) || in_array($block, array('errors', 'successful-queries', 'unsuccessful-queries'))) $blocks[$block]['generated'] = $is_ajax ? $output : '<div id="zdc-' . $block . '">' . $output . '</div>';
 
                 } elseif ($block === 'globals') {
 
@@ -4989,7 +4989,7 @@ class Zebra_Database {
             if ($is_ajax) {
 
                 foreach ($blocks as $k => $v)
-                    if (in_array($k, array('successful-queries', 'unsuccessful-queries')) && $v['generated'] !== '')
+                    if (in_array($k, array('errors', 'successful-queries', 'unsuccessful-queries')) && $v['generated'] !== '')
                         echo '<div class="zdc-' . $k . '-ajax" style="display:none">' . $v['generated'] . '</div class="zdc-end">';
 
             // if *not* AJAX request
@@ -5005,17 +5005,16 @@ class Zebra_Database {
                         <ul id="zdc-main" class="' . ($this->minimize_console ? '' : 'zdc-visible') . '">
                 ';
 
-                // are there any error messages?
-                if ($blocks['errors']['counter'] > 0)
-
-                    // button for reviewing errors
-                    $output .= '
-                        <li>
-                            <a href="javascript: void(0)" class="zdc-toggle zdc-errors">' .
-                                $this->language['errors'] . ': <span>' . $blocks['errors']['counter'] . '</span>
-                            </a>
-                        </li>
-                    ';
+                // we're always rendering the HTML for errors
+                // in case it is populated from AJAX requests at run-time
+                // but we keep it hidden if we don't have any errors at this point
+                $output .= '
+                    <li' . ($blocks['errors']['counter'] == 0 ? ' style="display: none"' : '') . '>
+                        <a href="javascript: void(0)" class="zdc-toggle zdc-errors">' .
+                            $this->language['errors'] . ': <span>' . $blocks['errors']['counter'] . '</span>
+                        </a>
+                    </li>
+                ';
 
                 // common buttons
                 $output .= '
@@ -5316,9 +5315,9 @@ class Zebra_Database {
             // saves debug information
             $this->debug_info[$category][] = $data;
 
-            // if the saved debug info is about a fatal error
-            // and execution is to be stopped on fatal errors
-            if ($fatal && $this->halt_on_errors) die();
+            // if the saved debug info is about a fatal error and execution is to be stopped on fatal errors
+            // (if this is an AJAX request and AJAX debugging is enabled, we let it through though)
+            if ($fatal && $this->halt_on_errors && ($this->debug_ajax && !isset($_SERVER['HTTP_X_REQUESTED_WITH']))) die();
 
             return false;
 

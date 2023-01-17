@@ -108,30 +108,34 @@ if (typeof _$ === 'undefined') {
 
                     function onReadyStateChange() {
                         if (self.readyState === 4) {
-                            var $element, $unsuccessful_queries_tab_toggler, $container, $main_counter, i, queries_count, successful_queries_count, unsuccessful_queries_count,
-                                $successful_queries_count, $unsuccessful_queries_count, make_visible, $main_duration, incoming_duration = 0, sections = ['successful', 'unsuccessful'];
+                            var $element, $errors_tab_toggler, $unsuccessful_queries_tab_toggler, $container, $main_counter, i, queries_count, errors_count, successful_queries_count, unsuccessful_queries_count,
+                                $errors_count, $successful_queries_count, $unsuccessful_queries_count, make_visible, $main_duration, incoming_duration = 0, sections = ['errors', 'successful', 'unsuccessful'];
 
                             // iterate over the two sections
                             for (i in sections)
 
                                 // if we have queries in the current section
-                                if (self.response.indexOf('zdc-' + sections[i] + '-queries-ajax') > -1) {
+                                if (self.response.indexOf('zdc-' + sections[i] + '-queries-ajax') > -1 || self.response.indexOf('zdc-' + sections[i] + '-ajax') > -1) {
 
                                     // if not yet cached
                                     if (!$main_counter) {
                                         $main_counter = $('#zdc-mini a');
                                         $main_duration = $('.zdc-total-duration');
+                                        $errors_tab_toggler = $('a.zdc-errors');
                                         $unsuccessful_queries_tab_toggler = $('a.zdc-unsuccessful-queries');
+                                        $errors_count = $('.zdc-errors span');
                                         $successful_queries_count = $('.zdc-successful-queries span');
                                         $unsuccessful_queries_count = $('.zdc-unsuccessful-queries span');
                                         [successful_queries_count, unsuccessful_queries_count] = $main_counter[0].textContent.split(' / ').map(v => parseInt(v.trim(), 10));
-
+                                        errors_count = $errors_count.textContent || 0;
                                     }
 
                                     // extract the HTML with the section we are working with
                                     $element = sections[i] === 'successful' ?
                                         $(self.response.match(/<div class=\"zdc\-successful\-queries\-ajax\" style=\"display\:none\">([\s\S]*)<\/div class=\"zdc\-end\">/g)[0]) :
-                                        $(self.response.match(/<div class=\"zdc\-unsuccessful\-queries\-ajax\" style=\"display\:none\">([\s\S]*)<\/div class=\"zdc\-end\">/g)[0]);
+                                        (sections[i] === 'unsuccessful' ?
+                                            $(self.response.match(/<div class=\"zdc\-unsuccessful\-queries\-ajax\" style=\"display\:none\">([\s\S]*)<\/div class=\"zdc\-end\">/g)[0]) :
+                                            $(self.response.match(/<div class=\"zdc\-errors\-ajax\" style=\"display\:none\">([\s\S]*)<\/div class=\"zdc\-end\">/g)[0]));
 
                                     // if we have successful queries
                                     if (sections[i] === 'successful')
@@ -145,12 +149,12 @@ if (typeof _$ === 'undefined') {
                                     $main_duration.html((parseFloat($main_duration[0].textContent) + incoming_duration).toFixed(5));
 
                                     // this is the container where it will be appended to
-                                    $container = $('#zdc-' + sections[i] + '-queries');
+                                    $container = sections[i] === 'errors' ? $('#zdc-' + sections[i]) : $('#zdc-' + sections[i] + '-queries');
 
                                     // if section is open, we'll need to make visible the newly added entries also
                                     make_visible = $('.zdc-entry', $container).length > 0 && $('.zdc-visible', $container).length === $('.zdc-entry', $container).length;
 
-                                    // insert new queries
+                                    // insert new queries/errors
                                     $container.html($container.html() + $element.html());
 
                                     // if section was already open, make visible the newly added entries also
@@ -160,19 +164,24 @@ if (typeof _$ === 'undefined') {
                                     queries_count = $('.zdc-entry', $element).length;
 
                                     // if we have unsuccessful queries and the "unsuccessful queries" tab is not yet visible
-                                    if (sections[i] === 'unsuccessful' && $($unsuccessful_queries_tab_toggler[0].parentNode).attr('style').match(/display\:/)) {
+                                    if (
+                                        (sections[i] === 'unsuccessful' && $($unsuccessful_queries_tab_toggler[0].parentNode).attr('style').match(/display\:/)) ||
+                                        (sections[i] === 'errors' && $($errors_tab_toggler[0].parentNode).attr('style').match(/display\:/))
+                                    ) {
 
                                         // make the tab visible
-                                        $($unsuccessful_queries_tab_toggler[0].parentNode).attr('style', '');
+                                        if (sections[i] === 'unsuccessful') $($unsuccessful_queries_tab_toggler[0].parentNode).attr('style', '');
+                                        else $($errors_tab_toggler[0].parentNode).attr('style', '');
 
                                         // and make sure we have the debug console in "expanded" mode
                                         $('#zdc-main').addClass('zdc-visible');
 
                                         // hide everything else
+                                        if (sections[i] !== 'unsuccessful') $('.zdc-entry', $('#zdc-unsuccessful-queries')).removeClass('zdc-visible');
                                         $('.zdc-entry', $('#zdc-successful-queries')).removeClass('zdc-visible');
                                         $('.zdc-entry', $('#zdc-globals')).removeClass('zdc-visible');
                                         $('#zdc-globals-submenu').removeClass('zdc-visible');
-                                        $('.zdc-entry', $('#zdc-errors')).removeClass('zdc-visible');
+                                        if (sections[i] !== 'errors') $('.zdc-entry', $('#zdc-errors')).removeClass('zdc-visible'); else $('.zdc-entry', $('#zdc-errors')).addClass('zdc-visible');
                                         $('.zdc-entry', $('#zdc-warnings')).removeClass('zdc-visible');
 
                                     }
@@ -187,13 +196,22 @@ if (typeof _$ === 'undefined') {
                                         $successful_queries_count[0].textContent = successful_queries_count;
 
                                     // if we have unsuccessful queries
-                                    } else {
+                                    } else if (sections[i] === 'unsuccessful') {
 
                                         // increase the total number of unsuccessful queries
                                         unsuccessful_queries_count += queries_count;
 
                                         // and update the little box in the respective section
                                         $unsuccessful_queries_count[0].textContent = unsuccessful_queries_count;
+
+                                    // if we have errors
+                                    } else {
+
+                                        // increase the total number of errors
+                                        errors_count += queries_count;
+
+                                        // and update the little box in the respective section
+                                        $errors_count[0].textContent = errors_count;
 
                                     }
 
