@@ -5317,7 +5317,7 @@ class Zebra_Database {
 
             // if the saved debug info is about a fatal error and execution is to be stopped on fatal errors
             // (if this is an AJAX request and AJAX debugging is enabled, we let it through though)
-            if ($fatal && $this->halt_on_errors && ($this->debug_ajax && !isset($_SERVER['HTTP_X_REQUESTED_WITH']))) die();
+            if ($fatal && $this->halt_on_errors && ($this->debug_ajax || !isset($_SERVER['HTTP_X_REQUESTED_WITH']))) die();
 
             return false;
 
