@@ -5376,7 +5376,10 @@ class Zebra_Database {
                     $explain_resource = mysqli_query($this->connection, 'EXPLAIN ' . $resource->query);
 
                     // update information in the debugging console
-                    while ($row = mysqli_fetch_assoc($explain_resource)) $this->debug_info['successful-queries'][$resource->log_index]['explain'][] = $row;
+                    while ($row = mysqli_fetch_assoc($explain_resource)) {
+                        if (!is_array($this->debug_info['successful-queries'][$resource->log_index]['explain'])) $this->debug_info['successful-queries'][$resource->log_index]['explain'] = array();
+                        $this->debug_info['successful-queries'][$resource->log_index]['explain'][] = $row;
+                    }
 
                 }
 
