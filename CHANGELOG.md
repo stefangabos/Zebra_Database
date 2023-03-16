@@ -1,9 +1,10 @@
 ## version 2.11.0 (TBA)
 
-- the library can log queries run via AJAX requests; see the newly added [debug_ajax](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_ajax) property
+- the library can now log queries run via AJAX requests; see the newly added [debug_ajax](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_ajax) property
 - debug information is now also shown when running in CLI (when [debugging](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug) is enabled, of course)
 - added a new [debug_show_database_manager](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager) property for editing queries in your favorite database manager
 - the "unsuccessful queries" tab is now open by default if there are any unsuccessful queries
+- fixed [#79](https://github.com/stefangabos/Zebra_Database/issues/76) where the library would try to connect to the database even when using lazy connection because of the logic in the `free_result` method; thanks to [Brian Hare](https://github.com/BHare1985) for reporting!
 - fixed an issue where having the `debug` property set to a `string` but debugging not being activated, would result in errors not being logged
 - fixed bug where the library would try to `EXPLAIN` queries that could not be explained; like `SHOW TABLE` for example; see [#76](https://github.com/stefangabos/Zebra_Database/issues/76) - thank you [cosinus90](https://github.com/cosinus90)!
 - fixed potential warnings being thrown in PHP 8; see [#74](https://github.com/stefangabos/Zebra_Database/pull/74) - thank you [Rémi](https://github.com/Revine-dev)!
