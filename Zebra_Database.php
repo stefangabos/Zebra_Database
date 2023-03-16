@@ -1909,7 +1909,7 @@ class Zebra_Database {
     public function free_result($resource = '') {
 
         // if no active connection exists, return false
-        if (!$this->_connected()) return false;
+        if (!$this->connection) return false;
 
         // if no resource was specified, and a query was run before, assign the last resource
         if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
