@@ -5079,14 +5079,14 @@ class Zebra_Database {
                 // use the provided resource path for stylesheets and javascript (if any)
                 if (!is_null($this->resource_path))
 
-                    $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . trim($this->resource_path, '/')), '/');
+                    $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['HTTP_HOST'] . trim($this->resource_path, '/')), '/');
 
                 // if path not provided, determine the path automatically
                 else
 
                     // this is the url that will be used for automatically including
                     // the CSS and the JavaScript files
-                    $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['SERVER_NAME'] . ($_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '') . DIRECTORY_SEPARATOR . substr(dirname(__FILE__), strlen(realpath($_SERVER['DOCUMENT_ROOT'])))), '/');
+                    $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['HTTP_HOST'] . substr(dirname(__FILE__), strlen(realpath($_SERVER['DOCUMENT_ROOT'])))), '/');
 
                 // link the required javascript
                 $output = '<script type="text/javascript" src="' . $path . '/public/javascript/zebra_database.min.js"></script>' . $output;
