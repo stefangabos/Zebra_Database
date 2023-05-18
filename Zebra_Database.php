@@ -4817,9 +4817,6 @@ class Zebra_Database {
                             // if we are need to show a link to a database manager to open the query in
                             if (($block === 'successful-queries' || $block === 'unsuccessful-queries') && $this->debug_show_database_manager) {
 
-                                // print_r('<pre>');
-                                // print_r($debug_info['raw_query']);
-
                                 $output .= '
                                     <li class="zdc-database-manager">
                                         ' . str_replace(
