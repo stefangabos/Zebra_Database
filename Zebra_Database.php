@@ -4830,13 +4830,13 @@ class Zebra_Database {
                                                     '%query%',
                                                 ),
                                                 array(
-                                                    urlencode($this->credentials['host']),
-                                                    urlencode($this->credentials['user']),
-                                                    urlencode($this->credentials['password']),
-                                                    urlencode($this->credentials['database']),
-                                                    urlencode($this->credentials['port']),
-                                                    urlencode($this->credentials['socket']),
-                                                    urlencode(html_entity_decode(strip_tags($debug_info['query']))),
+                                                    $this->credentials !== null ? urlencode($this->credentials['host']) : '',
+                                                    $this->credentials !== null ? urlencode($this->credentials['user']) : '',
+                                                    $this->credentials !== null ? urlencode($this->credentials['password']) : '',
+                                                    $this->credentials !== null ? urlencode($this->credentials['database']) : '',
+                                                    $this->credentials !== null ? urlencode($this->credentials['port']) : '',
+                                                    $this->credentials !== null ? urlencode($this->credentials['socket']) : '',
+                                                    $this->credentials !== null ? urlencode(html_entity_decode(strip_tags($debug_info['query']))) : '',
                                                 ),
                                                 $this->debug_show_database_manager
                                             ) . '
