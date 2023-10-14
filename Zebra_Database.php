@@ -5259,6 +5259,12 @@ class Zebra_Database {
             // AND
             ) && (
 
+                // not an AJAX request, or an AJAX request and debugging AJAX requests is ON
+                !isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $this->debug_ajax
+
+            // AND
+            ) && (
+
                 // debugger_ip is not an array
                 !is_array($this->debugger_ip) ||
 
