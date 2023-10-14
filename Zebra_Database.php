@@ -4716,7 +4716,7 @@ class Zebra_Database {
                             }
 
                             // is there a query to be displayed?
-                            if (isset($debug_info['query']) )
+                            if (isset($debug_info['query']))
 
                                 $output .= '
                                     <div class="zdc-box zdc-syntax-highlight">' .
@@ -5236,7 +5236,7 @@ class Zebra_Database {
                 // remove cookie
                 @setcookie($this->debug_cookie_name, '', time() - 3600, '/', '', false, true);
 
-            // if debugging is handled via a parameter in the query string and the cookie is already set
+        // if debugging is handled via a parameter in the query string and the cookie is already set
         } elseif (is_string($this->debug) && isset($_COOKIE[$this->debug_cookie_name]))
 
             // set flag
