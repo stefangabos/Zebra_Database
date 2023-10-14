@@ -65,7 +65,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.11.0 (last revision: December 26, 2022)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
+<li>2.12.0 (last revision: October 14, 2023)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
 </ul>
 <h4>License:</h4>
 <ul>
@@ -73,7 +73,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <h4>Copyright:</h4>
 <ul>
-<li>© 2006 - 2022 Stefan Gabos</li>
+<li>© 2006 - 2023 Stefan Gabos</li>
 </ul>
 <div id="top" class="doc_toc">
 <div class="left">
@@ -245,7 +245,7 @@ with <code>--with-zlib[=DIR]</code></em></li></ul>   <ol class="code"><li><div c
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debug" class="variable"><span><em>boolean</em></span> $debug =  <span class="value">true</span></h4>
+<h4 id="var$debug" class="variable"><span><em>boolean | string | array<boolean></em></span> $debug =  <span class="value">true</span></h4>
 <div class="doc_block">
 <p>Turns debugging on or off.</p>
 <p>See also <a href="../Zebra_Database/Zebra_Database.html#var$debug_ajax">$debug_ajax</a>.</p><p>The property can take one of the following values:</p><p><ul><li><strong>boolean TRUE</strong><br>
@@ -293,7 +293,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debugger_ip" class="variable"><span><em>array</em></span> $debugger_ip =  <span class="value">array()</span></h4>
+<h4 id="var$debugger_ip" class="variable"><span><em>array<string></em></span> $debugger_ip =  <span class="value">array()</span></h4>
 <div class="doc_block">
 <p>An array of IP addresses for which to show the debugging console / write to log file, if the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property   is <strong>not</strong> set to <code>FALSE</code>.</p>
 <p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;show&nbsp;the&nbsp;debugging&nbsp;console&nbsp;only&nbsp;to&nbsp;specific&nbsp;IPs</span></div></li>
@@ -351,7 +351,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debug_show_database_manager" class="variable"><span><em>string</em></span> $debug_show_database_manager =  <span class="value">false</span></h4>
+<h4 id="var$debug_show_database_manager" class="variable"><span><em>boolean | string</em></span> $debug_show_database_manager =  <span class="value">false</span></h4>
 <div class="doc_block">
 <p>Show a link for editing the query in your favorite database manager like (like <a href="https://www.phpmyadmin.net/">phpMyAdmin</a>   or <a href="https://www.adminer.org/">Adminer</a>).</p>
 <p>It should be an HTML anchor (a link) to your favorite database manager where you build the query string according   to the requirements of said database manager using the following placeholders:</p><p><ul><li>%host%</li><li>%user%</li><li>%password%</li><li>%database%</li><li>%port%</li><li>%socket%</li><li>%query%</li></ul><p>   ...were any of those placeholders will be replaced by the values you have passed on to <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect</a>, except   for the <em>%query%</em> placeholder which will be replaced by the respective query.</p><p>Here's how to set up the value for opening the query in <a href="https://www.adminer.org/">Adminer</a>:</p><ol class="code"><li><div class="src-line">&lt;<span class="src-id">a&nbsp;href</span>=<span class="src-str">&quot;path/to/adminer.php?server=%host%:%port%&amp;db=%database%&amp;sql=%query%&quot;&nbsp;</span><span class="src-id">target</span>=<span class="src-str">&quot;adminer&quot;</span>&gt;<span class="src-id">edit&nbsp;in&nbsp;adminer</span>&lt;/<span class="src-id">a</span>&gt;</div></li>
@@ -380,7 +380,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debug_show_globals" class="variable"><span><em>mixed</em></span> $debug_show_globals =  <span class="value">true</span></h4>
+<h4 id="var$debug_show_globals" class="variable"><span><em>boolean | array<string,boolean></em></span> $debug_show_globals =  <span class="value">true</span></h4>
 <div class="doc_block">
 <p>Indicates which of <code>$_REQUEST</code>, <code>$_POST</code>, <code>$_GET</code>, <code>$_SESSION</code>, <code>$_COOKIE</code>, <code>$_FILES</code> and <code>$_SERVER</code> superglobals   should be available in the debugging console, under the <em>globals</em> section.</p>
 <p>Can be set to either boolean <code>TRUE</code> or <code>FALSE</code> as a global setting, or as an associative array where each option's   visibility can be individually be set, like in the example below:</p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$debug_show_globals">debug_show_globals</a></span><span class="src-sym">(</span><span class="src-key">array</span><span class="src-sym">(</span></div></li>
@@ -428,7 +428,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$found_rows" class="variable"><span><em>integer</em></span> $found_rows <span class="value"></span></h4>
+<h4 id="var$found_rows" class="variable"><span><em>integer | string</em></span> $found_rows <span class="value"></span></h4>
 <div class="doc_block">
 <p>After running a <code>SELECT</code> query through <a href="../Zebra_Database/Zebra_Database.html#methodselect">select()</a>, <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodquery_unbuffered">query_unbuffered()</a> methods and   having the <em>calc_rows</em> argument set to <code>TRUE</code>, this property will contain the number of records that <strong>would</strong> have   been returned <strong>if</strong> there was no <code>LIMIT</code> applied to the query.</p>
 <p>If <em>calc_rows</em> is <code>FALSE</code>, or it is <code>TRUE</code> but there is no <code>LIMIT</code> applied to the query, this property's value   will be the same as the value of the <a href="../Zebra_Database/Zebra_Database.html#var$returned_rows">returned_rows</a> property.</p><p><em>For <a href="../Zebra_Database/Zebra_Database.html#methodquery_unbuffered">unbuffered queries</a> the value of this property will be available <strong>only</strong> after   iterating over <strong>all</strong> the records with either <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a> methods. Until then,   the value will be <strong>0</strong>!</em></p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;the&nbsp;last&nbsp;argument&nbsp;of&nbsp;the&nbsp;method&nbsp;tells&nbsp;the&nbsp;library&nbsp;to&nbsp;get&nbsp;the&nbsp;total&nbsp;number&nbsp;of&nbsp;records&nbsp;in&nbsp;the&nbsp;table</span></div></li>
@@ -503,7 +503,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$memcache_host" class="variable"><span><em>mixed</em></span> $memcache_host =  <span class="value">false</span></h4>
+<h4 id="var$memcache_host" class="variable"><span><em>boolean | string</em></span> $memcache_host =  <span class="value">false</span></h4>
 <div class="doc_block">
 <p>The host where the memcache server is listening for connections.</p>
 <p><em>Set this property only if you are using <code>memcache</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
@@ -531,7 +531,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$memcache_port" class="variable"><span><em>mixed</em></span> $memcache_port =  <span class="value">false</span></h4>
+<h4 id="var$memcache_port" class="variable"><span><em>integer | boolean</em></span> $memcache_port =  <span class="value">false</span></h4>
 <div class="doc_block">
 <p>The port on which the memcache server is listening for connections.</p>
 <p><em>Set this property only if you are using <code>memcache</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
@@ -591,7 +591,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$redis_host" class="variable"><span><em>mixed</em></span> $redis_host =  <span class="value">false</span></h4>
+<h4 id="var$redis_host" class="variable"><span><em>boolean | string</em></span> $redis_host =  <span class="value">false</span></h4>
 <div class="doc_block">
 <p>The host where the redis server is listening for connections.</p>
 <p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
@@ -619,7 +619,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$redis_port" class="variable"><span><em>mixed</em></span> $redis_port =  <span class="value">false</span></h4>
+<h4 id="var$redis_port" class="variable"><span><em>integer | boolean</em></span> $redis_port =  <span class="value">false</span></h4>
 <div class="doc_block">
 <p>The port on which the redis server is listening for connections.</p>
 <p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
@@ -830,7 +830,7 @@ mixed
 ]
 , 
 [ 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$replacements</span>
 =
 <span class="src-str">''</span>
@@ -877,7 +877,7 @@ mixed
 <td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
 <td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
@@ -919,7 +919,7 @@ boolean
 ]
 , 
 [ 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$replacements</span>
 =
 <span class="src-str">''</span>
@@ -954,7 +954,7 @@ boolean
 <td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
 <td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
@@ -998,7 +998,7 @@ mixed
 ]
 , 
 [ 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$replacements</span>
 =
 <span class="src-str">''</span>
@@ -1032,7 +1032,7 @@ mixed
 <tr>
 <td><em>string</em></td>
 <td><strong>$column</strong></td>
-<td><p>One or more columns to return data from</p><p class="highlight">If only one column is specified, the returned result will be the specified                                   column's value. If more columns are specified the returned result will be an                                   associative array!</p><p><em>You may use <code>&ast;</code> (asterisk) to return all the columns from the row.</em></p></td>
+<td><p>One or more columns to return data from</p><p class="highlight">If only one column is specified, the returned result will be the specified                                       column's value. If more columns are specified the returned result will be an                                       associative array!</p><p><em>You may use <code>&ast;</code> (asterisk) to return all the columns from the row.</em></p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
@@ -1045,7 +1045,7 @@ mixed
 <td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
 <td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
@@ -1090,7 +1090,7 @@ mixed
 ]
 , 
 [ 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$replacements</span>
 =
 <span class="src-str">''</span>
@@ -1137,7 +1137,7 @@ mixed
 <td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
 <td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
@@ -1182,7 +1182,7 @@ mixed
 ]
 , 
 [ 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$replacements</span>
 =
 <span class="src-str">''</span>
@@ -1229,7 +1229,7 @@ mixed
 <td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
 <td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
@@ -1257,7 +1257,7 @@ mixed
 <h4 id="methoderror" class="method"><span><em>method</em></span> error()</h4>
 <div class="doc_block">
 <p class="code">
-void
+mixed
 <span class="src-var">error</span>
 (
 [ 
@@ -1293,6 +1293,10 @@ void
 <h5>Tags</h5>
 <table>
 <tr>
+<td><strong>return:</strong>&nbsp;&nbsp;</td>
+<td>Returns the description of the last error, or an empty string if no error occurred.</td>
+</tr>
+<tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
 <td>2.9.1</td>
 </tr>
@@ -1303,7 +1307,7 @@ void
 <h4 id="methodescape" class="method"><span><em>method</em></span> escape()</h4>
 <div class="doc_block">
 <p class="code">
-string
+string|boolean
 <span class="src-var">escape</span>
 (
 <span class="src-key">string</span>
@@ -1323,7 +1327,7 @@ string
 <li><div class="src-line"><span class="src-str">'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;the&nbsp;recommended&nbsp;method</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;(variable&nbsp;are&nbsp;automatically&nbsp;escaped&nbsp;this&nbsp;way)</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;(variables&nbsp;are&nbsp;automatically&nbsp;escaped&nbsp;this&nbsp;way)</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'</span></div></li>
 <li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;SELECT</span></div></li>
 <li><div class="src-line"><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*</span></div></li>
@@ -1345,7 +1349,7 @@ string
 <table>
 <tr>
 <td><strong>return:</strong>&nbsp;&nbsp;</td>
-<td>Returns the original string enclosed in single quotes and with special characters                               escaped in order to prevent SQL injections.     .</td>
+<td>Returns the original string enclosed in single quotes and with special characters                               escaped in order to prevent SQL injections, or <code>FALSE</code> if there's no database                               connection.</td>
 </tr>
 </table>
 <a href="#top" class="top">top</a>
@@ -1358,7 +1362,7 @@ mixed
 <span class="src-var">fetch_assoc</span>
 (
 [ 
-<span class="src-key">resource</span>
+<span class="src-key">resource|string</span>
 <span class="src-var">$resource</span>
 =
 <span class="src-str">''</span>
@@ -1379,7 +1383,7 @@ mixed
 <h5>Arguments</h5>
 <table>
 <tr>
-<td><em>resource</em></td>
+<td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
 <td><p>(Optional) Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
@@ -1388,7 +1392,7 @@ mixed
 <table>
 <tr>
 <td><strong>return:</strong>&nbsp;&nbsp;</td>
-<td>Returns an associative array that corresponds to the fetched row and moves the                                   internal data pointer ahead, or <code>FALSE</code> if there are no more rows.</td>
+<td>Returns an associative array that corresponds to the fetched row and moves the                               internal data pointer ahead, or <code>FALSE</code> if there are no more rows.</td>
 </tr>
 </table>
 <a href="#top" class="top">top</a>
@@ -1401,14 +1405,14 @@ mixed
 <span class="src-var">fetch_assoc_all</span>
 (
 [ 
-<span class="src-key">string</span>
+<span class="src-key">int|string</span>
 <span class="src-var">$index</span>
 =
 <span class="src-str">''</span>
 ]
 , 
 [ 
-<span class="src-key">resource</span>
+<span class="src-key">resource|string</span>
 <span class="src-var">$resource</span>
 =
 <span class="src-str">''</span>
@@ -1425,12 +1429,12 @@ mixed
 <h5>Arguments</h5>
 <table>
 <tr>
-<td><em>string</em></td>
+<td><em>int|string</em></td>
 <td><strong>$index</strong></td>
-<td><p>(Optional) Name of a column containing unique values</p><p>If specified, the returned associative array's keys will be the values from this                                   column.</p><p><em>If not specified, returned array will have numerical indexes, starting from 0.</em></p></td>
+<td><p>(Optional) Name of a column containing unique values</p><p>If specified, the returned associative array's keys will be the values                                           from this column.</p><p><em>If not specified, returned array will have numerical indexes, starting                                           from 0.</em></p></td>
 </tr>
 <tr>
-<td><em>resource</em></td>
+<td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
 <td><p>(Optional) Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
@@ -1439,7 +1443,7 @@ mixed
 <table>
 <tr>
 <td><strong>return:</strong>&nbsp;&nbsp;</td>
-<td>Returns an associative array containing all the rows from the resource created                                   by the previous query or from the resource given as argument and moves the                                   internal pointer to the end. Returns <code>FALSE</code> on error.</td>
+<td>Returns an associative array containing all the rows from the resource created by the                               previous query or from the resource given as argument and moves the internal pointer                               to the end. Returns <code>FALSE</code> on error.</td>
 </tr>
 <tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
@@ -1456,7 +1460,7 @@ mixed
 <span class="src-var">fetch_obj</span>
 (
 [ 
-<span class="src-key">resource</span>
+<span class="src-key">resource|string</span>
 <span class="src-var">$resource</span>
 =
 <span class="src-str">''</span>
@@ -1477,7 +1481,7 @@ mixed
 <h5>Arguments</h5>
 <table>
 <tr>
-<td><em>resource</em></td>
+<td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
 <td><p>(Optional) Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
@@ -1486,7 +1490,7 @@ mixed
 <table>
 <tr>
 <td><strong>return:</strong>&nbsp;&nbsp;</td>
-<td>Returns an object with properties that correspond to the fetched row and moves                                   the internal data pointer ahead, or <code>FALSE</code> if there are no more rows.</td>
+<td>Returns an object with properties that correspond to the fetched row and moves                               the internal data pointer ahead, or <code>FALSE</code> if there are no more rows.</td>
 </tr>
 <tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
@@ -1503,14 +1507,14 @@ mixed
 <span class="src-var">fetch_obj_all</span>
 (
 [ 
-<span class="src-key">string</span>
+<span class="src-key">int|string</span>
 <span class="src-var">$index</span>
 =
 <span class="src-str">''</span>
 ]
 , 
 [ 
-<span class="src-key">resource</span>
+<span class="src-key">resource|string</span>
 <span class="src-var">$resource</span>
 =
 <span class="src-str">''</span>
@@ -1527,12 +1531,12 @@ mixed
 <h5>Arguments</h5>
 <table>
 <tr>
-<td><em>string</em></td>
+<td><em>int|string</em></td>
 <td><strong>$index</strong></td>
-<td><p>(Optional) A column name from the records, containing unique values</p><p>If specified, the returned associative array's keys will be the values from this                                   column.</p><p><em>If not specified, returned array will have numerical indexes, starting from 0.</em></p></td>
+<td><p>(Optional) A column name from the records, containing unique values</p><p>If specified, the returned associative array's keys will be the values                                           from this column.</p><p><em>If not specified, returned array will have numerical indexes, starting                                           from 0.</em></p></td>
 </tr>
 <tr>
-<td><em>resource</em></td>
+<td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
 <td><p>(Optional) Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
@@ -1541,7 +1545,7 @@ mixed
 <table>
 <tr>
 <td><strong>return:</strong>&nbsp;&nbsp;</td>
-<td>Returns an associative array containing all the rows (as objects) from the resource                                   created by the previous query or from the resource given as argument and moves                                   the internal pointer to the end. Returns <code>FALSE</code> on error.</td>
+<td>Returns an associative array containing all the rows (as objects) from the resource                               created by the previous query or from the resource given as argument and moves the                               internal pointer to the end. Returns <code>FALSE</code> on error.</td>
 </tr>
 <tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
@@ -1554,11 +1558,11 @@ mixed
 <h4 id="methodfree_result" class="method"><span><em>method</em></span> free_result()</h4>
 <div class="doc_block">
 <p class="code">
-void
+false|void
 <span class="src-var">free_result</span>
 (
 [ 
-<span class="src-key">resource</span>
+<span class="src-key">resource|string</span>
 <span class="src-var">$resource</span>
 =
 <span class="src-str">''</span>
@@ -1570,7 +1574,7 @@ void
 <h5>Arguments</h5>
 <table>
 <tr>
-<td><em>resource</em></td>
+<td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
 <td><p>(Optional) A valid resource</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
@@ -1592,7 +1596,7 @@ mixed
 <span class="src-var">get_columns</span>
 (
 [ 
-<span class="src-key">resource</span>
+<span class="src-key">resource|string</span>
 <span class="src-var">$resource</span>
 =
 <span class="src-str">''</span>
@@ -1610,7 +1614,7 @@ mixed
 <h5>Arguments</h5>
 <table>
 <tr>
-<td><em>resource</em></td>
+<td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
 <td><p>(Optional) Resource to fetch columns information from.</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
@@ -1619,7 +1623,7 @@ mixed
 <table>
 <tr>
 <td><strong>return:</strong>&nbsp;&nbsp;</td>
-<td>Returns an associative array with information about the columns in the MySQL                                   result associated with the specified result identifier, or <code>FALSE</code> on error.</td>
+<td>Returns an associative array with information about the columns in the MySQL result                               associated with the specified result identifier, or <code>FALSE</code> on error.</td>
 </tr>
 <tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
@@ -1632,7 +1636,7 @@ mixed
 <h4 id="methodget_link" class="method"><span><em>method</em></span> get_link()</h4>
 <div class="doc_block">
 <p class="code">
-identifier
+object|boolean
 <span class="src-var">get_link</span>
 ()
 </p>
@@ -1685,7 +1689,7 @@ mixed
 <h4 id="methodget_tables" class="method"><span><em>method</em></span> get_tables()</h4>
 <div class="doc_block">
 <p class="code">
-array
+array<string>
 <span class="src-var">get_tables</span>
 (
 [ 
@@ -1725,7 +1729,7 @@ array
 <h4 id="methodget_table_columns" class="method"><span><em>method</em></span> get_table_columns()</h4>
 <div class="doc_block">
 <p class="code">
-array
+array<string>
 <span class="src-var">get_table_columns</span>
 (
 <span class="src-key">string</span>
@@ -1741,7 +1745,7 @@ array
 <tr>
 <td><em>string</em></td>
 <td><strong>$table</strong></td>
-<td><p>Name of table to return column information for</p><p><em>May also be given like databasename.tablename if a database was not explicitly selected                           with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to calling this                           method.</em></p></td>
+<td><p>Name of table to return column information for</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly selected                           with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to calling this                           method.</em></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1761,7 +1765,7 @@ array
 <h4 id="methodget_table_status" class="method"><span><em>method</em></span> get_table_status()</h4>
 <div class="doc_block">
 <p class="code">
-array
+array<mixed>
 <span class="src-var">get_table_status</span>
 (
 [ 
@@ -1782,7 +1786,7 @@ array
 <tr>
 <td><em>string</em></td>
 <td><strong>$table</strong></td>
-<td><p>(Optional) Table for which to return information for</p><p><em>May also be given like databasename.tablename if a database was not explicitly                               selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                               calling this method.</em></p><p><code>%</code> may be used as a wildcard in table's name to get information about all the tables                               matching the pattern.</p><p>If not specified, information will be returned for all the tables in the currently                               selected database.</p></td>
+<td><p>(Optional) Table for which to return information for</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly                               selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                               calling this method.</em></p><p><code>%</code> may be used as a wildcard in table's name to get information about all the tables                               matching the pattern.</p><p>If not specified, information will be returned for all the tables in the currently                               selected database.</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1805,7 +1809,7 @@ array
 string
 <span class="src-var">implode</span>
 (
-<span class="src-key">array</span>
+<span class="src-key">array<mixed></span>
 <span class="src-var">$items</span>
 ) 
 </p>
@@ -1837,7 +1841,7 @@ string
 <h5>Arguments</h5>
 <table>
 <tr>
-<td><em>array</em></td>
+<td><em>array<mixed></em></td>
 <td><strong>$items</strong></td>
 <td>An array with items to be <em>glued</em> together</td>
 </tr>
@@ -1846,7 +1850,7 @@ string
 <table>
 <tr>
 <td><strong>return:</strong>&nbsp;&nbsp;</td>
-<td>Returns the string representation of all the array elements in the same order,                               escaped and with commas between each element.</td>
+<td>Returns the string representation of all the array elements in the same order, escaped and                           with commas between each element.</td>
 </tr>
 <tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
@@ -1865,7 +1869,7 @@ boolean
 <span class="src-key">string</span>
 <span class="src-var">$table</span>
 , 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$columns</span>
 , 
 [ 
@@ -1964,7 +1968,7 @@ boolean
 <td><p>Table in which to insert</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly                                   selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                                   calling this method.</em></p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$columns</strong></td>
 <td><p>An associative array where the array's keys represent the columns names and the                                   array's values represent the values to be inserted in each respective column.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p></td>
 </tr>
@@ -2002,10 +2006,10 @@ boolean
 <span class="src-key">string</span>
 <span class="src-var">$table</span>
 , 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$columns</span>
 , 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$values</span>
 , 
 [ 
@@ -2140,12 +2144,12 @@ boolean
 <td><p>Table in which to insert</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly                                   selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                                   calling this method.</em></p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$columns</strong></td>
 <td><p>An array with columns to insert values into</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$values</strong></td>
 <td><p>An array of an unlimited number of arrays with values to be inserted. The arrays                                   must have the same number of items as you in the <em>$columns</em> argument.</p><p>Values will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p></td>
 </tr>
@@ -2205,11 +2209,11 @@ boolean
 <span class="src-key">string</span>
 <span class="src-var">$table</span>
 , 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$columns</span>
 , 
 [ 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$update</span>
 =
 array()
@@ -2264,12 +2268,12 @@ array()
 <td><p>Table in which to insert/update</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly                                   selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                                   calling this method.</em></p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$columns</strong></td>
 <td><p>An associative array where the array's keys represent the columns names and the                                   array's values represent the values to be inserted in each respective column.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$update</strong></td>
 <td><p>(Optional) An associative array where the array's keys represent the columns names                                   and the array's values represent the values to update the columns' values to.</p><p>This array represents the columns/values to be updated if the inserted row would                                   cause a duplicate value in a <code>UNIQUE</code> index or <code>PRIMARY KEY</code>.</p><p>If an empty array is given, the values in <em>$columns</em> will be used.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>A special value may also be used for when a column's value needs to be incremented                                   or decremented. In this case, use <code>INC(value)</code> where <em>value</em> is the value to                                   increase the column's value with. Use <code>INC(-value)</code> to decrease the column's value.                                   See <a href="../Zebra_Database/Zebra_Database.html#methodupdate">update()</a> for an example.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>Default is an empty array</p></td>
 </tr>
@@ -2352,7 +2356,7 @@ void
 <tr>
 <td><em>string</em></td>
 <td><strong>$table</strong></td>
-<td><p>(Optional) Table to optimize</p><p><em>May also be given like databasename.tablename if a database was not explicitly                               selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                               calling this method.</em></p><p><code>%</code> may be used as a wildcard in table's name to optimize only the tables matching the                               pattern.</p><p>If not specified, all the tables in the currently selected database will be optimized.</p><p><em>This option was added in 2.9.5</em></p></td>
+<td><p>(Optional) Table to optimize</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly                               selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                               calling this method.</em></p><p><code>%</code> may be used as a wildcard in table's name to optimize only the tables matching the                               pattern.</p><p>If not specified, all the tables in the currently selected database will be optimized.</p><p><em>This option was added in 2.9.5</em></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -2368,7 +2372,7 @@ void
 <h4 id="methodoption" class="method"><span><em>method</em></span> option()</h4>
 <div class="doc_block">
 <p class="code">
-void
+boolean|void
 <span class="src-var">option</span>
 (
 <span class="src-key">mixed</span>
@@ -2399,6 +2403,10 @@ void
 </table>
 <h5>Tags</h5>
 <table>
+<tr>
+<td><strong>return:</strong>&nbsp;&nbsp;</td>
+<td>Will return <code>FALSE</code> if there is no connection and nothing otherwise.</td>
+</tr>
 <tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
 <td>2.9.5</td>
@@ -2452,7 +2460,7 @@ mixed
 <span class="src-var">$sql</span>
 , 
 [ 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$replacements</span>
 =
 <span class="src-str">''</span>
@@ -2510,7 +2518,7 @@ mixed
 <td>MySQL statement to execute</td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
 <td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
@@ -2543,7 +2551,7 @@ mixed
 <h4 id="methodquery_unbuffered" class="method"><span><em>method</em></span> query_unbuffered()</h4>
 <div class="doc_block">
 <p class="code">
-void
+mixed
 <span class="src-var">query_unbuffered</span>
 ()
 </p>
@@ -2551,6 +2559,10 @@ void
 <p>The method's arguments are the same as for the <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()</a> method.</p><p><em>For unbuffered queries the values returned by <a href="../Zebra_Database/Zebra_Database.html#var$returned_rows">returned_rows</a> and <a href="../Zebra_Database/Zebra_Database.html#var$found_rows">found_rows</a> properties will be   available <strong>only</strong> after iterating over <strong>all</strong> the records with either <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a>   methods, and will be <strong>0</strong> until then!</em></p><p class="highlight">Until you iterate over the entire resultset, all subsequent queries will return a <code>Commands out of sync</code> error       unless the <a href="../Zebra_Database/Zebra_Database.html#methodfree_result">free_result()</a> method is called</p>
 <h5>Tags</h5>
 <table>
+<tr>
+<td><strong>return:</strong>&nbsp;&nbsp;</td>
+<td><p>Returns a resource or an array (if results are taken from the cache) upon success, or <code>FALSE</code>                       on error.</p><p><em>If query results are taken from cache, the returned result will be a <code>pointer</code> to the actual                       results of the query!</em></p></td>
+</tr>
 <tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
 <td>2.9.4</td>
@@ -2569,7 +2581,7 @@ boolean
 <span class="src-var">$row</span>
 , 
 [ 
-<span class="src-key">resource</span>
+<span class="src-key">resource|string</span>
 <span class="src-var">$resource</span>
 =
 <span class="src-str">''</span>
@@ -2586,7 +2598,7 @@ boolean
 <td><p>The row you want to move the pointer to</p><p><em>$row</em> starts at <code>0</code>.</p><p><em>$row</em> should be a value in the range from <code>0</code> to <a href="../Zebra_Database/Zebra_Database.html#var$returned_rows">returned_rows</a></p></td>
 </tr>
 <tr>
-<td><em>resource</em></td>
+<td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
 <td><p>(Optional) Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
@@ -2625,7 +2637,7 @@ mixed
 ]
 , 
 [ 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$replacements</span>
 =
 <span class="src-str">''</span>
@@ -2711,7 +2723,7 @@ mixed
 <td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
 <td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
@@ -2856,7 +2868,7 @@ boolean
 <tr>
 <td><em>string</em></td>
 <td><strong>$table</strong></td>
-<td><p>The name of the table to check if it exists in the database.</p><p><em>May also be given like databasename.tablename if a database was not explicitly                               selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                               calling this method.</em></p></td>
+<td><p>The name of the table to check if it exists in the database.</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly                               selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                               calling this method.</em></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -3006,7 +3018,7 @@ boolean
 <span class="src-key">string</span>
 <span class="src-var">$table</span>
 , 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$columns</span>
 , 
 [ 
@@ -3017,7 +3029,7 @@ boolean
 ]
 , 
 [ 
-<span class="src-key">array</span>
+<span class="src-key">mixed</span>
 <span class="src-var">$replacements</span>
 =
 <span class="src-str">''</span>
@@ -3067,7 +3079,7 @@ boolean
 <td><p>Table in which to update</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly                                   selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                                   calling this method.</em></p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$columns</strong></td>
 <td><p>An associative array where the array's keys represent the columns names and the                                   array's values represent the values to be inserted in each respective column.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>A special value may also be used for when a column's value needs to be                                   incremented or decremented. In this case, use <code>INC(value)</code> where <em>value</em>                                   is the value to increase the column's value with. Use <code>INC(-value)</code> to decrease                                   the column's value:</p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodupdate">update</a><span class="src-sym">(</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'table'</span><span class="src-sym">,</span></div></li>
@@ -3096,7 +3108,7 @@ boolean
 <td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
-<td><em>array</em></td>
+<td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
 <td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
@@ -3125,7 +3137,7 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Fri, 30 Dec 22</span>
+Documentation generated on <span>Sat, 14 Oct 23</span>
 </div>
 </div>
 <!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-0301ZD47Q7"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-0301ZD47Q7');</script></body>
