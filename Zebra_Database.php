@@ -187,7 +187,7 @@ class Zebra_Database {
      *
      *  @since  turning debugging on/off via a query string is available since 2.10.0
      *
-     *  @var boolean
+     *  @var boolean|string|array<boolean>
      */
     public $debug = true;
 
@@ -221,7 +221,7 @@ class Zebra_Database {
      *
      *  @since  1.0.6
      *
-     *  @var array
+     *  @var array<string>
      */
     public $debugger_ip = array();
 
@@ -287,7 +287,7 @@ class Zebra_Database {
      *
      *  @since 2.11.0
      *
-     *  @var string
+     *  @var boolean|string
      */
     public $debug_show_database_manager = false;
 
@@ -326,7 +326,7 @@ class Zebra_Database {
      *
      *  @since  2.9.14
      *
-     *  @var mixed
+     *  @var boolean|array<string,boolean>
      */
     public $debug_show_globals = true;
 
@@ -410,7 +410,7 @@ class Zebra_Database {
      *  echo $db->found_rows;
      *  </code>
      *
-     *  @var integer
+     *  @var integer|string
      */
     public $found_rows;
 
@@ -503,7 +503,7 @@ class Zebra_Database {
      *
      *  @since  2.7
      *
-     *  @var mixed
+     *  @var boolean|string
      */
     public $memcache_host = false;
 
@@ -531,7 +531,7 @@ class Zebra_Database {
      *
      *  @since  2.7
      *
-     *  @var mixed
+     *  @var integer|boolean
      */
     public $memcache_port = false;
 
@@ -611,7 +611,7 @@ class Zebra_Database {
      *
      *  @since  2.10.0
      *
-     *  @var mixed
+     *  @var boolean|string
      */
     public $redis_host = false;
 
@@ -639,7 +639,7 @@ class Zebra_Database {
      *
      *  @since  2.10.0
      *
-     *  @var mixed
+     *  @var integer|boolean
      */
     public $redis_port = false;
 
@@ -691,6 +691,7 @@ class Zebra_Database {
      *
      *  We will use this for fetching and seek
      *
+     *  @var array<mixed>
      *  @access private
      */
     private $cached_results = array();
@@ -698,6 +699,7 @@ class Zebra_Database {
     /**
      *  MySQL link identifier.
      *
+     *  @var mixed
      *  @access private
      */
     private $connection = false;
@@ -705,6 +707,7 @@ class Zebra_Database {
     /**
      *  Array that will store the database connection credentials
      *
+     *  @var array<string>
      *  @access private
      */
     private $credentials;
@@ -712,6 +715,7 @@ class Zebra_Database {
     /**
      *  All debugging information is stored in this array.
      *
+     *  @var array<mixed>
      *  @access private
      */
     private $debug_info = array();
@@ -719,6 +723,7 @@ class Zebra_Database {
     /**
      *  A flag telling the script whether it was called from CLI or in the browser
      *
+     *  @var boolean
      *  @access private
      */
     private $is_cli_request = false;
@@ -728,15 +733,24 @@ class Zebra_Database {
      *
      *  Default is "english".
      *
+     *  @var string|array<string>
      *  @access private
      */
     private $language = 'english';
+
+    /**
+     *  Stores information about the last executed query
+     *
+     *  @var boolean|integer|object|null
+     */
+    private $last_result;
 
     /**
      *  Instance of an opened memcache server connection.
      *
      *  @since 2.7
      *
+     *  @var mixed
      *  @access private
      */
     private $memcache = false;
@@ -746,6 +760,7 @@ class Zebra_Database {
      *
      *  @since 2.9.5
      *
+     *  @var array<mixed>
      *  @access private
      */
     private $options = array();
@@ -755,6 +770,7 @@ class Zebra_Database {
      *
      *  Value is set in the constructor!
      *
+     *  @var string
      *  @access private
      */
     private $path;
@@ -764,6 +780,7 @@ class Zebra_Database {
      *
      *  @since 2.10.0
      *
+     *  @var mixed
      *  @access private
      */
     private $redis = false;
@@ -771,6 +788,7 @@ class Zebra_Database {
     /**
      *  Keeps track of the total time used to execute queries
      *
+     *  @var float
      *  @access private
      */
     private $total_execution_time = 0;
@@ -784,6 +802,7 @@ class Zebra_Database {
      *  -   2, a transaction is in progress but an error occurred with one of the queries
      *  -   3, transaction is run in test mode and it will be rolled back upon completion
      *
+     *  @var int
      *  @access private
      */
     private $transaction_status = 0;
@@ -791,6 +810,7 @@ class Zebra_Database {
     /**
      *  Flag telling the library whether to use unbuffered queries or not
      *
+     *  @var boolean
      *  @access private
      */
     private $unbuffered = false;
@@ -800,6 +820,7 @@ class Zebra_Database {
      *
      *  Default value is set in the constructor!
      *
+     *  @var array<string,true>
      *  @access private
      */
     private $warnings;
@@ -807,6 +828,7 @@ class Zebra_Database {
     /**
      *  All MySQL functions as per {@link https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html}
      *
+     *  @var array<mixed>
      *  @access private
      */
     private $mysql_functions = array(
@@ -869,6 +891,14 @@ class Zebra_Database {
         // spell-checker: enable
 
     );
+
+    /**
+     *  A flag used for deprecated features (PHP < 5.4.0)
+     *
+     *  @var boolean
+     *  @access private
+     */
+    private $use_deprecated;
 
     /**
      *  Constructor of the class
@@ -1052,7 +1082,7 @@ class Zebra_Database {
      *
      *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *  @param  mixed   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
      *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
      *                                  will replace the corresponding `?`.<br>
      *                                  An item may also be an array, case in which each value from the array will be
@@ -1135,7 +1165,7 @@ class Zebra_Database {
      *
      *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *  @param  mixed   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
      *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
      *                                  will replace the corresponding `?`.<br>
      *                                  An item may also be an array, case in which each value from the array will be
@@ -1185,8 +1215,8 @@ class Zebra_Database {
      *  @param  string  $column         One or more columns to return data from
      *
      *                                  >   If only one column is specified, the returned result will be the specified
-     *                                  column's value. If more columns are specified the returned result will be an
-     *                                  associative array!
+     *                                      column's value. If more columns are specified the returned result will be an
+     *                                      associative array!
      *
      *                                  *You may use `*` (asterisk) to return all the columns from the row.*
      *
@@ -1200,7 +1230,7 @@ class Zebra_Database {
      *
      *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *  @param  mixed   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
      *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
      *                                  will replace the corresponding `?`.<br>
      *                                  An item may also be an array, case in which each value from the array will be
@@ -1284,7 +1314,7 @@ class Zebra_Database {
      *
      *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *  @param  mixed   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
      *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
      *                                  will replace the corresponding `?`.<br>
      *                                  An item may also be an array, case in which each value from the array will be
@@ -1369,7 +1399,7 @@ class Zebra_Database {
      *
      *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *  @param  mixed   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
      *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
      *                                  will replace the corresponding `?`.<br>
      *                                  An item may also be an array, case in which each value from the array will be
@@ -1451,8 +1481,6 @@ class Zebra_Database {
      *  ', array($value)) or die($db->error());
      *  </code>
      *
-     *  @since  2.9.1
-     *
      *  @param  boolean $return_error_number    Indicates whether the error number should also be returned.
      *
      *                                          If set to `TRUE`, the method returns an array in the form of
@@ -1467,6 +1495,11 @@ class Zebra_Database {
      *                                          ...or an empty string if no error occurred.
      *
      *                                          Default is `FALSE`
+     *
+     *  @since  2.9.1
+     *
+     *  @return mixed   Returns the description of the last error, or an empty string if no error occurred.
+     *
      */
     public function error($return_error_number = false) {
 
@@ -1480,7 +1513,8 @@ class Zebra_Database {
             $error_number = @mysqli_errno($this->connection);
 
         // if the above fails, we might have a connection-level error and we got an "incomplete" mysqli object
-        } catch (Error $e) {}
+        } catch (Error $e) {
+        }
 
         // if PHP < 8, we're not going to catch the error above
         // therefore we do this which works for all versions
@@ -1528,7 +1562,7 @@ class Zebra_Database {
      *  ');
      *
      *  // the recommended method
-     *  // (variable are automatically escaped this way)
+     *  // (variables are automatically escaped this way)
      *  $db->query('
      *      SELECT
      *          *
@@ -1541,8 +1575,9 @@ class Zebra_Database {
      *
      *  @param  string  $string     String to be quoted and escaped
      *
-     *  @return string              Returns the original string enclosed in single quotes and with special characters
-     *                              escaped in order to prevent SQL injections.     .
+     *  @return string|boolean      Returns the original string enclosed in single quotes and with special characters
+     *                              escaped in order to prevent SQL injections, or `FALSE` if there's no database
+     *                              connection.
      */
     public function escape($string) {
 
@@ -1573,12 +1608,12 @@ class Zebra_Database {
      *  }
      *  </code>
      *
-     *  @param  resource    $resource   (Optional) Resource to fetch
+     *  @param  resource|string     $resource   (Optional) Resource to fetch
      *
-     *                                  >   If not specified, the resource returned by the last run query is used
+     *                                          >   If not specified, the resource returned by the last run query is used
      *
-     *  @return mixed                   Returns an associative array that corresponds to the fetched row and moves the
-     *                                  internal data pointer ahead, or `FALSE` if there are no more rows.
+     *  @return mixed               Returns an associative array that corresponds to the fetched row and moves the
+     *                              internal data pointer ahead, or `FALSE` if there are no more rows.
      */
     public function fetch_assoc($resource = '') {
 
@@ -1639,22 +1674,23 @@ class Zebra_Database {
      *  $records = $db->fetch_assoc_all();
      *  </code>
      *
-     *  @param  string      $index      (Optional) Name of a column containing unique values
+     *  @param  int|string          $index      (Optional) Name of a column containing unique values
      *
-     *                                  If specified, the returned associative array's keys will be the values from this
-     *                                  column.
+     *                                          If specified, the returned associative array's keys will be the values
+     *                                          from this column.
      *
-     *                                  *If not specified, returned array will have numerical indexes, starting from 0.*
+     *                                          *If not specified, returned array will have numerical indexes, starting
+     *                                          from 0.*
      *
-     *  @param  resource    $resource   (Optional) Resource to fetch
+     *  @param  resource|string     $resource   (Optional) Resource to fetch
      *
-     *                                  >   If not specified, the resource returned by the last run query is used
+     *                                          >   If not specified, the resource returned by the last run query is used
      *
      *  @since  1.1.2
      *
-     *  @return mixed                   Returns an associative array containing all the rows from the resource created
-     *                                  by the previous query or from the resource given as argument and moves the
-     *                                  internal pointer to the end. Returns `FALSE` on error.
+     *  @return mixed               Returns an associative array containing all the rows from the resource created by the
+     *                              previous query or from the resource given as argument and moves the internal pointer
+     *                              to the end. Returns `FALSE` on error.
      */
     public function fetch_assoc_all($index = '', $resource = '') {
 
@@ -1737,14 +1773,14 @@ class Zebra_Database {
      *  }
      *  </code>
      *
-     *  @param  resource    $resource   (Optional) Resource to fetch
+     *  @param  resource|string     $resource   (Optional) Resource to fetch
      *
-     *                                  >   If not specified, the resource returned by the last run query is used
+     *                                          >   If not specified, the resource returned by the last run query is used
      *
      *  @since  1.0.8
      *
-     *  @return mixed                   Returns an object with properties that correspond to the fetched row and moves
-     *                                  the internal data pointer ahead, or `FALSE` if there are no more rows.
+     *  @return mixed               Returns an object with properties that correspond to the fetched row and moves
+     *                              the internal data pointer ahead, or `FALSE` if there are no more rows.
      */
     public function fetch_obj($resource = '') {
 
@@ -1811,22 +1847,23 @@ class Zebra_Database {
      *  $records = $db->fetch_obj_all();
      *  </code>
      *
-     *  @param  string      $index      (Optional) A column name from the records, containing unique values
+     *  @param  int|string          $index      (Optional) A column name from the records, containing unique values
      *
-     *                                  If specified, the returned associative array's keys will be the values from this
-     *                                  column.
+     *                                          If specified, the returned associative array's keys will be the values
+     *                                          from this column.
      *
-     *                                  *If not specified, returned array will have numerical indexes, starting from 0.*
+     *                                          *If not specified, returned array will have numerical indexes, starting
+     *                                          from 0.*
      *
-     *  @param  resource    $resource   (Optional) Resource to fetch
+     *  @param  resource|string     $resource   (Optional) Resource to fetch
      *
-     *                                  >   If not specified, the resource returned by the last run query is used
+     *                                          >   If not specified, the resource returned by the last run query is used
      *
      *  @since  1.1.2
      *
-     *  @return mixed                   Returns an associative array containing all the rows (as objects) from the resource
-     *                                  created by the previous query or from the resource given as argument and moves
-     *                                  the internal pointer to the end. Returns `FALSE` on error.
+     *  @return mixed               Returns an associative array containing all the rows (as objects) from the resource
+     *                              created by the previous query or from the resource given as argument and moves the
+     *                              internal pointer to the end. Returns `FALSE` on error.
      */
     public function fetch_obj_all($index = '', $resource = '') {
 
@@ -1898,13 +1935,13 @@ class Zebra_Database {
      *
      *  >   You should always free your result with {@link free_result()}, when your result object is not needed anymore
      *
-     *  @param  resource    $resource   (Optional) A valid resource
+     *  @param  resource|string     $resource   (Optional) A valid resource
      *
-     *                                  >   If not specified, the resource returned by the last run query is used
+     *                                          >   If not specified, the resource returned by the last run query is used
      *
      *  @since  2.9.1
      *
-     *  @return void
+     *  @return false|void
      */
     public function free_result($resource = '') {
 
@@ -1949,14 +1986,14 @@ class Zebra_Database {
      *  print_r($db->get_columns());
      *  </code>
      *
-     *  @param  resource    $resource   (Optional) Resource to fetch columns information from.
+     *  @param  resource|string     $resource   (Optional) Resource to fetch columns information from.
      *
-     *                                  >   If not specified, the resource returned by the last run query is used
+     *                                          >   If not specified, the resource returned by the last run query is used
      *
      *  @since  2.0
      *
-     *  @return mixed                   Returns an associative array with information about the columns in the MySQL
-     *                                  result associated with the specified result identifier, or `FALSE` on error.
+     *  @return mixed               Returns an associative array with information about the columns in the MySQL result
+     *                              associated with the specified result identifier, or `FALSE` on error.
      */
     public function get_columns($resource = '') {
 
@@ -2014,7 +2051,7 @@ class Zebra_Database {
      *
      *  @since 2.5
      *
-     *  @return identifier  Returns the MySQL link identifier associated with the current connection to the MySQL server.
+     *  @return object|boolean  Returns the MySQL link identifier associated with the current connection to the MySQL server.
      */
     public function get_link() {
 
@@ -2060,7 +2097,7 @@ class Zebra_Database {
      *
      *  @since  1.1.2
      *
-     *  @return array   Returns an array with all the tables in the specified database
+     *  @return array<string>       Returns an array with all the tables in the specified database
      */
     public function get_tables($database = '') {
 
@@ -2089,13 +2126,13 @@ class Zebra_Database {
      *
      *  @param  string  $table  Name of table to return column information for
      *
-     *                          *May also be given like databasename.tablename if a database was not explicitly selected
+     *                          *May also be specified like `databasename.tablename` if a database was not explicitly selected
      *                          with the {@link connect()} or {@link select_database()} methods prior to calling this
      *                          method.*
      *
      *  @since  2.6
      *
-     *  @return array           Returns information about the columns of a given table as an associative array.
+     *  @return array<string>   Returns information about the columns of a given table as an associative array.
      */
     public function get_table_columns($table) {
 
@@ -2122,7 +2159,7 @@ class Zebra_Database {
      *
      *  @param  string  $table      (Optional) Table for which to return information for
      *
-     *                              *May also be given like databasename.tablename if a database was not explicitly
+     *                              *May also be specified like `databasename.tablename` if a database was not explicitly
      *                              selected with the {@link connect()} or {@link select_database()} methods prior to
      *                              calling this method.*
      *
@@ -2134,7 +2171,7 @@ class Zebra_Database {
      *
      *  @since  1.1.2
      *
-     *  @return array               Returns an associative array with a lot of useful information on all or specific
+     *  @return array<mixed>        Returns an associative array with a lot of useful information on all or specific
      *                              tables only
      */
     public function get_table_status($table = '') {
@@ -2189,12 +2226,12 @@ class Zebra_Database {
      *  ', array($array));
      *  </code>
      *
-     *  @param  array   $items      An array with items to be *glued* together
+     *  @param  array<mixed>    $items  An array with items to be *glued* together
      *
      *  @since  2.0
      *
-     *  @return string              Returns the string representation of all the array elements in the same order,
-     *                              escaped and with commas between each element.
+     *  @return string          Returns the string representation of all the array elements in the same order, escaped and
+     *                          with commas between each element.
      */
     public function implode($items) {
 
@@ -2296,7 +2333,7 @@ class Zebra_Database {
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
      *                                  calling this method.*
      *
-     *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
+     *  @param  mixed   $columns        An associative array where the array's keys represent the columns names and the
      *                                  array's values represent the values to be inserted in each respective column.
      *
      *                                  Column names will be enclosed in grave accents ``` (thus allowing the usage of
@@ -2312,7 +2349,7 @@ class Zebra_Database {
      *                                      come from user input. In this case make sure you {@link escape} the values
      *                                      yourself!
      *
-     *  @param  mixed $update           (Optional) By default, calling this method with this argument set to boolean `TRUE`
+     *  @param  mixed   $update         (Optional) By default, calling this method with this argument set to boolean `TRUE`
      *                                  or to an empty array will result in a simple insert which will fail in case of
      *                                  duplicate keys.
      *
@@ -2484,13 +2521,13 @@ class Zebra_Database {
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
      *                                  calling this method.*
      *
-     *  @param  array   $columns        An array with columns to insert values into
+     *  @param  mixed   $columns        An array with columns to insert values into
      *
      *                                  Column names will be enclosed in grave accents ``` (thus allowing the usage of
      *                                  reserved words) and will be automatically {@link escape() escaped} in order to
      *                                  prevent SQL injections.
      *
-     *  @param  array   $values         An array of an unlimited number of arrays with values to be inserted. The arrays
+     *  @param  mixed   $values         An array of an unlimited number of arrays with values to be inserted. The arrays
      *                                  must have the same number of items as you in the *$columns* argument.
      *
      *                                  Values will be automatically {@link escape() escaped} in order to prevent SQL injections.
@@ -2504,7 +2541,7 @@ class Zebra_Database {
      *                                      come from user input. In this case make sure you {@link escape} the values
      *                                      yourself!
      *
-     *  @param  mixed $update           (Optional) By default, calling this method with this argument set to boolean `TRUE`
+     *  @param  mixed   $update         (Optional) By default, calling this method with this argument set to boolean `TRUE`
      *                                  or to an empty array will result in a simple multi-row insert which will fail in
      *                                  case of duplicate keys.
      *
@@ -2680,7 +2717,7 @@ class Zebra_Database {
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
      *                                  calling this method.*
      *
-     *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
+     *  @param  mixed   $columns        An associative array where the array's keys represent the columns names and the
      *                                  array's values represent the values to be inserted in each respective column.
      *
      *                                  Column names will be enclosed in grave accents ``` (thus allowing the usage of
@@ -2696,7 +2733,7 @@ class Zebra_Database {
      *                                      come from user input. In this case make sure you {@link escape} the values
      *                                      yourself!
      *
-     *  @param  array   $update         (Optional) An associative array where the array's keys represent the columns names
+     *  @param  mixed   $update         (Optional) An associative array where the array's keys represent the columns names
      *                                  and the array's values represent the values to update the columns' values to.
      *
      *                                  This array represents the columns/values to be updated if the inserted row would
@@ -2832,7 +2869,7 @@ class Zebra_Database {
      *
      *  @param  string  $table      (Optional) Table to optimize
      *
-     *                              *May also be given like databasename.tablename if a database was not explicitly
+     *                              *May also be specified like `databasename.tablename` if a database was not explicitly
      *                              selected with the {@link connect()} or {@link select_database()} methods prior to
      *                              calling this method.*
      *
@@ -2900,7 +2937,7 @@ class Zebra_Database {
      *
      *  @since  2.9.5
      *
-     *  @return void
+     *  @return boolean|void        Will return `FALSE` if there is no connection and nothing otherwise.
      */
     public function option($option, $value = '') {
 
@@ -3035,7 +3072,7 @@ class Zebra_Database {
      *
      *  @param  string  $sql            MySQL statement to execute
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *  @param  mixed   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
      *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
      *                                  will replace the corresponding `?`.<br>
      *                                  An item may also be an array, case in which each value from the array will be
@@ -3524,7 +3561,7 @@ class Zebra_Database {
                         if ($this->_is_result($this->last_result)) {
 
                             // if there are any rows
-                            if  (!$this->unbuffered && mysqli_num_rows($this->last_result)) {
+                            if (!$this->unbuffered && mysqli_num_rows($this->last_result)) {
 
                                 // iterate through the records until we displayed enough records
                                 while ($row_counter++ < $this->debug_show_records && $row = mysqli_fetch_assoc($this->last_result))
@@ -3613,7 +3650,8 @@ class Zebra_Database {
 
                         // if EXPLAIN is not available
                         // (for something line SHOW TABLE for example) do nothing
-                        } catch (Exception $e) {}
+                        } catch (Exception $e) {
+                        }
 
                     }
 
@@ -3698,6 +3736,12 @@ class Zebra_Database {
      *      unless the {@link free_result()} method is called
      *
      *  @since 2.9.4
+     *
+     *  @return mixed       Returns a resource or an array (if results are taken from the cache) upon success, or `FALSE`
+     *                      on error.
+     *
+     *                      *If query results are taken from cache, the returned result will be a `pointer` to the actual
+     *                      results of the query!*
      */
     public function query_unbuffered() {
 
@@ -3717,19 +3761,19 @@ class Zebra_Database {
      *
      *  The next call to a fetch method like {@link fetch_assoc()} or {@link fetch_obj()} would return that row.
      *
-     *  @param  integer     $row        The row you want to move the pointer to
+     *  @param  integer             $row        The row you want to move the pointer to
      *
-     *                                  *$row* starts at `0`.
+     *                                          *$row* starts at `0`.
      *
-     *                                  *$row* should be a value in the range from `0` to {@link returned_rows}
+     *                                          *$row* should be a value in the range from `0` to {@link returned_rows}
      *
-     *  @param  resource    $resource   (Optional) Resource to fetch
+     *  @param  resource|string     $resource   (Optional) Resource to fetch
      *
-     *                                  >   If not specified, the resource returned by the last run query is used
+     *                                          >   If not specified, the resource returned by the last run query is used
      *
      *  @since  1.1.0
      *
-     *  @return boolean                 Returns `TRUE` on success or `FALSE` on failure
+     *  @return boolean             Returns `TRUE` on success or `FALSE` on failure
      */
     public function seek($row, $resource = '') {
 
@@ -3876,7 +3920,7 @@ class Zebra_Database {
      *
      *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *  @param  mixed   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
      *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
      *                                  will replace the corresponding `?`.<br>
      *                                  An item may also be an array, case in which each value from the array will be
@@ -4034,7 +4078,7 @@ class Zebra_Database {
      *
      *  @param  string  $table      The name of the table to check if it exists in the database.
      *
-     *                              *May also be given like databasename.tablename if a database was not explicitly
+     *                              *May also be specified like `databasename.tablename` if a database was not explicitly
      *                              selected with the {@link connect()} or {@link select_database()} methods prior to
      *                              calling this method.*
      *
@@ -4262,7 +4306,7 @@ class Zebra_Database {
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
      *                                  calling this method.*
      *
-     *  @param  array   $columns        An associative array where the array's keys represent the columns names and the
+     *  @param  mixed   $columns        An associative array where the array's keys represent the columns names and the
      *                                  array's values represent the values to be inserted in each respective column.
      *
      *                                  Column names will be enclosed in grave accents ``` (thus allowing the usage of
@@ -4314,7 +4358,7 @@ class Zebra_Database {
      *
      *                                  Default is `""` (an empty string)
      *
-     *  @param  array   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
+     *  @param  mixed   $replacements   (Optional) An array with as many items as the total parameter markers (`?`, question
      *                                  marks) in *$where*. Each item will be automatically {@link escape escaped} and
      *                                  will replace the corresponding `?`.<br>
      *                                  An item may also be an array, case in which each value from the array will be
@@ -4376,7 +4420,12 @@ class Zebra_Database {
      *
      *  This method may also alter the original variable given as argument, as it is passed by reference!
      *
+     *  @param  mixed   $columns    An associative array where the array's keys represent column names and the array's
+     *                              values represent the values to be associated with each respective column
+     *
      *  @access private
+     *
+     *  @return string  Returns the built SQL string
      */
     private function _build_sql(&$columns) {
 
@@ -4473,7 +4522,8 @@ class Zebra_Database {
                     $this->credentials['socket']
                 );
 
-            } catch (Exception $e) {}
+            } catch (Exception $e) {
+            }
 
             // tries to connect to the MySQL database
             if (mysqli_connect_errno())
@@ -4566,7 +4616,7 @@ class Zebra_Database {
      *
      *  @access private
      *
-     *  @return void
+     *  @return mixed
      */
     function _show_debugging_console() {
 
@@ -5106,10 +5156,10 @@ class Zebra_Database {
     /**
      *  Encloses segments of a database.table.column construction in grave accents.
      *
-     *  @param  mixed   A string or an array to escape.
+     *  @param  mixed   $entries    A string or an array to escape.
      *
-     *  @return string  Returns a string with the segments of a database.table.column construction enclosed in grave
-     *                  accents.
+     *  @return string              Returns a string with the segments of a database.table.column construction enclosed
+     *                              in grave accents.
      *
      *  @access private
      */
@@ -5161,6 +5211,9 @@ class Zebra_Database {
     /**
      *  Checks if a string is in fact a MySQL function call (or a bunch of nested MySQL functions)
      *
+     *  @param  mixed   $value  Checks whether the given value is a MySQL function or not.
+     *
+     *  @return boolean
      *  @access private
      */
     private function _is_mysql_function($value) {
@@ -5192,7 +5245,12 @@ class Zebra_Database {
     /**
      *  Checks is a value is a valid result set obtained from a query against the database
      *
+     *  @param  mixed       $value  The value to check
+     *
      *  @access private
+     *
+     *  @return boolean     Returns whether the value given as argument is a valid result set obtained from a query
+     *                      against the database
      */
     private function _is_result($value) {
 
@@ -5204,6 +5262,7 @@ class Zebra_Database {
     /**
      *  Checks whether debugging is enabled
      *
+     *  @return boolean
      *  @access private
      */
     private function _is_debugging_enabled() {
@@ -5282,7 +5341,16 @@ class Zebra_Database {
      *  Handles saving of debug information and halts the execution of the script on fatal error or if the
      *  {@link halt_on_errors} property is set to `TRUE`
      *
+     *  @param  string  $category   The name of the category to log the data into
+     *
+     *  @param  mixed   $data       The data to be logged
+     *
+     *  @param  boolean $fatal      (Optional) Flag indicating whether the logged message is fatal and execution should stop.
+     *
+     *                              Default is `FALSE`
+     *
      *  @access private
+     *  @return boolean
      */
     private function _log($category, $data, $fatal = true) {
 
@@ -5345,7 +5413,13 @@ class Zebra_Database {
      *  and will populate the debugging console with the first few records, as set by the {@link debug_show_records}
      *  property.
      *
+     *  @param  mixed   $resource   The resource as returned by the query
+     *
+     *  @param  mixed   $result     The results returned by the query
+     *
      *  @access private
+     *
+     *  @return void
      */
     private function _manage_unbuffered_query_info(&$resource, &$result) {
 
@@ -5454,7 +5528,7 @@ class Zebra_Database {
             $file_name .= $extension;
 
         // for CLI requests, set flag
-        } elseif ($is_cli_request) $this->log_path_is_function = false;
+        } else $this->log_path_is_function = false;
 
         // all the labels that may be used in a log entry
         $labels = array(
