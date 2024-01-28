@@ -311,7 +311,7 @@ class Zebra_Database {
      *  visibility can be individually be set, like in the example below:
      *
      *  <code>
-     *  $db->debug_show_globals(array(
+     *  $db->debug_show_globals = array(
      *      'request'   =>  true,
      *      'post'      =>  true,
      *      'get'       =>  true,
@@ -319,7 +319,7 @@ class Zebra_Database {
      *      'cookie'    =>  true,
      *      'files'     =>  true,
      *      'server'    =>  true,
-     *  ));
+     *  );
      *  </code>
      *
      *  Default is `TRUE`
