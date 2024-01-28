@@ -1,4 +1,8 @@
-## version 2.11.0 (TBA)
+## version 2.11.1 (January 28, 2024)
+
+- version bump
+
+## version 2.11.0 (January 27, 2024)
 
 - the library can now log queries run via AJAX requests; see the newly added [debug_ajax](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_ajax) property
 - debug information is now also shown when running in CLI (when [debugging](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug) is enabled, of course)
