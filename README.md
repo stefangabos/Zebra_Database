@@ -16,7 +16,7 @@ It encourages developers to write maintainable code and provides a better defaul
 
 The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to E_ALL.
 
->   <br/>:microscope: See how the [debugging console](https://stefangabos.github.io/Zebra_Database/examples/index.html) in action<br/><br/>
+>   <br/>:microscope: See the [debugging console](https://stefangabos.github.io/Zebra_Database/examples/index.html) in action<br/><br/>
 
 ## Features
 
