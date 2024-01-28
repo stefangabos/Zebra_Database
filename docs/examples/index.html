@@ -1,0 +1,427 @@
+
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@3.4.1/united/bootstrap.min.css">
+        <title>Zebra_Database Example</title>
+
+    </head>
+
+    <body>
+
+    <div class="container">
+
+        <div class="row" style="margin-top: 50px">
+            <div class="col-xs-6 col-xs-push-3">
+                <h1 class="text-center">Zebra Database</h1>
+                <p class="text-center">
+                    This page is the static HTML demo of what you would get when running the example provided in the
+                    <code>examples</code> folder, with some of the output removed and/or altered for privacy reasons, and
+                    with some added code so that you can get a better overview of what you get when using this library.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+                    <link rel="stylesheet" href="https://raw.githubusercontent.com/stefangabos/Zebra_Database/master/public/css/default/zebra_database.min.css" type="text/css">
+                    <script type="text/javascript" src="https://raw.githubusercontent.com/stefangabos/Zebra_Database/master/public/javascript/zebra_database.min.js"></script>
+
+                    <div id="zdc">
+                        <a name="zdc-top"></a>
+                        <ul id="zdc-main" class="zdc-visible">
+
+                    <li style="display: none">
+                        <a href="javascript: void(0)" class="zdc-toggle zdc-errors">errors: <span>0</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0)" class="zdc-toggle zdc-successful-queries">successful queries: <span>4</span>&nbsp;(<em class="zdc-total-duration" style="font-style: normal">0.00269</em> seconds)
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0)" class="zdc-toggle zdc-unsuccessful-queries">unsuccessful queries: <span>1</span>
+                        </a>
+                    </li>
+
+                        <li>
+                            <a href="javascript: void(0)" class="zdc-toggle zdc-toggle-id zdc-globals-submenu">globals
+                            </a>
+                        </li>
+
+                    </ul>
+                <div id="zdc-errors"></div><div id="zdc-unsuccessful-queries">
+                                <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry zdc-visible">
+                                    <tr>
+                                        <td class="zdc-counter">001</td>
+                                        <td class="zdc-data">
+
+                                    <div class="zdc-box zdc-error">
+                                        Table 'world.countrylanguageincorrect' doesn't exist
+                                    </div>
+
+                                    <div class="zdc-box zdc-syntax-highlight"><pre style="color: black; background-color: white;"><span class="keyword">SELECT</span>
+    <span style="color: #333;">Language</span><span class="symbol">,</span>
+    <span style="color: #333;">IsOfficial</span><span class="symbol">,</span>
+    <span style="color: #333;">Percentage</span>
+<span class="keyword">FROM</span>
+    <span style="color: #333;">countrylanguageINCORRECT</span>
+<span class="keyword">WHERE</span>
+    <span style="color: #333;">CountryCode</span> <span class="symbol">=</span> <span class="string">'USA'</span>
+<span class="keyword">ORDER BY</span>
+    <span style="color: #333;">Percentage</span> <span class="keyword">DESC</span></pre>
+                                    </div>
+
+                                <div class="zdc-box zdc-actions">
+                                    <ul>
+
+                                    <li class="zdc-backtrace">
+                                        <a href="javascript: void(0)" class="zdc-toggle zdc-backtrace-table">backtrace
+                                        </a>
+                                    </li>
+
+                                    <li class="zdc-database-manager">
+                                        <a href="https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager" style="color: #C40000" title="Open in favorite database manager">SET UP</a>
+                                    </li>
+
+                                <li class="zdc-top">
+                                    <a href="/path/to/#zdc-top">to the top
+                                    </a>
+                                </li>
+                                <li class="zdc-close">
+                                    <a href="javascript: void(0)">close all
+                                    </a>
+                                </li>
+
+                                    </ul>
+                                </div>
+
+                                    <div class="zdc-box zdc-data-table zdc-backtrace-table">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <thead><tr>
+                                <th>File</th><th>Function</th><th>Line</th></tr></thead><tbody><tr><td>/path/to/Zebra_Database/examples/example.php</td><td>query()</td><td>109</td></tr></tbody></table></div></td></tr></table></div><div id="zdc-successful-queries">
+                                <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry">
+                                    <tr>
+                                        <td class="zdc-counter">001</td>
+                                        <td class="zdc-data">
+
+                                    <div class="zdc-box zdc-syntax-highlight"><pre style="color: black; background-color: white;"><span class="keyword">SET</span>
+    <span class="keyword">NAMES</span> <span class="string">"utf8"</span> <span class="keyword">COLLATE</span> <span class="string">"utf8_general_ci"</span></pre>
+                                    </div>
+
+                                <div class="zdc-box zdc-actions">
+                                    <ul>
+
+                                    <li class="zdc-time">duration: 0.00021 seconds (<strong>7.94</strong>%)
+                                    </li>
+
+                                        <li class="zdc-affected">affected rows: <strong>0</strong>
+                                        </li>
+
+                                    <li class="zdc-backtrace">
+                                        <a href="javascript: void(0)" class="zdc-toggle zdc-backtrace-table">backtrace
+                                        </a>
+                                    </li>
+
+                                    <li class="zdc-database-manager">
+                                        <a href="https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager" style="color: #C40000" title="Open in favorite database manager">SET UP</a>
+                                    </li>
+
+                                <li class="zdc-top">
+                                    <a href="/path/to/#zdc-top">to the top
+                                    </a>
+                                </li>
+                                <li class="zdc-close">
+                                    <a href="javascript: void(0)">close all
+                                    </a>
+                                </li>
+
+                                    </ul>
+                                </div>
+
+                                    <div class="zdc-box zdc-data-table zdc-backtrace-table">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <thead><tr>
+                                <th>File</th><th>Function</th><th>Line</th></tr></thead><tbody><tr><td>/path/to/Zebra_Database/Zebra_Database.php</td><td>query()</td><td>4067</td></tr><tr><td>/path/to/Zebra_Database/examples/example.php</td><td>set_charset()</td><td>64</td></tr></tbody></table></div></td></tr></table>
+                                <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry">
+                                    <tr>
+                                        <td class="zdc-counter">002</td>
+                                        <td class="zdc-data">
+
+                                    <div class="zdc-box zdc-syntax-highlight"><pre style="color: black; background-color: white;"><span class="keyword">SELECT</span>
+    <span style="color: #333;">Code</span>
+<span class="keyword">FROM</span>
+    <span style="color: purple;">`country`</span>
+<span class="keyword">WHERE</span>
+    <span style="color: #333;">Name</span> <span class="symbol">=</span> <span class="string">'United States'</span>
+<span class="keyword">LIMIT</span>
+    <span class="symbol">1</span></pre>
+                                    </div>
+
+                                <div class="zdc-box zdc-actions">
+                                    <ul>
+
+                                    <li class="zdc-time">duration: 0.00061 seconds (<strong>22.47</strong>%)
+                                    </li>
+
+                                        <li class="zdc-records">
+                                            <a href="javascript: void(0)" class="zdc-toggle zdc-records-table">returned rows: <strong>1</strong>
+                                            </a>
+                                        </li>
+
+                                        <li class="zdc-explain">
+                                            <a href="javascript: void(0)" class="zdc-toggle zdc-explain-table">explain
+                                            </a>
+                                        </li>
+
+                                    <li class="zdc-backtrace">
+                                        <a href="javascript: void(0)" class="zdc-toggle zdc-backtrace-table">backtrace
+                                        </a>
+                                    </li>
+
+                                    <li class="zdc-database-manager">
+                                        <a href="https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager" style="color: #C40000" title="Open in favorite database manager">SET UP</a>
+                                    </li>
+
+                                <li class="zdc-top">
+                                    <a href="/path/to/#zdc-top">to the top
+                                    </a>
+                                </li>
+                                <li class="zdc-close">
+                                    <a href="javascript: void(0)">close all
+                                    </a>
+                                </li>
+
+                                    </ul>
+                                </div>
+
+                                    <div class="zdc-box zdc-data-table zdc-records-table">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <thead><tr>
+                                <th>Code</th></tr></thead><tbody><tr><td>USA</td></tr></tbody></table></div>
+                                    <div class="zdc-box zdc-data-table zdc-explain-table">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <thead><tr>
+                                <th>id</th><th>select_type</th><th>table</th><th>partitions</th><th>type</th><th>possible_keys</th><th>key</th><th>key_len</th><th>ref</th><th>rows</th><th>filtered</th><th>Extra</th></tr></thead><tbody><tr><td>1</td><td>SIMPLE</td><td>country</td><td></td><td>ALL</td><td></td><td></td><td></td><td></td><td>239</td><td>10.00</td><td>Using where</td></tr></tbody></table></div>
+                                    <div class="zdc-box zdc-data-table zdc-backtrace-table">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <thead><tr>
+                                <th>File</th><th>Function</th><th>Line</th></tr></thead><tbody><tr><td>/path/to/Zebra_Database/Zebra_Database.php</td><td>query()</td><td>1271</td></tr><tr><td>/path/to/Zebra_Database/examples/example.php</td><td>dlookup()</td><td>70</td></tr></tbody></table></div></td></tr></table>
+                                <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry">
+                                    <tr>
+                                        <td class="zdc-counter">003</td>
+                                        <td class="zdc-data">
+
+                                    <div class="zdc-box zdc-syntax-highlight"><pre style="color: black; background-color: white;"><span class="keyword">SELECT</span>
+    <span style="color: #333;">Name</span>
+<span class="keyword">FROM</span>
+    <span style="color: #333;">city</span>
+<span class="keyword">WHERE</span>
+    <span style="color: #333;">CountryCode</span> <span class="symbol">=</span> <span class="string">'USA'</span>
+<span class="keyword">ORDER BY</span>
+    <span style="color: #333;">Name</span></pre>
+                                    </div>
+
+                                <div class="zdc-box zdc-actions">
+                                    <ul>
+
+                                    <li class="zdc-time">duration: 0.00124 seconds (<strong>46.08</strong>%)
+                                    </li>
+
+                                        <li class="zdc-records">
+                                            <a href="javascript: void(0)" class="zdc-toggle zdc-records-table">returned rows: <strong>274</strong>
+                                            </a>
+                                        </li>
+
+                                        <li class="zdc-explain">
+                                            <a href="javascript: void(0)" class="zdc-toggle zdc-explain-table">explain
+                                            </a>
+                                        </li>
+
+                                    <li class="zdc-backtrace">
+                                        <a href="javascript: void(0)" class="zdc-toggle zdc-backtrace-table">backtrace
+                                        </a>
+                                    </li>
+
+                                    <li class="zdc-database-manager">
+                                        <a href="https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager" style="color: #C40000" title="Open in favorite database manager">SET UP</a>
+                                    </li>
+
+                                <li class="zdc-top">
+                                    <a href="/path/to/#zdc-top">to the top
+                                    </a>
+                                </li>
+                                <li class="zdc-close">
+                                    <a href="javascript: void(0)">close all
+                                    </a>
+                                </li>
+
+                                    </ul>
+                                </div>
+
+                                    <div class="zdc-box zdc-data-table zdc-records-table">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <thead><tr>
+                                <th>Name</th></tr></thead><tbody><tr><td>Abilene</td></tr><tr><td>Akron</td></tr><tr><td>Albany</td></tr><tr><td>Albuquerque</td></tr><tr><td>Alexandria</td></tr><tr><td>Allentown</td></tr><tr><td>Amarillo</td></tr><tr><td>Anaheim</td></tr><tr><td>Anchorage</td></tr><tr><td>Ann Arbor</td></tr><tr><td>Arden-Arcade</td></tr><tr><td>Arlington</td></tr><tr><td>Arlington</td></tr><tr><td>Arvada</td></tr><tr><td>Athens-Clarke County</td></tr><tr><td>Atlanta</td></tr><tr><td>Augusta-Richmond County</td></tr><tr><td>Aurora</td></tr><tr><td>Aurora</td></tr><tr><td>Austin</td></tr></tbody></table></div>
+                                    <div class="zdc-box zdc-data-table zdc-explain-table">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <thead><tr>
+                                <th>id</th><th>select_type</th><th>table</th><th>partitions</th><th>type</th><th>possible_keys</th><th>key</th><th>key_len</th><th>ref</th><th>rows</th><th>filtered</th><th>Extra</th></tr></thead><tbody><tr><td>1</td><td>SIMPLE</td><td>city</td><td></td><td>ref</td><td>CountryCode</td><td>CountryCode</td><td>12</td><td>const</td><td>274</td><td>100.00</td><td>Using index condition; Using filesort</td></tr></tbody></table></div>
+                                    <div class="zdc-box zdc-data-table zdc-backtrace-table">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <thead><tr>
+                                <th>File</th><th>Function</th><th>Line</th></tr></thead><tbody><tr><td>/path/to/Zebra_Database/examples/example.php</td><td>query()</td><td>82</td></tr></tbody></table></div></td></tr></table>
+                                <table cellspacing="0" cellpadding="0" border="0" class="zdc-entry">
+                                    <tr>
+                                        <td class="zdc-counter">004</td>
+                                        <td class="zdc-data">
+
+                                    <div class="zdc-box zdc-syntax-highlight"><pre style="color: black; background-color: white;"><span class="keyword">SELECT</span>
+    <span style="color: #333;">Language</span><span class="symbol">,</span>
+    <span style="color: #333;">IsOfficial</span><span class="symbol">,</span>
+    <span style="color: #333;">Percentage</span>
+<span class="keyword">FROM</span>
+    <span style="color: #333;">countrylanguage</span>
+<span class="keyword">WHERE</span>
+    <span style="color: #333;">CountryCode</span> <span class="symbol">=</span> <span class="string">'USA'</span>
+<span class="keyword">ORDER BY</span>
+    <span style="color: #333;">Percentage</span> <span class="keyword">DESC</span></pre>
+                                    </div>
+
+                                <div class="zdc-box zdc-actions">
+                                    <ul>
+
+                                        <li class="zdc-cache">
+                                            <strong>from cache (disk)</strong>
+                                        </li>
+
+                                    <li class="zdc-time">duration: 0.00045 seconds (<strong>16.56</strong>%)
+                                    </li>
+
+                                        <li class="zdc-records">
+                                            <a href="javascript: void(0)" class="zdc-toggle zdc-records-table">returned rows: <strong>12</strong>
+                                            </a>
+                                        </li>
+
+                                        <li class="zdc-explain">
+                                            <a href="javascript: void(0)" class="zdc-toggle zdc-explain-table">explain
+                                            </a>
+                                        </li>
+
+                                    <li class="zdc-backtrace">
+                                        <a href="javascript: void(0)" class="zdc-toggle zdc-backtrace-table">backtrace
+                                        </a>
+                                    </li>
+
+                                    <li class="zdc-database-manager">
+                                        <a href="https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_show_database_manager" style="color: #C40000" title="Open in favorite database manager">SET UP</a>
+                                    </li>
+
+                                <li class="zdc-top">
+                                    <a href="/path/to/#zdc-top">to the top
+                                    </a>
+                                </li>
+                                <li class="zdc-close">
+                                    <a href="javascript: void(0)">close all
+                                    </a>
+                                </li>
+
+                                    </ul>
+                                </div>
+
+                                    <div class="zdc-box zdc-data-table zdc-records-table">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <thead><tr>
+                                <th>Language</th><th>IsOfficial</th><th>Percentage</th></tr></thead><tbody><tr><td>English</td><td>T</td><td>86.2</td></tr><tr><td>Spanish</td><td>F</td><td>7.5</td></tr><tr><td>French</td><td>F</td><td>0.7</td></tr><tr><td>German</td><td>F</td><td>0.7</td></tr><tr><td>Chinese</td><td>F</td><td>0.6</td></tr><tr><td>Italian</td><td>F</td><td>0.6</td></tr><tr><td>Tagalog</td><td>F</td><td>0.4</td></tr><tr><td>Korean</td><td>F</td><td>0.3</td></tr><tr><td>Polish</td><td>F</td><td>0.3</td></tr><tr><td>Japanese</td><td>F</td><td>0.2</td></tr><tr><td>Portuguese</td><td>F</td><td>0.2</td></tr><tr><td>Vietnamese</td><td>F</td><td>0.2</td></tr></tbody></table></div>
+                                    <div class="zdc-box zdc-data-table zdc-explain-table">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <thead><tr>
+                                <th>id</th><th>select_type</th><th>table</th><th>partitions</th><th>type</th><th>possible_keys</th><th>key</th><th>key_len</th><th>ref</th><th>rows</th><th>filtered</th><th>Extra</th></tr></thead><tbody><tr><td>1</td><td>SIMPLE</td><td>countrylanguage</td><td></td><td>ref</td><td>PRIMARY,CountryCode</td><td>PRIMARY</td><td>12</td><td>const</td><td>12</td><td>100.00</td><td>Using where; Using filesort</td></tr></tbody></table></div>
+                                    <div class="zdc-box zdc-data-table zdc-backtrace-table">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <thead><tr>
+                                <th>File</th><th>Function</th><th>Line</th></tr></thead><tbody><tr><td>/path/to/Zebra_Database/examples/example.php</td><td>query()</td><td>96</td></tr></tbody></table></div></td></tr></table></div><div id="zdc-globals">
+                        <div id="zdc-globals-submenu">
+                            <ul>
+                    <li>
+                                <a href="javascript: void(0)" class="zdc-toggle zdc-toggle-id zdc-globals-request">$_REQUEST
+                                </a>
+                            </li>
+                        <li>
+                                <a href="javascript: void(0)" class="zdc-toggle zdc-toggle-id zdc-globals-post">$_POST
+                                </a>
+                            </li>
+                        <li>
+                                <a href="javascript: void(0)" class="zdc-toggle zdc-toggle-id zdc-globals-get">$_GET
+                                </a>
+                            </li>
+                        <li>
+                                <a href="javascript: void(0)" class="zdc-toggle zdc-toggle-id zdc-globals-files">$_FILES
+                                </a>
+                            </li>
+
+                            </ul>
+                        </div>
+
+                            <table cellspacing="0" cellpadding="0" border="0" id="zdc-globals-request" class="zdc-entry">
+                                <tr>
+                                    <td class="zdc-counter">001</td>
+                                    <td class="zdc-data">
+                                        <div class="zdc-box">
+                                            <strong>$_REQUEST</strong>
+                                            <pre>NULL</pre>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table cellspacing="0" cellpadding="0" border="0" id="zdc-globals-post" class="zdc-entry">
+                                <tr>
+                                    <td class="zdc-counter">001</td>
+                                    <td class="zdc-data">
+                                        <div class="zdc-box">
+                                            <strong>$_POST</strong>
+                                            <pre>array (
+)</pre>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table cellspacing="0" cellpadding="0" border="0" id="zdc-globals-get" class="zdc-entry">
+                                <tr>
+                                    <td class="zdc-counter">001</td>
+                                    <td class="zdc-data">
+                                        <div class="zdc-box">
+                                            <strong>$_GET</strong>
+                                            <pre>array (
+)</pre>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table cellspacing="0" cellpadding="0" border="0" id="zdc-globals-files" class="zdc-entry">
+                                <tr>
+                                    <td class="zdc-counter">001</td>
+                                    <td class="zdc-data">
+                                        <div class="zdc-box">
+                                            <strong>$_FILES</strong>
+                                            <pre>array (
+)</pre>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div></div>
+                    <div id="zdc-mini">
+                        <a href="javascript: void(0)" class="zdc-toggle zdc-toggle-id zdc-main">4 / 1
+                        </a>
+                    </div>
