@@ -456,10 +456,10 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$halt_on_errors" class="variable"><span><em>boolean</em></span> $halt_on_errors =  <span class="value">true</span></h4>
+<h4 id="var$halt_on_errors" class="variable"><span><em>mixed</em></span> $halt_on_errors =  <span class="value">true</span></h4>
 <div class="doc_block">
 <p>When the value of this property is set to <code>TRUE</code>, the execution of the script will be halted after the first   unsuccessful query and the debugging console will be shown (or debug information will be written to the log file if configured   so), <strong>if</strong> the value of the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property is <strong>not</strong> <code>FALSE</code> and the viewer's IP address is in the   <a href="../Zebra_Database/Zebra_Database.html#var$debugger_ip">debugger_ip</a> array (or <a href="../Zebra_Database/Zebra_Database.html#var$debugger_ip">debugger_ip</a> is an empty array).</p>
-<p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;don't&nbsp;stop&nbsp;execution&nbsp;for&nbsp;unsuccessful&nbsp;queries&nbsp;(if&nbsp;possible)</span></div></li>
+<p><p class="highlight">If you want to stop on errors no matter what, set the value of this property to <code>always</code> and that will raise an       exception regardless of the value of the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property.<br><br>If you ever consider using this with       its value set to <code>always</code>, I recommend using the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property with a string value instead.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;don't&nbsp;stop&nbsp;execution&nbsp;for&nbsp;unsuccessful&nbsp;queries&nbsp;(if&nbsp;possible)</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$halt_on_errors">halt_on_errors</a>&nbsp;</span>=&nbsp;<span class="src-id">false</span><span class="src-sym">;</span></div></li>
 </ol><p>Default is <code>TRUE</code></p>
 <h5>Tags</h5>
