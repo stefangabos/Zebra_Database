@@ -721,6 +721,14 @@ class Zebra_Database {
     private $debug_info = array();
 
     /**
+     *  Stores queries that need to be run once a connection to the database is made
+     *
+     *  @var array<mixed>
+     *  @access private
+     */
+    private $deferred = array();
+
+    /**
      *  A flag telling the script whether it was called from CLI or in the browser
      *
      *  @var boolean
@@ -4063,8 +4071,14 @@ class Zebra_Database {
         // do not show the warning that this method has not been called
         unset($this->warnings['charset']);
 
-        // set MySQL character set
-        $this->query('SET NAMES "' . $this->escape($charset) . '" COLLATE "' . $this->escape($collation) . '"');
+        // the query to set the character set
+        $sql = 'SET NAMES ? COLLATE ?';
+
+        // if we are not yet connected to a database, defer it until a connection is made
+        if (!$this->connection || $this->connection->connect_errno != 0) $this->deferred[] = array($sql, $charset, $collation);
+
+        // otherwise run the query now
+        else $this->query($sql);
 
     }
 
@@ -4535,6 +4549,18 @@ class Zebra_Database {
                     'error'     => mysqli_connect_error(),
 
                 ));
+
+            // if connection was successful
+            else
+
+                // run over the deferred queries (if any)
+                while (!empty($this->deferred)) {
+
+                    // run the queries now
+                    $params = array_shift($this->deferred);
+                    call_user_func_array(array($this, 'query'), array($params[0], array_slice($params, 1)));
+
+                }
 
             // if caching is to be done to a memcache server and we don't yet have a connection
             if ($this->caching_method === 'memcache' && !$this->memcache && $this->memcache_host !== false && $this->memcache_port !== false) {
