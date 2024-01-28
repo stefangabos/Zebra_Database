@@ -1,3 +1,7 @@
+## version 2.12.0 (TBA)
+
+- fixed some incorrect examples in the documentation
+
 ## version 2.11.1 (January 28, 2024)
 
 - version bump
