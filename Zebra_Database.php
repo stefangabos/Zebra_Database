@@ -420,6 +420,10 @@ class Zebra_Database {
      *  so), **if** the value of the {@link debug} property is **not** `FALSE` and the viewer's IP address is in the
      *  {@link debugger_ip} array (or {@link debugger_ip} is an empty array).
      *
+     *  >   If you want to stop on errors no matter what, set the value of this property to `always` and that will raise an
+     *      exception regardless of the value of the {@link debug} property.<br><br>If you ever consider using this with
+     *      its value set to `always`, I recommend using the {@link debug} property with a string value instead.
+     *
      *  <code>
      *  // don't stop execution for unsuccessful queries (if possible)
      *  $db->halt_on_errors = false;
@@ -429,7 +433,7 @@ class Zebra_Database {
      *
      *  @since  1.0.5
      *
-     *  @var  boolean
+     *  @var  mixed
      */
     public $halt_on_errors = true;
 
@@ -5381,8 +5385,8 @@ class Zebra_Database {
      */
     private function _log($category, $data, $fatal = true) {
 
-        // if debugging is on
-        if ($this->_is_debugging_enabled()) {
+        // if debugging is on (or we need to stop on error no matter what)
+        if ($this->_is_debugging_enabled() || ($fatal && $this->halt_on_errors === 'always')) {
 
             // if category is different than "warnings"
             // (warnings are generated internally)
@@ -5412,6 +5416,12 @@ class Zebra_Database {
 
             // saves debug information
             $this->debug_info[$category][] = $data;
+
+            // if this a fatal error and we need to stop no matter what
+            if ($fatal && $this->halt_on_errors === 'always')
+
+                // throw an exception
+                throw new RuntimeException('Zebra Database (MySQL): ' . (isset($data['error']) ? $data['error'] : $data['message']));
 
             // if the saved debug info is about a fatal error and execution is to be stopped on fatal errors
             // (if this is an AJAX request and AJAX debugging is enabled, we let it through though)
