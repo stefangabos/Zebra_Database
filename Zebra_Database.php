@@ -4525,10 +4525,9 @@ class Zebra_Database {
             } catch (Exception $e) {
             }
 
-            // tries to connect to the MySQL database
+            // if connection could not be established
             if (mysqli_connect_errno())
 
-                // if connection could not be established
                 // save debug information
                 return $this->_log('errors', array(
 
