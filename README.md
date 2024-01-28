@@ -16,6 +16,8 @@ It encourages developers to write maintainable code and provides a better defaul
 
 The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to E_ALL.
 
+>   <br/>:microscope: See how the [debugging console](https://stefangabos.github.io/Zebra_Database/examples/index.html) in action<br/><br/>
+
 ## Features
 
 - it uses the [mysqli extension](https://www.php.net/manual/en/book.mysqli.php) extension for communicating with the database instead of the old *mysql* extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; **this is not a wrapper for the PDO extension which is already a wrapper in itself!**
