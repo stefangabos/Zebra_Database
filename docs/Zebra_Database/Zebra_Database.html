@@ -65,7 +65,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.11.1 (last revision: January 28, 2024)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
+<li>2.11.2 (last revision: January 28, 2024)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
 </ul>
 <h4>License:</h4>
 <ul>
@@ -274,7 +274,7 @@ Setting this property to <code>FALSE</code> will instruct the library to not gen
 queries it executes. Even so, if an error occurs the library will try to log the error to PHP's error log
 file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.configuration.php#ini.log-errors">configured to do so</a> !</li></ul><p class="highlight">It is highly recommended to set the value of this property to <code>FALSE</code> on the production environment. Generating   the debugging information may consume a lot of resources and is meant to be used <strong>only</strong> in the development process!</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;log&nbsp;debug&nbsp;information&nbsp;instead&nbsp;of&nbsp;showing&nbsp;it&nbsp;on&nbsp;screen</span></div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;log&nbsp;everything&nbsp;in&nbsp;one&nbsp;single&nbsp;file&nbsp;(not&nbsp;by&nbsp;day/hour)&nbsp;and&nbsp;also&nbsp;show&nbsp;backtrace&nbsp;information</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span>`debug&nbsp;=&nbsp;array(false,`&nbsp;<span class="src-id">false</span><span class="src-sym">,&nbsp;</span><span class="src-id">true</span><span class="src-sym">)</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a>&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-id">false</span><span class="src-sym">,&nbsp;</span><span class="src-id">false</span><span class="src-sym">,&nbsp;</span><span class="src-id">true</span><span class="src-sym">)</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;disable&nbsp;the&nbsp;generation&nbsp;of&nbsp;debugging&nbsp;information</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a>&nbsp;</span>=&nbsp;<span class="src-id">false</span><span class="src-sym">;</span></div></li>
@@ -383,7 +383,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <h4 id="var$debug_show_globals" class="variable"><span><em>boolean | array<string,boolean></em></span> $debug_show_globals =  <span class="value">true</span></h4>
 <div class="doc_block">
 <p>Indicates which of <code>$_REQUEST</code>, <code>$_POST</code>, <code>$_GET</code>, <code>$_SESSION</code>, <code>$_COOKIE</code>, <code>$_FILES</code> and <code>$_SERVER</code> superglobals   should be available in the debugging console, under the <em>globals</em> section.</p>
-<p>Can be set to either boolean <code>TRUE</code> or <code>FALSE</code> as a global setting, or as an associative array where each option's   visibility can be individually be set, like in the example below:</p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$debug_show_globals">debug_show_globals</a></span><span class="src-sym">(</span><span class="src-key">array</span><span class="src-sym">(</span></div></li>
+<p>Can be set to either boolean <code>TRUE</code> or <code>FALSE</code> as a global setting, or as an associative array where each option's   visibility can be individually be set, like in the example below:</p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$debug_show_globals">debug_show_globals</a>&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'request'&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-id">true</span><span class="src-sym">,</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'post'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-id">true</span><span class="src-sym">,</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'get'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-id">true</span><span class="src-sym">,</span></div></li>
@@ -391,7 +391,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'cookie'&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-id">true</span><span class="src-sym">,</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'files'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-id">true</span><span class="src-sym">,</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'server'&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;&nbsp;<span class="src-id">true</span><span class="src-sym">,</span></div></li>
-<li><div class="src-line"><span class="src-sym">))</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol><p>Default is <code>TRUE</code></p>
 <h5>Tags</h5>
 <table>
@@ -407,7 +407,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <div class="doc_block">
 <p>Sets the number of records returned by <code>SELECT</code> queries to be shown in the debugging console.</p>
 <p>Setting this to <code>0</code> or <code>FALSE</code> will disable this feature.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;show&nbsp;50&nbsp;records</span></div></li>
-<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$debug_show_records">debug_show_records</a></span><span class="src-sym">(</span><span class="src-num">50</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$debug_show_records">debug_show_records</a>&nbsp;</span>=&nbsp;<span class="src-num">50</span><span class="src-sym">;</span></div></li>
 </ol><p><em>Be aware that having this property set to a high number (hundreds) and having queries that di return that many   rows can cause your script to crash due to memory limitations. In this case you should either lower the value   of this property or try and set PHP's memory limit higher using:</em></p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;set&nbsp;PHP's&nbsp;memory&nbsp;limit&nbsp;to&nbsp;20&nbsp;MB</span></div></li>
 <li><div class="src-line"><a href="http://www.php.net/ini_set">ini_set</a><span class="src-sym">(</span><span class="src-str">'memory_limit'</span><span class="src-sym">,</span><span class="src-str">'20M'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol><p>Default is <code>20</code></p>
