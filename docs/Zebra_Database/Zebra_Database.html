@@ -2825,7 +2825,7 @@ void
 ) 
 </p>
 <p>Sets MySQL character set and collation</p>
-<p>The ensure that data is both properly saved and retrieved from the database you should call this method first   thing after connecting to the database.</p><p>If this method is not called a warning message will be displayed in the debugging console.</p><p class="highlight">Warnings can be disabled by setting the <a href="../Zebra_Database/Zebra_Database.html#var$disable_warnings">disable_warnings</a> property.</p>
+<p>The ensure that data is both properly saved and retrieved from the database you should call this method first   thing after connecting to the database.</p><p>If this method is not called a warning message will be displayed in the debugging console.</p><p class="highlight">Warnings can be disabled by setting the <a href="../Zebra_Database/Zebra_Database.html#var$disable_warnings">disable_warnings</a> property.</p><p class="highlight">Calling this method will <strong>not</strong> create a connection to the database but will be deferred instead until a &quot;real&quot;       query is run. This is to ensure that the <code>lazy connection</code> feature of the library is preserved.</p>
 <h5>Arguments</h5>
 <table>
 <tr>

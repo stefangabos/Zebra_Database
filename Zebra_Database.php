@@ -4050,6 +4050,9 @@ class Zebra_Database {
      *
      *  >   Warnings can be disabled by setting the {@link disable_warnings} property.
      *
+     *  >   Calling this method will **not** create a connection to the database but will be deferred instead until a "real"
+     *      query is run. This is to ensure that the `lazy connection` feature of the library is preserved.
+     *
      *  @param  string  $charset    (Optional) The character set to be used by the database
      *
      *                              Default is `utf8`
