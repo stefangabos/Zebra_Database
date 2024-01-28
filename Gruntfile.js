@@ -177,12 +177,14 @@ module.exports = function(grunt) {
         'copy': {
             js: {
                 files: [
-                    { src: 'src/zebra_database.src.js', dest: 'public/javascript/zebra_database.src.js' }
+                    { src: 'src/zebra_database.src.js', dest: 'public/javascript/zebra_database.src.js' },
+                    { src: 'public/javascript/zebra_database.min.js', dest: 'docs/examples/javascript/zebra_database.min.js' }
                 ]
             },
             css: {
                 files: [
-                    { expand: true, cwd: 'src/css/default/', src: ['*.png', '*.scss', '*.txt'], dest: 'public/css/default/' }
+                    { expand: true, cwd: 'src/css/default/', src: ['*.png', '*.scss', '*.txt'], dest: 'public/css/default/' },
+                    { expand: true, cwd: 'public/css/default/', src: ['*.png', '*.css', '*.txt'], dest: 'docs/examples/css/' }
                 ]
             }
         },
