@@ -173,7 +173,7 @@ class Zebra_Database {
      *  <code>
      *  // log debug information instead of showing it on screen
      *  // log everything in one single file (not by day/hour) and also show backtrace information
-     *  $db->`debug = array(false,` false, true)
+     *  $db->debug = array(false, false, true)
      *
      *  // disable the generation of debugging information
      *  $db->debug = false;
