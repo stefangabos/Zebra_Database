@@ -3139,6 +3139,7 @@ class Zebra_Database {
         if (!$this->_connected()) return false;
 
         unset($this->affected_rows);
+        unset($this->last_result);
 
         // if $replacements is specified but it's not an array
         if ($replacements !== '' && !is_array($replacements))
@@ -3230,8 +3231,6 @@ class Zebra_Database {
 
             // add the 'SQL_CALC_FOUND_ROWS' parameter to the query
             $sql = preg_replace('/^(.*?)SELECT/is', '$1SELECT SQL_CALC_FOUND_ROWS', $sql, 1);
-
-        if (isset($this->last_result)) unset($this->last_result);
 
         // starts a timer
         list($usec, $sec) = explode(' ', microtime());
