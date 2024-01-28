@@ -337,7 +337,7 @@ class Zebra_Database {
      *
      *  <code>
      *  // show 50 records
-     *  $db->debug_show_records(50);
+     *  $db->debug_show_records = 50;
      *  </code>
      *
      *  *Be aware that having this property set to a high number (hundreds) and having queries that di return that many
