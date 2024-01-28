@@ -1,5 +1,6 @@
 ## version 2.12.0 (TBA)
 
+- fixed [#83](https://github.com/stefangabos/Zebra_Database/issues/83); thanks [Bernhard Morgenstern](https://github.com/bmorg) for reporting!
 - `set_charset` doesn't force a connection anymore and it is now deferred until a "real" query is run so that the _lazy connection_ feature of the library is preserved; see [#80](https://github.com/stefangabos/Zebra_Database/issues/80) - thank you [Albatroon](https://github.com/Albatroon) for suggesting!
 - fixed some incorrect examples in the documentation
 
