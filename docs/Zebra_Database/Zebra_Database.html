@@ -65,7 +65,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>2.12.0 (last revision: January 28, 2024)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
+<li>2.12.0 (last revision: November 13, 2024)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
 </ul>
 <h4>License:</h4>
 <ul>
@@ -87,6 +87,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 <li><a href="#var$debugger_ip">$debugger_ip</a></li>
 <li><a href="#var$debug_ajax">$debug_ajax</a></li>
 <li><a href="#var$debug_cookie_name">$debug_cookie_name</a></li>
+<li><a href="#var$debug_info">$debug_info</a> <img src="../media/padlock.png" height="14" class="access-icon"></li>
 <li><a href="#var$debug_show_backtrace">$debug_show_backtrace</a></li>
 <li><a href="#var$debug_show_database_manager">$debug_show_database_manager</a></li>
 <li><a href="#var$debug_show_explain">$debug_show_explain</a></li>
@@ -164,7 +165,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 <div class="clear"></div>
 </div>
 <h3 id="class_vars">Class properties</h3>
-<h4 id="var$affected_rows" class="variable"><span><em>integer</em></span> $affected_rows <span class="value"></span></h4>
+<h4 id="var$affected_rows" class="variable"><span><em>integer</em></span> $affected_rows <span class="value"></span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>The number of rows affected after running an <code>INSERT</code>, <code>UPDATE</code>, <code>REPLACE</code> or <code>DELETE</code> query.</p>
 <p>See the <a href="../Zebra_Database/Zebra_Database.html#var$returned_rows">returned_rows</a> property for getting the number of rows returned by <code>SELECT</code> queries.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;update&nbsp;some&nbsp;columns&nbsp;in&nbsp;a&nbsp;table</span></div></li>
@@ -179,7 +180,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$auto_quote_replacements" class="variable"><span><em>boolean</em></span> $auto_quote_replacements =  <span class="value">true</span></h4>
+<h4 id="var$auto_quote_replacements" class="variable"><span><em>boolean</em></span> $auto_quote_replacements =  <span class="value">true</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Should escaped variables be also enclosed in single quotes?</p>
 <p>Default is <code>TRUE</code></p>
@@ -193,14 +194,14 @@ I have a few other projects that you might be interested in — <a href="https:/
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$cache_path" class="variable"><span><em>string</em></span> $cache_path <span class="value"></span></h4>
+<h4 id="var$cache_path" class="variable"><span><em>string</em></span> $cache_path <span class="value"></span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Path where to store cached queries results.</p>
 <p><em>The path must be relative to your working path and not the path of this library!</em></p>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$caching_method" class="variable"><span><em>string</em></span> $caching_method =  <span class="value">'disk'</span></h4>
+<h4 id="var$caching_method" class="variable"><span><em>string</em></span> $caching_method =  <span class="value">'disk'</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>The method to be used for caching query results.</p>
 <p>Can be either:</p><ul><li><strong>disk</strong>      -   query results are cached as files on the disk at the path specified by <a href="../Zebra_Database/Zebra_Database.html#var$cache_path">cache_path</a></li></ul> <ul><li><strong>session</strong>   -   query results are cached in the session (use this only for smaller data sets)<br>
@@ -245,7 +246,7 @@ with <code>--with-zlib[=DIR]</code></em></li></ul>   <ol class="code"><li><div c
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debug" class="variable"><span><em>boolean | string | array<boolean></em></span> $debug =  <span class="value">true</span></h4>
+<h4 id="var$debug" class="variable"><span><em>boolean | string | array<boolean></em></span> $debug =  <span class="value">true</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Turns debugging on or off.</p>
 <p>See also <a href="../Zebra_Database/Zebra_Database.html#var$debug_ajax">$debug_ajax</a>.</p><p>The property can take one of the following values:</p><p><ul><li><strong>boolean TRUE</strong><br>
@@ -293,7 +294,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debugger_ip" class="variable"><span><em>array<string></em></span> $debugger_ip =  <span class="value">array()</span></h4>
+<h4 id="var$debugger_ip" class="variable"><span><em>array<string></em></span> $debugger_ip =  <span class="value">array()</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>An array of IP addresses for which to show the debugging console / write to log file, if the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property   is <strong>not</strong> set to <code>FALSE</code>.</p>
 <p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;show&nbsp;the&nbsp;debugging&nbsp;console&nbsp;only&nbsp;to&nbsp;specific&nbsp;IPs</span></div></li>
@@ -309,7 +310,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debug_ajax" class="variable"><span><em>boolean</em></span> $debug_ajax =  <span class="value">false</span></h4>
+<h4 id="var$debug_ajax" class="variable"><span><em>boolean</em></span> $debug_ajax =  <span class="value">false</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Enables logging of queries done through AJAX requests.</p>
 <p>When set to <code>TRUE</code> all AJAX requests sent by your page will be captured and checked for logs generated by   <code>Zebra Database</code>.</p><p class="highlight">Note that when this is enabled HTML code will be appended to the result of the AJAX requests!<br>Therefore,       depending on your use-case, having this enabled could break some of your page's functionality.</p><p>Default is <code>FALSE</code></p>
@@ -323,7 +324,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debug_cookie_name" class="variable"><span><em>string</em></span> $debug_cookie_name =  <span class="value">'zebra_db'</span></h4>
+<h4 id="var$debug_cookie_name" class="variable"><span><em>string</em></span> $debug_cookie_name =  <span class="value">'zebra_db'</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>If debugging is enabled on the fly via the presence of a query string argument (see the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property),   a cookie is set so that the query string is not required to be present in subsequent requests.</p>
 <p>This property sets that cookie's name.</p><p>Default value is <code>zebra_db</code></p>
@@ -337,7 +338,13 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debug_show_backtrace" class="variable"><span><em>boolean</em></span> $debug_show_backtrace =  <span class="value">true</span></h4>
+<h4 id="var$debug_info" class="variable"><span><em>array<mixed></em></span> $debug_info =  <span class="value">array()</span><span class="access protected">protected</span></h4>
+<div class="doc_block">
+<p>All debugging information is stored in this array.</p>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
+<h4 id="var$debug_show_backtrace" class="variable"><span><em>boolean</em></span> $debug_show_backtrace =  <span class="value">true</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Indicates whether <a href="https://php.net/manual/en/function.debug-backtrace.php">backtrace</a> information should be   shown in the debugging console.</p>
 <p>Default is <code>TRUE</code></p>
@@ -351,7 +358,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debug_show_database_manager" class="variable"><span><em>boolean | string</em></span> $debug_show_database_manager =  <span class="value">false</span></h4>
+<h4 id="var$debug_show_database_manager" class="variable"><span><em>boolean | string</em></span> $debug_show_database_manager =  <span class="value">false</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Show a link for editing the query in your favorite database manager like (like <a href="https://www.phpmyadmin.net/">phpMyAdmin</a>   or <a href="https://www.adminer.org/">Adminer</a>).</p>
 <p>It should be an HTML anchor (a link) to your favorite database manager where you build the query string according   to the requirements of said database manager using the following placeholders:</p><p><ul><li>%host%</li><li>%user%</li><li>%password%</li><li>%database%</li><li>%port%</li><li>%socket%</li><li>%query%</li></ul><p>   ...were any of those placeholders will be replaced by the values you have passed on to <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect</a>, except   for the <em>%query%</em> placeholder which will be replaced by the respective query.</p><p>Here's how to set up the value for opening the query in <a href="https://www.adminer.org/">Adminer</a>:</p><ol class="code"><li><div class="src-line">&lt;<span class="src-id">a&nbsp;href</span>=<span class="src-str">&quot;path/to/adminer.php?server=%host%:%port%&amp;db=%database%&amp;sql=%query%&quot;&nbsp;</span><span class="src-id">target</span>=<span class="src-str">&quot;adminer&quot;</span>&gt;<span class="src-id">edit&nbsp;in&nbsp;adminer</span>&lt;/<span class="src-id">a</span>&gt;</div></li>
@@ -366,7 +373,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debug_show_explain" class="variable"><span><em>boolean</em></span> $debug_show_explain =  <span class="value">true</span></h4>
+<h4 id="var$debug_show_explain" class="variable"><span><em>boolean</em></span> $debug_show_explain =  <span class="value">true</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Indicates whether queries should be <a href="https://dev.mysql.com/doc/refman/8.0/en/explain.html">EXPLAIN</a>ed in the   debugging console.</p>
 <p>Default is <code>TRUE</code></p>
@@ -380,7 +387,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debug_show_globals" class="variable"><span><em>boolean | array<string,boolean></em></span> $debug_show_globals =  <span class="value">true</span></h4>
+<h4 id="var$debug_show_globals" class="variable"><span><em>boolean | array<string,boolean></em></span> $debug_show_globals =  <span class="value">true</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Indicates which of <code>$_REQUEST</code>, <code>$_POST</code>, <code>$_GET</code>, <code>$_SESSION</code>, <code>$_COOKIE</code>, <code>$_FILES</code> and <code>$_SERVER</code> superglobals   should be available in the debugging console, under the <em>globals</em> section.</p>
 <p>Can be set to either boolean <code>TRUE</code> or <code>FALSE</code> as a global setting, or as an associative array where each option's   visibility can be individually be set, like in the example below:</p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$debug_show_globals">debug_show_globals</a>&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
@@ -403,7 +410,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$debug_show_records" class="variable"><span><em>integer</em></span> $debug_show_records =  <span class="value">20</span></h4>
+<h4 id="var$debug_show_records" class="variable"><span><em>integer</em></span> $debug_show_records =  <span class="value">20</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Sets the number of records returned by <code>SELECT</code> queries to be shown in the debugging console.</p>
 <p>Setting this to <code>0</code> or <code>FALSE</code> will disable this feature.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;show&nbsp;50&nbsp;records</span></div></li>
@@ -421,14 +428,14 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$disable_warnings" class="variable"><span><em>boolean</em></span> $disable_warnings =  <span class="value">false</span></h4>
+<h4 id="var$disable_warnings" class="variable"><span><em>boolean</em></span> $disable_warnings =  <span class="value">false</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>By default, if <a href="../Zebra_Database/Zebra_Database.html#methodset_charset">set_charset()</a> method is not called, caching is used and <a href="https://memcached.org/about">memcache</a>   or <a href="https://redis.io/">redis</a> are available but none of them is used, a warning message will be displayed   in the debugging console.</p>
 <p>The ensure that data is both properly saved and retrieved to and from the database, this method should be called   first thing after connecting to a database.</p><p>If you don't want to call this method nor do you want to see the warning, set this property to <code>TRUE</code></p><p>Default is <code>FALSE</code></p>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$found_rows" class="variable"><span><em>integer | string</em></span> $found_rows <span class="value"></span></h4>
+<h4 id="var$found_rows" class="variable"><span><em>integer | string</em></span> $found_rows <span class="value"></span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>After running a <code>SELECT</code> query through <a href="../Zebra_Database/Zebra_Database.html#methodselect">select()</a>, <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodquery_unbuffered">query_unbuffered()</a> methods and   having the <em>calc_rows</em> argument set to <code>TRUE</code>, this property will contain the number of records that <strong>would</strong> have   been returned <strong>if</strong> there was no <code>LIMIT</code> applied to the query.</p>
 <p>If <em>calc_rows</em> is <code>FALSE</code>, or it is <code>TRUE</code> but there is no <code>LIMIT</code> applied to the query, this property's value   will be the same as the value of the <a href="../Zebra_Database/Zebra_Database.html#var$returned_rows">returned_rows</a> property.</p><p><em>For <a href="../Zebra_Database/Zebra_Database.html#methodquery_unbuffered">unbuffered queries</a> the value of this property will be available <strong>only</strong> after   iterating over <strong>all</strong> the records with either <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a> methods. Until then,   the value will be <strong>0</strong>!</em></p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;the&nbsp;last&nbsp;argument&nbsp;of&nbsp;the&nbsp;method&nbsp;tells&nbsp;the&nbsp;library&nbsp;to&nbsp;get&nbsp;the&nbsp;total&nbsp;number&nbsp;of&nbsp;records&nbsp;in&nbsp;the&nbsp;table</span></div></li>
@@ -456,7 +463,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$halt_on_errors" class="variable"><span><em>mixed</em></span> $halt_on_errors =  <span class="value">true</span></h4>
+<h4 id="var$halt_on_errors" class="variable"><span><em>mixed</em></span> $halt_on_errors =  <span class="value">true</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>When the value of this property is set to <code>TRUE</code>, the execution of the script will be halted after the first   unsuccessful query and the debugging console will be shown (or debug information will be written to the log file if configured   so), <strong>if</strong> the value of the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property is <strong>not</strong> <code>FALSE</code> and the viewer's IP address is in the   <a href="../Zebra_Database/Zebra_Database.html#var$debugger_ip">debugger_ip</a> array (or <a href="../Zebra_Database/Zebra_Database.html#var$debugger_ip">debugger_ip</a> is an empty array).</p>
 <p><p class="highlight">If you want to stop on errors no matter what, set the value of this property to <code>always</code> and that will raise an       exception regardless of the value of the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property.<br><br>If you ever consider using this with       its value set to <code>always</code>, I recommend using the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property with a string value instead.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;don't&nbsp;stop&nbsp;execution&nbsp;for&nbsp;unsuccessful&nbsp;queries&nbsp;(if&nbsp;possible)</span></div></li>
@@ -472,7 +479,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$log_path" class="variable"><span><em>string</em></span> $log_path =  <span class="value">''</span></h4>
+<h4 id="var$log_path" class="variable"><span><em>string</em></span> $log_path =  <span class="value">''</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Path where to store the log files when the <a href="../Zebra_Database/Zebra_Database.html#var$debug">debug</a> property is set to an array OR a callback function to   pass the log information to instead of being written to a file.</p>
 <p><strong>The path is relative to your working directory.</strong></p><p><em>Use <code>.</code> (dot) for the current directory instead of an empty string or the log file will be written to the server's   root.</em></p><p>If a full path is specified (including an extension) the log file's name will be used from there. Otherwise, the   log file's name will be <code>log.txt</code></p><p><em>At the given path the library will attempt to create a file named &quot;log.txt&quot; (or variations as described   <a href="../Zebra_Database/Zebra_Database.html#var$debug">here</a>) so the appropriate rights will need to be granted to the script!</em></p><p><strong>IF YOU'RE LOGGING, MAKE SURE YOU HAVE A CRON JOB THAT DELETES THE LOG FILES FROM TIME TO TIME!</strong></p><p>Default is <code>&quot;&quot;</code> (an empty string) - log files are created in the root of your server.</p><p>If you are using a callback function, the function receives the following arguments:</p><p><ul><li>the debug information, as a string, just like it would go into the log file</li><li>the backtrace information, as a string, just like it would go into the log file - if <a href="../Zebra_Database/Zebra_Database.html#var$debug_show_backtrace">debug_show_backtrace</a>
@@ -480,7 +487,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$max_query_time" class="variable"><span><em>integer</em></span> $max_query_time =  <span class="value">10</span></h4>
+<h4 id="var$max_query_time" class="variable"><span><em>integer</em></span> $max_query_time =  <span class="value">10</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Time (in seconds) after which a query will be considered as running for too long.</p>
 <p>If a query's execution time exceeds this number a notification email will be automatically sent to the address   defined by <a href="../Zebra_Database/Zebra_Database.html#var$notification_address">notification_address</a>, having <a href="../Zebra_Database/Zebra_Database.html#var$notifier_domain">notifier_domain</a> in subject.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;consider&nbsp;queries&nbsp;running&nbsp;for&nbsp;more&nbsp;than&nbsp;5&nbsp;seconds&nbsp;as&nbsp;slow&nbsp;and&nbsp;send&nbsp;email</span></div></li>
@@ -489,7 +496,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$memcache_compressed" class="variable"><span><em>boolean</em></span> $memcache_compressed =  <span class="value">false</span></h4>
+<h4 id="var$memcache_compressed" class="variable"><span><em>boolean</em></span> $memcache_compressed =  <span class="value">false</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Setting this property to <code>TRUE</code> will instruct to library to compress the cached results (using <code>zlib</code>).</p>
 <p><em>For this to work, PHP needs to be configured with <code>--with-zlib[=DIR]</code>!</em></p><p><em>Set this property only if you are using <code>memcache</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
@@ -503,7 +510,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$memcache_host" class="variable"><span><em>boolean | string</em></span> $memcache_host =  <span class="value">false</span></h4>
+<h4 id="var$memcache_host" class="variable"><span><em>boolean | string</em></span> $memcache_host =  <span class="value">false</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>The host where the memcache server is listening for connections.</p>
 <p><em>Set this property only if you are using <code>memcache</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
@@ -517,7 +524,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$memcache_key_prefix" class="variable"><span><em>string</em></span> $memcache_key_prefix =  <span class="value">''</span></h4>
+<h4 id="var$memcache_key_prefix" class="variable"><span><em>string</em></span> $memcache_key_prefix =  <span class="value">''</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>The prefix for the keys used to identify cached queries in memcache. This allows separate caching of the same   queries by multiple instances of the libraries, or the same instance handling multiple domains on the same   memcache server.</p>
 <p><em>Set this property only if you are using <code>memcache</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>&quot;&quot;</code> (an empty string)</p>
@@ -531,7 +538,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$memcache_port" class="variable"><span><em>integer | boolean</em></span> $memcache_port =  <span class="value">false</span></h4>
+<h4 id="var$memcache_port" class="variable"><span><em>integer | boolean</em></span> $memcache_port =  <span class="value">false</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>The port on which the memcache server is listening for connections.</p>
 <p><em>Set this property only if you are using <code>memcache</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
@@ -545,7 +552,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$minimize_console" class="variable"><span><em>boolean</em></span> $minimize_console =  <span class="value">true</span></h4>
+<h4 id="var$minimize_console" class="variable"><span><em>boolean</em></span> $minimize_console =  <span class="value">true</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>By setting this property to <code>TRUE</code> a minimized version of the debugging console will be shown by default instead   of the full-sized one.</p>
 <p>Clicking on it will show the full debugging console.</p><p>For quick and easy debugging, setting the <code>highlight</code> argument of a method that has it will result in the debugging   console being shown at full size and with the respective query visible for inspecting.</p><p>Default is <code>TRUE</code></p>
@@ -559,7 +566,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$notification_address" class="variable"><span><em>string</em></span> $notification_address =  <span class="value">''</span></h4>
+<h4 id="var$notification_address" class="variable"><span><em>string</em></span> $notification_address =  <span class="value">''</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Email address to which notification emails to be sent when a query's execution time exceeds the number of seconds   set by <a href="../Zebra_Database/Zebra_Database.html#var$max_query_time">max_query_time</a>. The notification email will be automatically sent to the address defined by   <a href="../Zebra_Database/Zebra_Database.html#var$notification_address">notification_address</a> and having <a href="../Zebra_Database/Zebra_Database.html#var$notifier_domain">notifier_domain</a> in subject.</p>
 <p><p class="highlight">Mails are sent using PHP's <a href="https://www.php.net/manual/en/function.mail.php">mail</a> function.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;the&nbsp;email&nbsp;address&nbsp;where&nbsp;to&nbsp;send&nbsp;an&nbsp;email&nbsp;when&nbsp;there&nbsp;are&nbsp;slow&nbsp;queries</span></div></li>
@@ -568,7 +575,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$notifier_domain" class="variable"><span><em>string</em></span> $notifier_domain =  <span class="value">''</span></h4>
+<h4 id="var$notifier_domain" class="variable"><span><em>string</em></span> $notifier_domain =  <span class="value">''</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Domain name to be used in the subject of notification emails sent when a query's execution time exceeds the number   of seconds set by <a href="../Zebra_Database/Zebra_Database.html#var$max_query_time">max_query_time</a>.</p>
 <p>If a query's execution time exceeds the number of seconds set by <a href="../Zebra_Database/Zebra_Database.html#var$max_query_time">max_query_time</a>, a notification email   will be automatically sent to the address defined by <a href="../Zebra_Database/Zebra_Database.html#var$notification_address">notification_address</a> and having <a href="../Zebra_Database/Zebra_Database.html#var$notifier_domain">notifier_domain</a>   in subject.</p><p class="highlight">Mails are sent using PHP's <a href="https://www.php.net/manual/en/function.mail.php">mail</a> function.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;set&nbsp;a&nbsp;domain&nbsp;name&nbsp;so&nbsp;that&nbsp;you'll&nbsp;know&nbsp;where&nbsp;the&nbsp;email&nbsp;comes&nbsp;from</span></div></li>
@@ -577,7 +584,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$redis_compressed" class="variable"><span><em>boolean</em></span> $redis_compressed =  <span class="value">false</span></h4>
+<h4 id="var$redis_compressed" class="variable"><span><em>boolean</em></span> $redis_compressed =  <span class="value">false</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Setting this property to <code>TRUE</code> will instruct to library to compress the cached results (using <code>zlib</code>).</p>
 <p><em>For this to work, PHP needs to be configured with <code>--with-zlib[=DIR]</code></em>!</p><p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
@@ -591,7 +598,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$redis_host" class="variable"><span><em>boolean | string</em></span> $redis_host =  <span class="value">false</span></h4>
+<h4 id="var$redis_host" class="variable"><span><em>boolean | string</em></span> $redis_host =  <span class="value">false</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>The host where the redis server is listening for connections.</p>
 <p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
@@ -605,7 +612,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$redis_key_prefix" class="variable"><span><em>string</em></span> $redis_key_prefix =  <span class="value">''</span></h4>
+<h4 id="var$redis_key_prefix" class="variable"><span><em>string</em></span> $redis_key_prefix =  <span class="value">''</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>The prefix for the keys used to identify cached queries in redis. This allows separate caching of the same   queries by multiple instances of the libraries, or the same instance handling multiple domains on the same   redis server.</p>
 <p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>&quot;&quot;</code> (an empty string)</p>
@@ -619,7 +626,7 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$redis_port" class="variable"><span><em>integer | boolean</em></span> $redis_port =  <span class="value">false</span></h4>
+<h4 id="var$redis_port" class="variable"><span><em>integer | boolean</em></span> $redis_port =  <span class="value">false</span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>The port on which the redis server is listening for connections.</p>
 <p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
@@ -633,14 +640,14 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$resource_path" class="variable"><span><em>string</em></span> $resource_path <span class="value"></span></h4>
+<h4 id="var$resource_path" class="variable"><span><em>string</em></span> $resource_path <span class="value"></span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>Path to parent of public folder containing the <code>css</code> and <code>javascript</code> folders.</p>
 <p><p class="highlight">The path must be relative to your <code>$_SERVER['DOCUMENT_ROOT']</code></p>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
-<h4 id="var$returned_rows" class="variable"><span><em>integer</em></span> $returned_rows <span class="value"></span></h4>
+<h4 id="var$returned_rows" class="variable"><span><em>integer</em></span> $returned_rows <span class="value"></span><span class="access public">public</span></h4>
 <div class="doc_block">
 <p>After running a <code>SELECT</code> query through <a href="../Zebra_Database/Zebra_Database.html#methodselect">select()</a>, <a href="../Zebra_Database/Zebra_Database.html#methodquery">query()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodquery_unbuffered">query_unbuffered()</a> methods,   this property will contain the number of returned rows.</p>
 <p><em>For <a href="../Zebra_Database/Zebra_Database.html#methodquery_unbuffered">unbuffered queries</a> the value of this property will be available <strong>only</strong> after   iterating over <strong>all</strong> the records with either <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a> methods. Until then,   the value will be <strong>0</strong>!</em></p><p>See <a href="../Zebra_Database/Zebra_Database.html#var$found_rows">found_rows</a> also.</p><ol class="code"><li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodquery">query</a><span class="src-sym">(</span><span class="src-str">'</span></div></li>
@@ -3137,7 +3144,7 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Sun, 28 January 2024</span>
+Documentation generated on <span>Wed, 13 November 2024</span>
 </div>
 </div>
 <!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-0301ZD47Q7"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-0301ZD47Q7');</script></body>
