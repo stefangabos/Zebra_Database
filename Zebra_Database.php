@@ -10,7 +10,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.12.0 (last revision: January 28, 2024)
+ *  @version    2.12.0 (last revision: November 13, 2024)
  *  @copyright  © 2006 - 2024 Stefan Gabos
  *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -720,9 +720,9 @@ class Zebra_Database {
      *  All debugging information is stored in this array.
      *
      *  @var array<mixed>
-     *  @access private
+     *  @access protected
      */
-    private $debug_info = array();
+    protected $debug_info = array();
 
     /**
      *  Stores queries that need to be run once a connection to the database is made
