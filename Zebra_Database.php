@@ -701,6 +701,14 @@ class Zebra_Database {
     private $cached_results = array();
 
     /**
+     *  Stores information about table columns.
+     *
+     *  @var mixed
+     *  @access private
+     */
+    private $column_info = array();
+
+    /**
      *  MySQL link identifier.
      *
      *  @var mixed
