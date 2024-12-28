@@ -1,30 +1,32 @@
+@use 'sass:color';
+
 $main_menu_background_color: #151C24;
-$main_menu_background_color_hover: lighten($main_menu_background_color, 20%);
+$main_menu_background_color_hover: color.adjust($main_menu_background_color, $lightness: 20%);
 $main_menu_text_color: #FFF;
 $main_menu_text_color_hover: #FFF;
 $min_menu_badge_background_color: orange;
 $min_menu_badge_text_color: #000;
 
 $globals_submenu_background_color: #403D32;
-$globals_submenu_background_color_hover: lighten($globals_submenu_background_color, 20%);
+$globals_submenu_background_color_hover: color.adjust($globals_submenu_background_color, $lightness: 20%);
 $globals_submenu_text_color: #FFF;
 $globals_submenu_text_color_hover: #FFF;
 
 $entry_border_color: #9CA68F;
 
-$entry_counter_background_color: darken($entry_border_color, 20%);
+$entry_counter_background_color: color.adjust($entry_border_color, $lightness: -20%);
 $entry_counter_text_color: #FFF;
 $entry_counter_transaction_background_color: #888;
 $entry_counter_transaction_text_color: #FFF;
 $entry_counter_highlight_background_color: #926492;
 $entry_counter_highlight_text_color: #FFF;
-$entry_counter_ajax_background_color: darken($entry_border_color, 20%);
+$entry_counter_ajax_background_color: color.adjust($entry_border_color, $lightness: -20%);
 $entry_counter_ajax_text_color: #CDDC39;
 
 $entry_box_error_background_color: #CC3333;
 $entry_box_error_text_color: #FFF;
 
-$entry_box_actions_menu_background_color: lighten($entry_border_color, 20%);
+$entry_box_actions_menu_background_color: color.adjust($entry_border_color, $lightness: 20%);
 $entry_box_actions_menu_ajax_accent_background_color: #E63570;
 $entry_box_actions_menu_ajax_accent_text_color: #FFF;
 $entry_box_actions_menu_cached_accent_background_color: #CCFF99;
@@ -40,7 +42,7 @@ $entry_syntax_highlighter_symbol: #FF00FF;
 $entry_syntax_highlighter_comment: teal;
 
 $entry_data_table_header_text_color: #F0F0F0;
-$entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_background_color, 5%);
+$entry_data_table_odd_row_background_color: color.adjust($entry_syntax_highlighter_background_color, $lightness: -5%);
 
 #zdc {
     position: absolute;
@@ -153,7 +155,7 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
                         background-repeat: no-repeat;
                         background-position: 5px center;
                         &.zdc-time {
-                            background-image: url('clock.png');
+                            background-image: url(clock.png);
                         }
                         &.zdc-ajax {
                             background-color: $entry_box_actions_menu_ajax_accent_background_color;
@@ -163,40 +165,40 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
                             margin-right: 2px;
                         }
                         &.zdc-cache {
-                            background-image: url('cache.png');
+                            background-image: url(cache.png);
                             background-color: $entry_box_actions_menu_cached_accent_background_color;
                             color: $entry_box_actions_menu_cached_accent_text_color;
                             border-radius: 5px;
                             margin-right: 2px;
                         }
                         &.zdc-unbuffered {
-                            background-image: url('unbuffered.png');
+                            background-image: url(unbuffered.png);
                             background-color: $entry_box_actions_menu_unbuffered_accent_background_color;
                             color: $entry_box_actions_menu_unbuffered_accent_text_color;
                             border-radius: 5px;
                             margin-right: 2px;
                         }
                         &.zdc-top {
-                            background-image: url('top.png');
+                            background-image: url(top.png);
                         }
                         &.zdc-close {
-                            background-image: url('close.png');
+                            background-image: url(close.png);
                             background-position: 5px 6px !important;
                         }
                         &.zdc-records {
-                            background-image: url('records.png');
+                            background-image: url(records.png);
                         }
                         &.zdc-affected {
-                            background-image: url('affected.png');
+                            background-image: url(affected.png);
                         }
                         &.zdc-explain {
-                            background-image: url('explain.png');
+                            background-image: url(explain.png);
                         }
                         &.zdc-backtrace {
-                            background-image: url('backtrace.png');
+                            background-image: url(backtrace.png);
                         }
                         &.zdc-database-manager {
-                            background-image: url('db-manager.png');
+                            background-image: url(db-manager.png);
                         }
                         a {
                             text-decoration: underline !important;
@@ -311,7 +313,7 @@ $entry_data_table_odd_row_background_color: darken($entry_syntax_highlighter_bac
     text-align: left;
     display: block;
     a {
-        background: $main_menu_background_color url('db.png') no-repeat 10px center;
+        background: $main_menu_background_color url(db.png) no-repeat 10px center;
         display: block;
         padding: 8px 8px 8px 35px;
         color: $main_menu_text_color;
