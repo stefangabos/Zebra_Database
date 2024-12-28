@@ -6,7 +6,7 @@ module.exports = function(grunt) {
     require('time-grunt')(grunt);
 
     // required for sass
-    const sass = require('node-sass');
+    const sass = require('sass');
 
     grunt.initConfig({
 
@@ -28,23 +28,21 @@ module.exports = function(grunt) {
 
         /***************************************************************************************************************
          *  SASS
-         *  https://www.npmjs.org/package/grunt-sass
+         *  https://www.npmjs.org/package/grunt-sass-modern
          **************************************************************************************************************/
         'sass': {
+            options: {
+                implementation: sass,
+                api: 'modern'
+            },
             expanded: {
-                options: {
-                    implementation: sass,
-                    outputStyle: 'expanded',
-                    indentWidth: 4
-                },
                 files: {
                     'public/css/default/zebra_database.css': 'src/css/default/zebra_database.scss',
                 }
             },
             minified: {
                 options: {
-                    implementation: sass,
-                    outputStyle: 'compressed'
+                    style: 'compressed'
                 },
                 files: {
                     'public/css/default/zebra_database.min.css': 'src/css/default/zebra_database.scss',
@@ -53,23 +51,53 @@ module.exports = function(grunt) {
         },
 
         /***************************************************************************************************************
+         *  STRING REPLACE
+         *  https://github.com/eruizdechavez/grunt-string-replace
+         **************************************************************************************************************/
+        'string-replace': {
+            options: {
+                replacements: [{
+                    pattern: /(rgba?|hsla?)\(\s*([0-9]*\.?[0-9]+)?(\%)?\s*,\s*([0-9]*\.?[0-9]+)?(\%)?\s*,\s*([0-9]*\.?[0-9]+)?(\%)?/g,
+                    replacement: function(match, p1, p2, p3, p4, p5, p6, p7) {
+                        p2 = p2 ? Math.floor(parseFloat(p2)) : '0';
+                        p4 = p4 ? Math.floor(parseFloat(p4)) : '0';
+                        p6 = p6 ? Math.floor(parseFloat(p6)) : '0';
+                        return p1 + '(' + p2 + (p3 || '') + ',' + p4 + (p5 || '') + ',' + p6 + (p7 || '');
+                    }}
+                ]
+            },
+            expanded: {
+                files: {
+                    'public/css/default/zebra_database.css': 'public/css/default/zebra_database.css',
+                },
+            },
+            minified: {
+                files: {
+                    'public/css/default/zebra_database.min.css': 'public/css/default/zebra_database.min.css',
+                },
+            }
+        },
+
+        /***************************************************************************************************************
          *  CSSMIN
          *  https://github.com/gruntjs/grunt-contrib-cssmin
          **************************************************************************************************************/
         'cssmin': {
+            options: {
+                compatibility: {
+                    properties: {
+                        ieBangHack: true,
+                        ieFilters: true,
+                        iePrefixHack: true,
+                        ieSuffixHack: true
+                    },
+                    selectors: {
+                        ie7Hack: true
+                    }
+                },
+            },
             beutify: {
                 options: {
-                    compatibility: {
-                        properties: {
-                            ieBangHack: true,
-                            ieFilters: true,
-                            iePrefixHack: true,
-                            ieSuffixHack: true
-                        },
-                        selectors: {
-                            ie7Hack: true
-                        }
-                    },
                     format: {
                         breaks: {
                             afterAtRule: true,
@@ -98,17 +126,6 @@ module.exports = function(grunt) {
             },
             minify: {
                 options: {
-                    compatibility: {
-                        properties: {
-                            ieBangHack: true,
-                            ieFilters: true,
-                            iePrefixHack: true,
-                            ieSuffixHack: true
-                        },
-                        selectors: {
-                            ie7Hack: true
-                        }
-                    },
                     level: 2
                 },
                 files: {
@@ -122,9 +139,6 @@ module.exports = function(grunt) {
          *  http://eslint.org/docs/rules/
          **************************************************************************************************************/
         'eslint' : {
-            options: {
-                overrideConfigFile: 'eslint.json'
-            },
             src: ['src/zebra_database.src.js']
         },
 
@@ -203,7 +217,7 @@ module.exports = function(grunt) {
             },
             css: {
                 files: ['src/css/**/*.scss'],
-                tasks: ['sass', 'cssmin', 'copy:css', 'notify:done'],
+                tasks: ['sass', 'string-replace', 'cssmin', 'copy:css', 'notify:done'],
                 options: {
                     livereload: true
                 }
@@ -213,6 +227,7 @@ module.exports = function(grunt) {
     });
 
     // register plugins
+    grunt.loadNpmTasks('grunt-string-replace');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -221,8 +236,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-eslint');
     grunt.loadNpmTasks('grunt-newer');
     grunt.loadNpmTasks('grunt-notify');
-    grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-sass-modern');
 
-    grunt.registerTask('default', ['sass', 'cssmin', 'eslint', 'jshint', 'uglify', 'copy', 'watch']);
+    grunt.registerTask('default', ['sass', 'string-replace', 'cssmin', 'eslint', 'jshint', 'uglify', 'copy', 'watch']);
 
 };
