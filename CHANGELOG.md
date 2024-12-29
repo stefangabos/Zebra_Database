@@ -1,10 +1,11 @@
-## version 2.12.0 (TBA)
+## version 3.0.0 (TBA)
 
-- `halt_on_errors` now supports a new `always` value which, when set, will instruct the library to raise an exception on fatal errors regardless of the value of the `debug` property; see [#82](https://github.com/stefangabos/Zebra_Database/issues/82); thanks [Bernhard Morgenstern](https://github.com/bmorg) for sugesting!
-- fixed [#83](https://github.com/stefangabos/Zebra_Database/issues/83); thanks [Bernhard Morgenstern](https://github.com/bmorg) for reporting!
 - fixed [#88](https://github.com/stefangabos/Zebra_Database/issues/88); thanks to [09173732546](https://github.com/09173732546) for reporting!
-- `set_charset` doesn't force a connection anymore and it is now deferred until a "real" query is run so that the _lazy connection_ feature of the library is preserved; see [#80](https://github.com/stefangabos/Zebra_Database/issues/80) - thank you [Albatroon](https://github.com/Albatroon) for suggesting!
 - the [debug_info](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$debug_info) property is now `protected` and can be used to customize and extend the debugging interface; see [#87](https://github.com/stefangabos/Zebra_Database/issues/87)
+- fixed [#83](https://github.com/stefangabos/Zebra_Database/issues/83); thanks [Bernhard Morgenstern](https://github.com/bmorg) for reporting!
+- `halt_on_errors` now supports a new `always` value which, when set, will instruct the library to raise an exception on fatal errors regardless of the value of the `debug` property; see [#82](https://github.com/stefangabos/Zebra_Database/issues/82); thanks [Bernhard Morgenstern](https://github.com/bmorg) for sugesting!
+- `set_charset` doesn't force a connection anymore and it is now deferred until a "real" query is run so that the _lazy connection_ feature of the library is preserved; see [#80](https://github.com/stefangabos/Zebra_Database/issues/80) - thank you [Albatroon](https://github.com/Albatroon) for suggesting!
+- `ORDER BY` can now be used with the [dlookup](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methoddlookup) method; see [#20](https://github.com/stefangabos/Zebra_Database/issues/20), a request from 10 years ago! thanks [Andrew Rumm](https://github.com/rayzru) for suggesting this one!
 - fixed some incorrect examples in the documentation
 
 ## version 2.11.1 (January 28, 2024)
