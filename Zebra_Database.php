@@ -1246,6 +1246,14 @@ class Zebra_Database {
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
      *                                  calling this method.*
      *
+     *                                  If you need to `ORDER BY`, you will need to use a pipe (`|`) after the table's name
+     *                                  followed by whatever you would normally use after an `ORDER BY` clause (but without
+     *                                  the `ORDER BY` keyword)
+     *
+     *                                  <code>
+     *                                  $db->dlookup('name', 'users|age DESC,income', 'gender = ?', array($gender));
+     *                                  </code>
+     *
      *  @param  string  $where          (Optional) A MySQL `WHERE` clause (without the `WHERE` keyword)
      *
      *                                  Default is `""` (an empty string)
@@ -1280,6 +1288,18 @@ class Zebra_Database {
      */
     public function dlookup($column, $table, $where = '', $replacements = '', $cache = false, $highlight = false) {
 
+        // if table name has a pipe in it
+        if (strpos($table, '|') !== false) {
+
+            // the string *after* the pipe will be used to ORDER BY
+            $order_by = 'ORDER BY ' . substr($table, strpos($table, '|') + 1);
+
+            // what's *before* the pipe will be the actual table name
+            $table = substr($table, 0, strpos($table, '|'));
+
+        // otherwise we consider that there's no ORDER BY clause
+        } else $order_by = '';
+
         // run the query
         $this->query('
             SELECT
@@ -1287,6 +1307,7 @@ class Zebra_Database {
             FROM
                 ' . $this->_escape($table) .
                 ($where !== '' ? ' WHERE ' . $where : '') . '
+            ' . $order_by . '
             LIMIT 1
         ', $replacements, $cache, false, $highlight);
 
