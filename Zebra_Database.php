@@ -203,7 +203,7 @@ class Zebra_Database {
      *  $debug_ajax = './update-debug-info.php';
      *  </code>
      *
-     *  >   You need to move the `update-debug-info.php` file from the library's root folder to location accessible by an
+     *  >   You need to move the `update-debug-info.php` file from the library's root folder to a location accessible by an
      *      AJAX GET request. Additionally, you can rename the file to whatever suits your needs - or use whatever
      *      technique you want, as long as the file is publicly accessible and its content is unchanged.
      *
@@ -225,11 +225,12 @@ class Zebra_Database {
      *
      *  >   Note that this will work only if the {@link $debug} property is set to `TRUE` both in the "main" file as well as in the file that is being called through AJAX.
      *
-     *  >   This needs to be set only for the "main" script; setting it for the files called through AJAX has no effect.
+     *  >   The `debug_ajax` property needs to be set only for the "main" script; setting it for the files called through
+     *      AJAX has no effect.
      *
      *  Default is `FALSE`
      *
-     *  @since 2.11.0
+     *  @since 2.12.0
      *
      *  @var string
      */
