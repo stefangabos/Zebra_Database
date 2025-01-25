@@ -5324,6 +5324,8 @@ class Zebra_Database {
      */
     private function _is_mysql_function($value) {
 
+        $value = trim($value);
+
         // returns TRUE if
         return (
 
@@ -5336,10 +5338,10 @@ class Zebra_Database {
                 // has opening and closing parenthesis
                 strpos($value, '(') !== false && strpos($value, ')') !== false &&
 
-                // there is no white spaces from the beginning until the opening parenthesis
-                preg_match('/^([^\s]+?)\(/i', $value, $matches) &&
+                // the string looks something like "FOO(BAR)"
+                preg_match('/^([a-z_]+)\(.*\)$/i', $value, $matches) &&
 
-                // and match is not a MySQL function
+                // the first "word" is a MySQL function
                 in_array(strtoupper($matches[1]), $this->mysql_functions)
 
             )
