@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Zebra_Database - a compact, lightweight and feature-rich PHP MySQLi database wrapper - Docs For Class Zebra_Database</title>
+<title>Zebra Database - a compact, lightweight and feature-rich PHP MySQLi database wrapper - Docs For Class Zebra_Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8">
 <link rel="shortcut icon" href="/Zebra_Database/favicon.ico">
@@ -40,7 +40,8 @@
 <ul>
 <li><a href="../Zebra_Database/Zebra_Database.html">Zebra_Database</a></li>
 </ul>
-<p><strong>Files:</strong></p><ul>
+<p><strong>Files:</strong></p>
+<ul>
 <li><a href="../Zebra_Database/_update-debug-info.php.html">update-debug-info.php</a></li>
 <li><a href="../Zebra_Database/_Zebra_Database.php.html">Zebra_Database.php</a></li>
 </ul>
@@ -57,7 +58,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </p>
 </div>
 </td>
-<td style="background: #FFF">
+<td style="background: #FFF; width: 100%">
 <div id="doc_content">
 <h2>Class: <strong>Zebra_Database</strong></h2>
 <h6><strong>source file:</strong> /Zebra_Database.php</h6>
@@ -69,7 +70,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>3.0.0 (last revision: December 29, 2024)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
+<li>2.12.0 (last revision: January 25, 2025)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
 </ul>
 <h4>License:</h4>
 <ul>
@@ -77,7 +78,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <h4>Copyright:</h4>
 <ul>
-<li>© 2006 - 2024 Stefan Gabos</li>
+<li>© 2006 - 2025 Stefan Gabos</li>
 </ul>
 <div id="top" class="doc_toc">
 <div class="left">
@@ -91,7 +92,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 <li><a href="#var$debugger_ip">$debugger_ip</a></li>
 <li><a href="#var$debug_ajax">$debug_ajax</a></li>
 <li><a href="#var$debug_cookie_name">$debug_cookie_name</a></li>
-<li><a href="#var$debug_info">$debug_info</a> <img src="../media/padlock.png" height="14" class="access-icon"></li>
+<li><em><small class="var-protected">protected</small></em>&nbsp;<a href="#var$debug_info">$debug_info</a></li>
 <li><a href="#var$debug_show_backtrace">$debug_show_backtrace</a></li>
 <li><a href="#var$debug_show_database_manager">$debug_show_database_manager</a></li>
 <li><a href="#var$debug_show_explain">$debug_show_explain</a></li>
@@ -123,6 +124,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <ul>
 <li><a href="#method__construct">__construct</a></li>
+<li><a href="#method__destruct">__destruct</a></li>
 <li><a href="#methodclose">close</a></li>
 <li><a href="#methodconnect">connect</a></li>
 <li><a href="#methoddcount">dcount</a></li>
@@ -318,7 +320,7 @@ file, if your environment is <a href="https://www.php.net/manual/en/errorfunc.co
 <div class="doc_block">
 <p>Enables logging of queries run through AJAX requests.</p>
 <p>The property's value needs to be set to the path where the <code>update-debug-info.php</code> file would be accessible via   a <code>GET</code> <code>AJAX</code> request.</p><p>Can be both a relative or an absolute path.</p><ol class="code"><li><div class="src-line"><span class="src-var">$debug_ajax&nbsp;</span>=&nbsp;<span class="src-str">'./update-debug-info.php'</span><span class="src-sym">;</span></div></li>
-</ol><p class="highlight">You need to move the <code>update-debug-info.php</code> file from the library's root folder to location accessible by an       AJAX GET request. Additionally, you can rename the file to whatever suits your needs - or use whatever       technique you want, as long as the file is publicly accessible and its content is unchanged.</p><p>How this works:</p><p><ul><li>when this feature is enabled, the library's JavaScript creates a hook that appends a custom <a href="https://developer.mozilla.org/en-US/docs/Glossary/Request_header">request header</a>
+</ol><p class="highlight">You need to move the <code>update-debug-info.php</code> file from the library's root folder to a location accessible by an       AJAX GET request. Additionally, you can rename the file to whatever suits your needs - or use whatever       technique you want, as long as the file is publicly accessible and its content is unchanged.</p><p>How this works:</p><p><ul><li>when this feature is enabled, the library's JavaScript creates a hook that appends a custom <a href="https://developer.mozilla.org/en-US/docs/Glossary/Request_header">request header</a>
 to <strong>all</strong> subsequent AJAX requests; the header, named <code>zdb_log_id</code>, will contain a 12-character long random
 numerical value; this value serves both as a flag indicating that the library's instances in these requests
 should generate debug information to be relayed back to the &quot;main&quot; script, and as an identifier for the
@@ -326,12 +328,12 @@ temporary file holding the debug information (read on)</li></ul> <ul><li>AJAX re
 <code>zdb-log-[numeric value from request header]</code> in the system's temporary folder (as returned by <a href="http://www.php.net/sys_get_temp_dir">sys_get_temp_dir</a>);</li></ul> <ul><li>for all terminating AJAX request, the library's JavaScript will make an additional AJAX call to the <code>update-debug-info.php</code>
 file (at the path specified by <a href="../Zebra_Database/Zebra_Database.html#var$debug_ajax">debug_ajax</a>); this file will check the system's temporary folder for the
 corresponding temporary file, as described above; if the file exists, it will fetch the debug information from it,
-delete the temporary file, and inject the debug information into the debug console</li></ul><p class="highlight">Note that this will work only if the <a href="../Zebra_Database/Zebra_Database.html#var$debug">$debug</a> property is set to <code>TRUE</code> both in the &quot;main&quot; file as well as in the file that is being called through AJAX.</p><p class="highlight">This needs to be set only for the &quot;main&quot; script; setting it for the files called through AJAX has no effect.</p><p>Default is <code>FALSE</code></p>
+delete the temporary file, and inject the debug information into the debug console</li></ul><p class="highlight">Note that this will work only if the <a href="../Zebra_Database/Zebra_Database.html#var$debug">$debug</a> property is set to <code>TRUE</code> both in the &quot;main&quot; file as well as in the file that is being called through AJAX.</p><p class="highlight">The <code>debug_ajax</code> property needs to be set only for the &quot;main&quot; script; setting it for the files called through       AJAX has no effect.</p><p>Default is <code>FALSE</code></p>
 <h5>Tags</h5>
 <table>
 <tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
-<td>2.11.0</td>
+<td>2.12.0</td>
 </tr>
 </table>
 <a href="#top" class="top">top</a>
@@ -701,6 +703,24 @@ void
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
+<h4 id="method__destruct" class="method"><span><em>destructor</em></span> __destruct()</h4>
+<div class="doc_block">
+<p class="code">
+void
+<span class="src-var">__destruct</span>
+()
+</p>
+<p>Frees the memory associated with the last result</p>
+<h5>Tags</h5>
+<table>
+<tr>
+<td><strong>since:</strong>&nbsp;&nbsp;</td>
+<td>2.8</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
 <h4 id="methodclose" class="method"><span><em>method</em></span> close()</h4>
 <div class="doc_block">
 <p class="code">
@@ -809,22 +829,22 @@ void
 <tr>
 <td><em>string</em></td>
 <td><strong>$database</strong></td>
-<td><p>(Optional) The database to be selected after the connection is established</p><p>This <em>can also be set later</em> with the <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> method</p><p>Default is <code>&quot;&quot;</code> (empty string)</p></td>
+<td><p><span class="optional">Optional</span> The database to be selected after the connection is established</p><p>This <em>can also be set later</em> with the <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> method</p><p>Default is <code>&quot;&quot;</code> (empty string)</p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
 <td><strong>$port</strong></td>
-<td><p>(Optional) The port number to use when connecting to the MySQL server</p><p>Default is <code>&quot;&quot;</code> (empty string) which defaults to the value returned by <code>ini_get('mysqli.default_port')</code></p></td>
+<td><p><span class="optional">Optional</span> The port number to use when connecting to the MySQL server</p><p>Default is <code>&quot;&quot;</code> (empty string) which defaults to the value returned by <code>ini_get('mysqli.default_port')</code></p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
 <td><strong>$socket</strong></td>
-<td><p>(Optional) The socket or named pipe that should be used.</p><p>Specifying the socket parameter will not explicitly determine the type of connection                               to be used when connecting to the MySQL server. How the connection is made to the MySQL                               database is determined by the <em>host</em> argument.</p><p>Default is <code>&quot;&quot;</code> (empty string) which defaults to the value returned by <code>ini_get('mysqli.default_socket')</code></p></td>
+<td><p><span class="optional">Optional</span> The socket or named pipe that should be used.</p><p>Specifying the socket parameter will not explicitly determine the type of connection                               to be used when connecting to the MySQL server. How the connection is made to the MySQL                               database is determined by the <em>host</em> argument.</p><p>Default is <code>&quot;&quot;</code> (empty string) which defaults to the value returned by <code>ini_get('mysqli.default_socket')</code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$connect</strong></td>
-<td><p>(Optional) Setting this argument to <code>TRUE</code> will force the library to connect to the                               database right away instead of using a <em>lazy connection</em> and not connecting the                               database until the first query is run.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> Setting this argument to <code>TRUE</code> will force the library to connect to the                               database right away instead of using a <em>lazy connection</em> and not connecting the                               database until the first query is run.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <a href="#top" class="top">top</a>
@@ -894,22 +914,22 @@ mixed
 <tr>
 <td><em>string</em></td>
 <td><strong>$where</strong></td>
-<td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
-<td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$cache</strong></td>
-<td><p>(Optional) Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -971,17 +991,17 @@ boolean
 <tr>
 <td><em>string</em></td>
 <td><strong>$where</strong></td>
-<td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
-<td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1063,22 +1083,22 @@ mixed
 <tr>
 <td><em>string</em></td>
 <td><strong>$where</strong></td>
-<td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
-<td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$cache</strong></td>
-<td><p>(Optional) Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1155,22 +1175,22 @@ mixed
 <tr>
 <td><em>string</em></td>
 <td><strong>$where</strong></td>
-<td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
-<td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$cache</strong></td>
-<td><p>(Optional) Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1247,22 +1267,22 @@ mixed
 <tr>
 <td><em>string</em></td>
 <td><strong>$where</strong></td>
-<td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
-<td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$cache</strong></td>
-<td><p>(Optional) Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1406,7 +1426,7 @@ mixed
 <tr>
 <td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
-<td><p>(Optional) Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
+<td><p><span class="optional">Optional</span> Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1452,12 +1472,12 @@ mixed
 <tr>
 <td><em>int|string</em></td>
 <td><strong>$index</strong></td>
-<td><p>(Optional) Name of a column containing unique values</p><p>If specified, the returned associative array's keys will be the values                                           from this column.</p><p><em>If not specified, returned array will have numerical indexes, starting                                           from 0.</em></p></td>
+<td><p><span class="optional">Optional</span> Name of a column containing unique values</p><p>If specified, the returned associative array's keys will be the values                                           from this column.</p><p><em>If not specified, returned array will have numerical indexes, starting                                           from 0.</em></p></td>
 </tr>
 <tr>
 <td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
-<td><p>(Optional) Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
+<td><p><span class="optional">Optional</span> Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1504,7 +1524,7 @@ mixed
 <tr>
 <td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
-<td><p>(Optional) Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
+<td><p><span class="optional">Optional</span> Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1554,12 +1574,12 @@ mixed
 <tr>
 <td><em>int|string</em></td>
 <td><strong>$index</strong></td>
-<td><p>(Optional) A column name from the records, containing unique values</p><p>If specified, the returned associative array's keys will be the values                                           from this column.</p><p><em>If not specified, returned array will have numerical indexes, starting                                           from 0.</em></p></td>
+<td><p><span class="optional">Optional</span> A column name from the records, containing unique values</p><p>If specified, the returned associative array's keys will be the values                                           from this column.</p><p><em>If not specified, returned array will have numerical indexes, starting                                           from 0.</em></p></td>
 </tr>
 <tr>
 <td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
-<td><p>(Optional) Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
+<td><p><span class="optional">Optional</span> Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1597,7 +1617,7 @@ false|void
 <tr>
 <td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
-<td><p>(Optional) A valid resource</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
+<td><p><span class="optional">Optional</span> A valid resource</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1637,7 +1657,7 @@ mixed
 <tr>
 <td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
-<td><p>(Optional) Resource to fetch columns information from.</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
+<td><p><span class="optional">Optional</span> Resource to fetch columns information from.</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1730,7 +1750,7 @@ array<string>
 <tr>
 <td><em>string</em></td>
 <td><strong>$database</strong></td>
-<td><p>(Optional) The name of the database from which to return the names of existing tables</p><p>If not specified, the tables from the currently selected database will be returned.</p><p><em>This option was added in 2.9.5</em></p></td>
+<td><p><span class="optional">Optional</span> The name of the database from which to return the names of existing tables</p><p>If not specified, the tables from the currently selected database will be returned.</p><p><em>This option was added in 2.9.5</em></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1807,7 +1827,7 @@ array<mixed>
 <tr>
 <td><em>string</em></td>
 <td><strong>$table</strong></td>
-<td><p>(Optional) Table for which to return information for</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly                               selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                               calling this method.</em></p><p><code>%</code> may be used as a wildcard in table's name to get information about all the tables                               matching the pattern.</p><p>If not specified, information will be returned for all the tables in the currently                               selected database.</p></td>
+<td><p><span class="optional">Optional</span> Table for which to return information for</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly                               selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                               calling this method.</em></p><p><code>%</code> may be used as a wildcard in table's name to get information about all the tables                               matching the pattern.</p><p>If not specified, information will be returned for all the tables in the currently                               selected database.</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -1996,12 +2016,12 @@ boolean
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$update</strong></td>
-<td><p>(Optional) By default, calling this method with this argument set to boolean <code>TRUE</code>                                   or to an empty array will result in a simple insert which will fail in case of                                   duplicate keys.</p><p>Setting this argument to boolean <code>FALSE</code> will create an <code>INSERT IGNORE</code> query where                                   when trying to insert a record that would cause a duplicate entry for a key,                                   the row would be skipped instead.</p><p>Setting this argument to an array of column names will create a query where, on                                   duplicate key, these given columns will be updated with their respective values                                   from the <em>$values</em> argument.</p><p>Alternatively, this argument can also be an associative array where the array's                                   keys represent column names and the array's values represent the values to update                                   the columns' values to if the inserted row would cause a duplicate key.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>For more information see <a href="https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html">MySQL's INSERT ... ON DUPLICATE KEY syntax</a>.</p><p>Default is <code>TRUE</code></p></td>
+<td><p><span class="optional">Optional</span> By default, calling this method with this argument set to boolean <code>TRUE</code>                                   or to an empty array will result in a simple insert which will fail in case of                                   duplicate keys.</p><p>Setting this argument to boolean <code>FALSE</code> will create an <code>INSERT IGNORE</code> query where                                   when trying to insert a record that would cause a duplicate entry for a key,                                   the row would be skipped instead.</p><p>Setting this argument to an array of column names will create a query where, on                                   duplicate key, these given columns will be updated with their respective values                                   from the <em>$values</em> argument.</p><p>Alternatively, this argument can also be an associative array where the array's                                   keys represent column names and the array's values represent the values to update                                   the columns' values to if the inserted row would cause a duplicate key.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>For more information see <a href="https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html">MySQL's INSERT ... ON DUPLICATE KEY syntax</a>.</p><p>Default is <code>TRUE</code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -2177,12 +2197,12 @@ boolean
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$update</strong></td>
-<td><p>(Optional) By default, calling this method with this argument set to boolean <code>TRUE</code>                                   or to an empty array will result in a simple multi-row insert which will fail in                                   case of duplicate keys.</p><p>Setting this argument to boolean <code>FALSE</code> will create an <code>INSERT IGNORE</code> query where                                   when trying to insert a record that would cause a duplicate entry for a key,                                   the row would be skipped instead.</p><p>Setting this argument to an array of column names will create a query where, on                                   duplicate key, these given columns will be updated with their respective values                                   from the <em>$values</em> argument.</p><p>Alternatively, this argument can also be an associative array where the array's                                   keys represent column names and the array's values represent the values to update                                   the columns' values to if the inserted row would cause a duplicate key.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>For more information see <a href="https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html">MySQL's INSERT ... ON DUPLICATE KEY syntax</a>.</p><p>Default is <code>TRUE</code></p></td>
+<td><p><span class="optional">Optional</span> By default, calling this method with this argument set to boolean <code>TRUE</code>                                   or to an empty array will result in a simple multi-row insert which will fail in                                   case of duplicate keys.</p><p>Setting this argument to boolean <code>FALSE</code> will create an <code>INSERT IGNORE</code> query where                                   when trying to insert a record that would cause a duplicate entry for a key,                                   the row would be skipped instead.</p><p>Setting this argument to an array of column names will create a query where, on                                   duplicate key, these given columns will be updated with their respective values                                   from the <em>$values</em> argument.</p><p>Alternatively, this argument can also be an associative array where the array's                                   keys represent column names and the array's values represent the values to update                                   the columns' values to if the inserted row would cause a duplicate key.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>For more information see <a href="https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html">MySQL's INSERT ... ON DUPLICATE KEY syntax</a>.</p><p>Default is <code>TRUE</code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -2296,12 +2316,12 @@ array()
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$update</strong></td>
-<td><p>(Optional) An associative array where the array's keys represent the columns names                                   and the array's values represent the values to update the columns' values to.</p><p>This array represents the columns/values to be updated if the inserted row would                                   cause a duplicate value in a <code>UNIQUE</code> index or <code>PRIMARY KEY</code>.</p><p>If an empty array is given, the values in <em>$columns</em> will be used.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>A special value may also be used for when a column's value needs to be incremented                                   or decremented. In this case, use <code>INC(value)</code> where <em>value</em> is the value to                                   increase the column's value with. Use <code>INC(-value)</code> to decrease the column's value.                                   See <a href="../Zebra_Database/Zebra_Database.html#methodupdate">update()</a> for an example.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>Default is an empty array</p></td>
+<td><p><span class="optional">Optional</span> An associative array where the array's keys represent the columns names                                   and the array's values represent the values to update the columns' values to.</p><p>This array represents the columns/values to be updated if the inserted row would                                   cause a duplicate value in a <code>UNIQUE</code> index or <code>PRIMARY KEY</code>.</p><p>If an empty array is given, the values in <em>$columns</em> will be used.</p><p>Column names will be enclosed in grave accents <code>&grave;</code> (thus allowing the usage of                                   reserved words) and will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> in order to                                   prevent SQL injections.</p><p>A special value may also be used for when a column's value needs to be incremented                                   or decremented. In this case, use <code>INC(value)</code> where <em>value</em> is the value to                                   increase the column's value with. Use <code>INC(-value)</code> to decrease the column's value.                                   See <a href="../Zebra_Database/Zebra_Database.html#methodupdate">update()</a> for an example.</p><p>You may also use any of <a href="https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html">MySQL's functions</a>                                   as <em>values</em>.</p><p class="highlight">Be aware that when using MySQL functions, the value will be used as it is,                                       without being escaped! While this is ok when using a function without any                                       arguments like <code>NOW()</code>, this may pose a security concern if the argument(s)                                       come from user input. In this case make sure you <a href="../Zebra_Database/Zebra_Database.html#methodescape">escape</a> the values                                       yourself!</p><p>Default is an empty array</p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -2377,7 +2397,7 @@ void
 <tr>
 <td><em>string</em></td>
 <td><strong>$table</strong></td>
-<td><p>(Optional) Table to optimize</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly                               selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                               calling this method.</em></p><p><code>%</code> may be used as a wildcard in table's name to optimize only the tables matching the                               pattern.</p><p>If not specified, all the tables in the currently selected database will be optimized.</p><p><em>This option was added in 2.9.5</em></p></td>
+<td><p><span class="optional">Optional</span> Table to optimize</p><p><em>May also be specified like <code>databasename.tablename</code> if a database was not explicitly                               selected with the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodselect_database">select_database()</a> methods prior to                               calling this method.</em></p><p><code>%</code> may be used as a wildcard in table's name to optimize only the tables matching the                               pattern.</p><p>If not specified, all the tables in the currently selected database will be optimized.</p><p><em>This option was added in 2.9.5</em></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -2419,7 +2439,7 @@ boolean|void
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$value</strong></td>
-<td>(Optional) When setting a single option this is the value to be associated with that                               option. When setting an array of options this argument is ignored.</td>
+<td><span class="optional">Optional</span> When setting a single option this is the value to be associated with that                               option. When setting an array of options this argument is ignored.</td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -2541,22 +2561,22 @@ mixed
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
-<td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$cache</strong></td>
-<td><p>(Optional) Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p><em>For <a href="../Zebra_Database/Zebra_Database.html#methodquery_unbuffered">unbuffered queries</a> this argument is always <code>FALSE</code>!</em></p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p><em>For <a href="../Zebra_Database/Zebra_Database.html#methodquery_unbuffered">unbuffered queries</a> this argument is always <code>FALSE</code>!</em></p><p>Default is <code>FALSE</code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$calc_rows</strong></td>
-<td><p>(Optional) If query is a <code>SELECT</code> query, this argument is set to <code>TRUE</code>, and                                   there is a <code>LIMIT</code> applied to the query, the value of the <a href="../Zebra_Database/Zebra_Database.html#var$found_rows">found_rows</a>                                   property (after the query was run) will represent the number of records that                                   <em>would</em> have been returned if there was no <code>LIMIT</code> applied to the query.</p><p>This is very useful for creating pagination or computing averages. Also, note                                   that this information will be available without running an extra query.                                   <a href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows">Here's how</a></p><p><em>For <a href="../Zebra_Database/Zebra_Database.html#methodquery_unbuffered">unbuffered queries</a> the value of this property will                                   be available <strong>only</strong> after iterating over <strong>all</strong> the records with either                                   <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a> methods. Until then, the value will                                   be <strong>0</strong>!</em></p><p>Default is <code>FALSE</code></p><p class="highlight">This argument is deprecated since 2.10.0 and will be removed in 3.0 because                                       the technique used for it was <a href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows">deprecated in MySQL 8.0.17</a>                                       and is pending removal in a future version. Please use the solution provided                                       in the MySQL documentation instead.</p></td>
+<td><p><span class="optional">Optional</span> If query is a <code>SELECT</code> query, this argument is set to <code>TRUE</code>, and                                   there is a <code>LIMIT</code> applied to the query, the value of the <a href="../Zebra_Database/Zebra_Database.html#var$found_rows">found_rows</a>                                   property (after the query was run) will represent the number of records that                                   <em>would</em> have been returned if there was no <code>LIMIT</code> applied to the query.</p><p>This is very useful for creating pagination or computing averages. Also, note                                   that this information will be available without running an extra query.                                   <a href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows">Here's how</a></p><p><em>For <a href="../Zebra_Database/Zebra_Database.html#methodquery_unbuffered">unbuffered queries</a> the value of this property will                                   be available <strong>only</strong> after iterating over <strong>all</strong> the records with either                                   <a href="../Zebra_Database/Zebra_Database.html#methodfetch_assoc">fetch_assoc()</a> or <a href="../Zebra_Database/Zebra_Database.html#methodfetch_obj">fetch_obj()</a> methods. Until then, the value will                                   be <strong>0</strong>!</em></p><p>Default is <code>FALSE</code></p><p class="highlight">This argument is deprecated since 2.10.0 and will be removed in 3.0 because                                       the technique used for it was <a href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows">deprecated in MySQL 8.0.17</a>                                       and is pending removal in a future version. Please use the solution provided                                       in the MySQL documentation instead.</p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -2621,7 +2641,7 @@ boolean
 <tr>
 <td><em>resource|string</em></td>
 <td><strong>$resource</strong></td>
-<td><p>(Optional) Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
+<td><p><span class="optional">Optional</span> Resource to fetch</p><p class="highlight">If not specified, the resource returned by the last run query is used</p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -2741,37 +2761,37 @@ mixed
 <tr>
 <td><em>string</em></td>
 <td><strong>$where</strong></td>
-<td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
-<td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
 <td><strong>$order</strong></td>
-<td><p>(Optional) A MySQL <code>ORDER BY</code> clause (without the <code>ORDER BY</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> A MySQL <code>ORDER BY</code> clause (without the <code>ORDER BY</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$limit</strong></td>
-<td><p>(Optional) A MySQL <code>LIMIT</code> clause (without the <code>LIMIT</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> A MySQL <code>LIMIT</code> clause (without the <code>LIMIT</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$cache</strong></td>
-<td><p>(Optional) Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> Instructs the library on whether it should cache the query results or                                   not. Can be either <code>FALSE</code> - no caching - or an integer representing the number                                   of seconds after which the cache will be considered as expired and the query will                                   be executed again.</p><p>The caching method is specified through the <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a> property.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$calc_rows</strong></td>
-<td><p>(Optional) If this argument is set to <code>TRUE</code>, and there is a LIMIT applied to the                                   query, the value of the <a href="../Zebra_Database/Zebra_Database.html#var$found_rows">found_rows</a> property (after the query was run)                                   will represent the number of records that would have been returned if there was                                   no LIMIT applied to the query.</p><p>This is very useful for creating pagination or computing averages. Also, note                                   that this information will be available without running an extra query.                                   <a href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows">Here's how</a></p><p>Default is <code>FALSE</code></p><p class="highlight">This argument is deprecated since 2.10.0 and will be removed in 3.0 because                                       the technique used for it was <a href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows">deprecated in MySQL 8.0.17</a>                                       and is pending removal in a future version. Please use the solution provided                                       in the MySQL documentation instead.</p></td>
+<td><p><span class="optional">Optional</span> If this argument is set to <code>TRUE</code>, and there is a LIMIT applied to the                                   query, the value of the <a href="../Zebra_Database/Zebra_Database.html#var$found_rows">found_rows</a> property (after the query was run)                                   will represent the number of records that would have been returned if there was                                   no LIMIT applied to the query.</p><p>This is very useful for creating pagination or computing averages. Also, note                                   that this information will be available without running an extra query.                                   <a href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows">Here's how</a></p><p>Default is <code>FALSE</code></p><p class="highlight">This argument is deprecated since 2.10.0 and will be removed in 3.0 because                                       the technique used for it was <a href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows">deprecated in MySQL 8.0.17</a>                                       and is pending removal in a future version. Please use the solution provided                                       in the MySQL documentation instead.</p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -2852,12 +2872,12 @@ void
 <tr>
 <td><em>string</em></td>
 <td><strong>$charset</strong></td>
-<td><p>(Optional) The character set to be used by the database</p><p>Default is <code>utf8</code></p><p>See the <a href="https://dev.mysql.com/doc/refman/8.0/en/charset-charsets.html">list of possible values</a></p></td>
+<td><p><span class="optional">Optional</span> The character set to be used by the database</p><p>Default is <code>utf8</code></p><p>See the <a href="https://dev.mysql.com/doc/refman/8.0/en/charset-charsets.html">list of possible values</a></p></td>
 </tr>
 <tr>
 <td><em>string</em></td>
 <td><strong>$collation</strong></td>
-<td><p>(Optional) The collation to be used by the database</p><p>Default is <code>utf8_general_ci</code></p><p>See the <a href="https://dev.mysql.com/doc/refman/8.0/en/charset-charsets.html">list of possible values</a></p></td>
+<td><p><span class="optional">Optional</span> The collation to be used by the database</p><p>Default is <code>utf8_general_ci</code></p><p>See the <a href="https://dev.mysql.com/doc/refman/8.0/en/charset-charsets.html">list of possible values</a></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -2966,7 +2986,7 @@ boolean
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$test_only</strong></td>
-<td><p>(Optional) Starts the transaction system in &quot;test mode&quot; causing the queries                                       to be rolled back (when <a href="../Zebra_Database/Zebra_Database.html#methodtransaction_complete">transaction_complete()</a> is called) - even if                                       all queries are valid</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> Starts the transaction system in &quot;test mode&quot; causing the queries                                       to be rolled back (when <a href="../Zebra_Database/Zebra_Database.html#methodtransaction_complete">transaction_complete()</a> is called) - even if                                       all queries are valid</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -3013,7 +3033,7 @@ boolean
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -3126,17 +3146,17 @@ boolean
 <tr>
 <td><em>string</em></td>
 <td><strong>$where</strong></td>
-<td><p>(Optional) A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> A MySQL <code>WHERE</code> clause (without the <code>WHERE</code> keyword)</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>mixed</em></td>
 <td><strong>$replacements</strong></td>
-<td><p>(Optional) An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
+<td><p><span class="optional">Optional</span> An array with as many items as the total parameter markers (<code>?</code>, question                                   marks) in <em>$where</em>. Each item will be automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and                                   will replace the corresponding <code>?</code>.<br>                                   An item may also be an array, case in which each value from the array will be                                   automatically <a href="../Zebra_Database/Zebra_Database.html#methodescape">escaped</a> and concatenated with the other elements from                                   the array - useful when using <em>WHERE column IN (?)</em> conditions. See second example                                   <a href="../Zebra_Database/Zebra_Database.html#methodquery">here</a>.</p><p>Default is <code>&quot;&quot;</code> (an empty string)</p></td>
 </tr>
 <tr>
 <td><em>boolean</em></td>
 <td><strong>$highlight</strong></td>
-<td><p>(Optional) If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
+<td><p><span class="optional">Optional</span> If set to <code>TRUE</code> the debugging console will be opened automatically                                   and the query will be shown - useful for quickly debugging specific queries.</p><p>Default is <code>FALSE</code></p></td>
 </tr>
 </table>
 <h5>Tags</h5>
@@ -3158,7 +3178,7 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Mon, 30 December 2024</span>
+Documentation generated on <span>Sat, 25 January 2025</span>
 </div>
 </div>
 <!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-0301ZD47Q7"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-0301ZD47Q7');</script></body>
