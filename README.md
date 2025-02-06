@@ -18,7 +18,7 @@ The code is heavily commented and generates no warnings/errors/notices when PHP'
 
 >   <br/>:microscope: See the [debugging console](https://stefangabos.github.io/Zebra_Database/examples/index.html) in action<br/><br/>
 
-## Features
+##  Key Features of this PHP MySQLi Wrapper
 
 - it uses the [mysqli extension](https://www.php.net/manual/en/book.mysqli.php) extension for communicating with the database instead of the old *mysql* extension, which is officially deprecated as of PHP v5.5.0 and will be removed in the future; **this is not a wrapper for the PDO extension which is already a wrapper in itself!**
 
@@ -40,11 +40,11 @@ The code is heavily commented and generates no warnings/errors/notices when PHP'
 
 - code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to **E_ALL**
 
-![Zebra_Database's debugging console](https://raw.githubusercontent.com/stefangabos/Zebra_Database/master/docs/media/zebra-database-debug-console.png)
+![zebra database debugging console showing query details](https://raw.githubusercontent.com/stefangabos/Zebra_Database/master/docs/media/zebra-database-debug-console.png)
 
 ## :notebook_with_decorative_cover: Documentation
 
-Check out the [awesome documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)!
+Check out the [comprehensive PHP MySQLi wrapper documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html).
 
 ## 🎂 Support the development of this project
 
