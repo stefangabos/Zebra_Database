@@ -10,7 +10,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.12.0 (last revision: January 25, 2025)
+ *  @version    2.12.1 (last revision: February 07, 2025)
  *  @copyright  © 2006 - 2025 Stefan Gabos
  *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -5325,7 +5325,8 @@ class Zebra_Database {
      */
     private function _is_mysql_function($value) {
 
-        $value = trim($value);
+        // trim strings
+        if (is_string($value)) $value = trim($value);
 
         // returns TRUE if
         return (
