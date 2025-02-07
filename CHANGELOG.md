@@ -1,3 +1,7 @@
+## version 2.12.1 (February 07, 2025)
+
+- fixed a deprecation warning on PHP 8.3+ which was also affecting how `NULL` values were handled; see [#89](https://github.com/stefangabos/Zebra_Database/issues/89); thanks [Sisytec](https://github.com/Sisytec) for reporting!
+
 ## version 2.12.0 (January 25, 2025)
 
 - fixed [#88](https://github.com/stefangabos/Zebra_Database/issues/88); thanks to [09173732546](https://github.com/09173732546) for reporting!
