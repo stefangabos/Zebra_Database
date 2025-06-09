@@ -2,7 +2,7 @@
 
 # Zebra Database &nbsp;[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=A+compact,+lightweight+and+feature-rich+PHP+MySQLi+database+wrapper&url=https://github.com/stefangabos/Zebra_Database&via=stefangabos&hashtags=php,mysqli,mysql)
 
-*A compact, lightweight yet feature-rich PHP MySQLi database wrapper providing methods for interacting with MySQL databases that are more secure, powerful and intuitive than PHP's default ones.*
+*A PHP MySQLi database wrapper that's lightweight, secure and feature-rich, providing methods for interacting with MySQL databases that are more secure, powerful and intuitive than PHP's default ones.*
 
 [![Latest Stable Version](https://poser.pugx.org/stefangabos/zebra_database/v)](https://packagist.org/packages/stefangabos/zebra_database) [![Total Downloads](https://poser.pugx.org/stefangabos/zebra_database/downloads)](https://packagist.org/packages/stefangabos/zebra_database) [![Monthly Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/monthly)](https://packagist.org/packages/stefangabos/zebra_database) [![Daily Downloads](https://poser.pugx.org/stefangabos/zebra_database/d/daily)](https://packagist.org/packages/stefangabos/zebra_database) [![License](https://poser.pugx.org/stefangabos/zebra_database/license)](https://packagist.org/packages/stefangabos/zebra_database)
 
