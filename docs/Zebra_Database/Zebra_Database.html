@@ -116,6 +116,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 <li><a href="#var$redis_port">$redis_port</a></li>
 <li><a href="#var$resource_path">$resource_path</a></li>
 <li><a href="#var$returned_rows">$returned_rows</a></li>
+<li><a href="#var$ssl_options">$ssl_options</a></li>
 </ul>
 </div>
 <div class="left">
@@ -124,7 +125,6 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <ul>
 <li><a href="#method__construct">__construct</a></li>
-<li><a href="#method__destruct">__destruct</a></li>
 <li><a href="#methodclose">close</a></li>
 <li><a href="#methodconnect">connect</a></li>
 <li><a href="#methoddcount">dcount</a></li>
@@ -691,6 +691,20 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
+<h4 id="var$ssl_options" class="variable"><span><em>mixed</em></span> $ssl_options =  <span class="value">null</span><span class="access public">public</span></h4>
+<div class="doc_block">
+<p>An associative array of SSL connection options used for establishing secure connections using SSL.</p>
+<p>To be used when you have <code>MYSQLI_CLIENT_SSL</code> in your <code>flags</code> argument of the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect</a> method.</p><p>The format of the array must be:</p><p><ul><li><code>key</code> - the pathname to the key file</li><li><code>cert</code> - the pathname to the certificate file</li><li><code>ca</code> - the pathname to the certificate authority file</li><li><code>capath</code> - the pathname to a directory that contains trusted SSL CA certificates in PEM format</li><li><code>cipher</code> - a list of allowable ciphers to use for SSL encryption</li><li><code>verify</code> - whether to verify the server certificate (TRUE/FALSE)</li></ul><p class="highlight">Having this configured and calling <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect</a> with <code>MYSQLI_CLIENT_SSL</code> in the <code>flags</code> argument will       result in an internal call to <a href="https://www.php.net/manual/en/mysqli.ssl-set.php">mysqli_ssl_set</a>.</p><p>Default is <code>NULL</code> (no SSL)</p>
+<h5>Tags</h5>
+<table>
+<tr>
+<td><strong>since:</strong>&nbsp;&nbsp;</td>
+<td>2.13.0</td>
+</tr>
+</table>
+<a href="#top" class="top">top</a>
+<div class="clear"></div>
+</div>
 <h3 id="class_methods">Class methods</h3>
 <h4 id="method__construct" class="method"><span><em>constructor</em></span> __construct()</h4>
 <div class="doc_block">
@@ -700,24 +714,6 @@ void
 ()
 </p>
 <p>Constructor of the class</p>
-<a href="#top" class="top">top</a>
-<div class="clear"></div>
-</div>
-<h4 id="method__destruct" class="method"><span><em>destructor</em></span> __destruct()</h4>
-<div class="doc_block">
-<p class="code">
-void
-<span class="src-var">__destruct</span>
-()
-</p>
-<p>Frees the memory associated with the last result</p>
-<h5>Tags</h5>
-<table>
-<tr>
-<td><strong>since:</strong>&nbsp;&nbsp;</td>
-<td>2.8</td>
-</tr>
-</table>
 <a href="#top" class="top">top</a>
 <div class="clear"></div>
 </div>
@@ -800,6 +796,13 @@ void
 =
 <span class="src-key">false</span>
 ]
+, 
+[ 
+<span class="src-key">integer</span>
+<span class="src-var">$flags</span>
+=
+<span class="src-num">0</span>
+]
 ) 
 </p>
 <p>Opens a connection to a MySQL server and optionally selects a database</p>
@@ -808,6 +811,19 @@ void
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;notice&nbsp;that&nbsp;we're&nbsp;not&nbsp;doing&nbsp;any&nbsp;error&nbsp;checking.&nbsp;errors&nbsp;will&nbsp;be&nbsp;shown&nbsp;in&nbsp;the&nbsp;debugging&nbsp;console</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect</a><span class="src-sym">(</span><span class="src-str">'host'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'username'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'password'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'database'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;connecting&nbsp;with&nbsp;SSL</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;first&nbsp;set&nbsp;up&nbsp;the&nbsp;SSL&nbsp;options</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$ssl_options">ssl_options</a>&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'key'&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;<span class="src-str">'/path/to/client-key.pem'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'cert'&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;<span class="src-str">'/path/to/client-cert.pem'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'ca'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>=&gt;&nbsp;<span class="src-str">'/path/to/ca-cert.pem'</span><span class="src-sym">,</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-str">'verify'&nbsp;</span>=&gt;&nbsp;<span class="src-id">true</span></div></li>
+<li><div class="src-line"><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;and&nbsp;connect&nbsp;afterwards</span></div></li>
+<li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect</a><span class="src-sym">(</span><span class="src-str">'host'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'username'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'password'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'database'</span><span class="src-sym">,&nbsp;</span><span class="src-str">''</span><span class="src-sym">,&nbsp;</span><span class="src-str">''</span><span class="src-sym">,&nbsp;</span><span class="src-id">false</span><span class="src-sym">,&nbsp;</span><span class="src-id">MYSQLI_CLIENT_SSL</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol>
 <h5>Arguments</h5>
 <table>
@@ -845,6 +861,11 @@ void
 <td><em>boolean</em></td>
 <td><strong>$connect</strong></td>
 <td><p><span class="optional">Optional</span> Setting this argument to <code>TRUE</code> will force the library to connect to the                               database right away instead of using a <em>lazy connection</em> and not connecting the                               database until the first query is run.</p><p>Default is <code>FALSE</code></p></td>
+</tr>
+<tr>
+<td><em>integer</em></td>
+<td><strong>$flags</strong></td>
+<td><p><span class="optional">Optional</span> Used to set different connection options as described in the                               <a href="https://www.php.net/manual/en/mysqli.real-connect.php#mysqli.real-connect.flags">manual</a>.</p><p class="highlight">If you are using <code>MYSQLI_CLIENT_SSL</code> use the <a href="../Zebra_Database/Zebra_Database.html#var$ssl_options">$ssl_options</a> property prior                                   to calling this method in order to set up the SSL options!</p><p>Default is <code>0</code></p><p class="highlight">This argument is available since in 2.13.0</p></td>
 </tr>
 </table>
 <a href="#top" class="top">top</a>
@@ -3178,7 +3199,7 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Fri, 07 February 2025</span>
+Documentation generated on <span>Thu, 21 August 2025</span>
 </div>
 </div>
 <!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-0301ZD47Q7"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-0301ZD47Q7');</script></body>
