@@ -719,6 +719,31 @@ class Zebra_Database {
     public $returned_rows;
 
     /**
+     *  An associative array of SSL connection options used for establishing secure connections using SSL.
+     *
+     *  To be used when you have `MYSQLI_CLIENT_SSL` in your `flags` argument of the {@link connect} method.
+     *
+     *  The format of the array must be:
+     *
+     *  - `key` - the pathname to the key file
+     *  - `cert` - the pathname to the certificate file
+     *  - `ca` - the pathname to the certificate authority file
+     *  - `capath` - the pathname to a directory that contains trusted SSL CA certificates in PEM format
+     *  - `cipher` - a list of allowable ciphers to use for SSL encryption
+     *  - `verify` - whether to verify the server certificate (TRUE/FALSE)
+     *
+     *  >   Having this configured and calling {@link connect} with `MYSQLI_CLIENT_SSL` in the `flags` argument will
+     *      result in an internal call to {@link https://www.php.net/manual/en/mysqli.ssl-set.php mysqli_ssl_set}.
+     *
+     *  Default is `NULL` (no SSL)
+     *
+     *  @since 2.13.0
+     *
+     *  @var mixed
+     */
+    public $ssl_options = null;
+
+    /**
      *  Array with cached results.
      *
      *  We will use this for fetching and seek
@@ -1039,6 +1064,19 @@ class Zebra_Database {
      *
      *  // notice that we're not doing any error checking. errors will be shown in the debugging console
      *  $db->connect('host', 'username', 'password', 'database');
+     *
+     *  // connecting with SSL
+     *
+     *  // first set up the SSL options
+     *  $db->ssl_options = array(
+     *      'key'    => '/path/to/client-key.pem',
+     *      'cert'   => '/path/to/client-cert.pem',
+     *      'ca'     => '/path/to/ca-cert.pem',
+     *      'verify' => true
+     *  );
+     *
+     *  // and connect afterwards
+     *  $db->connect('host', 'username', 'password', 'database', '', '', false, MYSQLI_CLIENT_SSL);
      *  </code>
      *
      *  @param  string  $host       The address of the MySQL server to connect to (i.e. localhost)
@@ -1073,9 +1111,19 @@ class Zebra_Database {
      *
      *                              Default is `FALSE`
      *
+     *  @param  integer $flags      (Optional) Used to set different connection options as described in the
+     *                              {@link https://www.php.net/manual/en/mysqli.real-connect.php#mysqli.real-connect.flags manual}.
+     *
+     *                              >   If you are using `MYSQLI_CLIENT_SSL` use the {@link $ssl_options} property prior
+     *                                  to calling this method in order to set up the SSL options!
+     *
+     *                              Default is `0`
+     *
+     *                              >   This argument is available since in 2.13.0
+     *
      *  @return void
      */
-    public function connect($host, $user, $password, $database = '', $port = '', $socket = '', $connect = false) {
+    public function connect($host, $user, $password, $database = '', $port = '', $socket = '', $connect = false, $flags = 0) {
 
         // if the "memcache" extension is loaded and the caching method is set to "memcache"
         if (!extension_loaded('memcache') || $this->caching_method === 'memcache')
@@ -1099,6 +1147,7 @@ class Zebra_Database {
             'database'  => $database,
             'port'      => $port === '' ? ini_get('mysqli.default_port') : $port,
             'socket'    => $socket === '' ? ini_get('mysqli.default_socket') : $socket,
+            'flags'     => $flags,
         );
 
         // connect now, if we need to connect right away
@@ -4586,6 +4635,20 @@ class Zebra_Database {
 
                         ));
 
+            // configure SSL if SSL options are provided
+            if (is_array($this->ssl_options)) {
+
+                // set SSL options using provided parameters
+                mysqli_ssl_set($this->connection,
+                    isset($this->ssl_options['key']) ? $this->ssl_options['key'] : null,
+                    isset($this->ssl_options['cert']) ? $this->ssl_options['cert'] : null,
+                    isset($this->ssl_options['ca']) ? $this->ssl_options['ca'] : null,
+                    isset($this->ssl_options['capath']) ? $this->ssl_options['capath'] : null,
+                    isset($this->ssl_options['cipher']) ? $this->ssl_options['cipher'] : null
+                );
+
+            }
+
             // try to connect to the MySQL server
             try {
 
@@ -4596,7 +4659,8 @@ class Zebra_Database {
                     $this->credentials['password'],
                     $this->credentials['database'],
                     $this->credentials['port'],
-                    $this->credentials['socket']
+                    $this->credentials['socket'],
+                    $this->credentials['flags']
                 );
 
             } catch (Exception $e) {
