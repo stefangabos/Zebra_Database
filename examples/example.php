@@ -1,15 +1,9 @@
 <!DOCTYPE html>
-
 <html>
-
     <head>
-
         <meta charset="utf-8">
-
         <title>Zebra_Database Example</title>
-
     </head>
-
     <body>
 
     <p>
@@ -19,6 +13,8 @@
         and <em>database</em> to match your configuration.
     </p>
 
+    <p>In 5 seconds an AJAX requests will be made and the results will be addded to the debugging console.</p>
+
     <?php
 
         // THIS EXAMPLE IS VERY BRIEF!
@@ -27,16 +23,17 @@
         // include the wrapper class
         require '../Zebra_Database.php';
 
+        // load the credentials
+        require 'credentials.php';
+
         // create a new database wrapper object
         $db = new Zebra_Database();
 
+        // this is a helper for debugging AJAX requests
+        $db->debug_ajax = '../update-debug-info.php';
+
         // connect to the MySQL server and select the database
-        $db->connect(
-            '',     // host
-            '',     // user name
-            '',     // password
-            ''      // database
-        );
+        $db->connect($credentials['host'], $credentials['username'], $credentials['password'], $credentials['database']);
 
         $db->set_charset();
 
@@ -75,5 +72,14 @@
     ?>
 
     </body>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+    $(document).ready(function(){
+        setTimeout(function() {
+            $.get('ajax.php');
+        }, 5000);
+    });
+    </script>
 
 </html>
