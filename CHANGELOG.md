@@ -2,6 +2,7 @@
 
 - added support for the [flags](https://www.php.net/manual/en/mysqli.real-connect.php#mysqli.real-connect.flags) argument in the [connect](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodconnect) method.
 - in support of the newly added argument, a new property was added - [ssl_options](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$ssl_options). setting this argument and using `MYSQLI_CLIENT_SSL` in the flags argument of the connect method will allow you to use SSL (encryption); see [#90](https://github.com/stefangabos/Zebra_Database/issues/90); thanks [Sisytec](https://github.com/Sisytec) for reporting!
+- fixed broken AJAX requests debugging
 
 ## version 2.12.1 (February 07, 2025)
 
