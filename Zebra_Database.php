@@ -10,7 +10,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.13.0 (last revision: August 22, 2025)
+ *  @version    2.13.0 (last revision: August 27, 2025)
  *  @copyright  © 2006 - 2025 Stefan Gabos
  *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -4638,19 +4638,19 @@ class Zebra_Database {
             // configure SSL if SSL options are provided
             if (is_array($this->ssl_options)) {
 
-                // set SSL options using provided parameters
-                mysqli_ssl_set($this->connection,
-                    isset($this->ssl_options['key']) ? $this->ssl_options['key'] : null,
-                    isset($this->ssl_options['cert']) ? $this->ssl_options['cert'] : null,
-                    isset($this->ssl_options['ca']) ? $this->ssl_options['ca'] : null,
-                    isset($this->ssl_options['capath']) ? $this->ssl_options['capath'] : null,
-                    isset($this->ssl_options['cipher']) ? $this->ssl_options['cipher'] : null
-                );
-
                 // handle SSL verification option if provided
                 if (isset($this->ssl_options['verify'])) {
                     $this->connection->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, $this->ssl_options['verify']);
                 }
+
+                // set SSL options using provided parameters
+                mysqli_ssl_set($this->connection,
+                    isset($this->ssl_options['key']) ? $this->ssl_options['key'] : null,
+                    isset($this->ssl_options['cert']) ? $this->ssl_options['cert'] : null,
+                    isset($this->ssl_options['ca']) && !(isset($this->ssl_options['verify']) && $this->ssl_options['verify'] === false) ? $this->ssl_options['ca'] : null,
+                    isset($this->ssl_options['capath']) ? $this->ssl_options['capath'] : null,
+                    isset($this->ssl_options['cipher']) ? $this->ssl_options['cipher'] : null
+                );
 
             }
 
