@@ -5,4 +5,7 @@ $credentials = [
     'username'  =>  '',
     'password'  =>  '',
     'database'  =>  '',
+    'port'      =>  '',
+    'socket'    =>  '',
+    'flags'     =>  0,
 ];

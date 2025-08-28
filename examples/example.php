@@ -33,7 +33,7 @@
         $db->debug_ajax = '../update-debug-info.php';
 
         // connect to the MySQL server and select the database
-        $db->connect($credentials['host'], $credentials['username'], $credentials['password'], $credentials['database']);
+        $db->connect($credentials['host'], $credentials['username'], $credentials['password'], $credentials['database'], $credentials['port'], $credentials['socket'], false, $credentials['flags']);
 
         $db->set_charset();
 
