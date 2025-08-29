@@ -10,7 +10,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    2.13.0 (last revision: August 27, 2025)
+ *  @version    3.0.0 (last revision: August 29, 2025)
  *  @copyright  © 2006 - 2025 Stefan Gabos
  *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -3280,6 +3280,9 @@ class Zebra_Database {
                 ));
 
             // if the number of items to replace is the same as the number of items specified in $replacements
+            // save original SQL for prepared statement execution as we're about to change it
+            $original_sql = $sql;
+
             // make preparations for the replacement
             $pattern1 = $pattern2 = $replacements1 = $replacements2 = array();
 
@@ -3465,8 +3468,67 @@ class Zebra_Database {
 
             try {
 
-                // run the query
-                $this->last_result = mysqli_query($this->connection, $sql, $this->unbuffered ? MYSQLI_USE_RESULT : MYSQLI_STORE_RESULT);
+                // if we have replacements and it's not an unbuffered query, use prepared statements
+                // for unbuffered queries, fall back to regular mysqli_query since the existing logic handles it well
+                if (isset($original_sql) && $replacements && !$this->unbuffered) {
+
+                    // process arrays for IN clauses
+                    $processed_sql = $original_sql;
+                    $processed_replacements = array();
+                    $types = '';
+
+                    foreach ($replacements as $replacement) {
+
+                        // always treat as array for unified processing
+                        $replacement = (array)$replacement;
+
+                        // expand array for placeholders
+                        if (count($replacement) > 1) {
+                            $processed_sql = preg_replace('/\?/', str_repeat('?,', count($replacement) - 1) . '?', $processed_sql, 1);
+                        }
+
+                        foreach ($replacement as $item) {
+                            $processed_replacements[] = $item;
+                            $types .= is_null($item) ? 's' : (is_int($item) ? 'i' : (is_float($item) ? 'd' : 's'));
+                        }
+
+                    }
+
+                    // if we are able to prepare the statement
+                    if ($stmt = $this->connection->prepare($processed_sql)) {
+
+                        // create references for bind_param and call it
+                        $refs = array($types);
+                        foreach ($processed_replacements as $key => $value) $refs[] = &$processed_replacements[$key];
+                        call_user_func_array(array($stmt, 'bind_param'), $refs);
+
+                        // if we are able to execute the prepared statement
+                        if ($stmt->execute()) {
+
+                            // get the query result
+                            $this->last_result = $stmt->get_result();
+
+                            // if get_result() returns false but no error, it's a non-SELECT query
+                            if ($this->last_result === false && $stmt->errno === 0) {
+                                $this->last_result = true;
+                                $this->affected_rows = $stmt->affected_rows;
+                            }
+
+                        // if there was an error
+                        } else $this->last_result = false;
+
+                        $stmt->close();
+
+                    // if there was an error
+                    } else $this->last_result = false;
+
+                // if we have no replacements
+                } else {
+
+                    // use regular query
+                    $this->last_result = mysqli_query($this->connection, $sql, $this->unbuffered ? MYSQLI_USE_RESULT : MYSQLI_STORE_RESULT);
+
+                }
 
             // if there was an error
             } catch (Exception $e) {
@@ -3552,7 +3614,8 @@ class Zebra_Database {
 
                 // if query was an action query, the affected_rows property holds the number of affected rows by
                 // action queries (DELETE, INSERT, UPDATE)
-                } else $this->affected_rows = @mysqli_affected_rows($this->connection);
+                // (not that if we did a prepared-statements query, this is already set at this point)
+                } elseif (!isset($this->affected_rows)) $this->affected_rows = @mysqli_affected_rows($this->connection);
 
                 // if query's results need to be cached
                 if ($is_select && $cache !== false && (int)$cache > 0) {
