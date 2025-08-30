@@ -1484,7 +1484,7 @@ class Zebra_Database {
             $row = $this->fetch_assoc();
 
             // return the result
-            return $row['maximum'];
+            return $row['maximum'] === null ? false : $row['maximum'];
 
         }
 
