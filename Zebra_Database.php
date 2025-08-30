@@ -2261,11 +2261,7 @@ class Zebra_Database {
     public function get_table_columns($table) {
 
         // run the query
-        $this->query('
-
-            SHOW COLUMNS FROM ' . $this->_escape($table) . '
-
-        ');
+        $this->query('SHOW COLUMNS FROM ' . $this->_escape($table));
 
         // fetch and return data
         return $this->fetch_assoc_all('Field');
