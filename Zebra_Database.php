@@ -2355,8 +2355,12 @@ class Zebra_Database {
 
         $result = '';
 
-        // iterate through the array's items and "glue" items together
-        foreach ($items as $item) $result .= ($result !== '' ? ',' : '') . '\'' . $this->escape($item) . '\'';
+        // flatten nested arrays first
+        $flattened_items = [];
+        array_walk_recursive($items, function($item) use (&$flattened_items) { $flattened_items[] = $item; });
+
+        // iterate through the flattened array's items and "glue" items together
+        foreach ($flattened_items as $item) $result .= ($result !== '' ? ',' : '') . '\'' . $this->escape($item) . '\'';
 
         return $result;
 
@@ -3489,6 +3493,11 @@ class Zebra_Database {
 
                         // treat each entry as an array for unified processing
                         $replacement = (array)$replacement;
+
+                        // flatten nested arrays recursively
+                        $flattened_replacement = [];
+                        array_walk_recursive($replacement, function($item) use (&$flattened_replacement) { $flattened_replacement[] = $item; });
+                        $replacement = $flattened_replacement;
 
                         // add placeholders back at the end (remember, when we split above we've done so by "?")
                         // (if "?" is an array, it will be replaced with as many "?" as there are in the array)
