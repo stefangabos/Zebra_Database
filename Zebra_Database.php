@@ -2059,7 +2059,7 @@ class Zebra_Database {
      *
      *  @since  2.9.1
      *
-     *  @return false|void
+     *  @return boolean             Returns `TRUE` on success or `FALSE` on error
      */
     public function free_result($resource = '') {
 
@@ -2067,11 +2067,17 @@ class Zebra_Database {
         if (!$this->connection) return false;
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = &$this->last_result;
 
         // if argument is a valid resource, free the result
         // (we mute it as it might have already been freed by a previous call to this method)
-        if ($this->_is_result($resource)) @mysqli_free_result($resource);
+        if ($this->_is_result($resource)) {
+            @mysqli_free_result($resource);
+            return true;
+        }
+
+        // return false if we get this far
+        return false;
 
     }
 
