@@ -3490,9 +3490,9 @@ class Zebra_Database {
                         // treat each entry as an array for unified processing
                         $replacement = (array)$replacement;
 
-                        // add placeholders for this array if necessary
-                        // if "?" is an array, it will be replaced with as many "?" as there are in the array)
-                        if (count($replacement) > 1) $processed_sql .= str_repeat('?,', count($replacement) - 1) . '?';
+                        // add placeholders back at the end (remember, when we split above we've done so by "?")
+                        // (if "?" is an array, it will be replaced with as many "?" as there are in the array)
+                        $processed_sql .= str_repeat('?,', count($replacement) - 1) . '?';
 
                         // prepare for parameter binding
                         foreach ($replacement as $item) {
