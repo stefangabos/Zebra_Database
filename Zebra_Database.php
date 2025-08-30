@@ -4238,11 +4238,18 @@ class Zebra_Database {
         // if no active connection exists, return false
         if (!$this->_connected()) return false;
 
-        // update the value in the credentials
-        $this->credentials['database'] = $database;
+        // if we could connect to the database
+        if (mysqli_select_db($this->connection, $database)) {
 
-        // select the database
-        return mysqli_select_db($this->connection, $database);
+            // update the value in the credentials
+            $this->credentials['database'] = $database;
+
+            return true;
+
+        }
+
+        // if we couldn't connect to the database
+        return false;
 
     }
 
