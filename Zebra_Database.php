@@ -1044,8 +1044,8 @@ class Zebra_Database {
         // if options need to be unset, unset them now
         if ($reset_options) $this->options = array();
 
-        // return the result
-        return $result;
+        // return the result - true if connection was closed, false if no connection existed
+        return isset($result) ? $result : false;
 
     }
 
