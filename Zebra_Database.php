@@ -5056,7 +5056,7 @@ class Zebra_Database {
                             if ($block === 'successful-queries') {
 
                                 // info about whether the query results were taken from cache or not
-                                if ($debug_info['from_cache'] !== 'nocache')
+                                if ($debug_info['from_cache'] === true)
 
                                     $output .= '
                                         <li class="zdc-cache">
