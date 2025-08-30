@@ -4268,33 +4268,38 @@ class Zebra_Database {
      *
      *  @param  string  $charset    (Optional) The character set to be used by the database
      *
-     *                              Default is `utf8`
+     *                              Default is `utf8mb4`
      *
      *                              See the {@link https://dev.mysql.com/doc/refman/8.0/en/charset-charsets.html list of possible values}
      *
      *  @param  string  $collation  (Optional) The collation to be used by the database
      *
-     *                              Default is `utf8_general_ci`
+     *                              Default is `utf8mb4_unicode_ci`
      *
      *                              See the {@link https://dev.mysql.com/doc/refman/8.0/en/charset-charsets.html list of possible values}
      *
      *  @since  2.0
      *
-     *  @return void
+     *  @return mixed               If there is an active connection (remember that calling {@link connect()} doesn't
+     *                              connect by default) this will return `TRUE` on success or `FALSE` if charset/collation
+     *                              could not be set. If there isn't an active connection when this method is called, it
+     *                              will return `NULL`.
      */
-    public function set_charset($charset = 'utf8', $collation = 'utf8_general_ci') {
+    public function set_charset($charset = 'utf8mb4', $collation = 'utf8mb4_unicode_ci') {
 
         // do not show the warning that this method has not been called
         unset($this->warnings['charset']);
 
         // the query to set the character set
-        $sql = 'SET NAMES ? COLLATE ?';
+        // the MySQL protocol itself doesn't allow parameterization of charset and collation names in SET NAMES
+        // so we can't use prepared statements here
+        $sql = 'SET NAMES "' . $this->escape($charset) . '" COLLATE "' . $this->escape($collation) . '"';
 
         // if we are not yet connected to a database, defer it until a connection is made
-        if (!$this->connection || $this->connection->connect_errno != 0) $this->deferred[] = array($sql, $charset, $collation);
+        if (!$this->connection || $this->connection->connect_errno != 0) $this->deferred[] = array($sql);
 
         // otherwise run the query now
-        else $this->query($sql);
+        else return $this->query($sql);
 
     }
 
