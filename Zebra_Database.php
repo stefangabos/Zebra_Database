@@ -3472,27 +3472,38 @@ class Zebra_Database {
                 // for unbuffered queries, fall back to regular mysqli_query since the existing logic handles it well
                 if (isset($original_sql) && $replacements && !$this->unbuffered) {
 
-                    // process arrays for IN clauses
-                    $processed_sql = $original_sql;
+                    $processed_sql = $types = '';
                     $processed_replacements = array();
-                    $types = '';
 
-                    foreach ($replacements as $replacement) {
+                    // split SQL on placeholders to process them sequentially
+                    // (for handling multiple array-like parameters)
+                    $sql_segments = explode('?', $original_sql);
 
-                        // always treat as array for unified processing
+                    // iterate over the parameters
+                    // (these will be one less than the number of $sql_segments)
+                    foreach ($replacements as $index => $replacement) {
+
+                        // add entry to $processed_sql
+                        // at this point we have the SQL up to - but not containing - this part's "?" placeholder
+                        $processed_sql .= array_shift($sql_segments);
+
+                        // treat each entry as an array for unified processing
                         $replacement = (array)$replacement;
 
-                        // expand array for placeholders
-                        if (count($replacement) > 1) {
-                            $processed_sql = preg_replace('/\?/', str_repeat('?,', count($replacement) - 1) . '?', $processed_sql, 1);
-                        }
+                        // add placeholders for this array if necessary
+                        // if "?" is an array, it will be replaced with as many "?" as there are in the array)
+                        if (count($replacement) > 1) $processed_sql .= str_repeat('?,', count($replacement) - 1) . '?';
 
+                        // prepare for parameter binding
                         foreach ($replacement as $item) {
                             $processed_replacements[] = $item;
                             $types .= is_null($item) ? 's' : (is_int($item) ? 'i' : (is_float($item) ? 'd' : 's'));
                         }
 
                     }
+
+                    // add the last segment and we're done
+                    $processed_sql .= array_shift($sql_segments);
 
                     // if we are able to prepare the statement
                     if ($stmt = $this->connection->prepare($processed_sql)) {
@@ -3521,6 +3532,10 @@ class Zebra_Database {
 
                     // if there was an error
                     } else $this->last_result = false;
+
+                    // free up memory from prepared statement processing
+                    unset($processed_sql, $processed_replacements, $refs, $sql_segments, $types);
+                    gc_collect_cycles();
 
                 // if we have no replacements
                 } else {
