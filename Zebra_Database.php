@@ -3492,7 +3492,17 @@ class Zebra_Database {
 
                         // add placeholders back at the end (remember, when we split above we've done so by "?")
                         // (if "?" is an array, it will be replaced with as many "?" as there are in the array)
-                        $processed_sql .= str_repeat('?,', count($replacement) - 1) . '?';
+                        if (!empty($replacement)) $processed_sql .= str_repeat('?,', count($replacement) - 1) . '?';
+
+                        // if the replacement is an empty arrays
+                        else {
+
+                            // use a placeholder with empty string
+                            $processed_sql .= '?';
+                            $processed_replacements[] = '';
+                            $types .= 's';
+
+                        }
 
                         // prepare for parameter binding
                         foreach ($replacement as $item) {
