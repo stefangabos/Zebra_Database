@@ -3356,13 +3356,13 @@ class Zebra_Database {
 
         $start_timer = (float)$usec + (float)$sec;
 
-        $refreshed_cache = 'nocache';
+        $from_cache = false;
 
         // if we need to look for a cached version of the query's results
         if ($cache !== false && (int)$cache > 0) {
 
             // by default, we assume that the cache exists and is not expired
-            $refreshed_cache = false;
+            $from_cache = true;
 
             // if caching method is "memcache" and memcache is enabled
             if ($this->caching_method === 'memcache' && $this->memcache) {
@@ -3657,7 +3657,7 @@ class Zebra_Database {
                 if ($is_select && $cache !== false && (int)$cache > 0) {
 
                     // flag that we have refreshed the cache
-                    $refreshed_cache = true;
+                    $from_cache = false;
 
                     $cache_data = array();
 
@@ -3906,7 +3906,7 @@ class Zebra_Database {
                     'execution_time'    => $stop_timer - $start_timer,
                     'warning'           => $warning,
                     'highlight'         => $highlight,
-                    'from_cache'        => $refreshed_cache,
+                    'from_cache'        => $from_cache,
                     'unbuffered'        => $this->unbuffered,
                     'transaction'       => ($this->transaction_status !== 0 ? true : false),
 
@@ -5056,7 +5056,7 @@ class Zebra_Database {
                             if ($block === 'successful-queries') {
 
                                 // info about whether the query results were taken from cache or not
-                                if ($debug_info['from_cache'] === true)
+                                if ($debug_info['from_cache'])
 
                                     $output .= '
                                         <li class="zdc-cache">
@@ -5891,7 +5891,7 @@ class Zebra_Database {
                             (isset($debug_info['error']) && $debug_info['error'] !== '' ? $labels[4] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[4])), ' ', STR_PAD_RIGHT) . ': ' . $debug_info['error'] . "\n" : '') .
 
                             // if not an action query, show whether the query was returned from the cache or was executed
-                            (isset($debug_info['affected_rows']) && $debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] !== 'nocache' ? $labels[5] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '') .
+                            (isset($debug_info['affected_rows']) && $debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] ? $labels[5] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '') .
 
                             // if query was an unbuffered one
                             (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ? $labels[12] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '');
