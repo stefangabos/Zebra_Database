@@ -1,3 +1,7 @@
+## version 2.13.1 (February 06, 2026)
+
+- fixed missing slash between host and path when using the `resource_path` property, which caused debug assets (CSS/JS) to fail loading with a 403 error
+
 ## version 2.13.0 (August 28, 2025)
 
 - added support for the [flags](https://www.php.net/manual/en/mysqli.real-connect.php#mysqli.real-connect.flags) argument in the [connect](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#methodconnect) method.
