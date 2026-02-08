@@ -10,7 +10,7 @@ Zebra_Database supports [transactions](https://dev.mysql.com/doc/refman/8.0/en/g
 
 The library provides a comprehensive debugging interface with detailed information about the executed queries: execution time, returned/affected rows, excerpts of the found rows, error messages, backtrace information, etc. It can also automatically [EXPLAIN](https://dev.mysql.com/doc/refman/8.0/en/explain.html) SELECT queries *(so you don't miss those keys again!)*.
 
-Can provides debugging information when called from **CLI** (command-line interface) and supports logging queries done through **AJAX** requests.
+Provides debugging information when called from **CLI** (command-line interface) and supports logging queries done through **AJAX** requests.
 
 It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of *prepared statements*, where parameters are automatically [escaped](https://www.php.net/manual/en/mysqli.real-escape-string.php).
 

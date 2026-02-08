@@ -4,8 +4,8 @@
  *  A compact, lightweight yet feature-rich PHP MySQLi database wrapper providing methods for interacting
  *  with MySQL databases that are more secure, powerful and intuitive than PHP's default ones.
  *
- *  Can provides debugging information when called from **CLI** (command-line interface) and supports logging queries
- *  done through **AJAX** requests.
+ *  Provides debugging information when called from **CLI** (command-line interface) and supports logging queries done
+ *  through **AJAX** requests.
  *
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
