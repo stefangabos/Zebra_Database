@@ -1,3 +1,7 @@
+## version 2.13.2 (February 08, 2026)
+
+- fixed issue where the debug console would break jQuery if that also existed on the page
+
 ## version 2.13.1 (February 06, 2026)
 
 - fixed missing slash between host and path when using the `resource_path` property, which caused debug assets (CSS/JS) to fail loading with a 403 error
