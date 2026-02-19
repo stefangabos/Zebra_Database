@@ -1,3 +1,7 @@
+## version 2.13.3 (February 19, 2026)
+
+- fixed debug console clipped by parent overflow: hidden; toggle parent overflow when expanding/collapsing sections
+
 ## version 2.13.2 (February 08, 2026)
 
 - fixed issue where the debug console would break jQuery if that also existed on the page
