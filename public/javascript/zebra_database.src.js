@@ -17,10 +17,60 @@ if (typeof _$ === 'undefined') {
         // use $ instead of _$
         (function($) {
 
+            // keeps track of parent elements whose overflow was changed
+            var overflow_parents = [];
+
+            // walks up through all parents of #zdc and temporarily changes any overflow: hidden to overflow: auto
+            function fix_parent_overflow() {
+
+                var zdc = document.getElementById('zdc'),
+                    parent = zdc ? zdc.parentElement : null,
+                    style;
+
+                // restore any previously changed parents first
+                restore_parent_overflow();
+
+                while (parent && parent !== document.documentElement) {
+
+                    style = window.getComputedStyle(parent);
+
+                    // if overflow is hidden on either axis
+                    if (style.overflowX === 'hidden' || style.overflowY === 'hidden') {
+                        overflow_parents.push({
+                            element:    parent,
+                            x:          parent.style.overflowX || '',
+                            y:          parent.style.overflowY || '',
+                            overflow:   parent.style.overflow || ''
+                        });
+
+                        // only change the axes that are hidden
+                        if (style.overflowX === 'hidden') parent.style.overflowX = 'auto';
+                        if (style.overflowY === 'hidden') parent.style.overflowY = 'auto';
+                    }
+
+                    parent = parent.parentElement;
+
+                }
+
+            }
+
+            // restores the original overflow values on all changed parents
+            function restore_parent_overflow() {
+                overflow_parents.forEach(function(entry) {
+                    entry.element.style.overflow = entry.overflow;
+                    entry.element.style.overflowX = entry.x;
+                    entry.element.style.overflowY = entry.y;
+                });
+                overflow_parents = [];
+            }
+
             // closes everything
             $(document).on('click', function(e) {
                 if (!e.target.classList.contains('zdc-close') && !e.target.parentNode.classList.contains('zdc-close')) return;
                 $('#zdc .zdc-visible').not('#zdc-main').removeClass('zdc-visible');
+
+                // restore parent overflow when closing everything
+                restore_parent_overflow();
             });
 
             $('ul#zdc-main > li a').on('click', function() {
@@ -85,10 +135,22 @@ if (typeof _$ === 'undefined') {
                 }
 
                 // if section is open, close it
-                if (is_open) $target.removeClass('zdc-visible');
+                if (is_open) {
+
+                    $target.removeClass('zdc-visible');
+
+                    // restore parent overflow when closing
+                    restore_parent_overflow();
 
                 // if section is closed, open it
-                else $target.addClass('zdc-visible');
+                } else {
+
+                    $target.addClass('zdc-visible');
+
+                    // fix parent overflow when opening
+                    fix_parent_overflow();
+
+                }
 
             });
 
