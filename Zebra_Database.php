@@ -2220,14 +2220,14 @@ class Zebra_Database {
     public function get_tables($database = '') {
 
         // fetch all the tables in the database
-        $result = $this->fetch_assoc_all('', $this->query('
-            SHOW TABLES' . ($database !== '' ? ' IN ' . $this->_escape($database) : '')));
+        $result = $this->fetch_assoc_all('', $this->query('SHOW TABLES' . ($database !== '' ? ' IN ' . $this->_escape($database) : '')));
 
         $tables = array();
 
         // as the results returned by default are quite odd
         // translate them to a more usable array
-        foreach ($result as $tableName) $tables[] = array_pop($tableName);
+        // ($result is FALSE if invalid database was specified)
+        if (is_array($result)) foreach ($result as $tableName) $tables[] = array_pop($tableName);
 
         // return the array with the table names
         return $tables;
