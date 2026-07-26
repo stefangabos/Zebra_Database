@@ -1751,7 +1751,7 @@ class Zebra_Database {
             if ($resource->type == 1) $this->_manage_unbuffered_query_info($resource, $result);
 
             // return next row, or FALSE if no more rows available
-            return $result;
+            return $result === null ? false : $result;
 
         // if $resource is a pointer to an array taken from cache
         } elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
@@ -1918,7 +1918,7 @@ class Zebra_Database {
             if ($resource->type == 1) $this->_manage_unbuffered_query_info($resource, $result);
 
             // return next row, or FALSE if no more rows available
-            return $result;
+            return $result === null ? false : $result;
 
         // if $resource is a pointer to an array taken from cache
         } elseif (is_integer($resource) && isset($this->cached_results[$resource])) {
