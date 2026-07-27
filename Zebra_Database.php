@@ -2057,11 +2057,20 @@ class Zebra_Database {
         // if no resource was specified, and a query was run before, assign the last resource
         if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = &$this->last_result;
 
-        // if argument is a valid resource, free the result
-        // (we mute it as it might have already been freed by a previous call to this method)
+        // if argument is a valid resource
         if ($this->_is_result($resource)) {
-            @mysqli_free_result($resource);
-            return true;
+
+            // an already freed result is still an instance of mysqli_result, so the only way of telling is to try
+            // (note that on PHP 8 freeing it a second time raises an Error not an Exception)
+            try {
+
+                mysqli_free_result($resource);
+
+                return true;
+
+            // if it had already been freed by a previous call to this method
+            } catch (Throwable $e) {}
+
         }
 
         // return false if we get this far
