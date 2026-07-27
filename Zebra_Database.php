@@ -1690,6 +1690,9 @@ class Zebra_Database {
         // if no active connection exists, return false
         if (!$this->_connected()) return false;
 
+        // an escaped NULL is an empty string
+        if ($string === null) return '';
+
         // escape and return the string
         return mysqli_real_escape_string($this->connection, $string);
 
