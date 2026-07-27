@@ -12,7 +12,7 @@ The library provides a comprehensive debugging interface with detailed informati
 
 Provides debugging information when called from **CLI** (command-line interface) and supports logging queries done through **AJAX** requests.
 
-It encourages developers to write maintainable code and provides a better default security layer by encouraging the use of *prepared statements*, where parameters are automatically [escaped](https://www.php.net/manual/en/mysqli.real-escape-string.php).
+It encourages developers to write maintainable code and provides a better default security layer through *parameterized queries*, where values are given separately from the SQL and are automatically [escaped](https://www.php.net/manual/en/mysqli.real-escape-string.php) and quoted for you.
 
 The code is heavily commented and generates no warnings/errors/notices when PHP's error reporting level is set to E_ALL.
 
@@ -55,7 +55,9 @@ Your support is greatly appreciated and it keeps me motivated continue working o
 
 ## Requirements
 
-PHP 5.4.0+ with the **mysqli extension** activated, MySQL 4.1.22+
+PHP 7.3.0+ with the **mysqli extension** activated, MySQL 4.1.22+
+
+> The library itself still runs on PHP 5.5 and newer, and this is verified on every change with [PHPCompatibility](https://github.com/PHPCompatibility/PHPCompatibility) via `composer check-compat-legacy`. The supported version is given as 7.3 because that is the oldest version the test suite can actually run on, and *supported* should mean *tested*. If you are on PHP 5.5 to 7.2 the library will very likely work, but you are on your own.
 
 For using **memcache** as caching method, PHP must be compiled with the [memcache](https://pecl.php.net/package/memcache) extension and, if [memcache_compressed](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$memcache_compressed) property is set to TRUE, needs to be configured with `–with-zlib[=DIR]`
 
