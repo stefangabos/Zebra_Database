@@ -3380,8 +3380,8 @@ class Zebra_Database {
 
                 }
 
-            // if caching method is "redis"
-            } elseif ($this->caching_method === 'redis') {
+            // if caching method is "redis" and redis is enabled
+            } elseif ($this->caching_method === 'redis' && $this->redis) {
 
                 // the key to identify this particular information (prefix it if required)
                 $redis_key = md5($this->redis_key_prefix . $sql);
