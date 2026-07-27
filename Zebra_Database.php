@@ -4127,17 +4127,22 @@ class Zebra_Database {
         // if no active connection exists, return false
         if (!$this->_connected()) return false;
 
-        // if we could connect to the database
-        if (mysqli_select_db($this->connection, $database)) {
+        // starting with PHP 8.1+ mysqli throws instead of returning FALSE (unless mysqli_report was told otherwise)
+        try {
 
-            // update the value in the credentials
-            $this->credentials['database'] = $database;
+            // if we could select the database
+            if (mysqli_select_db($this->connection, $database)) {
 
-            return true;
+                // update the value in the credentials
+                $this->credentials['database'] = $database;
 
-        }
+                return true;
 
-        // if we couldn't connect to the database
+            }
+
+        } catch (Exception $e) {}
+
+        // if we couldn't select the database
         return false;
 
     }
