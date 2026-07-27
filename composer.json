@@ -14,11 +14,40 @@
         }
     ],
     "require": {
-        "php": ">=5.2.0"
+        "php": ">=7.3.0",
+        "ext-mysqli": "*"
+    },
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpcompatibility/php-compatibility": "^9.3",
+        "phpunit/phpunit": "^9.6"
     },
     "autoload": {
         "classmap": [
             "Zebra_Database.php"
         ]
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/Support/"
+        ]
+    },
+    "scripts": {
+        "test": "phpunit --configuration tests/phpunit.xml.dist",
+        "test-coverage": "phpunit --configuration tests/phpunit.xml.dist --coverage-html tests/coverage-html",
+        "check-compat": "phpcs -p Zebra_Database.php --standard=PHPCompatibility --runtime-set testVersion 7.3- --exclude=PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue --runtime-set ignore_warnings_on_exit 1",
+        "check-compat-legacy": "phpcs -p Zebra_Database.php --standard=PHPCompatibility --runtime-set testVersion 5.5- --exclude=PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue,PHPCompatibility.Classes.NewClasses --runtime-set ignore_warnings_on_exit 1"
+    },
+    "scripts-descriptions": {
+        "test": "Runs the test suite",
+        "test-coverage": "Runs the test suite and writes an HTML coverage report to tests/coverage-html",
+        "check-compat": "Checks the library against the supported PHP versions (7.3 and up). ArgumentFunctionsReportCurrentValue is excluded because the two debug_backtrace() calls it flags are only used to read a file name and a line number, never to inspect argument values",
+        "check-compat-legacy": "Checks the library against PHP 5.5 and up - the versions it still runs on but that are too old to test against. NewClasses is additionally excluded because the only hit is 'catch (Error)', and PHP resolves a catch type only when something is thrown, so on PHP 5 that block is simply never entered"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
