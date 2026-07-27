@@ -3524,13 +3524,13 @@ class Zebra_Database {
             if ($this->_is_result($this->last_result) || $this->last_result === true) {
 
                 // if returned resource is a valid resource, consider query to be a SELECT query
-                $is_select = $this->_is_result($this->last_result);
+                $returns_rows = $this->_is_result($this->last_result);
 
                 // reset these values for each query
                 $this->returned_rows = $this->found_rows = 0;
 
                 // if query was a SELECT query
-                if ($is_select) {
+                if ($returns_rows) {
 
                     // for buffered queries
                     if (!$this->unbuffered)
@@ -3558,10 +3558,7 @@ class Zebra_Database {
                 } else $this->affected_rows = @mysqli_affected_rows($this->connection);
 
                 // if query's results need to be cached
-                if ($is_select && $cache !== false && (int)$cache > 0) {
-
-                    // flag that we have refreshed the cache
-                    $from_cache = false;
+                if ($returns_rows && $cache !== false && (int)$cache > 0) {
 
                     $cache_data = array();
 
@@ -3640,7 +3637,7 @@ class Zebra_Database {
             } else {
 
                 // if read from cache this must be a SELECT query
-                $is_select = true;
+                $returns_rows = true;
 
                 // the last entry in the cache file contains the returned_rows, found_rows and column_info properties
                 // we need to take them off the array
@@ -3668,7 +3665,7 @@ class Zebra_Database {
                 $result = array();
 
                 // if rows were returned
-                if ($is_select) {
+                if ($returns_rows) {
 
                     $row_counter = 0;
 
@@ -3817,7 +3814,7 @@ class Zebra_Database {
                 ), false);
 
                 // if this was an unbuffered query and a valid select query
-                if ($this->unbuffered && $is_select && $this->_is_result($this->last_result))
+                if ($this->unbuffered && $returns_rows && $this->_is_result($this->last_result))
 
                     // save the index of the entry in the debug_info array
                     $this->last_result->log_index = count($this->debug_info['successful-queries']) - 1;
