@@ -4222,6 +4222,9 @@ class Zebra_Database {
      *                              selected with the {@link connect()} or {@link select_database()} methods prior to
      *                              calling this method.*
      *
+     *                              *May also contain the `%` wildcard. Underscores are always matched literally, so that
+     *                              a regular table name is not treated as a pattern.*
+     *
      *  @since  2.3
      *
      *  @return boolean             Returns `TRUE` if table given as argument exists in the database, or `FALSE` if it
@@ -4234,7 +4237,8 @@ class Zebra_Database {
 
         // check if table exists in the database
         // SHOW TABLES doesn't support prepared statements, so we escape manually
-        return is_array($this->fetch_assoc($this->query('SHOW TABLES' . (isset($database) ? ' IN ' . $this->_escape($database) : '') . ' LIKE \'' . $this->escape($table) . '\'')));
+        // (we escape "_" as it is a single character wildcard for LIKE and underscores are common in table names)
+        return is_array($this->fetch_assoc($this->query('SHOW TABLES' . (isset($database) ? ' IN ' . $this->_escape($database) : '') . ' LIKE \'' . addcslashes($this->escape($table), '_') . '\'')));
 
     }
 
