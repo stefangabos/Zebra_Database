@@ -3463,6 +3463,9 @@ class Zebra_Database {
         // if query was not read from the cache
         if (!isset($this->last_result)) {
 
+            // reset the flag
+            $from_cache = false;
+
             try {
 
                 // run the query
