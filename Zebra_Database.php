@@ -4197,14 +4197,25 @@ class Zebra_Database {
         // do not show the warning that this method has not been called
         unset($this->warnings['charset']);
 
-        // if we are not yet connected to a database, defer it until a connection is made
-        // (the values cannot be escaped without an active connection, so we defer those instead of the built query)
-        if (!$this->connection || $this->connection->connect_errno != 0) $this->deferred[] = array('SET NAMES ? COLLATE ?', $charset, $collation);
+        // if we are not yet connected to a database, defer this call until a connection is made
+        if (!$this->connection || $this->connection->connect_errno != 0) {
+            $this->deferred[] = array('set_charset', $charset, $collation);
+            return null;
+        }
 
-        // otherwise run the query now
-        // the MySQL protocol itself doesn't allow parameterization of charset and collation names in SET NAMES
-        // so we can't use prepared statements here
-        else return $this->query('SET NAMES "' . $this->escape($charset) . '" COLLATE "' . $this->escape($collation) . '"');
+        try {
+
+            // set the character set through the API rather than through a "SET NAMES" query
+            // (mysqli only learns about the character set this way - after a "SET NAMES" query it would still escape
+            // for the previous one, and with multi byte character sets like "gbk" that allows a carefully crafted
+            // value to swallow the escaping backslash and break out of the enclosing quotes)
+            if (!mysqli_set_charset($this->connection, $charset)) return false;
+
+        // if the character set was not recognized
+        } catch (Exception $e) { return false; }
+
+        // the collation cannot be set through the API, so we set it separately
+        return $this->query('SET collation_connection = \'' . $this->escape($collation) . '\'');
 
     }
 
@@ -4697,12 +4708,12 @@ class Zebra_Database {
             // if connection was successful
             else
 
-                // run over the deferred queries (if any)
+                // run the deferred method calls (if any) now that we have a connection
                 while (!empty($this->deferred)) {
 
-                    // run the queries now
                     $params = array_shift($this->deferred);
-                    call_user_func_array(array($this, 'query'), array($params[0], array_slice($params, 1)));
+                    $method = array_shift($params);
+                    call_user_func_array(array($this, $method), $params);
 
                 }
 
