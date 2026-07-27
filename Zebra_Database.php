@@ -2343,8 +2343,12 @@ class Zebra_Database {
 
         $result = '';
 
-        // iterate through the array's items and "glue" items together
-        foreach ($items as $item) $result .= ($result !== '' ? ',' : '') . '\'' . $this->escape($item) . '\'';
+        // flatten nested arrays first
+        $flattened_items = array();
+        array_walk_recursive($items, function($item) use (&$flattened_items) { $flattened_items[] = $item; });
+
+        // iterate through the flattened array's items and "glue" items together
+        foreach ($flattened_items as $item) $result .= ($result !== '' ? ',' : '') . '\'' . $this->escape($item) . '\'';
 
         return $result;
 
