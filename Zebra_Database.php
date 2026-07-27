@@ -3302,8 +3302,8 @@ class Zebra_Database {
                 if ($replacement === null) $replacements2[$key] = 'NULL';
 
                 // if the replacement is an array, implode and escape it for use in WHERE ? IN ? statement
-                // (an empty array becomes NULL so that "IN (?)" matches nothing rather than producing invalid SQL)
-                elseif (is_array($replacement)) $replacements2[$key] = empty($replacement) ? 'NULL' : preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->implode($replacement));
+                // (an empty array becomes a subquery returning no rows, which is the only value that is correct for both "IN (?)" - which then matches nothing - and "NOT IN (?)" - which matches everything)
+                elseif (is_array($replacement)) $replacements2[$key] = empty($replacement) ? '(SELECT 1 FROM DUAL WHERE FALSE)' : preg_replace(array('/\\\\/', '/\$([0-9]*)/'), array('\\\\\\\\', '\\\$$1'), $this->implode($replacement));
 
                 // otherwise, mysqli_real_escape_string the items in replacements
                 // also, replace anything that looks like $45 to \$45 or else the next preg_replace-s will treat
