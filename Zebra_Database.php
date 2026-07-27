@@ -1215,13 +1215,11 @@ class Zebra_Database {
 
         // run the query
         $this->query('
-
             SELECT
                 COUNT(' . $column . ') AS counted
             FROM
                 ' . $this->_escape($table) .
             ($where !== '' ? ' WHERE ' . $where : '') . '
-
         ', $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
@@ -1284,13 +1282,7 @@ class Zebra_Database {
     public function delete($table, $where = '', $replacements = '', $highlight = false) {
 
         // run the query
-        $this->query('
-
-            DELETE FROM
-                ' . $this->_escape($table) .
-            ($where !== '' ? ' WHERE ' . $where : '') . '
-
-        ', $replacements, false, false, $highlight);
+        $this->query('DELETE FROM ' . $this->_escape($table) . ($where !== '' ? ' WHERE ' . $where : ''), $replacements, false, false, $highlight);
 
         // return TRUE if query was successful, or FALSE if it wasn't
         return isset($this->last_result) && $this->last_result !== false;
@@ -1468,13 +1460,11 @@ class Zebra_Database {
 
         // run the query
         $this->query('
-
             SELECT
                 MAX(' . $column . ') AS maximum
             FROM
                 ' . $this->_escape($table) .
             ($where !== '' ? ' WHERE ' . $where : '') . '
-
         ', $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
@@ -1553,13 +1543,11 @@ class Zebra_Database {
 
         // run the query
         $this->query('
-
             SELECT
                 SUM(' . $column . ') AS total
             FROM
                 ' . $this->_escape($table) .
             ($where !== '' ? ' WHERE ' . $where : '') . '
-
         ', $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
@@ -2261,11 +2249,7 @@ class Zebra_Database {
     public function get_table_columns($table) {
 
         // run the query
-        $this->query('
-
-            SHOW COLUMNS FROM ' . $this->_escape($table) . '
-
-        ');
+        $this->query('SHOW COLUMNS FROM ' . $this->_escape($table));
 
         // fetch and return data
         return $this->fetch_assoc_all('Field');
@@ -2305,9 +2289,7 @@ class Zebra_Database {
 
         // run the query
         $this->query('
-            SHOW
-            TABLE
-            STATUS
+            SHOW TABLE STATUS
             ' . (isset($database) ? ' IN ' . $this->_escape($database) : '') . '
             ' . (trim($table) !== '' ? 'LIKE ?' : '') . '
         ', array($table));
@@ -2941,7 +2923,6 @@ class Zebra_Database {
 
         // run the query
         $this->query('
-
             INSERT INTO
                 ' . $this->_escape($table) . '
                 (' . $cols . ')
@@ -2949,7 +2930,6 @@ class Zebra_Database {
                 (' . $values . ')
             ON DUPLICATE KEY UPDATE
                 ' . $update_cols . '
-
         ', array_merge(array_values($columns), array_values($update)), false, false, $highlight);
 
         // return TRUE if query was successful, or FALSE if it wasn't
@@ -4112,18 +4092,13 @@ class Zebra_Database {
 
         // run the query
         return $this->query('
-
             SELECT
                 ' . implode(', ', $columns) . '
             FROM
                 ' . $this->_escape($table) .
-
             ($where !== '' ? ' WHERE ' . $where : '') .
-
             ($order !== '' ? ' ORDER BY ' . $order : '') .
-
             ($limit !== '' ? ' LIMIT ' . $limit : '') . '
-
         ', $replacements, $cache, $calc_rows, $highlight);
 
     }
@@ -4390,12 +4365,7 @@ class Zebra_Database {
     public function truncate($table, $highlight = false) {
 
         // run the query
-        $this->query('
-
-            TRUNCATE
-                ' . $this->_escape($table) . '
-
-        ', '', false, false, $highlight);
+        $this->query('TRUNCATE ' . $this->_escape($table), '', false, false, $highlight);
 
         // return TRUE if query was successful, or FALSE if it wasn't
         return isset($this->last_result) && $this->last_result !== false;
@@ -4534,13 +4504,11 @@ class Zebra_Database {
 
         // run the query
         $this->query('
-
             UPDATE
                 ' . $this->_escape($table) . '
             SET
                 ' . $cols .
             ($where !== '' ? ' WHERE ' . $where : '') . '
-
         ', array_merge(array_values($columns), $replacements === '' ? array() : $replacements), false, false, $highlight);
 
         // return TRUE if query was successful, or FALSE if it wasn't
