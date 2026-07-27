@@ -966,14 +966,6 @@ class Zebra_Database {
     );
 
     /**
-     *  A flag used for deprecated features (PHP < 5.4.0)
-     *
-     *  @var boolean
-     *  @access private
-     */
-    private $use_deprecated;
-
-    /**
      *  Constructor of the class
      *
      *  @return void
@@ -1002,9 +994,6 @@ class Zebra_Database {
             'memcache'  => true,   // memcache is available but it is not used
             'redis'     => true,   // redis is available but it is not used
         );
-
-        // this is used in the "escape" method
-        $this->use_deprecated = version_compare(PHP_VERSION, '5.4.0', '<');
 
         // whether the call was made from CLI or from the browser
         $this->is_cli_request = strpos(php_sapi_name(), 'cli') === 0;
@@ -1689,9 +1678,6 @@ class Zebra_Database {
 
         // if no active connection exists, return false
         if (!$this->_connected()) return false;
-
-        // if we are on PHP < 5.4.0 and "magic quotes" are on, strip slashes
-        if ($this->use_deprecated && get_magic_quotes_gpc()) $string = stripslashes($string);
 
         // escape and return the string
         return mysqli_real_escape_string($this->connection, $string);
