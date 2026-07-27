@@ -1557,7 +1557,7 @@ class Zebra_Database {
             $row = $this->fetch_assoc();
 
             // return the result
-            return $row['total'];
+            return $row['total'] === null ? false : $row['total'];
 
         }
 
