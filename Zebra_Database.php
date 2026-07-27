@@ -3206,6 +3206,11 @@ class Zebra_Database {
      *
      *                                  The caching method is specified through the {@link caching_method} property.
      *
+     *                                  *Only queries that return a result set are cached. Besides `SELECT` this also
+     *                                  covers statements like `SHOW`, `DESCRIBE` and `EXPLAIN`. For queries that return
+     *                                  no rows, like `INSERT`, `UPDATE` or `DELETE`, this argument is ignored and the
+     *                                  query is executed every time.*
+     *
      *                                  *For {@link query_unbuffered unbuffered queries} this argument is always `FALSE`!*
      *
      *                                  Default is `FALSE`
