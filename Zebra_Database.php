@@ -5459,6 +5459,28 @@ class Zebra_Database {
     }
 
     /**
+     *  Counts the characters in a UTF-8 string, so that labels in the CLI output line up even when they
+     *  contain accented characters
+     *
+     *  This used to be done via `utf8_decode`, but the function is deprecated as of PHP 8.2
+     *
+     *  @param  string  $string     The string to count the characters of
+     *
+     *  @return integer             The number of characters in the string
+     *
+     *  @access private
+     */
+    private function _strlen($string) {
+
+        // use mbstring if it is available as it is the most direct way of doing this
+        if (function_exists('mb_strlen')) return mb_strlen($string, 'UTF-8');
+
+        // otherwise count the bytes that are not UTF-8 continuation bytes, which comes to the same thing
+        return strlen(preg_replace('/[\x80-\xBF]/', '', $string));
+
+    }
+
+    /**
      *  Checks whether debugging is enabled
      *
      *  @return boolean
@@ -5758,8 +5780,8 @@ class Zebra_Database {
             if (strlen($label) > $longest_label_length)
 
                 // this is the longest label, so far
-                // we use utf8_decode so that strlen counts correctly with accented chars
-                $longest_label_length = strlen(utf8_decode($label));
+                // we count characters rather than bytes so that labels with accented chars still line up
+                $longest_label_length = $this->_strlen($label);
 
         $longest_label_length++;
 
@@ -5786,28 +5808,28 @@ class Zebra_Database {
                             "\n" . html_entity_decode(strip_tags(SqlFormatter::format($debug_info['query']))) . "\n" .
 
                             // date
-                            (!$is_cli_request ? $labels[0] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[0])), ' ', STR_PAD_RIGHT) . ': ' . @date('Y-m-d H:i:s') . "\n" : '') .
+                            (!$is_cli_request ? $labels[0] . str_pad('', $longest_label_length - $this->_strlen($labels[0]), ' ', STR_PAD_RIGHT) . ': ' . @date('Y-m-d H:i:s') . "\n" : '') .
 
                             // if execution time is available
                             // (is not available for unsuccessful queries)
-                            (isset($debug_info['execution_time']) ? $labels[2] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[2])), ' ', STR_PAD_RIGHT) . ': ' . number_format($debug_info['execution_time'], 5) . ' ' . $this->language['seconds'] . "\n" : '') .
+                            (isset($debug_info['execution_time']) ? $labels[2] . str_pad('', $longest_label_length - $this->_strlen($labels[2]), ' ', STR_PAD_RIGHT) . ': ' . number_format($debug_info['execution_time'], 5) . ' ' . $this->language['seconds'] . "\n" : '') .
 
                             // if there is a warning message
-                            (isset($debug_info['warning']) && $debug_info['warning'] !== '' ? $labels[3] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[3])), ' ', STR_PAD_RIGHT) . ': ' . strip_tags($debug_info['warning']) . "\n" : '') .
+                            (isset($debug_info['warning']) && $debug_info['warning'] !== '' ? $labels[3] . str_pad('', $longest_label_length - $this->_strlen($labels[3]), ' ', STR_PAD_RIGHT) . ': ' . strip_tags($debug_info['warning']) . "\n" : '') .
 
                             // if there is an error message
-                            (isset($debug_info['error']) && $debug_info['error'] !== '' ? $labels[4] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[4])), ' ', STR_PAD_RIGHT) . ': ' . $debug_info['error'] . "\n" : '') .
+                            (isset($debug_info['error']) && $debug_info['error'] !== '' ? $labels[4] . str_pad('', $longest_label_length - $this->_strlen($labels[4]), ' ', STR_PAD_RIGHT) . ': ' . $debug_info['error'] . "\n" : '') .
 
                             // if not an action query, show whether the query was returned from the cache or was executed
-                            (isset($debug_info['affected_rows']) && $debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] ? $labels[5] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[5])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '') .
+                            (isset($debug_info['affected_rows']) && $debug_info['affected_rows'] === false && isset($debug_info['from_cache']) && $debug_info['from_cache'] ? $labels[5] . str_pad('', $longest_label_length - $this->_strlen($labels[5]), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '') .
 
                             // if query was an unbuffered one
-                            (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ? $labels[12] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[12])), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '');
+                            (isset($debug_info['unbuffered']) && $debug_info['unbuffered'] ? $labels[12] . str_pad('', $longest_label_length - $this->_strlen($labels[12]), ' ', STR_PAD_RIGHT) . ': ' . $labels[6] . "\n" : '');
 
                         // if backtrace information should be written to the log file
                         if ($backtrace) {
 
-                            $output .= $labels[8] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[8])), ' ', STR_PAD_RIGHT) . ':' . "\n";
+                            $output .= $labels[8] . str_pad('', $longest_label_length - $this->_strlen($labels[8]), ' ', STR_PAD_RIGHT) . ':' . "\n";
 
                             // handle full backtrace info
                             foreach ($debug_info['backtrace'] as $backtrace) {
@@ -5815,9 +5837,9 @@ class Zebra_Database {
                                 // output
                                 $output .=
                                     "\n" .
-                                    $labels[9] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[9])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['file']] . "\n" .
-                                    $labels[10] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[10])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['line']] . "\n" .
-                                    $labels[11] . str_pad('', $longest_label_length - strlen(utf8_decode($labels[11])), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['function']] . "\n";
+                                    $labels[9] . str_pad('', $longest_label_length - $this->_strlen($labels[9]), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['file']] . "\n" .
+                                    $labels[10] . str_pad('', $longest_label_length - $this->_strlen($labels[10]), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['line']] . "\n" .
+                                    $labels[11] . str_pad('', $longest_label_length - $this->_strlen($labels[11]), ' ', STR_PAD_RIGHT) . ': ' . $backtrace[$this->language['function']] . "\n";
 
                             }
 
