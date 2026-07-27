@@ -1727,7 +1727,7 @@ class Zebra_Database {
         if (!$this->_connected()) return false;
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = &$this->last_result;
 
         // if $resource is a valid resource
         if ($this->_is_result($resource)) {
@@ -1816,7 +1816,7 @@ class Zebra_Database {
         }
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = &$this->last_result;
 
         if (
 
@@ -1894,7 +1894,7 @@ class Zebra_Database {
         if (!$this->_connected()) return false;
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = &$this->last_result;
 
         // if $resource is a valid resource, fetch and return next row from the result set
         if ($this->_is_result($resource)) {
@@ -1989,7 +1989,7 @@ class Zebra_Database {
         }
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = &$this->last_result;
 
         if (
 
@@ -2122,7 +2122,7 @@ class Zebra_Database {
         if (!$this->_connected()) return false;
 
         // if no resource was specified, and a query was run before, assign the last resource
-        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = &$this->last_result;
 
         // if $resource is a valid resource
         if ($this->_is_result($resource)) {
@@ -3903,7 +3903,7 @@ class Zebra_Database {
         if (!$this->_connected()) return false;
 
         // if no resource was specified, and there was a previous call to the "query" method, assign the last resource
-        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = & $this->last_result;
+        if ($resource === '' && isset($this->last_result) && $this->last_result !== false) $resource = &$this->last_result;
 
         // check if given resource is valid
         if ($this->_is_result($resource)) {
