@@ -3412,7 +3412,7 @@ class Zebra_Database {
             } else {
 
                 // if cache folder exists and is writable
-                if (file_exists($this->cache_path) && is_dir($this->cache_path) && is_writable($this->cache_path)) {
+                if (is_string($this->cache_path) && file_exists($this->cache_path) && is_dir($this->cache_path) && is_writable($this->cache_path)) {
 
                     // the cache file's name
                     $file_name = rtrim($this->cache_path, '/') . '/' . md5($sql);
