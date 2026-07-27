@@ -2061,7 +2061,7 @@ class Zebra_Database {
         if ($this->_is_result($resource)) {
 
             // an already freed result is still an instance of mysqli_result, so the only way of telling is to try
-            // (note that on PHP 8 freeing it a second time raises an Error not an Exception)
+            // (note that starting with PHP 8 freeing it a second time raises an Error not an Exception)
             try {
 
                 mysqli_free_result($resource);
@@ -4136,7 +4136,7 @@ class Zebra_Database {
         // if no active connection exists, return false
         if (!$this->_connected()) return false;
 
-        // starting with PHP 8.1+ mysqli throws instead of returning FALSE (unless mysqli_report was told otherwise)
+        // starting with PHP 8.1 mysqli throws instead of returning FALSE (unless mysqli_report was told otherwise)
         try {
 
             // if we could select the database
