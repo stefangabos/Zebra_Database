@@ -794,6 +794,17 @@ class Zebra_Database {
     private $deferred = array();
 
     /**
+     *  Caches whether the {@link log_path} property holds a callable rather than a path
+     *
+     *  Without a default value on purpose, so that the `isset()` check that decides whether it still needs working out
+     *  keeps returning FALSE until it is actually set
+     *
+     *  @var boolean
+     *  @access private
+     */
+    private $log_path_is_function;
+
+    /**
      *  A flag telling the script whether it was called from CLI or in the browser
      *
      *  @var boolean
