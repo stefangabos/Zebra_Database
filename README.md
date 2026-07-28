@@ -30,7 +30,7 @@ The code is heavily commented and generates no warnings/errors/notices when PHP'
 
 - supports [unbuffered queries](https://www.php.net/manual/en/mysqlinfo.concepts.buffering.php)
 
-- provides a better security layer by encouraging the use of prepared statements, where parameters are automatically escaped
+- provides a better security layer through *parameterized queries*, where values are given separately from the SQL and are automatically escaped and quoted
 
 - provides a very detailed debugging interface with lots of useful information about executed queries; it also automatically [EXPLAIN](https://dev.mysql.com/doc/refman/8.0/en/explain.html)s each SELECT query
 
