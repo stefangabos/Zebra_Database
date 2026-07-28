@@ -16,6 +16,9 @@ parameters:
     excludePaths:
         - tests/tmp
         - tests/coverage-html
+        # phpcs sniffs, which phpstan cannot reason about without the whole of PHP_CodeSniffer loaded -
+        # its tokens are constants defined at runtime, so even T_CLOSURE comes back as "not found"
+        - tests/standards
 
     ignoreErrors:
 

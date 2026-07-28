@@ -70,7 +70,35 @@
              all of them would churn most of the file without making any of it clearer. -->
         <exclude name="Generic.ControlStructures.InlineControlStructure"/>
 
+        <!-- Replaced by the rule below, which says the same thing for named declarations and the opposite
+             for closures. PSR-12 wants a space in both cases and the sniff has no property to separate
+             them, so the check is re-stated rather than switched off. Both codes are named because the
+             Squiz sniff extends the PEAR one and reports single and multi line declarations separately. -->
+        <exclude name="PEAR.Functions.FunctionDeclaration.SpaceAfterFunction" />
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.SpaceAfterFunction" />
+
+        <!-- A closure short enough to sit on one line is written on one line - "function($value) { return
+             $value; }". These two sniffs check the braces of closures and named declarations alike and
+             have no property to separate them, but the Kernighan/Ritchie rule further down does the same
+             check for named declarations only: its checkClosures property is off by default, which is
+             exactly the distinction wanted here. So these two go and that one stays, and a named
+             declaration written on one line is still reported. -->
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.ContentAfterBrace" />
+        <exclude name="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore" />
+
+        <!-- Replaced by the rule below, which makes the same exception for closures. The statement inside
+             a one line closure is what this counts as the second statement on the line. -->
+        <exclude name="Generic.Formatting.DisallowMultipleStatements" />
+
     </rule>
+
+    <!-- One space after the "function" keyword when a name follows it, none when it does not - so
+    "function get_tables($database)" and "function($value) { ... }" are both correct. -->
+    <rule ref="tests/standards/Zebra/Sniffs/Functions/FunctionKeywordSpacingSniff.php" />
+
+    <!-- Each statement on a line by itself, except inside a closure - so "array_map(function($row) { return
+    $row['id']; }, $rows)" is fine while "$a = 1; $b = 2;" is still reported. -->
+    <rule ref="tests/standards/Zebra/Sniffs/Formatting/ClosureAwareMultipleStatementsSniff.php" />
 
     <!-- Function declarations follow the "Kernighan/Ritchie style". The function brace is on the same line as the
     function declaration. One space is required between the closing parenthesis and the brace. -->
