@@ -2759,7 +2759,7 @@ class Zebra_Database {
             // save debug information
             return $this->_log('errors', array(
 
-                'message'   => $this->language['data`_not_an_array']
+                'message'   => $this->language['data_not_an_array']
 
             ));
 
