@@ -3862,7 +3862,18 @@ class Zebra_Database {
 
                         // if EXPLAIN is not available
                         // (for something line SHOW TABLE for example) do nothing
+                        // note that we need to also clear the error the attempt left on the connection
+                        // on PHP 8.1 that error is thrown by the next mysqli_fetch_* call rather than by the query it
+                        // belongs to, so a query the user ran successfully would fail as it is being read. any command
+                        // that succeeds clears it, and mysqli_stat is the cheapest one that neither returns a result
+                        // set nor is deprecated
                         } catch (Exception $e) {
+
+                            try {
+                                mysqli_stat($this->connection);
+                            } catch (Exception $error) {
+                            }
+
                         }
 
                     }
@@ -5843,6 +5854,13 @@ class Zebra_Database {
 
                     // if EXPLAIN is not available
                     } catch (Exception $e) {
+
+                        // clear the error the attempt left on the connection - see the same thing in the query method
+                        try {
+                            mysqli_stat($this->connection);
+                        } catch (Exception $error) {
+                        }
+
                     }
 
                 }
