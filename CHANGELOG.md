@@ -2,17 +2,17 @@
 
 ### :lock: Security
 
-- **fixed an SQL injection vector present when using a multi-byte character set.** The `set_charset` method changed the character set by running a `SET NAMES` query, which the mysqli extension does not see - so `mysqli_real_escape_string`, and therefore every value the library escaped for you, kept being escaped for the *previous* character set. With `gbk`, `big5`, `sjis`, `cp932`, `gb18030` or `euc-kr`, a carefully crafted value could swallow the escaping backslash and break out of the quotes enclosing it. The character set is now set through `mysqli_set_charset`, which is the only way the extension learns about it.<br><br>**you are affected if** you called `set_charset` with one of those character sets. `utf8` and `utf8mb4` were never vulnerable. There is nothing to change in your code beyond updating.
+- **fixed an SQL injection vector present when using a multi-byte character set.** The `set_charset` method changed the character set by running a `SET NAMES` query, which the mysqli extension does not see - so `mysqli_real_escape_string`, and therefore every value the library escaped for you, kept being escaped for the *previous* character set. with `gbk`, `big5`, `sjis`, `cp932`, `gb18030` or `euc-kr`, a carefully crafted value could swallow the escaping backslash and break out of the quotes enclosing it. the character set is now set through `mysqli_set_charset`, which is the only way the extension learns about it.<br><br>**you are affected if** you called `set_charset` with one of those character sets. `utf8` and `utf8mb4` were never vulnerable. there is nothing to change in your code beyond updating.
 
 ### :warning: Breaking changes
 
 >   **Most of these will probably not affect you** - but test anyway.
 >
->   The one worth a look is the change to **`set_charset`'s defaults**, and only if you call that method without arguments - the library never calls it for you, so if you never call it either, nothing changes. The new collation compares differently (`'ß' = 'ss'` is true under `utf8mb4_unicode_ci` and false under the old `utf8_general_ci`), which can quietly change what a query matches To keep exactly what you had, pass the old values yourself: `$db->set_charset('utf8', 'utf8_general_ci')`.
+>   The one worth a look is the change to **`set_charset`'s defaults**, and only if you call that method without arguments - the library never calls it for you, so if you never call it either, nothing changes. the new collation compares differently (`'ß' = 'ss'` is true under `utf8mb4_unicode_ci` and false under the old `utf8_general_ci`), which can quietly change what a query matches To keep exactly what you had, pass the old values yourself: `$db->set_charset('utf8', 'utf8_general_ci')`.
 >
 >   The minimum PHP version going to 7.3 reads worse than it is - the library still runs on 5.5 and that is verified on every change. 7.3 is simply the oldest version the *test suite* can run on, so it is the oldest one I can honestly say the library is tested on.
 
-- the minimum required PHP version is now **7.3**, up from 5.3. The library itself still runs on PHP 5.5 and newer and this is verified on every change with PHPCompatibility, but 7.3 is the oldest version the test suite can run on, so that's the minimum PHP version the library was *tested* on
+- the minimum required PHP version is now **7.3**, up from 5.3. the library itself still runs on PHP 5.5 and newer and this is verified on every change with PHPCompatibility, but 7.3 is the oldest version the test suite can run on, so that's the minimum PHP version the library was *tested* on
 - `set_charset` now defaults to `utf8mb4`/`utf8mb4_unicode_ci` instead of `utf8`/`utf8_general_ci`; pass the old values explicitly if you need them - note that comparison and sorting differ between the two collations
 - the `INC()` keyword now has to be the whole of a value. Previously a value merely *starting* with it, like `INC(5) apples`, was taken to be an instruction to increment the column, and on a text column that either failed outright or wrote a number over what you meant to store - such values are now stored as the strings they are
 - `table_exists`, `get_table_status` and `optimize` no longer treat an underscore in a table name as a single character wildcard, so `table_exists('order_items')` no longer returns TRUE because a table called `orderXitems` happens to exist. `%` still works as a wildcard in the two that document it
@@ -25,7 +25,7 @@
 ### Everything else
 
 - added a huge test suite; alongside the tests that describe how the library is meant to behave, the suite carries a set of regression tests, each naming the commit that fixed the bug it guards, so that a fix that gets undone is reported by name rather than by a distant failure somewhere else
-- added static analysis to go with the tests - [PHPStan](https://phpstan.org/) and [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer), run with `composer analyse` and `composer check-style`. The coding standard is PSR-12 with the places this library deliberately departs from it written down and explained in `coding-standards.xml`, rather than left as a permanently failing check that everyone learns to ignore
+- added static analysis to go with the tests - [PHPStan](https://phpstan.org/) and [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer), run with `composer analyse` and `composer check-style`; the coding standard is PSR-12 with the places this library deliberately departs from it written down and explained in `coding-standards.xml`, rather than left as a permanently failing check that everyone learns to ignore
 - the PHP compatibility check now reads `tests/php-compatibility.xml` instead of repeating its flags across two composer scripts, so the file being checked and the reason for each excluded sniff are kept together
 - `set_charset` now returns a value when a connection exists, fixing it being a silent no-op when called on an already connected instance
 - fixed bug with the library not returning FALSE (instead of NULL) upon errors when debugging was disabled
@@ -41,10 +41,12 @@
 - fixed dynamic property which was giving deprecation notices in PHP 8.2+ and errors in PHP 9
 - fixed MySQL functions being escaped as column names when given an alias
 - fixed bug where trying to EXPLAIN unbuffered queries that cannot be EXPLAINed was killing the script
+- fixed queries that MySQL cannot `EXPLAIN`, like `SHOW TABLE STATUS`, failing on PHP 8.1 when debugging was on; the library asks MySQL to explain each query and catches the error when it cannot, but on PHP 8.1 that error stays on the connection and is thrown by the next fetch instead of by the query it belongs to - so reading the results of a query that ran perfectly well threw instead; the error left behind is now cleared
 - fixed `transaction_complete` reporting failure for a successful test transaction
 - fixed bug where a NULL among the values handed to the internal escaping producing an empty pair of grave accents instead of the SQL keyword, which was invalid SQL and also raised a deprecation on PHP 8.1 and an error on PHP 9
 - replaced dynamic mysqli_result properties with a private property thus fixing deprecation notices in PHP 8.2+ and errors in PHP 9
 - updated the list of known MySQL functions; the list decides whether a value is escaped or passed through as SQL, so it is what separates a value being stored from one being executed
+- added a GitHub Actions workflow that runs the test suite on PHP 7.3 through 8.4 against a real MySQL server, with memcache and redis alongside it so the caching backends are covered too, plus the static analysis, PHP compatibility and coding standard checks
 
 ## version 2.13.3 (February 19, 2026)
 
