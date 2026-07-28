@@ -564,4 +564,35 @@ class RegressionTest extends DatabaseTestCase
 
         $this->assertFalse($property->isPublic());
     }
+
+    /**
+     * With debugging on, each successful query is sent back to MySQL as an EXPLAIN. Queries like SHOW TABLE
+     * STATUS cannot be explained, and the error that comes back is caught - but it stays on the connection,
+     * and on PHP 8.1 the next mysqli_fetch_* call throws it rather than the query it belongs to. So reading
+     * the results of a query that ran perfectly well failed instead, taking get_table_status(), optimize()
+     * and everything built on them with it. Only PHP 8.1 behaves that way, so this goes red on that version
+     * alone - which is exactly why the test suite runs on every supported version
+     */
+    public function testResultsCanBeReadAfterAQueryThatCannotBeExplained() {
+        $this->db->debug = true;
+
+        $this->assertTrue($this->db->debug_show_explain, 'The EXPLAIN is only attempted when this is on');
+
+        $this->db->query('SHOW TABLE STATUS');
+        $tables = $this->db->fetch_assoc_all('Name');
+
+        $this->db->debug = false;
+
+        $this->assertArrayHasKey('test_users', $tables);
+
+        // the same thing through the methods that run into it in normal use
+        $this->db->debug = true;
+
+        $status = $this->db->get_table_status('test_users');
+        $this->db->optimize('test_users');
+
+        $this->db->debug = false;
+
+        $this->assertArrayHasKey('test_users', $status);
+    }
 }
