@@ -5727,13 +5727,23 @@ class Zebra_Database {
                 // if we need to EXPLAIN the query
                 if (isset($resource->explain) && $resource->explain) {
 
-                    // do that now
-                    $explain_resource = mysqli_query($this->connection, 'EXPLAIN ' . $resource->query);
+                    // only SELECT, DELETE, INSERT, REPLACE, and UPDATE queries can be explained so we use a try/catch
+                    try {
 
-                    // update information in the debugging console
-                    while ($row = mysqli_fetch_assoc($explain_resource)) {
-                        if (!is_array($this->debug_info['successful-queries'][$resource->log_index]['explain'])) $this->debug_info['successful-queries'][$resource->log_index]['explain'] = array();
-                        $this->debug_info['successful-queries'][$resource->log_index]['explain'][] = $row;
+                        // try to EXPLAIN
+                        $explain_resource = mysqli_query($this->connection, 'EXPLAIN ' . $resource->query);
+
+                        // if MySQL could explain the query
+                        if (!is_bool($explain_resource))
+
+                            // update information in the debugging console
+                            while ($row = mysqli_fetch_assoc($explain_resource)) {
+                                if (!is_array($this->debug_info['successful-queries'][$resource->log_index]['explain'])) $this->debug_info['successful-queries'][$resource->log_index]['explain'] = array();
+                                $this->debug_info['successful-queries'][$resource->log_index]['explain'][] = $row;
+                            }
+
+                    // if EXPLAIN is not available
+                    } catch (Exception $e) {
                     }
 
                 }
