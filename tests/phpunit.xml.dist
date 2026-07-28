@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Default configuration, safe to commit.
+
+    To run the suite against a database that is not on 127.0.0.1:3306, copy this file to "phpunit.xml"
+    (which is git-ignored) and adjust the values in the <php> block. PHPUnit picks up "phpunit.xml"
+    in preference to this file, so no other change is needed.
+-->
+
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+    bootstrap="bootstrap.php"
+    colors="true"
+    processIsolation="false"
+    stopOnFailure="false"
+    backupGlobals="false"
+    cacheResultFile=".phpunit.result.cache">
+
+    <testsuites>
+        <testsuite name="Zebra_Database Test Suite">
+            <directory suffix="Test.php">.</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage>
+        <include>
+            <file>../Zebra_Database.php</file>
+        </include>
+        <!--
+            No report is declared here on purpose, as declaring one makes every single run write a
+            full coverage report. Ask for one explicitly instead, with "composer test-coverage".
+        -->
+    </coverage>
+
+    <php>
+        <env name="DB_HOST" value="127.0.0.1"/>
+        <env name="DB_USER" value="root"/>
+        <env name="DB_PASS" value=""/>
+        <env name="DB_NAME" value="zebra_test"/>
+        <env name="DB_PORT" value="3306"/>
+        <env name="MEMCACHE_HOST" value="127.0.0.1"/>
+        <env name="MEMCACHE_PORT" value="11211"/>
+        <env name="REDIS_HOST" value="127.0.0.1"/>
+        <env name="REDIS_PORT" value="6379"/>
+    </php>
+
+</phpunit>

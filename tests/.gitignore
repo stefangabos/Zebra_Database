@@ -1,0 +1,34 @@
+# Temporary files and directories
+tmp/*
+!tmp/.gitkeep
+
+# Test output files
+coverage.txt
+coverage-html/
+*.log
+*.cache
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PHP files
+*.phar
+
+# Test artifacts
+test-results.xml
+phpunit-results.xml
+.phpunit.result.cache
+
+# Local configuration overrides
+# (phpunit.xml.dist is committed and holds neutral defaults; copy it to phpunit.xml to point the
+# suite at a database of your own - PHPUnit prefers phpunit.xml when both are present)
+phpunit.xml
+local.env
+test.env

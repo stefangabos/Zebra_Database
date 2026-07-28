@@ -1,0 +1,402 @@
+<?php
+
+require_once __DIR__ . '/bootstrap.php';
+
+/**
+ * Test suite for parameterized queries - the "?" placeholders that query() and the shorthand methods
+ * accept, and the replacements that get escaped and substituted into them.
+ *
+ * Note that the library does not use native prepared statements: values are escaped and quoted and then
+ * substituted into the SQL. What is tested here is that substitution and its edge cases.
+ */
+class ParameterizedQueryTest extends DatabaseTestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->connectToDatabase();
+        $this->insertTestData();
+    }
+    
+    // BASIC PARAMETER SUBSTITUTION
+    
+    public function testQueryWithASingleParameter() {
+        // a single "?" is replaced by the single given replacement
+        $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", ['John Doe']);
+        
+        $this->assertNotFalse($result);
+        $this->assertEquals(1, $this->db->returned_rows);
+        
+        $row = $this->db->fetch_assoc($result);
+        $this->assertEquals('John Doe', $row['name']);
+    }
+    
+    public function testQueryWithoutParameters() {
+        // Queries without parameters should use regular mysqli_query
+        $result = $this->db->query("SELECT COUNT(*) as total FROM test_users");
+        
+        $this->assertNotFalse($result);
+        $row = $this->db->fetch_assoc($result);
+        $this->assertGreaterThan(0, (int)$row['total']);
+    }
+    
+    public function testQueryWithMultipleParameters() {
+        $result = $this->db->query(
+            "SELECT * FROM test_users WHERE age > ? AND is_active = ?", 
+            [25, 1]
+        );
+        
+        $this->assertNotFalse($result);
+        $this->assertGreaterThan(0, $this->db->returned_rows);
+    }
+    
+    public function testParametersOfDifferentTypes() {
+        // integers, floats and booleans are all escaped and quoted, and MySQL compares them against the
+        $result = $this->db->query(
+            "SELECT * FROM test_users WHERE age = ? AND score = ? AND is_active = ?", 
+            [30, 85.50, true]
+        );
+        
+        $this->assertNotFalse($result);
+        $this->assertEquals(1, $this->db->returned_rows, "The row should be matched despite the mixed types");
+
+        // this used to be wrapped in "if ($row)", which meant the test also passed when nothing matched
+        $row = $this->db->fetch_assoc($result);
+        $this->assertIsArray($row, "A row should have been returned");
+        $this->assertEquals('John Doe', $row['name']);
+        $this->assertEquals(30, (int)$row['age']);
+    }
+    
+    // UNBUFFERED QUERY FALLBACK TESTS
+    
+    public function testUnbufferedQueryWithParameters() {
+        // query_unbuffered() is the public way in - it sets the private "unbuffered" flag, runs the
+        // query and unsets the flag again, so there is no need to reach into the object to test this
+        $result = $this->db->query_unbuffered("SELECT * FROM test_users WHERE name = ?", ['John Doe']);
+
+        $this->assertNotFalse($result);
+
+        $row = $this->db->fetch_assoc($result);
+        $this->assertIsArray($row, "A row should have been returned");
+        $this->assertEquals('John Doe', $row['name']);
+
+        // an unbuffered result has to be read to the end before the connection can be used again
+        while ($this->db->fetch_assoc($result)) {}
+
+        $this->assertNotFalse($this->db->query("SELECT 1"), "The connection should be usable afterwards");
+    }
+    
+    public function testUnbufferedQueryWithoutParameters() {
+        $result = $this->db->query_unbuffered("SELECT * FROM test_users ORDER BY name");
+
+        $this->assertNotFalse($result);
+
+        // read the whole set and check we got everything, in order
+        $names = [];
+        while ($row = $this->db->fetch_assoc($result)) $names[] = $row['name'];
+
+        $this->assertSame(['Bob Johnson', 'Jane Smith', 'John Doe'], $names);
+
+        $this->assertNotFalse($this->db->query("SELECT 1"), "The connection should be usable afterwards");
+    }
+    
+    // ARRAY REPLACEMENTS
+    
+    public function testArrayParameterExpandsIntoAListOfValues() {
+        // Array parameters should be expanded into multiple placeholders
+        $result = $this->db->query(
+            "SELECT * FROM test_users WHERE name IN (?)", 
+            [['John Doe', 'Jane Smith']]
+        );
+        
+        $this->assertNotFalse($result);
+        $this->assertEquals(2, $this->db->returned_rows);
+        
+        $names = [];
+        while ($row = $this->db->fetch_assoc($result)) {
+            $names[] = $row['name'];
+        }
+        
+        $this->assertContains('John Doe', $names);
+        $this->assertContains('Jane Smith', $names);
+    }
+    
+    public function testMixedArrayAndScalarParameters() {
+        $result = $this->db->query(
+            "SELECT * FROM test_users WHERE name IN (?) AND age > ?", 
+            [['John Doe', 'Jane Smith', 'Bob Johnson'], 25]
+        );
+        
+        $this->assertNotFalse($result);
+        
+        // Should find John Doe (30) and Bob Johnson (35), but Bob is not active in our test data
+        // Let's check what we actually get
+        $count = 0;
+        while ($row = $this->db->fetch_assoc($result)) {
+            $count++;
+            $this->assertGreaterThan(25, (int)$row['age']);
+        }
+        
+        $this->assertGreaterThanOrEqual(1, $count);
+    }
+    
+    public function testEmptyArrayParameter() {
+        // Empty arrays should be handled gracefully
+        $result = $this->db->query(
+            "SELECT * FROM test_users WHERE name IN (?)", 
+            [[]]
+        );
+        
+        $this->assertNotFalse($result);
+        $this->assertEquals(0, $this->db->returned_rows);
+    }
+    
+    public function testSingleItemArrayParameter() {
+        $result = $this->db->query(
+            "SELECT * FROM test_users WHERE name IN (?)", 
+            [['John Doe']]
+        );
+        
+        $this->assertNotFalse($result);
+        $this->assertEquals(1, $this->db->returned_rows);
+        
+        $row = $this->db->fetch_assoc($result);
+        $this->assertEquals('John Doe', $row['name']);
+    }
+    
+    // ERROR HANDLING
+    
+    public function testInvalidSqlWithParameters() {
+        $result = $this->db->query("INVALID SQL QUERY ?", ['test']);
+        
+        $this->assertFalse($result);
+        
+        $error = $this->db->error();
+        $this->assertNotEmpty($error);
+    }
+    
+    public function testMismatchedNumberOfParameters() {
+        // More placeholders than parameters
+        $result = $this->db->query("SELECT * FROM test_users WHERE name = ? AND age = ?", ['John Doe']);
+        
+        $this->assertFalse($result);
+        
+        // Fewer placeholders than parameters
+        $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", ['John Doe', 30]);
+        
+        $this->assertFalse($result);
+    }
+    
+    public function testParametersGivenAsSomethingOtherThanAnArray() {
+        // Parameters must be an array
+        $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", 'John Doe');
+        
+        $this->assertFalse($result);
+    }
+    
+    // PARAMETERS IN QUERIES OTHER THAN SELECT
+    
+    public function testParameterizedInsert() {
+        $result = $this->db->query(
+            "INSERT INTO test_users (name, email, age) VALUES (?, ?, ?)",
+            ['Prepared Insert User', 'prepared@example.com', 35]
+        );
+        
+        $this->assertTrue($result);
+        $this->assertEquals(1, $this->db->affected_rows);
+        
+        $insert_id = $this->db->insert_id();
+        $this->assertGreaterThan(0, $insert_id);
+        
+        // Verify the insert
+        $verify = $this->db->query("SELECT * FROM test_users WHERE id = ?", [$insert_id]);
+        $row = $this->db->fetch_assoc($verify);
+        $this->assertEquals('Prepared Insert User', $row['name']);
+    }
+    
+    public function testParameterizedUpdate() {
+        $result = $this->db->query(
+            "UPDATE test_users SET age = ? WHERE name = ?",
+            [31, 'John Doe']
+        );
+        
+        $this->assertTrue($result);
+        $this->assertEquals(1, $this->db->affected_rows);
+        
+        // Verify the update
+        $verify = $this->db->query("SELECT age FROM test_users WHERE name = ?", ['John Doe']);
+        $row = $this->db->fetch_assoc($verify);
+        $this->assertEquals(31, (int)$row['age']);
+    }
+    
+    public function testParameterizedDelete() {
+        // First insert a test record
+        $this->db->query(
+            "INSERT INTO test_users (name, email, age) VALUES (?, ?, ?)",
+            ['Delete Me', 'delete@example.com', 25]
+        );
+        
+        $result = $this->db->query(
+            "DELETE FROM test_users WHERE name = ? AND email = ?",
+            ['Delete Me', 'delete@example.com']
+        );
+        
+        $this->assertTrue($result);
+        $this->assertEquals(1, $this->db->affected_rows);
+        
+        // Verify the delete
+        $verify = $this->db->query("SELECT COUNT(*) as count FROM test_users WHERE name = ?", ['Delete Me']);
+        $row = $this->db->fetch_assoc($verify);
+        $this->assertEquals(0, (int)$row['count']);
+    }
+    
+    // COMPARISON BETWEEN PREPARED AND REGULAR QUERIES
+    
+    public function testParameterizedAndLiteralQueriesReturnTheSameThing() {
+        // the same query, once with a replacement and once with the value written into the SQL
+        $prepared_result = $this->db->query("SELECT * FROM test_users WHERE age > ?", [25]);
+        $prepared_count = $this->db->returned_rows;
+        
+        $prepared_rows = [];
+        while ($row = $this->db->fetch_assoc($prepared_result)) {
+            $prepared_rows[] = $row;
+        }
+        
+        // Get result using regular query (no parameters)
+        $regular_result = $this->db->query("SELECT * FROM test_users WHERE age > 25");
+        $regular_count = $this->db->returned_rows;
+        
+        $regular_rows = [];
+        while ($row = $this->db->fetch_assoc($regular_result)) {
+            $regular_rows[] = $row;
+        }
+        
+        // Results should be identical
+        $this->assertEquals($prepared_count, $regular_count);
+        $this->assertEquals(count($prepared_rows), count($regular_rows));
+        
+        // Sort both arrays by ID for comparison
+        usort($prepared_rows, function($a, $b) { return $a['id'] - $b['id']; });
+        usort($regular_rows, function($a, $b) { return $a['id'] - $b['id']; });
+        
+        for ($i = 0; $i < count($prepared_rows); $i++) {
+            $this->assertEquals($prepared_rows[$i]['id'], $regular_rows[$i]['id']);
+            $this->assertEquals($prepared_rows[$i]['name'], $regular_rows[$i]['name']);
+        }
+    }
+    
+    // PERFORMANCE AND EFFICIENCY TESTS
+    
+    public function testTheSameParameterizedQueryRunRepeatedly() {
+        // running the same parameterized query repeatedly must not leak state between runs
+        
+        $test_names = ['Test 1', 'Test 2', 'Test 3', 'Test 4', 'Test 5'];
+        
+        foreach ($test_names as $index => $name) {
+            $result = $this->db->query(
+                "INSERT INTO test_users (name, email, age) VALUES (?, ?, ?)",
+                [$name, "test$index@example.com", 20 + $index]
+            );
+            
+            $this->assertTrue($result);
+            $this->assertEquals(1, $this->db->affected_rows);
+        }
+        
+        // Verify all were inserted
+        $verify = $this->db->query("SELECT COUNT(*) as count FROM test_users WHERE name LIKE 'Test %'");
+        $row = $this->db->fetch_assoc($verify);
+        $this->assertEquals(5, (int)$row['count']);
+    }
+    
+    // SPECIAL CHARACTERS AND ESCAPING
+    
+    public function testParametersContainingSpecialCharacters() {
+        $special_name = "O'Reilly & Associates <script>alert('xss')</script>";
+        $special_email = "test+email@example.com";
+        
+        $result = $this->db->query(
+            "INSERT INTO test_users (name, email, age) VALUES (?, ?, ?)",
+            [$special_name, $special_email, 40]
+        );
+        
+        $this->assertTrue($result);
+        
+        // Verify it was stored correctly
+        $verify = $this->db->query("SELECT * FROM test_users WHERE email = ?", [$special_email]);
+        $row = $this->db->fetch_assoc($verify);
+        
+        $this->assertEquals($special_name, $row['name']);
+        $this->assertEquals($special_email, $row['email']);
+    }
+    
+    public function testParametersContainingEncodedBinaryData() {
+        // Test handling of binary data (if supported by schema)
+        $binary_data = "\x00\x01\x02\x03\xFF\xFE";
+        
+        // Since our test schema doesn't have binary fields, we'll test with escaped strings
+        $result = $this->db->query(
+            "INSERT INTO test_users (name, email, age) VALUES (?, ?, ?)",
+            [base64_encode($binary_data), 'binary@example.com', 30]
+        );
+        
+        $this->assertTrue($result);
+        
+        $verify = $this->db->query("SELECT * FROM test_users WHERE email = ?", ['binary@example.com']);
+        $row = $this->db->fetch_assoc($verify);
+        
+        $this->assertEquals(base64_encode($binary_data), $row['name']);
+    }
+    
+    // RESOURCE MANAGEMENT
+    
+    public function testResultsCanBeFreedAfterEveryQuery() {
+        // freeing the result after every query must leave the connection usable
+        for ($i = 0; $i < 10; $i++) {
+            $result = $this->db->query("SELECT ? as iteration", [$i]);
+            $this->assertNotFalse($result);
+            
+            $row = $this->db->fetch_assoc($result);
+            $this->assertEquals($i, (int)$row['iteration']);
+            
+            // Explicitly free the result
+            $this->assertTrue($this->db->free_result($result), "Freeing the result should report success");
+        }
+
+        // the connection must still be perfectly usable after all that freeing
+        $row = $this->db->fetch_assoc($this->db->query("SELECT COUNT(*) AS total FROM test_users"));
+        $this->assertEquals(3, (int)$row['total'], "The connection should still work after freeing 10 results");
+    }
+    
+    // EDGE CASES
+    
+    public function testVeryLongQueryWithAParameter() {
+        // Test with a very long query
+        $long_condition = str_repeat("name != 'dummy' AND ", 100) . "1=1";
+        $query = "SELECT * FROM test_users WHERE $long_condition AND name = ?";
+        
+        $result = $this->db->query($query, ['John Doe']);
+        
+        $this->assertNotFalse($result);
+        $this->assertLessThanOrEqual(1, $this->db->returned_rows);
+    }
+    
+    public function testManyParametersInOneQuery() {
+        // Test with many parameters
+        $conditions = [];
+        $params = [];
+        
+        for ($i = 0; $i < 20; $i++) {
+            $conditions[] = "name != ?";
+            $params[] = "dummy_name_$i";
+        }
+        
+        $conditions[] = "name = ?";
+        $params[] = 'John Doe';
+        
+        $query = "SELECT * FROM test_users WHERE " . implode(' AND ', $conditions);
+        
+        $result = $this->db->query($query, $params);
+        
+        $this->assertNotFalse($result);
+    }
+}
