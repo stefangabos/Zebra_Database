@@ -81,6 +81,48 @@ Or you can install it manually by downloading the latest version, unpacking it, 
 require_once 'path/to/Zebra_Database.php';
 ```
 
+## Running the tests
+
+The test suite is not part of the released package - if you want to run them you need a git checkout of the repository.
+
+The tests run against a real MySQL instance, creating and dropping their own tables in a database of
+their own, so point them at a server you are happy for them to write to.
+
+```bash
+composer install
+
+# copy the defaults and put your connection details in the copy (it is git-ignored)
+cp tests/phpunit.xml.dist tests/phpunit.xml
+
+./run-tests.sh
+```
+
+Any arguments are passed on to PHPUnit, and `PHP` picks the interpreter - useful for checking the suite
+against another version:
+
+```bash
+./run-tests.sh --testdox                    # readable output
+./run-tests.sh --filter dcount              # only tests matching "dcount"
+./run-tests.sh CacheTest.php                # a single file
+PHP=/path/to/php7.4/bin/php ./run-tests.sh  # a specific interpreter
+```
+
+A handful of tests cover the memcache and redis caching backends and skip themselves unless both the
+extension and a running server are found. Neither needs any configuration:
+
+```bash
+redis-server --port 6379 --save '' --appendonly no &
+memcached -p 11211 -m 64 &
+```
+
+Coverage is not produced on an ordinary run. Asking for it requires either
+[pcov](https://github.com/krakjoe/pcov) or [Xdebug](https://xdebug.org/) to be installed - without one of
+them PHPUnit reports *"No code coverage driver available"*, runs the tests anyway and writes no report:
+
+```bash
+composer test-coverage      # writes tests/coverage-html
+```
+
 ## How to use
 
 ##### Connecting to a database
