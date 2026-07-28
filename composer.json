@@ -20,7 +20,9 @@
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "phpcompatibility/php-compatibility": "^9.3",
-        "phpunit/phpunit": "^9.6"
+        "phpstan/phpstan": "^1.12",
+        "phpunit/phpunit": "^9.6",
+        "squizlabs/php_codesniffer": "^3.10"
     },
     "autoload": {
         "classmap": [
@@ -35,14 +37,20 @@
     "scripts": {
         "test": "phpunit --configuration tests/phpunit.xml.dist",
         "test-coverage": "phpunit --configuration tests/phpunit.xml.dist --coverage-html tests/coverage-html",
-        "check-compat": "phpcs -p Zebra_Database.php --standard=PHPCompatibility --runtime-set testVersion 7.3- --exclude=PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue --runtime-set ignore_warnings_on_exit 1",
-        "check-compat-legacy": "phpcs -p Zebra_Database.php --standard=PHPCompatibility --runtime-set testVersion 5.5- --exclude=PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue,PHPCompatibility.Classes.NewClasses --runtime-set ignore_warnings_on_exit 1"
+        "check-compat": "phpcs -p --standard=tests/php-compatibility.xml --runtime-set ignore_warnings_on_exit 1",
+        "check-compat-legacy": "phpcs -p --standard=tests/php-compatibility.xml --runtime-set testVersion 5.5- --runtime-set ignore_warnings_on_exit 1",
+        "check-style": "phpcs -p --standard=coding-standards.xml --runtime-set ignore_warnings_on_exit 1",
+        "fix-style": "phpcbf -p --standard=coding-standards.xml",
+        "analyse": "phpstan analyse --no-progress"
     },
     "scripts-descriptions": {
         "test": "Runs the test suite",
         "test-coverage": "Runs the test suite and writes an HTML coverage report to tests/coverage-html",
-        "check-compat": "Checks the library against the supported PHP versions (7.3 and up). ArgumentFunctionsReportCurrentValue is excluded because the two debug_backtrace() calls it flags are only used to read a file name and a line number, never to inspect argument values",
-        "check-compat-legacy": "Checks the library against PHP 5.5 and up - the versions it still runs on but that are too old to test against. NewClasses is additionally excluded because the only hit is 'catch (Error)', and PHP resolves a catch type only when something is thrown, so on PHP 5 that block is simply never entered"
+        "check-compat": "Checks the library against the supported PHP versions (7.3 and up) - see tests/php-compatibility.xml, where the file to check and the reason for each excluded sniff are kept together",
+        "check-compat-legacy": "Checks the library against PHP 5.5 and up - the versions it still runs on but that are too old to test against. Uses the same ruleset, overriding only the version to check against",
+        "check-style": "Checks the library against the coding standard - see coding-standards.xml",
+        "fix-style": "Fixes what the coding standard check can fix on its own. Look at the diff afterwards - a lot of what it touches is deliberate",
+        "analyse": "Runs static analysis over the library and the test suite - see phpstan.neon"
     },
     "config": {
         "sort-packages": true,

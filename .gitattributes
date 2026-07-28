@@ -10,6 +10,8 @@ package.json export-ignore
 package-lock.json export-ignore
 eslint.config.js export-ignore
 Gruntfile.js export-ignore
+coding-standards.xml export-ignore
+phpstan.neon export-ignore
 /.github export-ignore
 /docs export-ignore
 /node_modules export-ignore

@@ -3,6 +3,10 @@
 /**
  * Bootstrap file for PHPUnit tests
  * Sets up the test environment and includes necessary classes
+ *
+ * Everything here has side effects - it connects, it creates directories, it creates the test database.
+ * The settings themselves, and the helpers that read them, live in settings.php so that phpcs and phpstan
+ * can learn what exists without any of this running.
  */
 
 // include the Zebra_Database class
@@ -13,29 +17,8 @@ require_once __DIR__ . '/Support/DatabaseTestCase.php';
 require_once __DIR__ . '/Support/TestDataFactory.php';
 require_once __DIR__ . '/Support/DatabaseProbe.php';
 
-// define constants for mysql connection credentials
-// (we cannot use "?:" here as an empty password is perfectly valid and would be replaced by the fallback)
-function test_env($name, $default) {
-    $value = getenv($name);
-    return $value === false ? $default : $value;
-}
-
-define('TEST_DB_HOST', test_env('DB_HOST', '127.0.0.1'));
-define('TEST_DB_USER', test_env('DB_USER', 'root'));
-define('TEST_DB_PASS', test_env('DB_PASS', ''));
-define('TEST_DB_NAME', test_env('DB_NAME', 'zebra_test'));
-define('TEST_DB_PORT', test_env('DB_PORT', 3306));
-
-// define test constants for caching
-define('TEST_MEMCACHE_HOST', getenv('MEMCACHE_HOST') ?: 'localhost');
-define('TEST_MEMCACHE_PORT', getenv('MEMCACHE_PORT') ?: 11211);
-define('TEST_REDIS_HOST', getenv('REDIS_HOST') ?: 'localhost');
-define('TEST_REDIS_PORT', getenv('REDIS_PORT') ?: 6379);
-
-// Define paths for test resources
-define('TEST_TMP_PATH', __DIR__ . '/tmp');
-define('TEST_FIXTURES_PATH', __DIR__ . '/Fixtures');
-define('TEST_SUPPORT_PATH', __DIR__ . '/Support');
+// the settings and the helpers - declarations only, no side effects
+require_once __DIR__ . '/settings.php';
 
 // Ensure tmp directories exist
 if (!is_dir(TEST_TMP_PATH)) {
@@ -51,7 +34,9 @@ if (!is_dir(TEST_TMP_PATH . '/logs')) {
 // Create test database if it doesn't exist
 try {
 
-    $connection = new mysqli(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, '', TEST_DB_PORT);
+    // the port is cast because it arrives as a string from the environment while mysqli wants an integer -
+    // the library's own connect() method takes it as a string, which is why the constant is left as one
+    $connection = new mysqli(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, '', (int)TEST_DB_PORT);
 
     if ($connection->connect_error) {
         throw new Exception('Failed to connect to MySQL: ' . $connection->connect_error);
@@ -100,46 +85,6 @@ try {
     echo "Database setup failed: " . $e->getMessage() . "\n";
     echo "Please ensure MySQL is running and the test database credentials are correct.\n";
     exit(1);
-}
-
-// Helper functions for tests
-function loadTestQueries() {
-    return include TEST_FIXTURES_PATH . '/test_queries.php';
-}
-
-function loadMaliciousInputs() {
-    $file = TEST_FIXTURES_PATH . '/malicious_inputs.json';
-    if (file_exists($file)) {
-        return json_decode(file_get_contents($file), true);
-    }
-    return [];
-}
-
-function getTempPath($subdir = '') {
-    $path = TEST_TMP_PATH;
-    if ($subdir) {
-        $path .= '/' . trim($subdir, '/');
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
-        }
-    }
-    return $path;
-}
-
-function cleanupTempFiles() {
-    $files = glob(TEST_TMP_PATH . '/*');
-    foreach ($files as $file) {
-        if (is_file($file)) {
-            unlink($file);
-        } elseif (is_dir($file) && basename($file) !== '.gitkeep') {
-            $subFiles = glob($file . '/*');
-            foreach ($subFiles as $subFile) {
-                if (is_file($subFile)) {
-                    unlink($subFile);
-                }
-            }
-        }
-    }
 }
 
 // Register shutdown function to clean up temp files

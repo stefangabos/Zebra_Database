@@ -1,0 +1,35 @@
+parameters:
+
+    level: 6
+
+    paths:
+        - Zebra_Database.php
+        - tests
+
+    # the suite's settings are global constants, and the only way phpstan learns a constant exists is by
+    # executing the define(). tests/settings.php declares them and does nothing else - no connection, no
+    # files written - so running it costs nothing and static analysis stays independent of the database.
+    # bootstrap.php is the file that has the side effects, and phpstan never touches it.
+    bootstrapFiles:
+        - tests/settings.php
+
+    excludePaths:
+        - tests/tmp
+        - tests/coverage-html
+
+    ignoreErrors:
+
+        # The library is the thing that ships and is held to the full level. The suite is verification code
+        # and is held to everything except declaring types on its own methods: a test method returns nothing
+        # and says so by being a test, so several hundred ": void" would be noise rather than information.
+        # Everything else phpstan finds in the suite - undefined variables, calls that cannot work, results
+        # that are never used - is still reported.
+        -
+            identifier: missingType.return
+            path: tests/*
+        -
+            identifier: missingType.parameter
+            path: tests/*
+        -
+            identifier: missingType.property
+            path: tests/*

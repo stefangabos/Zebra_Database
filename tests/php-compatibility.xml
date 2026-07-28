@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<ruleset name="Zebra_Database PHP compatibility">
+
+    <description>Checks the library against the oldest PHP version it claims to support.</description>
+
+    <!--
+        Only the library itself. The test suite is never shipped to anyone and is free to use anything the
+        PHPUnit in use supports.
+
+        The path is relative to THIS file, not to where phpcs is run from - hence the "../". The
+        installed_paths below is the other way round, relative to the working directory, hence no "../".
+    -->
+    <file>../Zebra_Database.php</file>
+
+    <!-- so that the standard below can be referred to by name -->
+    <config name="installed_paths" value="vendor/phpcompatibility/php-compatibility"/>
+
+    <!--
+        The floor declared in composer.json. This is what backs that claim up - the test suite cannot run
+        on anything older than 7.3, so something else has to verify the promise.
+
+        "composer check-compat-legacy" runs this same ruleset against 5.5, which is where the library
+        actually still works.
+    -->
+    <config name="testVersion" value="7.3-"/>
+
+    <rule ref="PHPCompatibility"/>
+
+    <!--
+        The two debug_backtrace() calls this flags are only ever used to read a file name and a line number
+        out of the trace, never to inspect the arguments a function was called with - which is the thing
+        that changed behaviour and the reason the sniff exists.
+    -->
+    <rule ref="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue">
+        <severity>0</severity>
+    </rule>
+
+    <!--
+        Only relevant to "composer check-compat-legacy", where the single hit is "catch (Error)". PHP
+        resolves the type in a catch block only when something is actually thrown, so on PHP 5 - where
+        Error does not exist - that block is simply never entered rather than being a fatal error.
+    -->
+    <rule ref="PHPCompatibility.Classes.NewClasses.errorFound">
+        <severity>0</severity>
+    </rule>
+
+</ruleset>
