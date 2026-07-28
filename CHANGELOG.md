@@ -1,3 +1,44 @@
+## version 3.0.0 (TBA)
+
+### :lock: Security
+
+- **fixed an SQL injection vector present when using a multi-byte character set.** The `set_charset` method changed the character set by running a `SET NAMES` query, which the mysqli extension does not see - so `mysqli_real_escape_string`, and therefore every value the library escaped for you, kept being escaped for the *previous* character set. With `gbk`, `big5`, `sjis`, `cp932`, `gb18030` or `euc-kr`, a carefully crafted value could swallow the escaping backslash and break out of the quotes enclosing it. The character set is now set through `mysqli_set_charset`, which is the only way the extension learns about it.<br><br>**you are affected if** you called `set_charset` with one of those character sets. `utf8` and `utf8mb4` were never vulnerable. There is nothing to change in your code beyond updating.
+
+### :warning: Breaking changes
+
+- the minimum required PHP version is now **7.3**, up from 5.3. The library itself still runs on PHP 5.5 and newer and this is verified on every change with PHPCompatibility, but 7.3 is the oldest version the test suite can run on, so that's the minimum PHP version the library was *tested* on
+- `set_charset` now defaults to `utf8mb4`/`utf8mb4_unicode_ci` instead of `utf8`/`utf8_general_ci`; pass the old values explicitly if you need them - note that comparison and sorting differ between the two collations
+- the `INC()` keyword now has to be the whole of a value. Previously a value merely *starting* with it, like `INC(5) apples`, was taken to be an instruction to increment the column, and on a text column that either failed outright or wrote a number over what you meant to store - such values are now stored as the strings they are
+- `table_exists`, `get_table_status` and `optimize` no longer treat an underscore in a table name as a single character wildcard, so `table_exists('order_items')` no longer returns TRUE because a table called `orderXitems` happens to exist. `%` still works as a wildcard in the two that document it
+- `NOT IN (?)` given an empty array now matches **all** rows instead of none, which is what the SQL means. `IN (?)` given an empty array continues to match none
+- methods that returned `NULL` when there was nothing to return now return `FALSE`, as documented: `fetch_assoc`, `fetch_obj`, `dmax` and `dsum` - only comparisons written as `=== null` are affected
+- `select_database` returns `FALSE` for a database that cannot be selected instead of throwing, which is what it did on PHP 8.1 and newer
+- `free_result` now always returns a boolean, and calling it twice on the same result no longer raises a fatal error on PHP 8.1 and newer
+- removed the opt-in code previously used to support PHP versions older than 5.4.0
+
+### Everything else
+
+- added a huge test suite; alongside the tests that describe how the library is meant to behave, the suite carries a set of regression tests, each naming the commit that fixed the bug it guards, so that a fix that gets undone is reported by name rather than by a distant failure somewhere else
+- added static analysis to go with the tests - [PHPStan](https://phpstan.org/) and [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer), run with `composer analyse` and `composer check-style`. The coding standard is PSR-12 with the places this library deliberately departs from it written down and explained in `coding-standards.xml`, rather than left as a permanently failing check that everyone learns to ignore
+- the PHP compatibility check now reads `tests/php-compatibility.xml` instead of repeating its flags across two composer scripts, so the file being checked and the reason for each excluded sniff are kept together
+- `set_charset` now returns a value when a connection exists, fixing it being a silent no-op when called on an already connected instance
+- fixed bug with the library not returning FALSE (instead of NULL) upon errors when debugging was disabled
+- fixed undefined variable if calling the `close` method without an active connection
+- fixed bug when connecting to a non-existent database
+- fixed bug with `get_tables` method if invalid database name was given
+- fixed SQL syntax error when a replacement value was an empty array
+- fixed fatal error when using nested arrays with the implode method or as replacements
+- fixed `table_exists` method failing when given a database-qualified table name
+- fixed action queries being incorrectly reported as fetched from cache IF they were called with a cache lifetime
+- fixed bug when setting caching method to redis without redis being enabled
+- fixed potential errors when setting invalid values as the cache path
+- fixed dynamic property which was giving deprecation notices in PHP 8.2+ and errors in PHP 9
+- fixed MySQL functions being escaped as column names when given an alias
+- fixed bug where trying to EXPLAIN unbuffered queries that cannot be EXPLAINed was killing the script
+- fixed `transaction_complete` reporting failure for a successful test transaction
+- fixed bug where a NULL among the values handed to the internal escaping producing an empty pair of grave accents instead of the SQL keyword, which was invalid SQL and also raised a deprecation on PHP 8.1 and an error on PHP 9
+- replaced dynamic mysqli_result properties with a private property thus fixing deprecation notices in PHP 8.2+ and errors in PHP 9
+
 ## version 2.13.3 (February 19, 2026)
 
 - fixed debug console clipped by parent overflow: hidden; toggle parent overflow when expanding/collapsing sections
