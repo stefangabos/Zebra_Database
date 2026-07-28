@@ -4020,13 +4020,26 @@ class Zebra_Database {
      *  @param  mixed  $columns         A string with comma separated values or an array representing valid column names
      *                                  as used in a `SELECT` statement.
      *
-     *                                  >   If given as a string it will be enclosed in grave accents, so make sure you
-     *                                      are only using column names and not things like "tablename.*" or MySQL
-     *                                      functions!<br>
-     *                                      Use this argument as an array if you want values (like MySQL functions) to
-     *                                      be skipped from this process.
+     *                                  Column names are enclosed in grave accents ``` so that reserved words may be
+     *                                  used, while the following are recognized and left as they are:
      *
-     *                                  You may also use `*` (asterisk) to select all the columns of a table.
+     *                                  - `*`, on its own or qualified like `tablename.*`
+     *                                  - MySQL functions, like `NOW()` or `COUNT(*)`
+     *
+     *                                  >   Only functions the library knows about are recognized as such. A function
+     *                                      MySQL added after this version of the library was released - or one of your
+     *                                      own - will be treated as a column name, enclosed in grave accents, and the
+     *                                      query will fail. Run such a query through the {@link query()} method instead.
+     *
+     *                                  Aliases have to be given with the `AS` keyword:
+     *
+     *                                  <code>
+     *                                  $db->select('name AS user_name, COUNT(*) AS total', 'table');
+     *                                  </code>
+     *
+     *                                  >   Writing an alias without the `AS` keyword does **not** work - in
+     *                                      `name user_name` the whole of it is taken to be a single column name and the
+     *                                      query will fail.
      *
      *  @param  string  $table          Table in which to search
      *
