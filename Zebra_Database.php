@@ -33,7 +33,7 @@ class Zebra_Database {
      *  echo $db->affected_rows;
      *  </code>
      *
-     *  @var integer
+     *  @var integer|null
      */
     public $affected_rows;
 
@@ -187,7 +187,7 @@ class Zebra_Database {
      *
      *  @since  turning debugging on/off via a query string is available since 2.10.0
      *
-     *  @var boolean|string|array<boolean>
+     *  @var boolean|string|array<boolean|int>
      */
     public $debug = true;
 
@@ -232,7 +232,7 @@ class Zebra_Database {
      *
      *  @since 2.12.0
      *
-     *  @var string
+     *  @var string|boolean
      */
     public $debug_ajax = false;
 
@@ -680,7 +680,9 @@ class Zebra_Database {
      *
      *  >   The path must be relative to your `$_SERVER['DOCUMENT_ROOT']`
      *
-     *  @var string
+     *  Default is `NULL`
+     *
+     *  @var string|null
      */
     public $resource_path;
 
@@ -772,7 +774,7 @@ class Zebra_Database {
     /**
      *  Array that will store the database connection credentials
      *
-     *  @var array<string>
+     *  @var array<string,mixed>
      *  @access private
      */
     private $credentials;
@@ -799,7 +801,7 @@ class Zebra_Database {
      *  Without a default value on purpose, so that the `isset()` check that decides whether it still needs working out
      *  keeps returning FALSE until it is actually set
      *
-     *  @var boolean
+     *  @var boolean|null
      *  @access private
      */
     private $log_path_is_function;
@@ -1727,7 +1729,11 @@ class Zebra_Database {
      *  ', array($gender));
      *  </code>
      *
-     *  @param  string  $string     String to be quoted and escaped
+     *  @param  string|null $string String to be quoted and escaped
+     *
+     *                              `NULL` is accepted and escapes to an empty string - the library itself passes it in
+     *                              when a value being escaped is `NULL`, and handing it to PHP's own escaping function
+     *                              is deprecated as of PHP 8.1 and an error in PHP 9
      *
      *  @return string|boolean      Returns the original string enclosed in single quotes and with special characters
      *                              escaped in order to prevent SQL injections, or `FALSE` if there's no database
@@ -1762,12 +1768,14 @@ class Zebra_Database {
      *  }
      *  </code>
      *
-     *  @param  resource|string     $resource   (Optional) Resource to fetch
+     *  @param  mysqli_result   $resource   (Optional) Resource to fetch
      *
-     *                                          >   If not specified, the resource returned by the last run query is used
+     *                                      >   If not specified, the resource returned by the last run query is used
      *
-     *  @return mixed               Returns an associative array that corresponds to the fetched row and moves the
-     *                              internal data pointer ahead, or `FALSE` if there are no more rows.
+     *  @phpstan-param mysqli_result|int|string $resource
+     *
+     *  @return mixed           Returns an associative array that corresponds to the fetched row and moves the internal
+     *                          data pointer ahead, or `FALSE` if there are no more rows.
      */
     public function fetch_assoc($resource = '') {
 
@@ -1828,23 +1836,27 @@ class Zebra_Database {
      *  $records = $db->fetch_assoc_all();
      *  </code>
      *
-     *  @param  int|string          $index      (Optional) Name of a column containing unique values
+     *  @param  int|string      $index      (Optional) Name of a column containing unique values
      *
-     *                                          If specified, the returned associative array's keys will be the values
-     *                                          from this column.
+     *                                      If specified, the returned associative array's keys will be the values from
+     *                                      this column.
      *
-     *                                          *If not specified, returned array will have numerical indexes, starting
-     *                                          from 0.*
+     *                                      *If not specified, returned array will have numerical indexes, starting from
+     *                                      0.*
      *
-     *  @param  resource|string     $resource   (Optional) Resource to fetch
+     *  @phpstan-param mysqli_result|int|string $index
      *
-     *                                          >   If not specified, the resource returned by the last run query is used
+     *  @param  mysqli_result   $resource   (Optional) Resource to fetch
+     *
+     *                                      >   If not specified, the resource returned by the last run query is used
+     *
+     *  @phpstan-param mysqli_result|int|string $resource
      *
      *  @since  1.1.2
      *
-     *  @return mixed               Returns an associative array containing all the rows from the resource created by the
-     *                              previous query or from the resource given as argument and moves the internal pointer
-     *                              to the end. Returns `FALSE` on error.
+     *  @return mixed           Returns an associative array containing all the rows from the resource created by the
+     *                          previous query or from the resource given as argument and moves the internal pointer to
+     *                          the end. Returns `FALSE` on error.
      */
     public function fetch_assoc_all($index = '', $resource = '') {
 
@@ -1927,14 +1939,16 @@ class Zebra_Database {
      *  }
      *  </code>
      *
-     *  @param  resource|string     $resource   (Optional) Resource to fetch
+     *  @param  mysqli_result   $resource   (Optional) Resource to fetch
      *
-     *                                          >   If not specified, the resource returned by the last run query is used
+     *                                      >   If not specified, the resource returned by the last run query is used
+     *
+     *  @phpstan-param mysqli_result|int|string $resource
      *
      *  @since  1.0.8
      *
-     *  @return mixed               Returns an object with properties that correspond to the fetched row and moves
-     *                              the internal data pointer ahead, or `FALSE` if there are no more rows.
+     *  @return mixed           Returns an object with properties that correspond to the fetched row and moves the
+     *                          internal data pointer ahead, or `FALSE` if there are no more rows.
      */
     public function fetch_obj($resource = '') {
 
@@ -2001,23 +2015,27 @@ class Zebra_Database {
      *  $records = $db->fetch_obj_all();
      *  </code>
      *
-     *  @param  int|string          $index      (Optional) A column name from the records, containing unique values
+     *  @param  int|string      $index      (Optional) A column name from the records, containing unique values
      *
-     *                                          If specified, the returned associative array's keys will be the values
-     *                                          from this column.
+     *                                      If specified, the returned associative array's keys will be the values from
+     *                                      this column.
      *
-     *                                          *If not specified, returned array will have numerical indexes, starting
-     *                                          from 0.*
+     *                                      *If not specified, returned array will have numerical indexes, starting from
+     *                                      0.*
      *
-     *  @param  resource|string     $resource   (Optional) Resource to fetch
+     *  @phpstan-param mysqli_result|int|string $index
      *
-     *                                          >   If not specified, the resource returned by the last run query is used
+     *  @param  mysqli_result   $resource   (Optional) Resource to fetch
+     *
+     *                                      >   If not specified, the resource returned by the last run query is used
+     *
+     *  @phpstan-param mysqli_result|int|string $resource
      *
      *  @since  1.1.2
      *
-     *  @return mixed               Returns an associative array containing all the rows (as objects) from the resource
-     *                              created by the previous query or from the resource given as argument and moves the
-     *                              internal pointer to the end. Returns `FALSE` on error.
+     *  @return mixed           Returns an associative array containing all the rows (as objects) from the resource
+     *                          created by the previous query or from the resource given as argument and moves the internal
+     *                          pointer to the end. Returns `FALSE` on error.
      */
     public function fetch_obj_all($index = '', $resource = '') {
 
@@ -2089,13 +2107,15 @@ class Zebra_Database {
      *
      *  >   You should always free your result with {@link free_result()}, when your result object is not needed anymore
      *
-     *  @param  resource|string     $resource   (Optional) A valid resource
+     *  @param  mysqli_result   $resource   (Optional) A valid resource
      *
-     *                                          >   If not specified, the resource returned by the last run query is used
+     *                                      >   If not specified, the resource returned by the last run query is used
+     *
+     *  @phpstan-param mysqli_result|int|string $resource
      *
      *  @since  2.9.1
      *
-     *  @return boolean             Returns `TRUE` on success or `FALSE` if no valid result resource was given
+     *  @return boolean         Returns `TRUE` on success or `FALSE` if no valid result resource was given
      */
     public function free_result($resource = '') {
 
@@ -2156,14 +2176,16 @@ class Zebra_Database {
      *  print_r($db->get_columns());
      *  </code>
      *
-     *  @param  resource|string     $resource   (Optional) Resource to fetch columns information from.
+     *  @param  mysqli_result   $resource   (Optional) Resource to fetch columns information from.
      *
-     *                                          >   If not specified, the resource returned by the last run query is used
+     *                                      >   If not specified, the resource returned by the last run query is used
+     *
+     *  @phpstan-param mysqli_result|int|string $resource
      *
      *  @since  2.0
      *
-     *  @return mixed               Returns an associative array with information about the columns in the MySQL result
-     *                              associated with the specified result identifier, or `FALSE` on error.
+     *  @return mixed           Returns an associative array with information about the columns in the MySQL result
+     *                          associated with the specified result identifier, or `FALSE` on error.
      */
     public function get_columns($resource = '') {
 
@@ -3408,6 +3430,8 @@ class Zebra_Database {
 
         $from_cache = false;
 
+        $memcache_key = $redis_key = null;
+
         // if we need to look for a cached version of the query's results
         if ($cache !== false && (int)$cache > 0) {
 
@@ -3463,7 +3487,7 @@ class Zebra_Database {
                 $key = md5($sql);
 
                 // if a cached version of this query's result already exists and it is not expired
-                if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && $_SESSION[$key . '_timestamp'] + $cache > time() && $cached_result = @unserialize(gzuncompress(base64_decode($_SESSION[$key])))) {
+                if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && (int)$_SESSION[$key . '_timestamp'] + (int)$cache > time() && $cached_result = @unserialize(gzuncompress(base64_decode($_SESSION[$key])))) {
 
                     // put results in the right place
                     // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
@@ -3945,19 +3969,21 @@ class Zebra_Database {
      *
      *  The next call to a fetch method like {@link fetch_assoc()} or {@link fetch_obj()} would return that row.
      *
-     *  @param  integer             $row        The row you want to move the pointer to
+     *  @param  integer         $row        The row you want to move the pointer to
      *
-     *                                          *$row* starts at `0`.
+     *                                      *$row* starts at `0`.
      *
-     *                                          *$row* should be a value in the range from `0` to {@link returned_rows}
+     *                                      *$row* should be a value in the range from `0` to {@link returned_rows}
      *
-     *  @param  resource|string     $resource   (Optional) Resource to fetch
+     *  @param  mysqli_result   $resource   (Optional) Resource to fetch
      *
-     *                                          >   If not specified, the resource returned by the last run query is used
+     *                                      >   If not specified, the resource returned by the last run query is used
+     *
+     *  @phpstan-param mysqli_result|int|string $resource
      *
      *  @since  1.1.0
      *
-     *  @return boolean             Returns `TRUE` on success or `FALSE` on failure
+     *  @return boolean         Returns `TRUE` on success or `FALSE` on failure
      */
     public function seek($row, $resource = '') {
 
@@ -3977,7 +4003,7 @@ class Zebra_Database {
                 $debug = debug_backtrace();
 
                 // if method was called by another internal method (like fetch_assoc_all, for example) report that method
-                if (isset($debug[1]) && isset($debug[1]['function']) && $debug[1]['class'] === 'Zebra_Database') $method = $debug[1]['function'];
+                if (isset($debug[1]['class']) && $debug[1]['class'] === 'Zebra_Database') $method = $debug[1]['function'];
 
                 // if this (seek) method was called, report this method
                 else $method = $debug[0]['function'];
@@ -4655,7 +4681,7 @@ class Zebra_Database {
      *
      *  @access private
      *
-     *  @return string  Returns the built SQL string
+     *  @return string|boolean      Returns the built SQL string or `FALSE` on error
      */
     private function _build_sql(&$columns) {
 
@@ -4712,6 +4738,8 @@ class Zebra_Database {
 
     /**
      *  Checks if the connection to the MySQL server has been previously established by the connect() method.
+     *
+     *  @return boolean
      *
      *  @access private
      */
@@ -4883,7 +4911,7 @@ class Zebra_Database {
      *
      *  @access private
      *
-     *  @return mixed
+     *  @return void
      */
     public function _show_debugging_console() {
 
@@ -4906,10 +4934,16 @@ class Zebra_Database {
             }
 
             // if data is to be written to a log file instead of being shown on the screen
-            if (is_array($this->debug)) return call_user_func_array(array($this, '_write_log'), $this->debug);
+            if (is_array($this->debug)) {
+                call_user_func_array(array($this, '_write_log'), $this->debug);
+                return;
+            }
 
             // if request was made from the CLI defer to _write_log
-            elseif ($this->is_cli_request) return $this->_write_log(false, false, false, true);
+            if ($this->is_cli_request) {
+                $this->_write_log(false, false, false, true);
+                return;
+            }
 
             // is this an AJAX request?
             $is_ajax = isset($_SERVER['HTTP_X_REQUESTED_WITH']);
@@ -4996,7 +5030,7 @@ class Zebra_Database {
 
                                 '">
                                     <tr>
-                                        <td class="zdc-counter' . ($is_ajax ? ' zdc-counter-ajax' : '') . '">' . str_pad($counter, 3, '0', STR_PAD_LEFT) . '</td>
+                                        <td class="zdc-counter' . ($is_ajax ? ' zdc-counter-ajax' : '') . '">' . str_pad((string)$counter, 3, '0', STR_PAD_LEFT) . '</td>
                                         <td class="zdc-data">
                             ';
 
@@ -5463,6 +5497,12 @@ class Zebra_Database {
         // iterate over the entries given as argument
         foreach ($entries as $entry) {
 
+            // special treatment for NULL
+            if ($entry === null) {
+                $result[] = 'NULL';
+                continue;
+            }
+
             // explode string by dots
             $entry = explode('.', $entry);
 
@@ -5470,7 +5510,7 @@ class Zebra_Database {
             $entry = array_map(function($value) {
 
                 // trim ticks and whitespace
-                $value = null !== $value ? trim(trim($value, '`')) : $value;
+                $value = trim(trim($value, '`'));
 
                 // if not * or a MySQL function
                 if ($value !== '*' && !$this->_is_mysql_function($value)) {
@@ -5487,7 +5527,7 @@ class Zebra_Database {
                 }
 
                 // return the value as it is otherwise
-                return (is_null($value) ? 'NULL' : $value) . (isset($alias) ? ' AS ' . $alias : '');
+                return $value . (isset($alias) ? ' AS ' . $alias : '');
 
             }, $entry);
 
@@ -5547,6 +5587,8 @@ class Zebra_Database {
      *
      *  @return boolean     Returns whether the value given as argument is a valid result set obtained from a query
      *                      against the database
+     *
+     *  @phpstan-assert-if-true mysqli_result $value
      */
     private function _is_result($value) {
 
@@ -5712,8 +5754,9 @@ class Zebra_Database {
 
             return false;
 
-        // if there are any unsuccessful queries or other errors and debugging is OFF
-        } elseif (($category === 'unsuccessful-queries' || $category === 'errors') && !$this->_is_debugging_enabled()) {
+        // if there are any unsuccessful queries or other errors
+        // (at this point we already know that debugging is OFF)
+        } elseif ($category === 'unsuccessful-queries' || $category === 'errors') {
 
             // get backtrace information
             $backtraceInfo = debug_backtrace();
@@ -5724,6 +5767,8 @@ class Zebra_Database {
             return false;
 
         }
+
+        return true;
 
     }
 
@@ -5811,6 +5856,10 @@ class Zebra_Database {
     /**
      *  See the {@link debug} property for more information.
      *
+     *  @param boolean  $daily      Whether to include day in the log file's name
+     *  @param boolean  $hourly     Whether to include hour in the log file's name
+     *  @param boolean  $backtrace  Whether to include backtrace in the logged information
+     *
      *  @access private
      *
      *  @return void
@@ -5819,6 +5868,9 @@ class Zebra_Database {
 
         // did the request come from CLI?
         $is_cli_request = func_num_args() === 4;
+
+        // the log file to write to - we're going to work it out if there is going to be one
+        $file_name = null;
 
         // if we are using a callback function to handle logs
         if (is_callable($this->log_path) && !isset($this->log_path_is_function))
@@ -5836,7 +5888,7 @@ class Zebra_Database {
             $pathinfo = pathinfo($this->log_path);
 
             // if log_path is given as full path to a file, together with extension
-            if (isset($pathinfo['filename']) && isset($pathinfo['extension'])) {
+            if (isset($pathinfo['extension'])) {
 
                 // use those values
                 $file_name = $pathinfo['dirname'] . '/' . $pathinfo['filename'];
@@ -5900,9 +5952,14 @@ class Zebra_Database {
 
         $longest_label_length++;
 
+        // whether we're logging to a file or not
+        $log_path_is_file = !$this->log_path_is_function && !$is_cli_request;
+
+        $handle = $log_path_is_file ? @fopen($file_name, 'a+') : null;
+
         // if we are using a callback function for logs, we need to show debug information when request came from CLI,
         // or we are writing the logs to a file and we can create/write to the log file
-        if ($this->log_path_is_function || $is_cli_request || $handle = @fopen($file_name, 'a+')) {
+        if (!$log_path_is_file || $handle !== false) {
 
             // we need to show both successful and unsuccessful queries
             $sections = array('successful-queries', 'unsuccessful-queries');
@@ -5920,7 +5977,7 @@ class Zebra_Database {
                         $output =
 
                             // query
-                            "\n" . html_entity_decode(strip_tags(SqlFormatter::format($debug_info['query']))) . "\n" .
+                            "\n" . html_entity_decode(strip_tags(class_exists('SqlFormatter') ? SqlFormatter::format($debug_info['query']) : $debug_info['query'])) . "\n" .
 
                             // date
                             (!$is_cli_request ? $labels[0] . str_pad('', $longest_label_length - $this->_strlen($labels[0]), ' ', STR_PAD_RIGHT) . ': ' . @date('Y-m-d H:i:s') . "\n" : '') .
@@ -5966,7 +6023,7 @@ class Zebra_Database {
                         if ($is_cli_request) echo $output;
 
                         // if we are writing the logs to a file
-                        elseif (!$this->log_path_is_function) fwrite($handle, $output);
+                        elseif ($log_path_is_file) fwrite($handle, $output);
 
                         // if we are using a callback to manage logs, pass output to the function
                         else call_user_func_array($this->log_path, array($output));
@@ -5979,7 +6036,7 @@ class Zebra_Database {
             }
 
             // if we are writing the logs to a file, close the log file
-            if (!$this->log_path_is_function && !$is_cli_request) fclose($handle);
+            if ($log_path_is_file) fclose($handle);
 
         // if log file could not be created/opened
         } else trigger_error($this->language['could_not_write_to_log'], E_USER_ERROR);

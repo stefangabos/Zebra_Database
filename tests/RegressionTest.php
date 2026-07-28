@@ -523,6 +523,42 @@ class RegressionTest extends DatabaseTestCase
     /**
      * 371534f - debug_info holds the credentials among other things and must not be readable from outside
      */
+    /**
+     * A NULL among the columns is the SQL keyword, not the name of something to be enclosed in grave accents.
+     * The NULL was handed to explode() first, which turned it into an empty string, so what came out was an
+     * empty pair of grave accents - invalid SQL - and the code written to produce the keyword never ran.
+     * explode() also raises a deprecation for it on PHP 8.1 and an error on PHP 9.
+     */
+    public function testANullAmongTheColumnsBecomesTheSqlKeyword() {
+        $db = new DatabaseProbe();
+        $db->debug = false;
+        $db->halt_on_errors = false;
+        $db->cache_path = getTempPath('cache');
+        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+
+        $escape = new ReflectionMethod('Zebra_Database', '_escape');
+        $escape->setAccessible(true);
+
+        $raised = $this->diagnosticsRaisedBy(function() use ($escape, $db) {
+            $this->assertSame('`name`, NULL, `age`', $escape->invoke($db, ['name', null, 'age']));
+        });
+
+        $this->assertSame([], $raised, 'And it must not raise a deprecation on the way');
+
+        $db->shutdown();
+    }
+
+    /**
+     * The whole point of the above is that a query built from those columns is valid, which an empty pair of
+     * grave accents would not be
+     */
+    public function testAQueryBuiltWithANullColumnRuns() {
+        $result = $this->db->query('SELECT ' . implode(', ', ['name', 'NULL', 'age']) . ' FROM test_users LIMIT 1');
+
+        $this->assertNotFalse($result);
+        $this->assertArrayHasKey('NULL', $this->db->fetch_assoc($result));
+    }
+
     public function testDebugInfoIsNotPubliclyReadable() {
         $property = new ReflectionProperty('Zebra_Database', 'debug_info');
 
