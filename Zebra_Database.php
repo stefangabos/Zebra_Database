@@ -4610,7 +4610,7 @@ class Zebra_Database {
                 ));
 
             // if special INC() keyword is used
-            if (null !== $value && preg_match('/^INC\((\-{1})?([0-9]+|\?)\)/i', $value, $matches) > 0) {
+            if (null !== $value && preg_match('/^INC\((\-{1})?([0-9]+|\?)\)$/i', $value, $matches) > 0) {
 
                 // translate to SQL
                 $sql .= '`' . $column_name . '` = `' . $column_name . '` ' . ($matches[1] === '-' ? '-' : '+') . ' ?';
