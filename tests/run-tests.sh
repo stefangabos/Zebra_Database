@@ -12,6 +12,13 @@
 #   ./run-tests.sh --filter dcount                  only tests matching "dcount"
 #   ./run-tests.sh CacheTest.php                    a single file
 #   ./run-tests.sh --coverage-html coverage-html    with a coverage report (needs xdebug or pcov)
+#   ./run-tests.sh --static                         also the compatibility, static analysis and
+#                                                   coding standard checks
+#
+# The three checks that --static adds are also available on their own, and those are the ones to use
+# while working through what they report, since they take arguments:
+#
+#   composer check-compat / check-compat-legacy / analyse / check-style
 #
 # Set PHP to use an interpreter that is not the one on the PATH - handy for checking the suite
 # against another version, and required on setups where "php" is not on the PATH at all:
@@ -34,6 +41,13 @@ cd "$(dirname "$0")"
 
 PHP="${PHP:-php}"
 
+RUN_STATIC=0
+ARGS=()
+
+for argument in "$@"; do
+    if [ "$argument" = "--static" ]; then RUN_STATIC=1; else ARGS+=("$argument"); fi
+done
+
 if ! command -v "$PHP" > /dev/null 2>&1; then
     echo "PHP interpreter '$PHP' not found - put php on your PATH or set PHP=/path/to/php." >&2
     exit 1
@@ -46,4 +60,26 @@ fi
 
 echo "Using $("$PHP" -r 'echo PHP_BINARY, " (", PHP_VERSION, ")";')"
 
-exec "$PHP" ../vendor/bin/phpunit "$@"
+if [ "$RUN_STATIC" = "0" ]; then
+    exec "$PHP" ../vendor/bin/phpunit ${ARGS[@]+"${ARGS[@]}"}
+fi
+
+"$PHP" ../vendor/bin/phpunit ${ARGS[@]+"${ARGS[@]}"}
+
+# the static analysis runs from the project root, where its configuration lives - phpstan.neon and
+# coding-standards.xml both name paths relative to it
+cd ..
+
+echo
+echo "── php compatibility ──"
+"$PHP" vendor/bin/phpcs -p --standard=tests/php-compatibility.xml --runtime-set ignore_warnings_on_exit 1
+
+echo
+echo "── static analysis ──"
+# phpstan and the coding standard both end with a non-zero status while there is anything left to fix,
+# which would stop the script before it got to the other one
+"$PHP" vendor/bin/phpstan analyse --no-progress || true
+
+echo
+echo "── coding standard ──"
+"$PHP" vendor/bin/phpcs -p --standard=coding-standards.xml --report=summary || true
