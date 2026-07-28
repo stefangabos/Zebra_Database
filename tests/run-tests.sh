@@ -64,22 +64,28 @@ if [ "$RUN_STATIC" = "0" ]; then
     exec "$PHP" ../vendor/bin/phpunit ${ARGS[@]+"${ARGS[@]}"}
 fi
 
-"$PHP" ../vendor/bin/phpunit ${ARGS[@]+"${ARGS[@]}"}
+# a failing suite must not stop the checks below - the point of --static is to see everything in one go -
+# so the status is kept and returned at the end instead
+test_result=0
+"$PHP" ../vendor/bin/phpunit ${ARGS[@]+"${ARGS[@]}"} || test_result=$?
 
 # the static analysis runs from the project root, where its configuration lives - phpstan.neon and
 # coding-standards.xml both name paths relative to it
 cd ..
 
+# each of these ends with a non-zero status while there is anything left to fix, which under "set -e"
+# would stop the script before it got to the next one
 echo
-echo "── php compatibility ──"
-"$PHP" vendor/bin/phpcs -p --standard=tests/php-compatibility.xml --runtime-set ignore_warnings_on_exit 1
+echo "--- php compatibility ---"
+"$PHP" vendor/bin/phpcs -p --standard=tests/php-compatibility.xml --runtime-set ignore_warnings_on_exit 1 || true
 
 echo
-echo "── static analysis ──"
-# phpstan and the coding standard both end with a non-zero status while there is anything left to fix,
-# which would stop the script before it got to the other one
+echo "--- static analysis ---"
 "$PHP" vendor/bin/phpstan analyse --no-progress || true
 
 echo
-echo "── coding standard ──"
+echo "--- coding standard ---"
 "$PHP" vendor/bin/phpcs -p --standard=coding-standards.xml --report=summary || true
+
+# the suite's result is what decides whether this run passed - the findings are work in progress
+exit $test_result
