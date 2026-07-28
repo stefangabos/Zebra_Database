@@ -526,4 +526,50 @@ class SecurityTest extends DatabaseTestCase
         $deferred->query("DROP TABLE test_gbk_deferred");
         $deferred->close();
     }
+
+    // VALUES THAT LOOK LIKE MYSQL FUNCTION CALLS
+
+    /**
+     * insert(), update() and insert_bulk() let a value through unescaped when it looks like a call to a
+     * MySQL function, which is how "NOW()" works as a value. What decides it is the list of function names
+     * the library keeps - and that list is the only thing standing between a value being stored and a
+     * value being executed.
+     *
+     * These pin the safe half: text that has the shape of a call but whose name is not a MySQL function
+     * has to be stored as the text it is. Shorten the list, or drop the check in favour of accepting
+     * anything shaped like "name(...)", and these go red.
+     *
+     * @dataProvider valuesThatOnlyLookLikeCalls
+     */
+    public function testAValueShapedLikeAFunctionCallIsStoredAsText($value) {
+        $this->db->insert('test_users', ['name' => $value, 'email' => 'shaped@example.com']);
+
+        $this->assertSame($value, $this->db->dlookup('name', 'test_users', 'email = ?', ['shaped@example.com']));
+    }
+
+    public function valuesThatOnlyLookLikeCalls() {
+        return [
+            'a surname with a suffix'   => ['Smith(Jr)'],
+            'something INC-like'        => ['INC(5) apples'],
+            'a word with a bracket'     => ['Reply(All)'],
+            'an unknown function name'  => ['NO_SUCH_FUNCTION(1)'],
+            'empty brackets'            => ['Whatever()'],
+        ];
+    }
+
+    /**
+     * And the other half, pinned deliberately rather than left implied: a value whose name *is* on the
+     * list is executed rather than stored. That is the documented behaviour that makes "NOW()" useful, and
+     * the docblock for update() warns that it is a security concern when the argument comes from user
+     * input. It is recorded here so that it is a decision rather than a surprise.
+     */
+    public function testAValueNamingAKnownFunctionIsExecuted() {
+        $this->db->insert('test_users', ['name' => 'CONCAT("A","B")', 'email' => 'executed@example.com']);
+
+        $this->assertSame(
+            'AB',
+            $this->db->dlookup('name', 'test_users', 'email = ?', ['executed@example.com']),
+            'A known function name is run, not stored - which is why the list must not grow carelessly'
+        );
+    }
 }
