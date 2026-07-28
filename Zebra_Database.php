@@ -2117,7 +2117,8 @@ class Zebra_Database {
                 return true;
 
             // if it had already been freed by a previous call to this method
-            } catch (Throwable $e) {}
+            } catch (Throwable $e) {
+            }
 
         }
 
@@ -2792,10 +2793,12 @@ class Zebra_Database {
                     return '`' . $value . '` = VALUES(`' . $this->escape($value) . '`)';
 
                 // if $update is an associative array
-                else
+                else {
 
                     // it means we have probably given a static value
                     return '`' . $column . '` = ' . ($this->_is_mysql_function($value) ? (is_null($value) ? 'NULL' : $value) : '"' . $this->escape($value) . '"');
+
+                }
 
             }, array_keys($update), array_values($update)));
 
@@ -3503,7 +3506,7 @@ class Zebra_Database {
                     }
 
                 // if folder doesn't exist
-                } else
+                } else {
 
                     // save debug information
                     return $this->_log('errors', array(
@@ -3511,6 +3514,8 @@ class Zebra_Database {
                         'message'   => $this->language['cache_path_not_writable'],
 
                     ), false);
+
+                }
 
             }
 
@@ -3762,7 +3767,7 @@ class Zebra_Database {
 
                         // iterate through the run queries
                         // to find out if this query was already run
-                        foreach ($this->debug_info['successful-queries'] as $key => $query_data)
+                        foreach ($this->debug_info['successful-queries'] as $key => $query_data) {
 
                             // if query was run before
                             if (
@@ -3771,8 +3776,14 @@ class Zebra_Database {
                                 && !empty($query_data['records'])
                                 && $query_data['records'] == $result
 
-                            // save the pointer to the query in an array
-                            ) $keys[] = $key;
+                            ) {
+
+                                // save the pointer to the query in an array
+                                $keys[] = $key;
+
+                            }
+
+                        }
 
                         // if the query was run before
                         if (!empty($keys)) {
@@ -4218,7 +4229,8 @@ class Zebra_Database {
 
             }
 
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+        }
 
         // if we couldn't select the database
         return false;
@@ -4277,7 +4289,9 @@ class Zebra_Database {
             if (!mysqli_set_charset($this->connection, $charset)) return false;
 
         // if the character set was not recognized
-        } catch (Exception $e) { return false; }
+        } catch (Exception $e) {
+            return false;
+        }
 
         // the collation cannot be set through the API, so we set it separately
         return $this->query('SET collation_connection = \'' . $this->escape($collation) . '\'');
@@ -4773,7 +4787,7 @@ class Zebra_Database {
                 ));
 
             // if connection was successful
-            else
+            else {
 
                 // run the deferred method calls (if any) now that we have a connection
                 while (!empty($this->deferred)) {
@@ -4783,6 +4797,8 @@ class Zebra_Database {
                     call_user_func_array(array($this, $method), $params);
 
                 }
+
+            }
 
             // if caching is to be done to a memcache server and we don't yet have a connection
             if ($this->caching_method === 'memcache' && !$this->memcache && $this->memcache_host !== false && $this->memcache_port !== false) {
@@ -4806,7 +4822,7 @@ class Zebra_Database {
                     else $this->memcache = $memcache;
 
                 // if memcache extension is not installed
-                } else
+                } else {
 
                     // if connection could not be established, save debug information
                     $this->_log('errors', array(
@@ -4814,6 +4830,8 @@ class Zebra_Database {
                         'message'   => $this->language['memcache_extension_not_installed']
 
                     ));
+
+                }
 
             // if caching is to be done to a redis server and we don't yet have a connection
             } elseif ($this->caching_method === 'redis' && !$this->redis && $this->redis_host !== false && $this->redis_port !== false) {
@@ -4837,7 +4855,7 @@ class Zebra_Database {
                     else $this->redis = $redis;
 
                 // if redis extension is not installed
-                } else
+                } else {
 
                     // if connection could not be established, save debug information
                     $this->_log('errors', array(
@@ -4845,6 +4863,8 @@ class Zebra_Database {
                         'message'   => $this->language['redis_extension_not_installed']
 
                     ));
+
+                }
 
             }
 
@@ -4865,7 +4885,7 @@ class Zebra_Database {
      *
      *  @return mixed
      */
-    function _show_debugging_console() {
+    public function _show_debugging_console() {
 
         // if debugging is on
         if ($this->_is_debugging_enabled()) {
@@ -4951,7 +4971,7 @@ class Zebra_Database {
                 if (isset($this->debug_info[$block]) || in_array($block, array('errors', 'successful-queries', 'unsuccessful-queries'))) {
 
                     // because we may be here for non-existing unsuccessful queries
-                    if (isset($this->debug_info[$block]))
+                    if (isset($this->debug_info[$block])) {
 
                         // iterate through the error message
                         foreach ($this->debug_info[$block] as $debug_info) {
@@ -5059,7 +5079,9 @@ class Zebra_Database {
                                         $this->language['seconds'] . ' (<strong>' .
                                         number_format(
                                             ($this->total_execution_time != 0 ? $debug_info['execution_time'] * 100 / $this->total_execution_time : 0),
-                                            2, '.', ','
+                                            2,
+                                            '.',
+                                            ','
                                         ) . '</strong>%)
                                     </li>
                                 ';
@@ -5077,7 +5099,7 @@ class Zebra_Database {
                                     ';
 
                                 // if action query
-                                else
+                                else {
 
                                     // info about affected rows
                                     $output .= '
@@ -5085,6 +5107,8 @@ class Zebra_Database {
                                             $this->language['affected_rows'] . ': <strong>' . $debug_info['affected_rows'] . '</strong>
                                         </li>
                                     ';
+
+                                }
 
                                 // if EXPLAIN is available (only for SELECT queries)
                                 if (is_array($debug_info['explain']))
@@ -5115,29 +5139,25 @@ class Zebra_Database {
                             if (($block === 'successful-queries' || $block === 'unsuccessful-queries') && $this->debug_show_database_manager) {
 
                                 $output .= '
-                                    <li class="zdc-database-manager">
-                                        ' . str_replace(
-                                                array(
-                                                    '%host%',
-                                                    '%user%',
-                                                    '%password%',
-                                                    '%database%',
-                                                    '%port%',
-                                                    '%socket%',
-                                                    '%query%',
-                                                ),
-                                                array(
-                                                    $this->credentials !== null ? urlencode($this->credentials['host']) : '',
-                                                    $this->credentials !== null ? urlencode($this->credentials['user']) : '',
-                                                    $this->credentials !== null ? urlencode($this->credentials['password']) : '',
-                                                    $this->credentials !== null ? urlencode($this->credentials['database']) : '',
-                                                    $this->credentials !== null ? urlencode($this->credentials['port']) : '',
-                                                    $this->credentials !== null ? urlencode($this->credentials['socket']) : '',
-                                                    $this->credentials !== null ? urlencode(html_entity_decode(strip_tags($debug_info['query']))) : '',
-                                                ),
-                                                $this->debug_show_database_manager
-                                            ) . '
-                                    </li>
+                                    <li class="zdc-database-manager">' .
+                                        str_replace(array(
+                                            '%host%',
+                                            '%user%',
+                                            '%password%',
+                                            '%database%',
+                                            '%port%',
+                                            '%socket%',
+                                            '%query%',
+                                        ), array(
+                                            $this->credentials !== null ? urlencode($this->credentials['host']) : '',
+                                            $this->credentials !== null ? urlencode($this->credentials['user']) : '',
+                                            $this->credentials !== null ? urlencode($this->credentials['password']) : '',
+                                            $this->credentials !== null ? urlencode($this->credentials['database']) : '',
+                                            $this->credentials !== null ? urlencode($this->credentials['port']) : '',
+                                            $this->credentials !== null ? urlencode($this->credentials['socket']) : '',
+                                            $this->credentials !== null ? urlencode(html_entity_decode(strip_tags($debug_info['query']))) : '',
+                                        ), $this->debug_show_database_manager) .
+                                    '</li>
                                 ';
 
                             }
@@ -5210,6 +5230,8 @@ class Zebra_Database {
                             $output .= '</td></tr></table>';
 
                         }
+
+                    }
 
                     // if anything was generated for the current block
                     // enclose generated output in a special div (unless this is an AJAX request case in which we leave it as it is)
@@ -5398,11 +5420,13 @@ class Zebra_Database {
                     $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['HTTP_HOST'] . '/' . trim($this->resource_path, '/')), '/');
 
                 // if path not provided, determine the path automatically
-                else
+                else {
 
                     // this is the url that will be used for automatically including
                     // the CSS and the JavaScript files
                     $path = rtrim(preg_replace('/\\\/', '/', '//' . $_SERVER['HTTP_HOST'] . substr(dirname(__FILE__), strlen(realpath($_SERVER['DOCUMENT_ROOT'])))), '/');
+
+                }
 
                 // link the required javascript
                 $output = '<script type="text/javascript" src="' . $path . '/public/javascript/zebra_database.src.js"></script>' . (is_string($this->debug_ajax) && $this->debug_ajax !== '' ? '<script>window.zdb_log_path = "' . $this->debug_ajax . '"</script>' : '') . $output;
@@ -5584,10 +5608,12 @@ class Zebra_Database {
                 @setcookie($this->debug_cookie_name, '1', 0, '/', '', false, true);
 
             // consider turning debugging off
-            } else
+            } else {
 
                 // remove cookie
                 @setcookie($this->debug_cookie_name, '', time() - 3600, '/', '', false, true);
+
+            }
 
         // if debugging is handled via a parameter in the query string and the cookie is already set
         } elseif (is_string($this->debug) && isset($_COOKIE[$this->debug_cookie_name]))
@@ -5756,13 +5782,15 @@ class Zebra_Database {
                         $explain_resource = mysqli_query($this->connection, 'EXPLAIN ' . $this->unbuffered_info['query']);
 
                         // if MySQL could explain the query
-                        if (!is_bool($explain_resource))
+                        if (!is_bool($explain_resource)) {
 
                             // update information in the debugging console
                             while ($row = mysqli_fetch_assoc($explain_resource)) {
                                 if (!is_array($this->debug_info['successful-queries'][$log_index]['explain'])) $this->debug_info['successful-queries'][$log_index]['explain'] = array();
                                 $this->debug_info['successful-queries'][$log_index]['explain'][] = $row;
                             }
+
+                        }
 
                     // if EXPLAIN is not available
                     } catch (Exception $e) {
@@ -5954,9 +5982,7 @@ class Zebra_Database {
             if (!$this->log_path_is_function && !$is_cli_request) fclose($handle);
 
         // if log file could not be created/opened
-        } else
-
-            trigger_error($this->language['could_not_write_to_log'], E_USER_ERROR);
+        } else trigger_error($this->language['could_not_write_to_log'], E_USER_ERROR);
 
     }
 
