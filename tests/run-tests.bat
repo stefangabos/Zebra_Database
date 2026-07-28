@@ -7,13 +7,12 @@
 ::
 :: Any arguments are passed straight through to PHPUnit, so the usual flags all work:
 ::
-::   run-tests.bat                                  run everything
+::   run-tests.bat                                  the suite and all three checks
 ::   run-tests.bat --testdox                        readable output
 ::   run-tests.bat --filter dcount                  only tests matching "dcount"
 ::   run-tests.bat CacheTest.php                    a single file
 ::   run-tests.bat --coverage-html coverage-html    with a coverage report (needs xdebug or pcov)
-::   run-tests.bat --static                         also the compatibility, static analysis and
-::                                                  coding standard checks
+::   run-tests.bat --static                         the checks as well, whatever else is given
 ::
 :: The three checks that --static adds are also available on their own, and those are the ones to use
 :: while working through what they report, since they take arguments:
@@ -37,8 +36,10 @@ cd /d "%~dp0"
 
 if "%PHP%"=="" set "PHP=php"
 
-:: pull --static out of the arguments and pass everything else on to PHPUnit
+:: with nothing asked for in particular, check everything - the checks add about three seconds to a run
+:: that already takes ten, while on a filtered run of well under a second they would be most of the wait
 set RUN_STATIC=0
+if "%~1"=="" set RUN_STATIC=1
 set "ARGS="
 
 :parse_arguments

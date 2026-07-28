@@ -5,18 +5,19 @@
 # Connection settings come from phpunit.xml if present, or from phpunit.xml.dist otherwise - see
 # the comments in phpunit.xml.dist for how to point the suite at your own database.
 #
-# Any arguments are passed straight through to PHPUnit, so the usual flags all work:
+# Run it with no arguments and it checks everything - the suite, then the compatibility, static analysis
+# and coding standard checks. Give it any argument and it runs only the tests you asked for, because that
+# is the case where you are working on something and do not want to wait for the rest:
 #
-#   ./run-tests.sh                                  run everything
-#   ./run-tests.sh --testdox                        readable output
+#   ./run-tests.sh                                  the suite and all three checks
+#   ./run-tests.sh --testdox                        readable output, tests only
 #   ./run-tests.sh --filter dcount                  only tests matching "dcount"
 #   ./run-tests.sh CacheTest.php                    a single file
 #   ./run-tests.sh --coverage-html coverage-html    with a coverage report (needs xdebug or pcov)
-#   ./run-tests.sh --static                         also the compatibility, static analysis and
-#                                                   coding standard checks
+#   ./run-tests.sh --static                         the checks as well, whatever else is given
 #
-# The three checks that --static adds are also available on their own, and those are the ones to use
-# while working through what they report, since they take arguments:
+# The three checks are also available on their own, and those are the ones to use while working through
+# what they report, since they take arguments of their own:
 #
 #   composer check-compat / check-compat-legacy / analyse / check-style
 #
@@ -41,7 +42,9 @@ cd "$(dirname "$0")"
 
 PHP="${PHP:-php}"
 
-RUN_STATIC=0
+# with nothing asked for in particular, check everything - the checks add about three seconds to a run
+# that already takes ten, while on a filtered run of well under a second they would be most of the wait
+RUN_STATIC=$([ $# -eq 0 ] && echo 1 || echo 0)
 ARGS=()
 
 for argument in "$@"; do
