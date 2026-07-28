@@ -1587,7 +1587,7 @@ class Zebra_Database {
         ', $replacements, $cache, false, $highlight);
 
         // if query was executed successfully and one or more records were returned
-        if (isset($this->last_result) && $this->last_result !== false && $this->found_rows > 0) {
+        if (isset($this->last_result) && $this->last_result !== false && $this->returned_rows > 0) {
 
             // fetch the result
             $row = $this->fetch_assoc();
