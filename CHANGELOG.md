@@ -6,6 +6,12 @@
 
 ### :warning: Breaking changes
 
+>   **Most of these will probably not affect you** - but test anyway.
+>
+>   The one worth a look is the change to **`set_charset`'s defaults**, and only if you call that method without arguments - the library never calls it for you, so if you never call it either, nothing changes. The new collation compares differently (`'ß' = 'ss'` is true under `utf8mb4_unicode_ci` and false under the old `utf8_general_ci`), which can quietly change what a query matches To keep exactly what you had, pass the old values yourself: `$db->set_charset('utf8', 'utf8_general_ci')`.
+>
+>   The minimum PHP version going to 7.3 reads worse than it is - the library still runs on 5.5 and that is verified on every change. 7.3 is simply the oldest version the *test suite* can run on, so it is the oldest one I can honestly say the library is tested on.
+
 - the minimum required PHP version is now **7.3**, up from 5.3. The library itself still runs on PHP 5.5 and newer and this is verified on every change with PHPCompatibility, but 7.3 is the oldest version the test suite can run on, so that's the minimum PHP version the library was *tested* on
 - `set_charset` now defaults to `utf8mb4`/`utf8mb4_unicode_ci` instead of `utf8`/`utf8_general_ci`; pass the old values explicitly if you need them - note that comparison and sorting differ between the two collations
 - the `INC()` keyword now has to be the whole of a value. Previously a value merely *starting* with it, like `INC(5) apples`, was taken to be an instruction to increment the column, and on a text column that either failed outright or wrote a number over what you meant to store - such values are now stored as the strings they are
