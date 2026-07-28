@@ -35,8 +35,8 @@
         ]
     },
     "scripts": {
-        "test": "phpunit --configuration tests/phpunit.xml.dist",
-        "test-coverage": "phpunit --configuration tests/phpunit.xml.dist --coverage-html tests/coverage-html",
+        "test": "phpunit -c tests",
+        "test-coverage": "phpunit -c tests --coverage-html tests/coverage-html",
         "check-compat": "phpcs -p --standard=tests/php-compatibility.xml --runtime-set ignore_warnings_on_exit 1",
         "check-compat-legacy": "phpcs -p --standard=tests/php-compatibility.xml --runtime-set testVersion 5.5- --runtime-set ignore_warnings_on_exit 1",
         "check-style": "phpcs -p --standard=coding-standards.xml --runtime-set ignore_warnings_on_exit 1",

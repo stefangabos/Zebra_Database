@@ -11,7 +11,9 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
     protected function setUp(): void {
         $this->db = new Zebra_Database();
         $this->db->debug = false;
-        $this->db->cache_path = 'tmp/cache/';
+        // an absolute path, so that the suite passes wherever it is started from - a relative one only
+        // resolves when the working directory happens to be tests/
+        $this->db->cache_path = getTempPath('cache');
         $this->cleanDatabase();
     }
 

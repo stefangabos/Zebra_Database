@@ -60,11 +60,16 @@ class PropertiesTest extends DatabaseTestCase
 
     /**
      * The default is a "cache" directory beside the library rather than nothing at all, which is what
-     * makes disk caching work without any setup
+     * makes disk caching work without any setup.
+     *
+     * Asked of a fresh instance on purpose - setUp() points the shared one at the suite's own scratch
+     * directory, so asking that one would be reading back the override rather than the default.
      */
     public function testCachePathDefault() {
-        $this->assertIsString($this->db->cache_path);
-        $this->assertStringEndsWith('/cache/', $this->db->cache_path);
+        $untouched = new Zebra_Database();
+
+        $this->assertIsString($untouched->cache_path);
+        $this->assertStringEndsWith('/cache/', $untouched->cache_path);
     }
 
     public function testCachePathSetting() {

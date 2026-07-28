@@ -94,17 +94,31 @@ composer install
 # copy the defaults and put your connection details in the copy (it is git-ignored)
 cp tests/phpunit.xml.dist tests/phpunit.xml
 
-./run-tests.sh
+tests/run-tests.sh
 ```
 
-Any arguments are passed on to PHPUnit, and `PHP` picks the interpreter - useful for checking the suite
-against another version:
+On Windows use `tests\run-tests.bat`, which does the same things in the same order.
+
+Run it with no arguments and it checks everything - the suite, then the PHP compatibility, static analysis
+and coding standard checks. Give it any argument and it runs only the tests you asked for, which is what
+you want while working on something:
 
 ```bash
-./run-tests.sh --testdox                    # readable output
-./run-tests.sh --filter dcount              # only tests matching "dcount"
-./run-tests.sh CacheTest.php                # a single file
-PHP=/path/to/php7.4/bin/php ./run-tests.sh  # a specific interpreter
+tests/run-tests.sh --testdox                    # readable output, tests only
+tests/run-tests.sh --filter dcount              # only tests matching "dcount"
+tests/run-tests.sh CacheTest.php                # a single file
+tests/run-tests.sh --filter dcount --static     # the checks as well
+PHP=/path/to/php7.4/bin/php tests/run-tests.sh  # a specific interpreter
+```
+
+The three checks are also available on their own, and those are the ones to reach for while working
+through whatever they report, since they take arguments of their own:
+
+```bash
+composer analyse               # phpstan
+composer check-style           # the coding standard
+composer check-compat          # PHP compatibility, against the supported version
+composer check-compat-legacy   # ...and against the oldest version the library still runs on
 ```
 
 A handful of tests cover the memcache and redis caching backends and skip themselves unless both the
