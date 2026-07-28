@@ -71,8 +71,11 @@ jobs:
           key: composer-${{ matrix.php }}-${{ hashFiles('composer.json') }}
           restore-keys: composer-${{ matrix.php }}-
 
+      # not "composer install" - the committed lock file is one resolution, made on whatever PHP the last update ran on,
+      # and its dev tools do not all install on the older versions in the matrix. the lock pins nothing the library
+      # itself needs, since the library has no runtime dependencies, so resolving per version is the right thing here
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+        run: composer update --prefer-dist --no-progress --no-interaction
 
       # the service is health checked before the job starts, but a container that answers a ping is not always ready to
       # hand out connections yet, and this uses PHP rather than a mysql client the runner may or may not have
