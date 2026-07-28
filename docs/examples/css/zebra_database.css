@@ -57,11 +57,11 @@
     border-top: 1px solid #fff
 }
 #zdc .zdc-entry .zdc-counter {
-    background: #69735b;
+    background: rgb(41%,45%,35%);
     color: #fff
 }
 #zdc .zdc-entry .zdc-counter.zdc-counter-ajax {
-    background: #69735b;
+    background: rgb(41%,45%,35%);
     color: #cddc39
 }
 #zdc .zdc-entry.zdc-transaction .zdc-counter {
@@ -90,7 +90,7 @@
     color: inherit
 }
 #zdc .zdc-entry .zdc-data .zdc-box.zdc-actions {
-    background: #ced3c7;
+    background: rgb(80%,82%,78%);
     padding: 2px
 }
 #zdc .zdc-entry .zdc-data .zdc-box.zdc-actions ul li {
@@ -148,7 +148,7 @@
     text-decoration: underline!important
 }
 #zdc .zdc-entry .zdc-data .zdc-box.zdc-data-table tr:nth-child(2n) {
-    background: #e1e1e1
+    background: rgb(88%,88%,88%)
 }
 #zdc .zdc-entry .zdc-data .zdc-box.zdc-data-table td,
 #zdc .zdc-entry .zdc-data .zdc-box.zdc-data-table th {
@@ -175,7 +175,7 @@
     padding: 8px
 }
 #zdc-main a:hover {
-    background: #3a4e64;
+    background: rgb(22%,30%,39%);
     color: #fff
 }
 #zdc-main span {
@@ -194,7 +194,7 @@
     color: #fff
 }
 #zdc-globals-submenu a:hover {
-    background: #79735e;
+    background: rgb(47%,45%,37%);
     color: #fff
 }
 .zdc-syntax-highlight pre {
