@@ -351,10 +351,15 @@ class UtilityMethodsTest extends DatabaseTestCase
         $this->assertEquals(85.50, (float)$sum_score); // Only John's score
     }
 
+    /**
+     * Asserted strictly on purpose. SUM() over no rows gives NULL, which the method turns into FALSE the way
+     * dmax does - and "(int)$result" cannot tell the two apart, since both FALSE and NULL cast to 0. That is
+     * how this went unnoticed while the identical fix to dmax was covered.
+     */
     public function testDsumWithNoMatches() {
         $result = $this->db->dsum('age', 'test_users', 'name = ?', ['Nonexistent User']);
 
-        $this->assertEquals(0, (int)$result); // SUM returns 0 for no matches
+        $this->assertFalse($result);
     }
 
     public function testDsumWithArrayParameter() {

@@ -307,6 +307,19 @@ class FetchMethodsTest extends DatabaseTestCase
         // Note: Behavior may vary depending on MySQL version
     }
 
+    /**
+     * 49b685f - freeing the same result a second time was a fatal error on PHP 8.1 and newer, where mysqli
+     * raises an Error rather than a warning. An already freed result is still an instance of mysqli_result,
+     * so there is nothing to check beforehand - the attempt has to be made and the Error caught, which is
+     * what turns the second call into a plain FALSE.
+     */
+    public function testFreeingTheSameResultTwiceReportsFalseRatherThanDying() {
+        $result = $this->db->query('SELECT * FROM test_users LIMIT 1');
+
+        $this->assertTrue($this->db->free_result($result), 'The first call has something to free');
+        $this->assertFalse($this->db->free_result($result), 'The second has not, and must not be fatal');
+    }
+
     public function testFreeResultWithoutParameter() {
         $this->db->query("SELECT * FROM test_users LIMIT 1");
 
