@@ -4348,6 +4348,9 @@ class Zebra_Database {
             // if this was a test transaction or there was an error with one of the queries in the transaction
             if ($this->transaction_status === 3 || $this->transaction_status === 2) {
 
+                // remember which of the two it was, as the flag is about to be reset
+                $is_test_transaction = $this->transaction_status === 3;
+
                 // rollback changes
                 $this->query('ROLLBACK');
 
@@ -4355,7 +4358,7 @@ class Zebra_Database {
                 $this->transaction_status = 0;
 
                 // if it was a test transaction return TRUE or FALSE otherwise
-                return ($this->transaction_status === 3 ? true : false);
+                return $is_test_transaction;
 
             }
 
