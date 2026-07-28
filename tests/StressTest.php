@@ -27,14 +27,11 @@ class StressTest extends DatabaseTestCase
             $db->debug = false;
             $db->halt_on_errors = false;
             
-            $connected = $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
-            
-            if ($connected !== false) {
-                $connections[] = $db;
-            } else {
-                // If we hit connection limit, that's expected behavior
-                break;
-            }
+            // connect() returns nothing and connects lazily, so whether the server accepted us is not
+            // known until a query is actually run - which is what the loop below does
+            $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+
+            $connections[] = $db;
         }
         
         $this->assertGreaterThan(0, count($connections), "Should be able to create at least one connection");

@@ -511,20 +511,34 @@ class PropertiesTest extends DatabaseTestCase
         $this->assertFalse($this->db->auto_quote_replacements);
     }
 
-    public function testPropertyTypeConsistency() {
-        // Boolean properties should remain boolean
-        $this->db->debug = 'false';
-        $this->assertIsBool($this->db->debug || is_string($this->db->debug) || is_array($this->db->debug));
+    /**
+     * The settings are plain public properties, so whatever is assigned to one is what comes back out -
+     * the library neither coerces nor validates on assignment. That is worth pinning: several of them
+     * deliberately accept more than one type (debug takes a boolean, a string or an array; halt_on_errors
+     * takes a boolean or the string "always") and a typed property or a magic setter added later would
+     * quietly break those.
+     *
+     * @dataProvider propertiesAndValues
+     */
+    public function testAPropertyReturnsExactlyWhatWasAssignedToIt($property, $value) {
+        $this->db->$property = $value;
 
-        $this->db->halt_on_errors = 1;
-        $this->assertIsBool($this->db->halt_on_errors || is_numeric($this->db->halt_on_errors));
+        $this->assertSame($value, $this->db->$property);
+    }
 
-        // Numeric properties should handle numeric values
-        $this->db->max_query_time = '30';
-        $this->assertIsNumeric($this->db->max_query_time);
-
-        $this->db->debug_show_records = '50';
-        $this->assertIsNumeric($this->db->debug_show_records);
+    public function propertiesAndValues() {
+        return [
+            'debug as a boolean'            => ['debug', true],
+            'debug as a query string name'  => ['debug', 'turn_debugging_on'],
+            'debug as an array'             => ['debug', ['errors', 'successful-queries']],
+            'halt_on_errors as a boolean'   => ['halt_on_errors', false],
+            'halt_on_errors as "always"'    => ['halt_on_errors', 'always'],
+            'max_query_time as an integer'  => ['max_query_time', 30],
+            'max_query_time as a string'    => ['max_query_time', '30'],
+            'debug_show_records as an int'  => ['debug_show_records', 50],
+            'caching_method'                => ['caching_method', 'disk'],
+            'cache_path'                    => ['cache_path', '/some/path/'],
+        ];
     }
 
     // PROPERTY VALIDATION TESTS - Testing with invalid/bogus values

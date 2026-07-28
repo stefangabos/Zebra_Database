@@ -17,6 +17,10 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
 
     protected function tearDown(): void {
         if ($this->db) {
+            // the debugging console is printed by a shutdown function that reads this flag when it runs, so
+            // any test that turned debugging on - or that failed before it could turn it back off - would
+            // otherwise spill a whole console into the test output
+            $this->db->debug = false;
             $this->cleanDatabase();
             $this->db->close();
         }

@@ -9,15 +9,14 @@ require_once __DIR__ . '/bootstrap.php';
 class DebugTest extends DatabaseTestCase {
 
     private $test_log_dir;
-    private $original_debug;
     private $original_log_path;
 
     protected function setUp(): void {
         parent::setUp();
         $this->connectToDatabase();
         
-        // Store original values
-        $this->original_debug = $this->db->debug;
+        // store the original value - debug is not stored because tearDown always turns it off rather than
+        // putting it back, so that a test leaving it on cannot spill a debugging console into the output
         $this->original_log_path = $this->db->log_path;
         
         // Create temporary directory for log files
