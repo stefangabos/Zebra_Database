@@ -5387,13 +5387,16 @@ class Zebra_Database {
                     // if alias is used
                     if (stripos($value, ' AS ') !== false) list($value, $alias) = array_map('trim', preg_split('/ AS /i', $value));
 
-                    // enclose value in grave accents
-                    return '`' . $value . '`' . (isset($alias) ? ' AS ' . $alias : '');
+                    // if what's left is a "*" or a MySQL function
+                    if ($value !== '*' && !$this->_is_mysql_function($value))
+
+                        // enclose value in grave accents
+                        return '`' . $value . '`' . (isset($alias) ? ' AS ' . $alias : '');
 
                 }
 
                 // return the value as it is otherwise
-                return (is_null($value) ? 'NULL' : $value);
+                return (is_null($value) ? 'NULL' : $value) . (isset($alias) ? ' AS ' . $alias : '');
 
             }, $entry);
 
