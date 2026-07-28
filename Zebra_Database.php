@@ -1169,7 +1169,16 @@ class Zebra_Database {
      *
      *  @param  string  $column         Name of the column in which to do the counting
      *
+     *                                  This is used in the query as it is, which is what makes `*`, `DISTINCT column`
+     *                                  and MySQL functions possible here.
+     *
+     *                                  >   Because of that it is **not** escaped and it is **not** enclosed in grave
+     *                                      accents - a column name that is a reserved word has to be enclosed in them
+     *                                      by you, and this argument must never be built from user input.
+     *
      *  @param  string  $table          Name of the table containing the column
+     *
+     *                                  *Unlike the column, this is enclosed in grave accents for you.*
      *
      *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
@@ -1309,7 +1318,16 @@ class Zebra_Database {
      *
      *                                  *You may use `*` (asterisk) to return all the columns from the row.*
      *
+     *                                  This is used in the query as it is, which is what makes several columns at once,
+     *                                  `*`, expressions and MySQL functions all possible here.
+     *
+     *                                  >   Because of that it is **not** escaped and it is **not** enclosed in grave
+     *                                      accents - a column name that is a reserved word has to be enclosed in them
+     *                                      by you, and this argument must never be built from user input.
+     *
      *  @param  string  $table          Name of the table in which to search
+     *
+     *                                  *Unlike the columns, this is enclosed in grave accents for you.*
      *
      *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
@@ -1414,7 +1432,16 @@ class Zebra_Database {
      *
      *  @param  string  $column         Name of the column in which to search
      *
+     *                                  This is used in the query as it is, which is what makes expressions and MySQL
+     *                                  functions possible here.
+     *
+     *                                  >   Because of that it is **not** escaped and it is **not** enclosed in grave
+     *                                      accents - a column name that is a reserved word has to be enclosed in them
+     *                                      by you, and this argument must never be built from user input.
+     *
      *  @param  string  $table          Name of table in which to search
+     *
+     *                                  *Unlike the column, this is enclosed in grave accents for you.*
      *
      *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
@@ -1497,7 +1524,16 @@ class Zebra_Database {
      *
      *  @param  string  $column         Name of the column in which to sum values
      *
+     *                                  This is used in the query as it is, which is what makes expressions and MySQL
+     *                                  functions possible here.
+     *
+     *                                  >   Because of that it is **not** escaped and it is **not** enclosed in grave
+     *                                      accents - a column name that is a reserved word has to be enclosed in them
+     *                                      by you, and this argument must never be built from user input.
+     *
      *  @param  string  $table          Name of the table in which to search
+     *
+     *                                  *Unlike the column, this is enclosed in grave accents for you.*
      *
      *                                  *May also be specified like `databasename.tablename` if a database was not explicitly
      *                                  selected with the {@link connect()} or {@link select_database()} methods prior to
