@@ -4261,7 +4261,6 @@ class Zebra_Database {
         if (strpos($table, '.') !== false) list($database, $table) = explode('.', $table);
 
         // check if table exists in the database
-        // SHOW TABLES doesn't support prepared statements, so we escape manually
         // (we escape "_" as it is a single character wildcard for LIKE and underscores are common in table names)
         return is_array($this->fetch_assoc($this->query('SHOW TABLES' . (isset($database) ? ' IN ' . $this->_escape($database) : '') . ' LIKE \'' . addcslashes($this->escape($table), '_') . '\'')));
 
