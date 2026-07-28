@@ -2297,11 +2297,12 @@ class Zebra_Database {
         if (strpos($table, '.') !== false) list($database, $table) = explode('.', $table, 2);
 
         // run the query
+        // (we escape "_" as it is a single character wildcard for LIKE and underscores are common in table names)
         $this->query('
             SHOW TABLE STATUS
             ' . (isset($database) ? ' IN ' . $this->_escape($database) : '') . '
-            ' . (trim($table) !== '' ? 'LIKE ?' : '') . '
-        ', array($table));
+            ' . (trim($table) !== '' ? 'LIKE \'' . addcslashes($this->escape($table), '_') . '\'' : '') . '
+        ');
 
         // fetch and return data
         return $this->fetch_assoc_all('Name');
