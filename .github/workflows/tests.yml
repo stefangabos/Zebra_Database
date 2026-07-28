@@ -1,0 +1,135 @@
+name: tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+
+  tests:
+
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      # let every version report, rather than cancelling the rest as soon as one fails
+      fail-fast: false
+      matrix:
+        php: ['7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
+
+    services:
+
+      mysql:
+        image: mysql:8.0
+        env:
+          # the defaults in tests/phpunit.xml.dist are root with no password on 3306, so nothing else has to be configured
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      # the caching tests skip themselves unless both the extension and a running server are found, so both servers are
+      # here to make sure the memcache and redis backends are actually exercised rather than quietly skipped
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      memcached:
+        image: memcached:1.6
+        ports:
+          - 11211:11211
+
+    steps:
+
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          # memcache is the old PECL extension, which is what the library uses - not memcached
+          extensions: mysqli, memcache, redis
+          coverage: none
+
+      - name: Cache Composer packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer/files
+          key: composer-${{ matrix.php }}-${{ hashFiles('composer.json') }}
+          restore-keys: composer-${{ matrix.php }}-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      # the service is health checked before the job starts, but a container that answers a ping is not always ready to
+      # hand out connections yet, and this uses PHP rather than a mysql client the runner may or may not have
+      - name: Wait for MySQL to accept connections
+        run: |
+          php -r '
+            for ($i = 0; $i < 30; $i++) {
+              $connection = @new mysqli("127.0.0.1", "root", "", "", 3306);
+              if (!$connection->connect_error) exit(0);
+              $error = $connection->connect_error;
+              sleep(2);
+            }
+            fwrite(STDERR, "MySQL never became available: " . $error . PHP_EOL);
+            exit(1);
+          '
+
+      # no tests/phpunit.xml is committed, so this runs against the defaults in tests/phpunit.xml.dist - which is worth
+      # having in CI, since it means those defaults are known to be usable rather than just plausible
+      - name: Run the test suite
+        run: vendor/bin/phpunit -c tests
+
+  checks:
+
+    name: Static analysis and coding standards
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          # these look at the code rather than run it, so one version is enough
+          php-version: '8.3'
+          extensions: mysqli
+          coverage: none
+
+      - name: Cache Composer packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer/files
+          key: composer-8.3-${{ hashFiles('composer.json') }}
+          restore-keys: composer-8.3-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Static analysis
+        run: composer analyse
+
+      - name: Check the library against the supported PHP versions
+        run: composer check-compat
+
+      - name: Check the library against the oldest PHP version it still runs on
+        run: composer check-compat-legacy
+
+      - name: Coding standards
+        run: composer check-style
