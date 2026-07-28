@@ -44,6 +44,7 @@
 - fixed `transaction_complete` reporting failure for a successful test transaction
 - fixed bug where a NULL among the values handed to the internal escaping producing an empty pair of grave accents instead of the SQL keyword, which was invalid SQL and also raised a deprecation on PHP 8.1 and an error on PHP 9
 - replaced dynamic mysqli_result properties with a private property thus fixing deprecation notices in PHP 8.2+ and errors in PHP 9
+- updated the list of known MySQL functions; the list decides whether a value is escaped or passed through as SQL, so it is what separates a value being stored from one being executed
 
 ## version 2.13.3 (February 19, 2026)
 
