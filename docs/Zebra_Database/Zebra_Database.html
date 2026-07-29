@@ -218,22 +218,22 @@ When using this method make sure to also set the appropriate values for <a href=
 <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> method! Failing to do so will disable caching.
 <br>
 <em>When using this method, PHP must be compiled with the <a href="https://pecl.php.net/package/memcache">memcache</a>
-extension and, if <a href="../Zebra_Database/Zebra_Database.html#var$memcache_compressed">memcache_compressed</a> property is set to <code>TRUE</code>, needs to be configured
-with <code>--with-zlib[=DIR]</code></em></li></ul> <ul><li><strong>redis</strong>     -   query results are cached using a <a href="https://redis.io/">redis</a> server<br>
+extension and, if <a href="../Zebra_Database/Zebra_Database.html#var$memcache_compressed">memcache_compressed</a> property is set to <code>TRUE</code>, that extension has to
+have been built with zlib support</em></li></ul> <ul><li><strong>redis</strong>     -   query results are cached using a <a href="https://redis.io/">redis</a> server<br>
 When using this method make sure to also set the appropriate values for <a href="../Zebra_Database/Zebra_Database.html#var$redis_host">redis_host</a>,
 <a href="../Zebra_Database/Zebra_Database.html#var$redis_port">redis_port</a> and optionally <a href="../Zebra_Database/Zebra_Database.html#var$redis_compressed">redis_compressed</a> <strong>prior</strong> to calling the
 <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> method! Failing to do so will disable caching.
 <br>
 <em>When using this method, PHP must be compiled with the <a href="https://pecl.php.net/package/redis">redis</a>
-extension and, if <a href="../Zebra_Database/Zebra_Database.html#var$redis_compressed">redis_compressed</a> property is set to <code>TRUE</code>, needs to be configured
-with <code>--with-zlib[=DIR]</code></em></li></ul>   <ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;the&nbsp;host&nbsp;where&nbsp;memcache&nbsp;is&nbsp;listening&nbsp;for&nbsp;connections</span></div></li>
+extension and, if <a href="../Zebra_Database/Zebra_Database.html#var$redis_compressed">redis_compressed</a> property is set to <code>TRUE</code>, that extension has to
+have been built with <code>--enable-redis-lzf</code></em></li></ul><p class="highlight">Note that the library compresses everything it caches. <code>memcache_compressed</code> and <code>redis_compressed</code> are used       solely for offloading the compression task to the extension rather than it being done by the library.</p><ol class="code"><li><div class="src-line"><span class="src-comm">//&nbsp;the&nbsp;host&nbsp;where&nbsp;memcache&nbsp;is&nbsp;listening&nbsp;for&nbsp;connections</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$memcache_host">memcache_host</a>&nbsp;</span>=&nbsp;<span class="src-str">'localhost'</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;the&nbsp;port&nbsp;on&nbsp;which&nbsp;memcache&nbsp;is&nbsp;listening&nbsp;for&nbsp;connections</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$memcache_port">memcache_port</a>&nbsp;</span>=&nbsp;<span class="src-num">11211</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;for&nbsp;this&nbsp;to&nbsp;work,&nbsp;PHP&nbsp;needs&nbsp;to&nbsp;be&nbsp;configured&nbsp;with&nbsp;--with-zlib[=dir]&nbsp;!</span></div></li>
-<li><div class="src-line"><span class="src-comm">//&nbsp;set&nbsp;it&nbsp;to&nbsp;FALSE&nbsp;otherwise</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;for&nbsp;this&nbsp;to&nbsp;work&nbsp;the&nbsp;memcache&nbsp;extension&nbsp;has&nbsp;to&nbsp;have&nbsp;been&nbsp;built&nbsp;with&nbsp;zlib&nbsp;support</span></div></li>
+<li><div class="src-line"><span class="src-comm">//&nbsp;(the&nbsp;library&nbsp;compresses&nbsp;what&nbsp;it&nbsp;caches&nbsp;either&nbsp;way,&nbsp;so&nbsp;leaving&nbsp;this&nbsp;alone&nbsp;costs&nbsp;nothing)</span></div></li>
 <li><div class="src-line"><span class="src-var">$db</span><span class="src-sym">-&gt;</span><span class="src-id"><a href="../Zebra_Database/Zebra_Database.html#var$memcache_compressed">memcache_compressed</a>&nbsp;</span>=&nbsp;<span class="src-id">true</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line"><span class="src-comm">//&nbsp;cache&nbsp;queries&nbsp;using&nbsp;the&nbsp;memcache&nbsp;server</span></div></li>
@@ -513,8 +513,8 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 </div>
 <h4 id="var$memcache_compressed" class="variable"><span><em>boolean</em></span> $memcache_compressed =  <span class="value">false</span><span class="access public">public</span></h4>
 <div class="doc_block">
-<p>Setting this property to <code>TRUE</code> will instruct to library to compress the cached results (using <code>zlib</code>).</p>
-<p><em>For this to work, PHP needs to be configured with <code>--with-zlib[=DIR]</code>!</em></p><p><em>Set this property only if you are using <code>memcache</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
+<p>Setting this property to <code>TRUE</code> will ask the memcache extension to compress what it is given.</p>
+<p><p class="highlight">Note that the library compresses everything it caches. <code>memcache_compressed</code> is used solely for offloading       the compression task to the extension rather than it being done by the library.</p><p><em>For this to work, the <a href="https://pecl.php.net/package/memcache">memcache</a> extension has to have been   built with zlib support.</em></p><p><em>Set this property only if you are using <code>memcache</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
 <h5>Tags</h5>
 <table>
 <tr>
@@ -601,8 +601,8 @@ is set to <code>FALSE</code>, this will be an empty string</li></ul>
 </div>
 <h4 id="var$redis_compressed" class="variable"><span><em>boolean</em></span> $redis_compressed =  <span class="value">false</span><span class="access public">public</span></h4>
 <div class="doc_block">
-<p>Setting this property to <code>TRUE</code> will instruct to library to compress the cached results (using <code>zlib</code>).</p>
-<p><em>For this to work, PHP needs to be configured with <code>--with-zlib[=DIR]</code></em>!</p><p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>.</em></p><p>Default is <code>FALSE</code></p>
+<p>Setting this property to <code>TRUE</code> will ask the redis extension to compress what it is given.</p>
+<p><p class="highlight">Note that the library compresses everything it caches. <code>redis_compressed</code> is used solely for offloading       the compression task to the extension rather than it being done by the library.</p><p><em>For this to work, the <a href="https://pecl.php.net/package/redis">redis</a> extension has to have been built   with <code>--enable-redis-lzf</code>.</em></p><p><em>Set this property only if you are using <code>redis</code> as <a href="../Zebra_Database/Zebra_Database.html#var$caching_method">caching_method</a>, and set it <strong>prior</strong> to   calling the <a href="../Zebra_Database/Zebra_Database.html#methodconnect">connect()</a> method - the option belongs to the connection, so it is applied when that   connection is made.</em></p><p>Default is <code>FALSE</code></p>
 <h5>Tags</h5>
 <table>
 <tr>
@@ -3208,7 +3208,7 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Tue, 28 July 2026</span>
+Documentation generated on <span>Wed, 29 July 2026</span>
 </div>
 </div>
 <!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-0301ZD47Q7"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-0301ZD47Q7');</script></body>
