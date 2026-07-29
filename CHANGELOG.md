@@ -1,4 +1,4 @@
-## version 3.0.0 (TBA)
+## version 3.0.0 (July 29, 2026)
 
 ### :lock: Security
 
