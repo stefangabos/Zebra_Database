@@ -44,6 +44,8 @@
 - fixed queries that MySQL cannot `EXPLAIN`, like `SHOW TABLE STATUS`, failing on PHP 8.1 when debugging was on; the library asks MySQL to explain each query and catches the error when it cannot, but on PHP 8.1 that error stays on the connection and is thrown by the next fetch instead of by the query it belongs to - so reading the results of a query that ran perfectly well threw instead; the error left behind is now cleared
 - fixed `transaction_complete` reporting failure for a successful test transaction
 - fixed bug where a NULL among the values handed to the internal escaping producing an empty pair of grave accents instead of the SQL keyword, which was invalid SQL and also raised a deprecation on PHP 8.1 and an error on PHP 9
+- fixed bug where `redis_compressed` did nothing
+- fixed bug where when `redis_compressed` or `memcache_compressed` were active the compression happened twice
 - replaced dynamic mysqli_result properties with a private property thus fixing deprecation notices in PHP 8.2+ and errors in PHP 9
 - updated the list of known MySQL functions; the list decides whether a value is escaped or passed through as SQL, so it is what separates a value being stored from one being executed
 - added a GitHub Actions workflow that runs the test suite on PHP 7.3 through 8.4 against a real MySQL server, with memcache and redis alongside it so the caching backends are covered too, plus the static analysis, PHP compatibility and coding standard checks
