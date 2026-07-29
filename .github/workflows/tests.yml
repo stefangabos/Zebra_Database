@@ -17,7 +17,7 @@ jobs:
       # let every version report, rather than cancelling the rest as soon as one fails
       fail-fast: false
       matrix:
-        php: ['7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
+        php: ['7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
         include:
           # mysqlnd only learned to speak caching_sha2_password in PHP 7.4, and that is what MySQL 8 authenticates with
           # by default, so the oldest job gets a MySQL 5.7 - which still defaults to mysql_native_password
