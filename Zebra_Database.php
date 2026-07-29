@@ -1686,6 +1686,9 @@ class Zebra_Database {
 
         }
 
+        // some parts of the code above can make $error_message be NULL rather than an empty string - we normalize it here
+        if (is_null($error_message)) $error_message = '';
+
         // if we also need to return the error number alongside the error message
         if ($return_error_number && $error_message !== '')
 
@@ -1696,7 +1699,7 @@ class Zebra_Database {
             );
 
         // a string description of the last error, or an empty string if no error occurred
-        return is_null($error_message) ? '' : $error_message;
+        return $error_message;
 
     }
 
