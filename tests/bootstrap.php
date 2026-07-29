@@ -14,8 +14,8 @@ require_once __DIR__ . '/../Zebra_Database.php';
 
 // include support classes
 require_once __DIR__ . '/Support/DatabaseTestCase.php';
-require_once __DIR__ . '/Support/TestDataFactory.php';
 require_once __DIR__ . '/Support/DatabaseProbe.php';
+require_once __DIR__ . '/Support/ChildProcess.php';
 
 // the settings and the helpers - declarations only, no side effects
 require_once __DIR__ . '/settings.php';
@@ -42,9 +42,32 @@ try {
         throw new Exception('Failed to connect to MySQL: ' . $connection->connect_error);
     }
 
+    // the tables are utf8mb4, so this connection has to be as well - otherwise the rows written here go in
+    // through whatever the server's default happens to be, and the suite would be testing that instead
+    $connection->set_charset('utf8mb4');
+
+    // the suite asserts what MySQL does with a value that does not fit its column, which is one thing under
+    // STRICT_TRANS_TABLES and quite another without it. Rather than writing tests that branch on whichever
+    // server they happen to meet - or quietly changing a setting on the machine this is running on - the
+    // requirement is stated here and checked, so an unsuitable server is reported rather than worked around
+    $mode = $connection->query('SELECT @@SESSION.sql_mode AS mode')->fetch_assoc();
+
+    if (strpos($mode['mode'], 'STRICT_TRANS_TABLES') === false && strpos($mode['mode'], 'STRICT_ALL_TABLES') === false) {
+        throw new Exception(
+            'The server this suite is pointed at does not run in strict mode (sql_mode is "' . $mode['mode'] . '").' . "\n"
+            . 'Add STRICT_TRANS_TABLES to sql_mode in the server\'s configuration - it is the default from MySQL 5.7 onwards.'
+        );
+    }
+
     // Create test database
     $connection->query("CREATE DATABASE IF NOT EXISTS `" . TEST_DB_NAME . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
     $connection->select_db(TEST_DB_NAME);
+
+    // the tables are dropped before being created rather than created only if missing: a database left over
+    // from an older checkout would otherwise keep whatever shape it had then, and the suite would pass here
+    // and fail in CI - or worse, the other way round - for reasons nothing in the repository can explain
+    foreach (['test_products', 'test_categories', 'test_users'] as $table)
+        $connection->query('DROP TABLE IF EXISTS `' . $table . '`');
 
     // Create test tables
     $connection->query("

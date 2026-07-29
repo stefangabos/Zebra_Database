@@ -7,8 +7,7 @@ require_once __DIR__ . '/bootstrap.php';
  */
 class PropertiesTest extends DatabaseTestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $this->connectToDatabase();
     }
@@ -73,7 +72,7 @@ class PropertiesTest extends DatabaseTestCase
     }
 
     public function testCachePathSetting() {
-        $cache_path = '/tmp/zebra_test_cache';
+        $cache_path = getTempPath('cache');
         $this->db->cache_path = $cache_path;
 
         $this->assertEquals($cache_path, $this->db->cache_path);
@@ -122,7 +121,7 @@ class PropertiesTest extends DatabaseTestCase
 
         $this->db->debug = true;
         $this->assertTrue($this->db->debug);
-        
+
         // Reset debug to prevent console output in subsequent tests
         $this->db->debug = false;
     }
@@ -135,14 +134,8 @@ class PropertiesTest extends DatabaseTestCase
     }
 
     public function testDebugArray() {
-        // Create a temp directory for the debug log test
-        $temp_log_dir = sys_get_temp_dir() . '/zebra_debug_array_test';
-        if (!is_dir($temp_log_dir)) {
-            mkdir($temp_log_dir, 0777, true);
-        }
-
         // Set up a valid log path to prevent log write errors
-        $this->db->log_path = $temp_log_dir . '/debug_test.log';
+        $this->db->log_path = getTempPath('logs') . '/debug_test.log';
 
         $debug_config = [true, false, true];
         $this->db->debug = $debug_config;
@@ -151,17 +144,6 @@ class PropertiesTest extends DatabaseTestCase
 
         // Reset debug to prevent destructor errors
         $this->db->debug = false;
-
-        // Clean up test log directory
-        if (is_dir($temp_log_dir)) {
-            $files = glob($temp_log_dir . '/*');
-            foreach ($files as $file) {
-                if (is_file($file)) {
-                    unlink($file);
-                }
-            }
-            rmdir($temp_log_dir);
-        }
     }
 
     // DEBUG RELATED PROPERTIES
@@ -552,12 +534,18 @@ class PropertiesTest extends DatabaseTestCase
      * Test cache_path with invalid directories and values
      */
     public function testCachePathInvalidValues() {
+        // a regular file standing where a directory should be - unusable as a cache path for any user,
+        // including root, which "/root/restricted" is not: as root that path is perfectly writable, and
+        // this test then failed for reasons that had nothing to do with the library
+        $file_in_the_way = getTempPath() . '/not-a-directory';
+        file_put_contents($file_in_the_way, 'this is a file');
+
         $invalid_paths = [
             '/nonexistent/directory/path',
-            '/root/restricted', // Should not be writable
+            $file_in_the_way,
             null,
             123,
-            ['/tmp'],
+            [getTempPath()],
             '/dev/null', // Not a directory
             '', // Empty string
             '   ', // Whitespace only
@@ -565,10 +553,10 @@ class PropertiesTest extends DatabaseTestCase
 
         foreach ($invalid_paths as $invalid_path) {
             $this->db->cache_path = $invalid_path;
-            
+
             // Property should accept the value (library doesn't validate at assignment)
             $this->assertEquals($invalid_path, $this->db->cache_path);
-            
+
             // an unusable cache path is reported as an error rather than silently ignored, so that a
             // misconfigured cache folder cannot go unnoticed - the query is expected to fail
             if ($invalid_path !== null && $invalid_path !== '') {
@@ -576,6 +564,8 @@ class PropertiesTest extends DatabaseTestCase
                 $this->assertFalse($result, "Query should fail loudly when the cache path cannot be used");
             }
         }
+
+        unlink($file_in_the_way);
     }
 
     /**
@@ -596,7 +586,7 @@ class PropertiesTest extends DatabaseTestCase
         foreach ($invalid_methods as $invalid_method) {
             $this->db->caching_method = $invalid_method;
             $this->assertEquals($invalid_method, $this->db->caching_method);
-            
+
             // Test that queries still work (might fallback to no caching)
             $result = $this->db->query("SELECT 2 as test", [], 60);
             $this->assertNotFalse($result, "Query should work even with invalid caching method");
@@ -621,7 +611,7 @@ class PropertiesTest extends DatabaseTestCase
         foreach ($extreme_values as $extreme_value) {
             $this->db->max_query_time = $extreme_value;
             $this->assertEquals($extreme_value, $this->db->max_query_time);
-            
+
             // Test that queries still work
             $result = $this->db->query("SELECT 3 as test");
             $this->assertNotFalse($result, "Query should work even with extreme max_query_time");
@@ -644,15 +634,15 @@ class PropertiesTest extends DatabaseTestCase
         foreach ($extreme_values as $extreme_value) {
             $this->db->debug_show_records = $extreme_value;
             $this->assertEquals($extreme_value, $this->db->debug_show_records);
-            
+
             // Test that debug mode doesn't break
             $original_debug = $this->db->debug;
             $this->db->debug = true;
-            
+
             ob_start();
             $result = $this->db->query("SELECT 4 as test");
             $debug_output = ob_get_clean();
-            
+
             $this->assertNotFalse($result, "Query should work with extreme debug_show_records");
             $this->db->debug = $original_debug;
         }
@@ -674,7 +664,7 @@ class PropertiesTest extends DatabaseTestCase
                 $property_name = "memcache_$property";
                 $this->db->$property_name = $invalid_value;
                 $this->assertEquals($invalid_value, $this->db->$property_name);
-                
+
                 // Test that the library doesn't crash when trying to use memcache
                 $this->db->caching_method = 'memcache';
                 $result = $this->db->query("SELECT 5 as test", [], 60);
@@ -699,7 +689,7 @@ class PropertiesTest extends DatabaseTestCase
                 $property_name = "redis_$property";
                 $this->db->$property_name = $invalid_value;
                 $this->assertEquals($invalid_value, $this->db->$property_name);
-                
+
                 // Test that the library doesn't crash when trying to use redis
                 $this->db->caching_method = 'redis';
                 $result = $this->db->query("SELECT 6 as test", [], 60);
@@ -734,7 +724,7 @@ class PropertiesTest extends DatabaseTestCase
         foreach ($invalid_emails as $invalid_email) {
             $this->db->notification_address = $invalid_email;
             $this->assertEquals($invalid_email, $this->db->notification_address);
-            
+
             // Test that queries still work (notifications just might not work)
             $result = $this->db->query("SELECT 7 as test");
             $this->assertNotFalse($result, "Query should work with invalid notification address");
@@ -743,7 +733,7 @@ class PropertiesTest extends DatabaseTestCase
         foreach ($invalid_domains as $invalid_domain) {
             $this->db->notifier_domain = $invalid_domain;
             $this->assertEquals($invalid_domain, $this->db->notifier_domain);
-            
+
             $result = $this->db->query("SELECT 8 as test");
             $this->assertNotFalse($result, "Query should work with invalid notifier domain");
         }
@@ -773,7 +763,7 @@ class PropertiesTest extends DatabaseTestCase
         foreach ($invalid_ssl_configs as $invalid_ssl) {
             $this->db->ssl_options = $invalid_ssl;
             $this->assertEquals($invalid_ssl, $this->db->ssl_options);
-            
+
             // Test that connections still work (SSL might just be disabled)
             // Note: This test assumes the connection will work without SSL
             $result = $this->db->query("SELECT 9 as test");
@@ -796,14 +786,14 @@ class PropertiesTest extends DatabaseTestCase
         foreach ($breaking_debug_values as $debug_value) {
             $this->db->debug = $debug_value;
             $this->assertEquals($debug_value, $this->db->debug);
-            
+
             // Test that queries work and don't cause infinite loops or crashes
             ob_start();
             $result = $this->db->query("SELECT 10 as test");
             $debug_output = ob_get_clean();
-            
+
             $this->assertNotFalse($result, "Query should work with breaking debug values");
-            
+
             // Reset debug to prevent issues in other tests
             $this->db->debug = false;
         }
@@ -828,49 +818,43 @@ class PropertiesTest extends DatabaseTestCase
         foreach ($invalid_ips as $invalid_ip) {
             $this->db->debugger_ip = $invalid_ip;
             $this->assertEquals($invalid_ip, $this->db->debugger_ip);
-            
+
             // Test that debug functionality doesn't break
             $original_debug = $this->db->debug;
             $this->db->debug = true;
-            
+
             ob_start();
             $result = $this->db->query("SELECT 11 as test");
             $debug_output = ob_get_clean();
-            
+
             $this->assertNotFalse($result, "Query should work with invalid debugger IPs");
             $this->db->debug = $original_debug;
         }
     }
 
     /**
-     * Test that setting properties to extreme values doesn't cause memory leaks or crashes
+     * The settings are plain properties, so an absurdly large value is stored rather than copied about,
+     * and a query afterwards is unaffected by any of it. What this used to assert - that assigning a 1.2MB
+     * string uses less than 50MB - could not have failed
      */
-    public function testPropertyMemoryLeaks() {
+    public function testAbsurdlyLargePropertyValuesAreStoredAsGivenAndChangeNothing() {
         $large_string = str_repeat('MEMORY_TEST_', 100000); // ~1.2MB string
         $large_array = array_fill(0, 10000, 'array_element');
-        
-        $memory_before = memory_get_usage();
-        
-        // Set various properties to large values
-        $this->db->cache_path = $large_string;
+
         $this->db->log_path = $large_string;
         $this->db->notification_address = $large_string;
         $this->db->memcache_key_prefix = $large_string;
         $this->db->redis_key_prefix = $large_string;
         $this->db->debugger_ip = $large_array;
-        
-        $memory_after = memory_get_usage();
-        $memory_used = $memory_after - $memory_before;
-        
-        // Memory usage should be reasonable (not causing excessive memory consumption)
-        $this->assertLessThan(50 * 1024 * 1024, $memory_used, "Property assignment should not use excessive memory");
-        
-        // Test that queries still work
-        $result = $this->db->query("SELECT 12 as test");
-        $this->assertNotFalse($result, "Query should work after setting large property values");
-        
+
+        $this->assertSame($large_string, $this->db->log_path, "Stored as given, not truncated");
+        $this->assertSame($large_array, $this->db->debugger_ip);
+
+        // none of those are read by an ordinary query, so it runs exactly as it would otherwise
+        $row = $this->db->fetch_assoc($this->db->query("SELECT 12 as test"));
+        $this->assertSame('12', $row['test'], "A query is unaffected by any of them");
+
         // Clean up to free memory
-        $this->db->cache_path = sys_get_temp_dir();
         $this->db->log_path = '';
         $this->db->notification_address = '';
         $this->db->memcache_key_prefix = '';

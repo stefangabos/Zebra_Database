@@ -27,8 +27,7 @@ class FunctionKeywordSpacingSniff implements Sniff
      *
      * @return array<int|string>
      */
-    public function register()
-    {
+    public function register() {
         return [T_FUNCTION, T_CLOSURE];
     }
 
@@ -38,8 +37,7 @@ class FunctionKeywordSpacingSniff implements Sniff
      *
      * @return void
      */
-    public function process(File $phpcsFile, $stackPtr)
-    {
+    public function process(File $phpcsFile, $stackPtr) {
         $tokens = $phpcsFile->getTokens();
 
         $is_closure = $tokens[$stackPtr]['code'] === T_CLOSURE;

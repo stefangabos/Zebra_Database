@@ -23,7 +23,6 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
             // any test that turned debugging on - or that failed before it could turn it back off - would
             // otherwise spill a whole console into the test output
             $this->db->debug = false;
-            $this->cleanDatabase();
             $this->db->close();
         }
         $this->db = null;
@@ -37,11 +36,24 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
         return $result !== false;
     }
 
+    /**
+     * Empties the fixture tables and puts their auto-increment counters back to where a test expects to
+     * find them.
+     *
+     * DELETE rather than TRUNCATE: TRUNCATE is a DDL statement, and at around 6ms against 0.2ms for the
+     * delete it was costing this suite several seconds per run for nothing. The counters do have to be
+     * reset separately, since tests insert a row and then expect to find it at id 1 - which is the one
+     * thing TRUNCATE was doing for us.
+     *
+     * Called from setUp() only. It used to run in tearDown() as well, which cleaned a database that the
+     * next setUp() was about to clean again.
+     */
     protected function cleanDatabase() {
         if ($this->db && $this->connectToDatabase()) {
-            $this->db->query("TRUNCATE TABLE test_users");
-            $this->db->query("TRUNCATE TABLE test_products");
-            $this->db->query("TRUNCATE TABLE test_categories");
+            foreach (['test_users', 'test_products', 'test_categories'] as $table) {
+                $this->db->query('DELETE FROM ' . $table);
+                $this->db->query('ALTER TABLE ' . $table . ' AUTO_INCREMENT = 1');
+            }
         }
     }
 
@@ -95,6 +107,52 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
     }
 
     /**
+     * Runs the given callback and returns every PHP diagnostic it raised.
+     *
+     * Use this to assert that the library does its job without also warning, noticing or deprecating - a
+     * good number of the bugs in this library have been of the "it works, but it warns" kind, and on the
+     * newer PHP versions today's deprecation is tomorrow's fatal error.
+     *
+     * @param   callable    $callback   the code to watch
+     *
+     * @return  array<string>           the messages raised, in the order they were raised
+     */
+    protected function diagnosticsRaisedBy($callback) {
+        $raised = [];
+
+        set_error_handler(function($number, $message) use (&$raised) {
+            // a handler is called even for diagnostics the library deliberately silenced with "@", and
+            // those are not something the user ever sees - error_reporting() is what tells them apart
+            if (!(error_reporting() & $number)) return true;
+            $raised[] = $message;
+            return true;
+        });
+
+        try {
+            call_user_func($callback);
+        } catch (Exception $exception) {
+            restore_error_handler();
+            throw $exception;
+        }
+
+        restore_error_handler();
+
+        return $raised;
+    }
+
+    /**
+     * Asserts that the callback raised no PHP diagnostics at all
+     *
+     * @param   callable    $callback
+     * @param   string      $message
+     *
+     * @return  void
+     */
+    protected function assertRaisesNoDiagnostics($callback, $message = '') {
+        $this->assertSame([], $this->diagnosticsRaisedBy($callback), $message);
+    }
+
+    /**
      * Check if Memcache extension and server are available
      */
     protected function isMemcacheAvailable() {
@@ -145,7 +203,7 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
         // Create new instance and configure caching BEFORE connecting
         $this->db = new Zebra_Database();
         $this->db->debug = false;
-        // $this->db->cache_path = sys_get_temp_dir();
+        $this->db->cache_path = getTempPath('cache');
         $this->db->caching_method = 'memcache';
         $this->db->memcache_host = TEST_MEMCACHE_HOST;
         $this->db->memcache_port = TEST_MEMCACHE_PORT;
@@ -169,7 +227,7 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
         // Create new instance and configure caching BEFORE connecting
         $this->db = new Zebra_Database();
         $this->db->debug = false;
-        // $this->db->cache_path = sys_get_temp_dir();
+        $this->db->cache_path = getTempPath('cache');
         $this->db->caching_method = 'redis';
         $this->db->redis_host = TEST_REDIS_HOST;
         $this->db->redis_port = TEST_REDIS_PORT;
@@ -197,64 +255,4 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
         }
     }
 
-    /**
-     * Assert that a query result contains expected data
-     */
-    protected function assertQueryResultContains($result, $expectedData, $message = '') {
-        $this->assertNotFalse($result, "Query should succeed. " . $message);
-
-        $rows = $this->db->fetch_assoc_all($result);
-        $this->assertNotEmpty($rows, "Query should return data. " . $message);
-
-        $found = false;
-        foreach ($rows as $row) {
-            $matches = true;
-            foreach ($expectedData as $key => $value) {
-                if (!isset($row[$key]) || $row[$key] != $value) {
-                    $matches = false;
-                    break;
-                }
-            }
-            if ($matches) {
-                $found = true;
-                break;
-            }
-        }
-
-        $this->assertTrue($found, "Expected data not found in query results. " . $message);
-    }
-
-    /**
-     * Create a temporary table for testing
-     */
-    protected function createTempTable($tableName, $schema) {
-        $this->connectToDatabase();
-        $this->db->query("DROP TABLE IF EXISTS $tableName");
-        $this->db->query("CREATE TEMPORARY TABLE $tableName $schema");
-
-        // Verify table was created
-        $result = $this->db->query("SHOW TABLES LIKE '$tableName'");
-        $this->assertNotFalse($result, "Temporary table $tableName should be created");
-    }
-
-    /**
-     * Get a fresh database instance for testing isolation
-     */
-    protected function getFreshDatabaseInstance() {
-        $fresh_db = new Zebra_Database();
-        $fresh_db->debug = false;
-        $fresh_db->cache_path = sys_get_temp_dir();
-        $fresh_db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
-        return $fresh_db;
-    }
-
-    /**
-     * Assert that two database states are identical
-     */
-    protected function assertDatabaseStateEquals($expectedData, $table, $message = '') {
-        $result = $this->db->query("SELECT * FROM $table ORDER BY id");
-        $actualData = $this->db->fetch_assoc_all($result);
-
-        $this->assertEquals($expectedData, $actualData, "Database state mismatch. " . $message);
-    }
 }

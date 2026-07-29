@@ -7,8 +7,7 @@ require_once __DIR__ . '/bootstrap.php';
  */
 class UtilityMethodsTest extends DatabaseTestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $this->connectToDatabase();
         $this->insertTestData();
@@ -124,32 +123,41 @@ class UtilityMethodsTest extends DatabaseTestCase
         $this->assertEquals(2, $count);
     }
 
+    /**
+     * A probe caching to disk in the suite's own scratch directory, emptied first so that what a previous
+     * test cached cannot be mistaken for what this one is about to.
+     *
+     * These four tests used to write to a hard-coded "/tmp/zebra_test_cache" - which does not exist on
+     * Windows, where the suite is also meant to run - and each carried its own copy of the same fifteen
+     * lines of directory bookkeeping
+     */
+    private function cachingProbe() {
+        $path = getTempPath('cache');
+
+        foreach (glob($path . '/*') as $file) if (is_file($file)) unlink($file);
+
+        $db = new DatabaseProbe();
+        $db->debug = true;
+        $db->halt_on_errors = false;
+        $db->caching_method = 'disk';
+        $db->cache_path = $path;
+        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+
+        return $db;
+    }
+
     public function testDcountWithCache() {
-        // Create cache directory
-        $cache_dir = '/tmp/zebra_test_cache';
-        if (!is_dir($cache_dir)) {
-            mkdir($cache_dir, 0777, true);
-        }
+        $db = $this->cachingProbe();
 
-        $this->db->cache_path = $cache_dir;
-        $this->db->caching_method = 'disk';
+        $this->assertEquals(2, $db->dcount('*', 'test_users', 'is_active = ?', [1], 3600));
+        $this->assertFalse($db->lastFromCache(), 'The first call has to run the query');
 
-        // First call - should cache result
-        $count1 = $this->db->dcount('*', 'test_users', 'is_active = ?', [1], 3600);
-        $this->assertEquals(2, $count1);
+        // the same call again gives the same answer - and this time without asking the server, which is the
+        // half that was missing: two identical return values prove nothing about caching on their own
+        $this->assertEquals(2, $db->dcount('*', 'test_users', 'is_active = ?', [1], 3600));
+        $this->assertTrue($db->lastFromCache(), 'The second call is served from the cache');
 
-        // Second call - should come from cache
-        $count2 = $this->db->dcount('*', 'test_users', 'is_active = ?', [1], 3600);
-        $this->assertEquals(2, $count2);
-
-        // Clean up
-        if (is_dir($cache_dir)) {
-            $files = glob($cache_dir . '/*');
-            foreach ($files as $file) {
-                unlink($file);
-            }
-            rmdir($cache_dir);
-        }
+        $db->shutdown();
     }
 
     public function testDcountInvalidTable() {
@@ -220,28 +228,15 @@ class UtilityMethodsTest extends DatabaseTestCase
     }
 
     public function testDlookupWithCache() {
-        $cache_dir = '/tmp/zebra_test_cache';
-        if (!is_dir($cache_dir)) {
-            mkdir($cache_dir, 0777, true);
-        }
+        $db = $this->cachingProbe();
 
-        $this->db->cache_path = $cache_dir;
-        $this->db->caching_method = 'disk';
+        $this->assertSame('John Doe', $db->dlookup('name', 'test_users', 'email = ?', ['john@example.com'], 3600));
+        $this->assertFalse($db->lastFromCache());
 
-        $name1 = $this->db->dlookup('name', 'test_users', 'email = ?', ['john@example.com'], 3600);
-        $name2 = $this->db->dlookup('name', 'test_users', 'email = ?', ['john@example.com'], 3600);
+        $this->assertSame('John Doe', $db->dlookup('name', 'test_users', 'email = ?', ['john@example.com'], 3600));
+        $this->assertTrue($db->lastFromCache(), 'The second lookup is served from the cache');
 
-        $this->assertEquals($name1, $name2);
-        $this->assertEquals('John Doe', $name1);
-
-        // Clean up
-        if (is_dir($cache_dir)) {
-            $files = glob($cache_dir . '/*');
-            foreach ($files as $file) {
-                unlink($file);
-            }
-            rmdir($cache_dir);
-        }
+        $db->shutdown();
     }
 
     public function testDlookupInvalidTable() {
@@ -289,28 +284,15 @@ class UtilityMethodsTest extends DatabaseTestCase
     }
 
     public function testDmaxWithCache() {
-        $cache_dir = '/tmp/zebra_test_cache';
-        if (!is_dir($cache_dir)) {
-            mkdir($cache_dir, 0777, true);
-        }
+        $db = $this->cachingProbe();
 
-        $this->db->cache_path = $cache_dir;
-        $this->db->caching_method = 'disk';
+        $this->assertEquals(35, (int)$db->dmax('age', 'test_users', '', '', 3600));
+        $this->assertFalse($db->lastFromCache());
 
-        $max1 = $this->db->dmax('age', 'test_users', '', '', 3600);
-        $max2 = $this->db->dmax('age', 'test_users', '', '', 3600);
+        $this->assertEquals(35, (int)$db->dmax('age', 'test_users', '', '', 3600));
+        $this->assertTrue($db->lastFromCache(), 'The second call is served from the cache');
 
-        $this->assertEquals($max1, $max2);
-        $this->assertEquals(35, (int)$max1);
-
-        // Clean up
-        if (is_dir($cache_dir)) {
-            $files = glob($cache_dir . '/*');
-            foreach ($files as $file) {
-                unlink($file);
-            }
-            rmdir($cache_dir);
-        }
+        $db->shutdown();
     }
 
     public function testDmaxInvalidTable() {
@@ -384,28 +366,15 @@ class UtilityMethodsTest extends DatabaseTestCase
     }
 
     public function testDsumWithCache() {
-        $cache_dir = '/tmp/zebra_test_cache';
-        if (!is_dir($cache_dir)) {
-            mkdir($cache_dir, 0777, true);
-        }
+        $db = $this->cachingProbe();
 
-        $this->db->cache_path = $cache_dir;
-        $this->db->caching_method = 'disk';
+        $this->assertEquals(90, (int)$db->dsum('age', 'test_users', '', '', 3600));
+        $this->assertFalse($db->lastFromCache());
 
-        $sum1 = $this->db->dsum('age', 'test_users', '', '', 3600);
-        $sum2 = $this->db->dsum('age', 'test_users', '', '', 3600);
+        $this->assertEquals(90, (int)$db->dsum('age', 'test_users', '', '', 3600));
+        $this->assertTrue($db->lastFromCache(), 'The second call is served from the cache');
 
-        $this->assertEquals($sum1, $sum2);
-        $this->assertEquals(90, (int)$sum1);
-
-        // Clean up
-        if (is_dir($cache_dir)) {
-            $files = glob($cache_dir . '/*');
-            foreach ($files as $file) {
-                unlink($file);
-            }
-            rmdir($cache_dir);
-        }
+        $db->shutdown();
     }
 
     public function testDsumInvalidTable() {

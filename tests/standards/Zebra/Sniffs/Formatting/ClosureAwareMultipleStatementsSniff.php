@@ -24,8 +24,7 @@ class ClosureAwareMultipleStatementsSniff extends DisallowMultipleStatementsSnif
      *
      * @return void
      */
-    public function process(File $phpcsFile, $stackPtr)
-    {
+    public function process(File $phpcsFile, $stackPtr) {
         $tokens = $phpcsFile->getTokens();
 
         // the statement this semicolon closes
@@ -61,8 +60,7 @@ class ClosureAwareMultipleStatementsSniff extends DisallowMultipleStatementsSnif
      *
      * @return bool
      */
-    private function is_inside_a_closure($tokens, $stackPtr)
-    {
+    private function is_inside_a_closure($tokens, $stackPtr) {
         if (empty($tokens[$stackPtr]['conditions'])) {
             return false;
         }

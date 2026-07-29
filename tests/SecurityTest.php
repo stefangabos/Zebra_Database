@@ -8,8 +8,7 @@ require_once __DIR__ . '/bootstrap.php';
  */
 class SecurityTest extends DatabaseTestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $this->connectToDatabase();
         $this->insertTestData();
@@ -36,10 +35,10 @@ class SecurityTest extends DatabaseTestCase
 
         foreach ($malicious_inputs as $malicious_input) {
             $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$malicious_input]);
-            
+
             // Should return empty result, not cause database errors or return all records
             $this->assertNotFalse($result, "Query should not fail for input: " . $malicious_input);
-            
+
             $rows = $this->db->fetch_assoc_all($result);
             $this->assertEmpty($rows, "No rows should match malicious input: " . $malicious_input);
         }
@@ -70,7 +69,7 @@ class SecurityTest extends DatabaseTestCase
 
             // and the injection must not have taken effect
             $this->assertTrue($this->db->table_exists('test_users'), "Table must still exist after the query");
-            
+
             $rows = $this->db->fetch_assoc_all($result);
             $this->assertEmpty($rows, "Escaped malicious input should not match any records");
         }
@@ -81,27 +80,27 @@ class SecurityTest extends DatabaseTestCase
      */
     public function testSecondOrderSqlInjection() {
         $malicious_name = "'; DROP TABLE test_users; --";
-        
+
         // Insert the malicious data
         $insert_result = $this->db->insert('test_users', [
             'name' => $malicious_name,
             'email' => 'malicious@test.com',
             'age' => 25
         ]);
-        
+
         $this->assertTrue($insert_result, "Should be able to insert malicious string safely");
-        
+
         // Retrieve and use the stored data (second-order injection test)
         $result = $this->db->query("SELECT name FROM test_users WHERE email = ?", ['malicious@test.com']);
         $row = $this->db->fetch_assoc($result);
-        
+
         $this->assertNotEmpty($row, "Should retrieve the inserted record");
         $stored_name = $row['name'];
-        
+
         // Now use the retrieved data in another query (this is where second-order injection would occur)
         $second_result = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$stored_name]);
         $this->assertNotFalse($second_result, "Second query should not fail");
-        
+
         $second_rows = $this->db->fetch_assoc_all($second_result);
         $this->assertCount(1, $second_rows, "Should find exactly one matching record");
     }
@@ -118,18 +117,26 @@ class SecurityTest extends DatabaseTestCase
         ];
 
         foreach ($time_based_payloads as $payload) {
-            $start_time = microtime(true);
-            
+
             $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$payload]);
-            
-            $end_time = microtime(true);
-            $execution_time = $end_time - $start_time;
-            
+
             $this->assertNotFalse($result, "Time-based injection attempt should not cause query failure");
-            $this->assertLessThan(0.5, $execution_time, "Query should not be delayed by time-based injection");
-            
+
             $rows = $this->db->fetch_assoc_all($result);
             $this->assertEmpty($rows, "Time-based injection should not return data");
+
+            // the payload went in as a value, so it is still there to be found as one - a SLEEP() that had
+            // been executed would leave no such row behind. This used to be asserted by timing the query,
+            // which fails on a loaded machine for reasons that have nothing to do with escaping
+            $this->db->insert('test_users', ['name' => $payload, 'email' => 'payload@example.com']);
+
+            $this->assertSame(
+                $payload,
+                $this->db->dlookup('name', 'test_users', 'email = ?', ['payload@example.com']),
+                "The payload is data, stored verbatim, rather than something the server ran"
+            );
+
+            $this->db->delete('test_users', 'email = ?', ['payload@example.com']);
         }
     }
 
@@ -139,16 +146,16 @@ class SecurityTest extends DatabaseTestCase
     public function testBooleanBasedBlindSqlInjection() {
         $boolean_payloads = [
             "' AND 1=1 --",
-            "' AND 1=2 --", 
+            "' AND 1=2 --",
             "' AND (SELECT COUNT(*) FROM test_users) > 0 --",
             "' AND (SELECT SUBSTRING(@@version,1,1)) = '5' --",
         ];
 
         foreach ($boolean_payloads as $payload) {
             $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$payload]);
-            
+
             $this->assertNotFalse($result, "Boolean injection attempt should not cause query failure");
-            
+
             $rows = $this->db->fetch_assoc_all($result);
             $this->assertEmpty($rows, "Boolean injection should not return unauthorized data");
         }
@@ -157,23 +164,21 @@ class SecurityTest extends DatabaseTestCase
     // INPUT VALIDATION TESTS
 
     /**
-     * Test extremely long string inputs
+     * A value far longer than anything a column could hold is escaped and sent like any other, and matches
+     * nothing.
+     *
+     * A megabyte is enough to say that: what happens beyond it is decided by the server's max_allowed_packet
+     * rather than by the library, and the ten-megabyte half this used to carry was wrapped in a try/catch
+     * that made either outcome a pass - so it only ever cost the suite time and memory
      */
     public function testExtremelyLongInputs() {
         $long_string = str_repeat('A', 1000000); // 1MB string
-        $very_long_string = str_repeat('B', 10000000); // 10MB string
-        
+
         $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$long_string]);
+
         $this->assertNotFalse($result, "Should handle long strings gracefully");
-        
-        // Test with very long string (might hit memory limits)
-        try {
-            $result2 = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$very_long_string]);
-            $this->assertNotFalse($result2, "Should handle very long strings gracefully");
-        } catch (Exception $e) {
-            // It's acceptable for extremely long strings to cause errors, but they shouldn't be security vulnerabilities
-            $this->assertStringNotContainsString('DROP', $e->getMessage(), "Error should not contain SQL injection remnants");
-        }
+        $this->assertSame([], $this->db->fetch_assoc_all($result), "And match nothing");
+        $this->assertSame('', $this->db->error(), "Without upsetting the connection");
     }
 
     /**
@@ -191,7 +196,7 @@ class SecurityTest extends DatabaseTestCase
         foreach ($binary_inputs as $binary_input) {
             $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$binary_input]);
             $this->assertNotFalse($result, "Should handle binary data safely");
-            
+
             $rows = $this->db->fetch_assoc_all($result);
             $this->assertEmpty($rows, "Binary data should not cause unauthorized data access");
         }
@@ -204,7 +209,7 @@ class SecurityTest extends DatabaseTestCase
         $invalid_utf8 = [
             "\xFF\xFF", // Invalid UTF-8
             "\xC0\x80", // Overlong encoding of null byte
-            "\xE0\x80\x80", // Overlong encoding  
+            "\xE0\x80\x80", // Overlong encoding
             "\xF0\x80\x80\x80", // Overlong encoding
             "\xED\xA0\x80", // Surrogate half
         ];
@@ -212,7 +217,7 @@ class SecurityTest extends DatabaseTestCase
         foreach ($invalid_utf8 as $invalid) {
             $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$invalid]);
             $this->assertNotFalse($result, "Should handle invalid UTF-8 safely");
-            
+
             $rows = $this->db->fetch_assoc_all($result);
             $this->assertEmpty($rows, "Invalid UTF-8 should not cause data access");
         }
@@ -233,7 +238,7 @@ class SecurityTest extends DatabaseTestCase
         foreach ($path_traversal_inputs as $traversal_input) {
             $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$traversal_input]);
             $this->assertNotFalse($result, "Should handle path traversal attempts safely");
-            
+
             $rows = $this->db->fetch_assoc_all($result);
             $this->assertEmpty($rows, "Path traversal should not access unauthorized data");
         }
@@ -248,19 +253,19 @@ class SecurityTest extends DatabaseTestCase
         // Disable halt_on_errors to capture error messages
         $this->db->halt_on_errors = false;
         $this->db->debug = false;
-        
+
         // Try to query non-existent table
         $result = $this->db->query("SELECT * FROM definitely_nonexistent_table_12345");
         $this->assertFalse($result, "Query should fail for non-existent table");
-        
+
         $error = $this->db->error();
         $this->assertNotEmpty($error, "Should have error message");
-        
+
         // Error should not leak sensitive information
         $this->assertStringNotContainsString('password', strtolower($error), "Error should not contain passwords");
         $this->assertStringNotContainsString('admin', strtolower($error), "Error should not reveal admin info");
         $this->assertStringNotContainsString('root', strtolower($error), "Error should not reveal root info");
-        
+
         // Reset
         $this->db->halt_on_errors = true;
     }
@@ -272,7 +277,7 @@ class SecurityTest extends DatabaseTestCase
         $bad_db = new Zebra_Database();
         $bad_db->debug = false;
         $bad_db->halt_on_errors = false;
-        
+
         // Try to connect with bad credentials
         // (connect() is lazy, so a query is needed to force the connection to actually be attempted -
         // without it there would be no error yet and the assertions below would never run)
@@ -292,36 +297,32 @@ class SecurityTest extends DatabaseTestCase
     // AUTHORIZATION AND ACCESS CONTROL TESTS
 
     /**
-     * Test that queries cannot access unauthorized databases
+     * A query that the connected user is not allowed to run is refused by the server and reported like any
+     * other error - the library neither swallows it nor lets it through.
+     *
+     * Which of mysql.user, sys and performance_schema a given account may read is a property of the grants
+     * on the machine the suite happens to run on, so a test built on those asserts the server's permission
+     * model rather than the library's behaviour. This uses a query that is refused for everyone, root
+     * included, so it means the same thing everywhere.
      */
-    public function testUnauthorizedDatabaseAccess() {
-        $unauthorized_queries = [
-            "SELECT * FROM mysql.user",
-            "SELECT * FROM information_schema.tables",
-            "SELECT * FROM performance_schema.events_statements_current",
-            "SELECT * FROM sys.version",
-        ];
-
+    public function testAQueryRefusedByTheServerIsReportedLikeAnyOtherError() {
         $this->db->halt_on_errors = false;
-        
-        foreach ($unauthorized_queries as $query) {
-            $result = $this->db->query($query);
-            
-            // These may or may not fail depending on MySQL permissions
-            // The important thing is they don't cause crashes or information leaks
-            if ($result === false) {
-                $error = $this->db->error();
-                $this->assertNotEmpty($error, "Should have meaningful error for unauthorized access");
-                // Error should not leak structure information
-                $this->assertStringNotContainsString('password', strtolower($error), "Error should not leak sensitive info");
-            } else {
-                // If query succeeds, it means user has appropriate permissions
-                // Just verify it doesn't crash
-                $rows = $this->db->fetch_assoc_all($result);
-                $this->assertIsArray($rows, "Result should be valid array");
-            }
-        }
-        
+
+        // there is no such table in information_schema, and information_schema cannot be written to by
+        // anyone - so this fails on every server and every account
+        $result = $this->db->query("INSERT INTO information_schema.tables (TABLE_NAME) VALUES ('x')");
+
+        $this->assertFalse($result, "The query has to be reported as failed");
+
+        $error = $this->db->error(true);
+
+        $this->assertIsArray($error, "And described, with a number and a message");
+        $this->assertGreaterThan(0, $error['number'], "The server's own error number is passed on");
+        $this->assertStringContainsString('Access denied', $error['message'], "As is what the server said");
+
+        // and the refusal leaves the connection usable rather than poisoned
+        $this->assertNotFalse($this->db->query("SELECT 1"), "The connection survives being refused");
+
         $this->db->halt_on_errors = true;
     }
 
@@ -339,9 +340,9 @@ class SecurityTest extends DatabaseTestCase
 
         foreach ($union_payloads as $payload) {
             $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$payload]);
-            
+
             $this->assertNotFalse($result, "UNION injection should not cause query failure: " . $payload);
-            
+
             $rows = $this->db->fetch_assoc_all($result);
             $this->assertEmpty($rows, "UNION injection should not return unauthorized data");
         }
@@ -360,9 +361,9 @@ class SecurityTest extends DatabaseTestCase
 
         foreach ($procedure_payloads as $payload) {
             $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$payload]);
-            
+
             $this->assertNotFalse($result, "Procedure injection should not cause query failure");
-            
+
             $rows = $this->db->fetch_assoc_all($result);
             $this->assertEmpty($rows, "Procedure injection should not execute unauthorized commands");
         }
@@ -373,15 +374,15 @@ class SecurityTest extends DatabaseTestCase
      */
     public function testDebugModeInformationLeak() {
         $original_debug = $this->db->debug;
-        
+
         // Enable debug mode
         $this->db->debug = true;
-        
+
         // Capture output
         ob_start();
-        
+
         $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", ['John Doe']);
-        
+
         $debug_output = ob_get_clean();
 
         $this->assertNotFalse($result, "Query should still work with debugging enabled");
@@ -400,10 +401,10 @@ class SecurityTest extends DatabaseTestCase
      */
     public function testAutoQuoteReplacementsSecurity() {
         $original_setting = $this->db->auto_quote_replacements;
-        
+
         // Test with auto_quote_replacements disabled
         $this->db->auto_quote_replacements = false;
-        
+
         $malicious_input = "'; DROP TABLE test_users; --";
 
         // with auto_quote_replacements disabled the library still escapes the value, but it no longer
@@ -416,7 +417,7 @@ class SecurityTest extends DatabaseTestCase
 
         // escaping still happens, so the injection is inert
         $this->assertTrue($this->db->table_exists('test_users'), "Table must still exist");
-        
+
         // Restore original setting
         $this->db->auto_quote_replacements = $original_setting;
     }
@@ -436,28 +437,28 @@ class SecurityTest extends DatabaseTestCase
         // Test insert
         $insert_result = $this->db->insert('test_users', $malicious_data);
         $this->assertTrue($insert_result, "Insert should succeed with escaped data");
-        
+
         $insert_id = $this->db->insert_id();
-        
+
         // Verify data was inserted safely
         $result = $this->db->query("SELECT * FROM test_users WHERE id = ?", [$insert_id]);
         $row = $this->db->fetch_assoc($result);
-        
+
         $this->assertEquals($malicious_data['name'], $row['name'], "Malicious data should be stored as literal string");
         $this->assertEquals($malicious_data['email'], $row['email'], "Malicious data should be stored as literal string");
-        
+
         // Test update
-        $update_result = $this->db->update('test_users', 
-            ['name' => "Updated'; DROP TABLE test_users; --"], 
-            'id = ?', 
+        $update_result = $this->db->update('test_users',
+            ['name' => "Updated'; DROP TABLE test_users; --"],
+            'id = ?',
             [$insert_id]
         );
         $this->assertTrue($update_result, "Update should succeed with escaped data");
-        
+
         // Test delete
         $delete_result = $this->db->delete('test_users', 'id = ?', [$insert_id]);
         $this->assertTrue($delete_result, "Delete should succeed");
-        
+
         // Verify table still exists (wasn't dropped by injection)
         $table_check = $this->db->query("SELECT COUNT(*) as count FROM test_users");
         $this->assertNotFalse($table_check, "Table should still exist after injection attempts");

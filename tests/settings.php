@@ -46,8 +46,6 @@ define('TEST_REDIS_PORT', getenv('REDIS_PORT') ?: 6379);
 
 // paths the suite reads from and writes to
 define('TEST_TMP_PATH', __DIR__ . '/tmp');
-define('TEST_FIXTURES_PATH', __DIR__ . '/Fixtures');
-define('TEST_SUPPORT_PATH', __DIR__ . '/Support');
 
 /**
  * Returns a path under tmp/, creating it if it is not there yet.
@@ -69,24 +67,6 @@ function getTempPath($subdir = '') {
 
     return $path;
 
-}
-
-/**
- * @return  array<mixed>
- */
-function loadTestQueries() {
-    return include TEST_FIXTURES_PATH . '/test_queries.php';
-}
-
-/**
- * @return  array<mixed>
- */
-function loadMaliciousInputs() {
-    $file = TEST_FIXTURES_PATH . '/malicious_inputs.json';
-    if (file_exists($file)) {
-        return json_decode(file_get_contents($file), true);
-    }
-    return [];
 }
 
 /**

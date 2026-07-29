@@ -11,7 +11,7 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
     protected function setUp(): void {
         $this->db = new Zebra_Database();
         $this->db->debug = false; // Disable debug output during tests
-        $this->db->cache_path = sys_get_temp_dir(); // Use temp directory for cache/logs
+        $this->db->cache_path = getTempPath('cache'); // the suite's own scratch directory
         // Don't call any connection methods here
     }
 
@@ -22,16 +22,6 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
         $this->db = null;
     }
 
-    protected function cleanTestDatabase() {
-        // Helper method to clean database when needed
-        $cleanDb = new Zebra_Database();
-        $cleanDb->debug = false;
-        $cleanDb->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
-        $cleanDb->query("TRUNCATE TABLE test_users");
-        $cleanDb->query("TRUNCATE TABLE test_products");
-        $cleanDb->query("TRUNCATE TABLE test_categories");
-        $cleanDb->close();
-    }
     public function testConstructor() {
         $db = new Zebra_Database();
 

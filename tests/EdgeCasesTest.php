@@ -7,76 +7,23 @@ require_once __DIR__ . '/bootstrap.php';
  */
 class EdgeCasesTest extends DatabaseTestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $this->connectToDatabase();
     }
 
-    // SQL INJECTION PREVENTION TESTS
-
-    public function testSQLInjectionPrevention() {
-        // Various SQL injection attempts that should be safely handled by the escaping the library does for replacements
-        $injection_attempts = [
-            "'; DROP TABLE test_users; --",
-            "' OR '1'='1",
-            "' UNION SELECT * FROM test_users --",
-            "admin'--",
-            "admin' /*",
-            "' OR 1=1#",
-            "' OR 'x'='x",
-            "'; INSERT INTO test_users VALUES (999, 'hacker', 'hacker@evil.com', 99); --",
-            "' AND (SELECT COUNT(*) FROM test_users) > 0 AND '1'='1"
-        ];
-
-        // Insert a test user first
-        $this->db->insert('test_users', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'age' => 25
-        ]);
-
-        foreach ($injection_attempts as $malicious_input) {
-            $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", [$malicious_input]);
-
-            // Should return false or empty result, not cause SQL injection
-            $this->assertNotFalse($result); // Query should execute safely
-            $this->assertEquals(0, $this->db->returned_rows); // But find no matching records
-        }
-
-        // Verify table still exists and has data
-        $count_result = $this->db->query("SELECT COUNT(*) as count FROM test_users");
-        $count_row = $this->db->fetch_assoc($count_result);
-        $this->assertGreaterThan(0, (int)$count_row['count']);
-    }
-
-    public function testSQLInjectionInArrayParameters() {
-        $malicious_array = [
-            "'; DROP TABLE test_users; --",
-            "' OR '1'='1",
-            "legitimate_value"
-        ];
-
-        $this->db->insert('test_users', [
-            'name' => 'legitimate_value',
-            'email' => 'legit@example.com',
-            'age' => 25
-        ]);
-
-        $result = $this->db->query("SELECT * FROM test_users WHERE name IN (?)", [$malicious_array]);
-
-        $this->assertNotFalse($result);
-        $this->assertEquals(1, $this->db->returned_rows); // Should only find the legitimate value
-
-        $row = $this->db->fetch_assoc($result);
-        $this->assertEquals('legitimate_value', $row['name']);
-    }
+    // SQL injection through replacements is covered in SecurityTest, and through array replacements in
+    // ArrayParameterTest - the two tests that used to stand here were the same payloads run the same way
 
     // MEMORY AND RESOURCE TESTS
 
-    public function testLargeDataSet() {
-        // Test handling of large data sets with varchar(100) column limit
-        $large_text = str_repeat('A', 10000); // 10KB string
+    /**
+     * A value too long for its column is refused rather than quietly cut down to size. This used to assert
+     * one thing or the other depending on whether the server ran in strict mode, so it passed either way
+     * and pinned neither - the bootstrap now requires strict mode, which is what makes one answer correct
+     */
+    public function testAValueTooLongForItsColumnIsRefused() {
+        $large_text = str_repeat('A', 10000); // 10KB into a varchar(100)
 
         $result = $this->db->insert('test_users', [
             'name' => $large_text,
@@ -84,21 +31,9 @@ class EdgeCasesTest extends DatabaseTestCase
             'age' => 30
         ]);
 
-        if ($result === false) {
-            // Strict SQL mode - insert failed as expected due to data length
-            $this->assertFalse($result);
-            $error = $this->db->error();
-            $this->assertStringContainsString('Data too long', $error);
-        } else {
-            // Non-strict SQL mode - data was truncated to fit varchar(100)
-            $this->assertTrue($result);
-            $verify_result = $this->db->query("SELECT name FROM test_users WHERE email = ?", ['large@example.com']);
-            $row = $this->db->fetch_assoc($verify_result);
-
-            // Should be truncated to 100 characters (varchar limit)
-            $this->assertEquals(100, strlen($row['name']));
-            $this->assertEquals(str_repeat('A', 100), $row['name']);
-        }
+        $this->assertFalse($result, "The insert has to be refused, not truncated");
+        $this->assertStringContainsString('Data too long', $this->db->error());
+        $this->assertEquals(0, $this->db->dcount('*', 'test_users'), "And nothing may have been written");
     }
 
     public function testManySmallQueries() {
@@ -109,7 +44,10 @@ class EdgeCasesTest extends DatabaseTestCase
             $this->assertEquals($i, (int)$row['test_value']);
         }
 
-        $this->assertTrue(true); // If we got here, all queries executed successfully
+        // nothing leaked into the connection along the way - a result left unread or a pointer left
+        // half way through would show up here rather than as a hundred passing assertions above
+        $row = $this->db->fetch_assoc($this->db->query("SELECT COUNT(*) AS total FROM test_users"));
+        $this->assertSame('0', $row['total'], "The connection is still usable and the table untouched");
     }
 
     // NULL AND EMPTY VALUE HANDLING
@@ -245,51 +183,8 @@ class EdgeCasesTest extends DatabaseTestCase
         $this->assertEquals(-123.45, (float)$row['score']);
     }
 
-    // ARRAY PARAMETER EDGE CASES
-
-    public function testEmptyArrayParameter() {
-        $result = $this->db->query("SELECT * FROM test_users WHERE id IN (?)", [[]]);
-
-        $this->assertNotFalse($result);
-        $this->assertEquals(0, $this->db->returned_rows);
-    }
-
-    public function testSingleElementArrayParameter() {
-        $this->db->insert('test_users', [
-            'name' => 'Single Array Test',
-            'email' => 'single@example.com',
-            'age' => 25
-        ]);
-
-        $result = $this->db->query("SELECT * FROM test_users WHERE name IN (?)", [['Single Array Test']]);
-
-        $this->assertEquals(1, $this->db->returned_rows);
-
-        $row = $this->db->fetch_assoc($result);
-        $this->assertEquals('Single Array Test', $row['name']);
-    }
-
-    public function testLargeArrayParameter() {
-        // Create a large array of values
-        $large_array = [];
-        for ($i = 1; $i <= 100; $i++) {
-            $large_array[] = "Value $i";
-        }
-
-        // This should not cause errors even though none match
-        $result = $this->db->query("SELECT * FROM test_users WHERE name IN (?)", [$large_array]);
-
-        $this->assertNotFalse($result);
-        $this->assertEquals(0, $this->db->returned_rows);
-    }
-
-    public function testMixedTypeArrayParameter() {
-        $mixed_array = ['string_value', 123, 45.67, null];
-
-        $result = $this->db->query("SELECT * FROM test_users WHERE name IN (?)", [$mixed_array]);
-
-        $this->assertNotFalse($result);
-    }
+    // array replacements - empty, single, large and mixed-type - belong to ArrayParameterTest, which tests
+    // all four and rather more thoroughly than the copies that used to sit here
 
     // CONNECTION EDGE CASES
 
@@ -314,6 +209,8 @@ class EdgeCasesTest extends DatabaseTestCase
     // TRANSACTION EDGE CASES
 
     public function testTransactionWithError() {
+        $this->db->halt_on_errors = false;
+
         $this->db->transaction_start();
 
         // Successful insert
@@ -324,17 +221,13 @@ class EdgeCasesTest extends DatabaseTestCase
         ]);
         $this->assertTrue($result1);
 
-        // This should fail due to duplicate email constraint (if we make one)
-        // For now, we'll test with an invalid query
-        $this->db->halt_on_errors = false;
         $result2 = $this->db->query("INSERT INTO nonexistent_table VALUES (1, 2, 3)");
         $this->assertFalse($result2);
 
-        // Transaction should be marked for rollback
-        $complete_result = $this->db->transaction_complete();
-
-        // Depending on implementation, this might rollback due to the error
-        $this->assertIsBool($complete_result);
+        // a transaction that had a failing query in it is rolled back and reports failure - both halves
+        // matter, and asserting only that a boolean came back said nothing about either
+        $this->assertFalse($this->db->transaction_complete(), "A transaction that had an error has failed");
+        $this->assertEquals(0, $this->db->dcount('*', 'test_users'), "The insert before the failure is gone too");
 
         // Reset error handling
         $this->db->halt_on_errors = true;

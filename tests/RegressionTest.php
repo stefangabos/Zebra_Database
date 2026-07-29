@@ -39,33 +39,6 @@ class RegressionTest extends DatabaseTestCase
     }
 
     /**
-     * Collects every PHP diagnostic raised while the given callback runs, so that a test can assert the
-     * library does its job without also emitting notices, warnings or deprecations
-     */
-    private function diagnosticsRaisedBy($callback) {
-        $raised = [];
-
-        set_error_handler(function($number, $message) use (&$raised) {
-            // a handler is called even for diagnostics the library deliberately silenced with "@", and
-            // those are not something the user ever sees - error_reporting() is what tells them apart
-            if (!(error_reporting() & $number)) return true;
-            $raised[] = $message;
-            return true;
-        });
-
-        try {
-            $callback();
-        } catch (Exception $exception) {
-            restore_error_handler();
-            throw $exception;
-        }
-
-        restore_error_handler();
-
-        return $raised;
-    }
-
-    /**
      * 81718e3 - "Fixed undefined variable if calling the close() method without an active connection"
      *
      * close() read a variable that was only set inside the branch that had something to close
@@ -375,7 +348,8 @@ class RegressionTest extends DatabaseTestCase
         $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
 
         $result = $db->query_unbuffered('SELECT * FROM test_users');
-        while ($db->fetch_assoc($result)) {}
+        while ($db->fetch_assoc($result)) {
+        }
 
         $this->assertNotEmpty($db->explainOfLastQuery(), 'A SELECT can be explained, so it has to be');
 
@@ -449,7 +423,8 @@ class RegressionTest extends DatabaseTestCase
 
         $raised = $this->diagnosticsRaisedBy(function() use ($db) {
             $result = $db->query_unbuffered('SELECT * FROM test_users');
-            while ($db->fetch_assoc($result)) {}
+            while ($db->fetch_assoc($result)) {
+            }
         });
 
         $this->assertSame([], $raised);
@@ -487,7 +462,8 @@ class RegressionTest extends DatabaseTestCase
         $db = $this->unbufferedProbe();
 
         $result = $db->query_unbuffered('SELECT * FROM test_users');
-        while ($db->fetch_assoc($result)) {}
+        while ($db->fetch_assoc($result)) {
+        }
 
         // a plain buffered query afterwards - it is not unbuffered and must not be explained as one
         $db->query('SELECT name FROM test_users');
@@ -498,7 +474,8 @@ class RegressionTest extends DatabaseTestCase
         // and an unbuffered one that is not to be explained must not pick up the previous EXPLAIN
         $db->debug_show_explain = false;
         $result = $db->query_unbuffered('SELECT age FROM test_users');
-        while ($db->fetch_assoc($result)) {}
+        while ($db->fetch_assoc($result)) {
+        }
 
         $this->assertEmpty($db->explainOfLastQuery(), 'This query was not to be explained');
 

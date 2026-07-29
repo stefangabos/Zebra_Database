@@ -8,8 +8,7 @@ require_once __DIR__ . '/bootstrap.php';
  */
 class JoinTest extends DatabaseTestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $this->connectToDatabase();
         $this->setupJoinTestData();
@@ -140,8 +139,10 @@ class JoinTest extends DatabaseTestCase
         }
 
         // Verify data integrity
-        $this->assertNotEquals($row['author_name'], $row['book_series'],
-            "Author name and book series should be different values");
+        $this->assertNotEquals($row['author_name'],
+            $row['book_series'],
+            "Author name and book series should be different values"
+        );
     }
 
     /**
@@ -179,17 +180,15 @@ class JoinTest extends DatabaseTestCase
         $row = $this->db->fetch_assoc($result);
         $this->assertNotEmpty($row, "Should return results from complex JOIN");
 
-        // Count how many times each colliding column name appears
-        $column_names = array_keys($row);
-        $name_count = count(array_filter($column_names, function($col) { return $col === 'name'; }));
-        $email_count = count(array_filter($column_names, function($col) { return $col === 'email'; }));
-        $id_count = count(array_filter($column_names, function($col) { return $col === 'id'; }));
+        // three tables each contribute a "name", an "email" and an "id", and what comes back holds one of
+        // each - the publisher's, since that table is joined last. Counting the keys was what this used to
+        // do, which can only ever come out as one and so said nothing at all
+        $this->assertSame('Publisher One', $row['name'], "The last table joined is the one whose column survives");
+        $this->assertSame('contact@publisherone.com', $row['email']);
 
-        // If columns are being silently dropped, these counts will be less than expected
-        // This test will help identify the silent column dropping issue
-        $this->assertGreaterThanOrEqual(1, $name_count, "Should have at least 1 'name' column");
-        $this->assertGreaterThanOrEqual(1, $email_count, "Should have at least 1 'email' column");
-        $this->assertGreaterThanOrEqual(1, $id_count, "Should have at least 1 'id' column");
+        // and the columns the earlier tables contributed are unreachable rather than merged in
+        $this->assertNotContains('a.name', array_keys($row));
+        $this->assertNotContains('test_authors.name', array_keys($row));
 
         // Clean up
         $this->db->query("DROP TABLE IF EXISTS test_publishers");
@@ -378,14 +377,10 @@ class JoinTest extends DatabaseTestCase
         $this->assertNotEmpty($all_rows, "fetch_assoc_all should return data");
         $this->assertCount(1, $all_rows, "Should return exactly 1 row");
 
-        // The key question: does the library handle duplicate column names properly?
-        // In MySQL, the last column with a duplicate name overwrites earlier ones in associative arrays
-        $columns = array_keys($assoc_row);
-        $unique_columns = array_unique($columns);
-
-        // If duplicate columns are handled "correctly" by MySQL/PHP, we'll see fewer unique keys than total columns
-        // This is actually expected behavior, but it demonstrates the silent data loss issue
-        $this->assertLessThanOrEqual(count($columns), count($unique_columns),
-            "Unique column count should be less than or equal to total columns");
+        // four columns were selected - a.name, b.name, a.id and b.id - and two keys come back, because the
+        // second of each pair overwrites the first. Comparing the key count against the unique key count
+        // was the old assertion here, and one array cannot have more keys than it has unique keys
+        $this->assertSame(['name', 'id'], array_keys($assoc_row), "Four columns collapse into two keys");
+        $this->assertSame($all_rows[0], $assoc_row, "Both fetch methods lose the same half");
     }
 }

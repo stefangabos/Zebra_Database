@@ -8,8 +8,7 @@ require_once __DIR__ . '/bootstrap.php';
  */
 class StressTest extends DatabaseTestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $this->connectToDatabase();
     }
@@ -20,28 +19,33 @@ class StressTest extends DatabaseTestCase
     public function testConnectionExhaustion() {
         $connections = [];
         $max_connections = 10; // Reasonable limit for testing
-        
+
         // Create multiple connections
         for ($i = 0; $i < $max_connections; $i++) {
             $db = new Zebra_Database();
             $db->debug = false;
             $db->halt_on_errors = false;
-            
+
             // connect() returns nothing and connects lazily, so whether the server accepted us is not
             // known until a query is actually run - which is what the loop below does
             $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
 
             $connections[] = $db;
         }
-        
-        $this->assertGreaterThan(0, count($connections), "Should be able to create at least one connection");
-        
-        // Test that existing connections still work
+
+        // every one of them has to be a connection of its own, and all of them usable at the same time -
+        // counting the array said only that the loop above had run
+        $links = [];
+
         foreach ($connections as $db) {
-            $result = $db->query("SELECT 1 as test");
-            $this->assertNotFalse($result, "Existing connections should remain functional");
+            $result = $db->query("SELECT CONNECTION_ID() AS id");
+            $this->assertNotFalse($result, "Every connection should remain functional");
+            $row = $db->fetch_assoc($result);
+            $links[] = $row['id'];
         }
-        
+
+        $this->assertCount($max_connections, array_unique($links), "Each instance holds a connection of its own");
+
         // Clean up connections
         foreach ($connections as $db) {
             $db->close();
@@ -59,28 +63,28 @@ class StressTest extends DatabaseTestCase
                 data TEXT
             )
         ");
-        
+
         // Insert rows with large text data
         $large_text = str_repeat('A', 10000); // 10KB per row
         $row_count = 100; // 1MB total
-        
+
         for ($i = 0; $i < $row_count; $i++) {
             $this->db->insert('large_test_data', [
                 'data' => $large_text . "_row_$i"
             ]);
         }
-        
+
         // Test fetching all at once (memory intensive)
         $result = $this->db->query("SELECT * FROM large_test_data");
         $this->assertNotFalse($result, "Should be able to query large dataset");
-        
+
         // Test fetch_assoc_all with large dataset
         $start_memory = memory_get_usage();
         $all_rows = $this->db->fetch_assoc_all($result);
         $end_memory = memory_get_usage();
-        
+
         $memory_used = $end_memory - $start_memory;
-        
+
         $this->assertCount($row_count, $all_rows, "Should fetch all rows");
         $this->assertLessThan(50 * 1024 * 1024, $memory_used, "Memory usage should be reasonable (< 50MB)"); // Generous limit
     }
@@ -112,16 +116,14 @@ class StressTest extends DatabaseTestCase
                 INDEX(value)
             )
         ");
-        
+
         // Insert test data
         for ($i = 1; $i <= 1000; $i++) {
             $this->db->insert('perf_test_table1', ['data' => "data_$i"]);
             $this->db->insert('perf_test_table2', ['table1_id' => $i, 'value' => "value_$i"]);
         }
-        
+
         // Complex query with joins, subqueries, and aggregation
-        $start_time = microtime(true);
-        
         $result = $this->db->query("
             SELECT 
                 t1.id,
@@ -134,15 +136,19 @@ class StressTest extends DatabaseTestCase
             ORDER BY t1.id
             LIMIT 10
         ");
-        
-        $end_time = microtime(true);
-        $execution_time = $end_time - $start_time;
-        
+
         $this->assertNotFalse($result, "Complex query should execute successfully");
-        $this->assertLessThan(5.0, $execution_time, "Complex query should complete within 5 seconds");
-        
+
         $rows = $this->db->fetch_assoc_all($result);
+
         $this->assertCount(10, $rows, "Should return 10 rows as limited");
+
+        // the rows are what the query says they are - a wall-clock assertion used to stand here instead,
+        // which says nothing about the library and goes red whenever the machine running it is busy
+        $this->assertSame('1', $rows[0]['id'], "Ordered by id, so the first row is the first one inserted");
+        $this->assertSame('data_1', $rows[0]['data']);
+        $this->assertSame('value_1', $rows[0]['value'], "The joined row is the matching one");
+        $this->assertSame('1', $rows[0]['count_related'], "And the subquery counted it");
 
         $this->db->query("DROP TABLE perf_test_table1");
         $this->db->query("DROP TABLE perf_test_table2");
@@ -161,7 +167,7 @@ class StressTest extends DatabaseTestCase
                 double_val DOUBLE
             )
         ");
-        
+
         // the largest values each column can actually hold - DECIMAL(20,10) leaves 10 digits before the
         // point, and FLOAT is single precision, so PHP_FLOAT_MAX would overflow it under STRICT_TRANS_TABLES
         $extreme_values = [
@@ -173,10 +179,10 @@ class StressTest extends DatabaseTestCase
 
         $result = $this->db->insert('numeric_test', $extreme_values);
         $this->assertTrue($result, "Should handle extreme numeric values");
-        
+
         $select_result = $this->db->query("SELECT * FROM numeric_test ORDER BY id DESC LIMIT 1");
         $row = $this->db->fetch_assoc($select_result);
-        
+
         $this->assertNotEmpty($row, "Should retrieve extreme numeric values");
         $this->assertEquals(PHP_INT_MAX, $row['big_int'], "Should preserve large integer values");
     }
@@ -197,7 +203,7 @@ class StressTest extends DatabaseTestCase
             'tabs' => "Column1\tColumn2\tColumn3",
             'mixed' => "Mixed\x00\x01\x02content\xFF\xFE",
         ];
-        
+
         // test_value is a BLOB rather than TEXT because the "mixed" case above contains byte sequences
         // that are not valid UTF-8 - a TEXT column in a utf8mb4 table rejects those under STRICT_TRANS_TABLES
         $this->db->query("
@@ -207,7 +213,7 @@ class StressTest extends DatabaseTestCase
                 test_value LONGBLOB
             )
         ");
-        
+
         foreach ($test_strings as $name => $string) {
             $result = $this->db->insert('string_test', [
                 'test_name' => $name,
@@ -215,14 +221,14 @@ class StressTest extends DatabaseTestCase
             ]);
             $this->assertTrue($result, "Should insert string: $name");
         }
-        
+
         // Verify retrieval
         foreach ($test_strings as $name => $expected_string) {
             $result = $this->db->query("SELECT test_value FROM string_test WHERE test_name = ?", [$name]);
             $row = $this->db->fetch_assoc($result);
-            
+
             $this->assertNotEmpty($row, "Should find row for: $name");
-            
+
             // For binary data, exact comparison might not work due to encoding
             if ($name !== 'mixed') {
                 $this->assertEquals($expected_string, $row['test_value'], "Should preserve string: $name");
@@ -235,22 +241,20 @@ class StressTest extends DatabaseTestCase
      */
     public function testRapidFireQueries() {
         $query_count = 100;
-        $start_time = microtime(true);
-        
+
         for ($i = 0; $i < $query_count; $i++) {
             $result = $this->db->query("SELECT ? as iteration, NOW() as timestamp", [$i]);
             $this->assertNotFalse($result, "Query $i should succeed");
-            
+
             $row = $this->db->fetch_assoc($result);
             $this->assertEquals($i, $row['iteration'], "Should return correct iteration number");
         }
-        
-        $end_time = microtime(true);
-        $total_time = $end_time - $start_time;
-        $avg_time_per_query = $total_time / $query_count;
-        
-        $this->assertLessThan(0.1, $avg_time_per_query, "Average query time should be under 0.1 seconds");
-        $this->assertLessThan(10.0, $total_time, "Total time for $query_count queries should be under 10 seconds");
+
+        // a hundred queries in a row leave the connection exactly as they found it - which is the thing
+        // that could actually break here. How long they took is a property of the machine, not of the
+        // library, and asserting on it only makes the suite fail on a busy CI runner
+        $this->assertSame('', $this->db->error(), "Nothing was left behind on the connection");
+        $this->assertEquals(1, $this->db->returned_rows, "And the bookkeeping describes the last query, not the run");
     }
 
     /**
@@ -263,7 +267,7 @@ class StressTest extends DatabaseTestCase
                 value VARCHAR(100)
             )
         ");
-        
+
         $this->db->transaction_start();
 
         for ($i = 1; $i <= 50; $i++) {
@@ -275,7 +279,7 @@ class StressTest extends DatabaseTestCase
         $count_result = $this->db->query("SELECT COUNT(*) as count FROM transaction_test");
         $count_row = $this->db->fetch_assoc($count_result);
         $this->assertEquals(50, $count_row['count'], "Should have 50 records before commit");
-        
+
         $this->db->transaction_complete();
 
         // Verify data persisted
@@ -306,7 +310,7 @@ class StressTest extends DatabaseTestCase
         $param_count = 100;
         $placeholders = str_repeat('?,', $param_count - 1) . '?';
         $values = range(1, $param_count);
-        
+
         // CONCAT_WS rather than GREATEST, so that the assertion checks that every one of the parameters
         // was substituted, in the right order - GREATEST would compare the values as the strings they
         // are once quoted, making '9' the largest of 1..100
@@ -331,13 +335,13 @@ class StressTest extends DatabaseTestCase
                 'age' => 20 + ($i % 50)
             ]);
         }
-        
+
         // Create large IN clause with array parameter
         $large_id_array = range(1, 150);
-        
+
         $result = $this->db->query("SELECT COUNT(*) as count FROM test_users WHERE id IN (?)", [$large_id_array]);
         $this->assertNotFalse($result, "Should handle large array parameter");
-        
+
         $row = $this->db->fetch_assoc($result);
         $this->assertGreaterThan(0, $row['count'], "Should find records with large IN clause");
         $this->assertLessThanOrEqual(150, $row['count'], "Should not exceed maximum possible matches");
@@ -347,35 +351,35 @@ class StressTest extends DatabaseTestCase
      * Test cache system under stress
      */
     public function testCacheStress() {
-        $this->db->cache_path = sys_get_temp_dir() . '/zebra_cache_stress';
-        
+        $this->db->cache_path = getTempPath('cache') . '/stress';
+
         // Ensure cache directory exists
         if (!is_dir($this->db->cache_path)) {
             mkdir($this->db->cache_path, 0777, true);
         }
-        
+
         // Generate many cached queries
         $cache_count = 50;
-        
+
         for ($i = 1; $i <= $cache_count; $i++) {
             $result = $this->db->query("SELECT ? as cache_test", ["cache_value_$i"], 3600); // 1 hour cache
             $this->assertNotFalse($result, "Cached query $i should succeed");
-            
+
             $row = $this->db->fetch_assoc($result);
             $this->assertEquals("cache_value_$i", $row['cache_test'], "Should return correct cached value");
         }
-        
+
         // Verify cache files were created
         $cache_files = glob($this->db->cache_path . '/*');
         $this->assertGreaterThan(0, count($cache_files), "Should create cache files");
-        
+
         // Test cache retrieval
         for ($i = 1; $i <= $cache_count; $i++) {
             $result = $this->db->query("SELECT ? as cache_test", ["cache_value_$i"], 3600);
             $row = $this->db->fetch_assoc($result);
             $this->assertEquals("cache_value_$i", $row['cache_test'], "Should retrieve from cache");
         }
-        
+
         // Clean up cache files
         $cache_files = glob($this->db->cache_path . '/*');
         foreach ($cache_files as $file) {
@@ -391,7 +395,7 @@ class StressTest extends DatabaseTestCase
      */
     public function testErrorHandlingStress() {
         $this->db->halt_on_errors = false;
-        
+
         $error_inducing_queries = [
             "SELECT * FROM nonexistent_table_12345",
             "UPDATE test_users SET nonexistent_column = 'test'",
@@ -401,19 +405,19 @@ class StressTest extends DatabaseTestCase
             "CREATE TABLE test_users (id INT)", // Table already exists
             "DROP DATABASE nonexistent_database",
         ];
-        
+
         foreach ($error_inducing_queries as $index => $query) {
             $result = $this->db->query($query);
             $this->assertFalse($result, "Error-inducing query $index should fail gracefully");
-            
+
             $error = $this->db->error();
             $this->assertNotEmpty($error, "Should have error message for query $index");
-            
+
             // Verify the database connection is still functional after error
             $test_result = $this->db->query("SELECT 1 as test");
             $this->assertNotFalse($test_result, "Database connection should remain functional after error $index");
         }
-        
+
         $this->db->halt_on_errors = true;
     }
 
@@ -428,34 +432,34 @@ class StressTest extends DatabaseTestCase
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         ");
-        
+
         // Insert initial record
         $this->db->insert('concurrent_test', ['counter' => 0]);
         $test_id = $this->db->insert_id();
-        
+
         // Simulate concurrent updates
         $update_count = 50;
-        
+
         for ($i = 1; $i <= $update_count; $i++) {
             // Read current value
             $result = $this->db->query("SELECT counter FROM concurrent_test WHERE id = ?", [$test_id]);
             $row = $this->db->fetch_assoc($result);
             $current_counter = $row['counter'];
-            
+
             // Update with incremented value
             $new_counter = $current_counter + 1;
-            $update_result = $this->db->update('concurrent_test', 
-                ['counter' => $new_counter], 
-                'id = ?', 
+            $update_result = $this->db->update('concurrent_test',
+                ['counter' => $new_counter],
+                'id = ?',
                 [$test_id]
             );
             $this->assertTrue($update_result, "Update $i should succeed");
         }
-        
+
         // Verify final counter value
         $final_result = $this->db->query("SELECT counter FROM concurrent_test WHERE id = ?", [$test_id]);
         $final_row = $this->db->fetch_assoc($final_result);
-        
+
         $this->assertEquals($update_count, $final_row['counter'], "Final counter should equal update count");
     }
 
@@ -464,24 +468,22 @@ class StressTest extends DatabaseTestCase
      */
     public function testResourceCleanupStress() {
         $resource_count = 20;
-        
+
         for ($i = 1; $i <= $resource_count; $i++) {
             $result = $this->db->query("SELECT ? as iteration", [$i]);
             $this->assertNotFalse($result, "Query $i should succeed");
-            
+
             // Don't explicitly free result - test automatic cleanup
             $row = $this->db->fetch_assoc($result);
             $this->assertEquals($i, $row['iteration'], "Should return correct iteration");
         }
-        
-        // Force garbage collection
-        if (function_exists('gc_collect_cycles')) {
-            $collected = gc_collect_cycles();
-            $this->assertGreaterThanOrEqual(0, $collected, "Garbage collection should not fail");
-        }
-        
-        // Verify database is still functional
+
+        // results left unfreed must not pile up on the server - what it is still holding is the actual
+        // question here, where counting collected garbage cycles could only ever come out as zero or more
+        gc_collect_cycles();
+
         $final_test = $this->db->query("SELECT 'cleanup_test' as test");
         $this->assertNotFalse($final_test, "Database should remain functional after resource stress");
+        $this->assertSame('cleanup_test', $this->db->fetch_assoc($final_test)['test'], "And still return what it is asked for");
     }
 }

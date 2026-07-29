@@ -8,6 +8,14 @@
 
     <file>Zebra_Database.php</file>
 
+    <!-- the test suite is held to the same standard as the library, since ten thousand lines of it that
+         nothing checks drift into whatever each file felt like at the time -->
+    <file>tests</file>
+
+    <!-- everything under here is either written by the tests as they run or is not ours to begin with -->
+    <exclude-pattern>tests/tmp/*</exclude-pattern>
+    <exclude-pattern>tests/coverage-html/*</exclude-pattern>
+
     <ini name="memory_limit" value="64M"/>
     <arg name="report-width" value="130"/>
 
@@ -103,5 +111,12 @@
     <!-- Function declarations follow the "Kernighan/Ritchie style". The function brace is on the same line as the
     function declaration. One space is required between the closing parenthesis and the brace. -->
     <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie" />
+
+    <!-- Every test file declares a class and includes the bootstrap beside it, which is what this sniff calls a side
+    effect. That is how a PHPUnit suite is put together - the alternative is an autoloader that exists only so that a
+    check can be satisfied - so the rule is switched off for the tests rather than left reported and ignored. -->
+    <rule ref="PSR1.Files.SideEffects">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
 
 </ruleset>

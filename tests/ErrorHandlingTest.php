@@ -26,19 +26,11 @@ class ErrorHandlingTest extends DatabaseTestCase {
         $error = $this->db->error();
         $this->assertSame('', $error, "Successful query should return empty error string");
 
-        // Test error(true) behavior for successful query
-        $errorWithNumber = $this->db->error(true);
-        if (is_array($errorWithNumber)) {
-            // If it returns an array, it should have number=0 and message=null/empty for successful queries
-            $this->assertArrayHasKey('number', $errorWithNumber, "Error array should have 'number' key");
-            $this->assertArrayHasKey('message', $errorWithNumber, "Error array should have 'message' key");
-            $this->assertEquals(0, $errorWithNumber['number'], "Successful query should have error number 0");
-            $this->assertTrue(is_null($errorWithNumber['message']) || $errorWithNumber['message'] === '',
-                "Successful query should have null or empty error message");
-        } else {
-            // If it returns a string, it should be empty
-            $this->assertSame('', $errorWithNumber, "Successful query should return empty error string");
-        }
+        // the array form is only returned when there is an error to describe - with nothing to report both
+        // forms give the same empty string, which is what the docblock promises. This used to be asserted
+        // either way round, and so did not notice that error(TRUE) came back as an array holding a NULL
+        // message while error() said there was no error at all
+        $this->assertSame('', $this->db->error(true), "With no error, error(TRUE) is an empty string too");
     }
 
     /**
@@ -149,51 +141,52 @@ class ErrorHandlingTest extends DatabaseTestCase {
     }
 
     /**
-     * Test invalid foreign key constraint violation
+     * A foreign key violation is reported like any other server error.
+     *
+     * The shared fixture tables carry no foreign key, so this used to insert a product with a category that
+     * does not exist, watch it succeed, and take the branch that asserts nothing went wrong - the constraint
+     * half of the test was unreachable. A pair of tables with an actual constraint makes it reachable.
      */
     public function testErrorMethodWithForeignKeyViolation() {
-        // Try to insert a product with non-existent category_id
-        // This should always fail regardless of SQL mode
-        $result = $this->db->query("INSERT INTO test_products (name, price, category_id) VALUES (?, ?, ?)",
-            ['Test Product', 99.99, 999]); // category_id 999 doesn't exist
+        $this->db->query('DROP TABLE IF EXISTS test_child');
+        $this->db->query('DROP TABLE IF EXISTS test_parent');
+        $this->db->query('CREATE TABLE test_parent (id INT PRIMARY KEY) ENGINE=InnoDB');
+        $this->db->query('
+            CREATE TABLE test_child (
+                id          INT PRIMARY KEY,
+                parent_id   INT,
+                FOREIGN KEY (parent_id) REFERENCES test_parent(id)
+            ) ENGINE=InnoDB
+        ');
 
-        // This should fail due to foreign key constraint (if foreign keys are enabled)
-        // or succeed if foreign key constraints are not enforced
-        if ($result === false) {
-            // If it fails, test the error handling
-            $error = $this->db->error();
-            $this->assertNotEmpty($error, "Foreign key violation should return non-empty error message");
+        $result = $this->db->query('INSERT INTO test_child (id, parent_id) VALUES (?, ?)', [1, 999]);
 
-            // Test error(true) returns array with correct structure
-            $errorArray = $this->db->error(true);
-            $this->assertIsArray($errorArray, "error(true) should return array for foreign key violation");
-            $this->assertArrayHasKey('number', $errorArray, "Error array should have 'number' key");
-            $this->assertArrayHasKey('message', $errorArray, "Error array should have 'message' key");
-            $this->assertGreaterThan(0, $errorArray['number'], "Error number should be greater than 0");
-            $this->assertEquals($error, $errorArray['message'], "Error message should match between error() and error(true)");
-        } else {
-            // If it succeeds, test that no error is reported
-            $error = $this->db->error();
-            $this->assertEmpty($error, "Successful insert should return empty error");
+        $this->assertFalse($result, "A row pointing at a parent that does not exist has to be refused");
 
-            // Clean up the inserted record
-            $this->db->query("DELETE FROM test_products WHERE category_id = 999");
-        }
+        $error = $this->db->error(true);
 
-        // Alternative test: try to create a situation that will definitely fail
-        // Let's try to insert into a non-existent column
+        $this->assertIsArray($error, "error(TRUE) describes it with a number and a message");
+        // 1452 is "Cannot add or update a child row: a foreign key constraint fails"
+        $this->assertEquals(1452, $error['number']);
+        $this->assertEquals($this->db->error(), $error['message'], "Both forms report the same message");
+
+        $this->db->query('DROP TABLE test_child');
+        $this->db->query('DROP TABLE test_parent');
+    }
+
+    /**
+     * An unknown column named in an UPDATE is error 1054, the same as in a SELECT
+     */
+    public function testErrorMethodWithUnknownColumnInAnUpdate() {
         $result = $this->db->query("UPDATE test_users SET non_existent_column = ? WHERE id = ?", ['test', 1]);
 
         $this->assertFalse($result, "Update with non-existent column should fail");
 
-        $error = $this->db->error();
-        $this->assertNotEmpty($error, "Column not found error should return non-empty error message");
-
         $errorArray = $this->db->error(true);
+
         $this->assertIsArray($errorArray, "error(true) should return array for column not found error");
-        $this->assertArrayHasKey('number', $errorArray, "Error array should have 'number' key");
-        $this->assertArrayHasKey('message', $errorArray, "Error array should have 'message' key");
         $this->assertEquals(1054, $errorArray['number'], "Column not found should return error number 1054");
+        $this->assertStringContainsString('non_existent_column', $errorArray['message']);
     }
 
     /**
@@ -272,47 +265,29 @@ class ErrorHandlingTest extends DatabaseTestCase {
 
         $this->assertFalse($result, "Query with mismatched parameters should fail");
 
-        // Test error() returns error message
-        $error = $this->db->error();
-        // The error might be empty if this is handled at the application level rather than MySQL level
-        // But if there is an error, it should be meaningful
-        if (!empty($error)) {
-            $this->assertIsString($error, "Error should be a string");
-        }
-
-        // Test error(true) behavior
-        $errorArray = $this->db->error(true);
-        if (is_array($errorArray)) {
-            $this->assertArrayHasKey('number', $errorArray, "Error array should have 'number' key");
-            $this->assertArrayHasKey('message', $errorArray, "Error array should have 'message' key");
-        } else {
-            // If no MySQL-level error occurred, error(true) should still return a string
-            $this->assertIsString($errorArray, "error(true) should return string if no error occurred");
-        }
+        // the library refuses the query itself, so it never reaches MySQL and there is no MySQL error to
+        // report - error() describes the last thing the *server* was asked to do, and here that is nothing
+        $this->assertSame('', $this->db->error(), "A query the library refused leaves no MySQL error behind");
+        $this->assertSame('', $this->db->error(true), "And the array form agrees with it");
     }
 
     /**
-     * Test error method behavior with connection errors
+     * error() is reached through "or die($db->error())", so it has to survive being called when there is no
+     * connection left to ask - the connection is gone here rather than merely idle, which is the case the
+     * try/catch inside the method exists for
      */
-    public function testErrorMethodWithConnectionIssues() {
-        // This test verifies the error method can handle connection-related errors
-        // We'll simulate this by trying to use the error method after closing the connection
+    public function testErrorMethodAfterTheConnectionHasBeenClosed() {
+        $this->assertNotFalse($this->db->query("SELECT 1 as test"), "Initial query should succeed");
+        $this->assertSame('', $this->db->error(), "Nothing has gone wrong yet");
 
-        // First, ensure we have a successful connection
-        $result = $this->db->query("SELECT 1 as test");
-        $this->assertNotFalse($result, "Initial query should succeed");
+        $this->db->close();
 
-        $initialError = $this->db->error();
-        $this->assertSame('', $initialError, "Initial error should be empty");
+        $raised = $this->diagnosticsRaisedBy(function() {
+            $this->assertSame('', $this->db->error(), "There is no connection to report an error from");
+            $this->assertSame('', $this->db->error(true), "And the array form says the same");
+        });
 
-        // The error() method should handle cases where connection might be problematic
-        // Even after a close, the error() method should not crash
-        $error = $this->db->error();
-        $this->assertIsString($error, "Error method should always return a string");
-
-        $errorArray = $this->db->error(true);
-        $this->assertTrue(is_string($errorArray) || is_array($errorArray),
-            "error(true) should return string or array");
+        $this->assertSame([], $raised, "Asking a closed connection for its error must not warn");
     }
 
     /**
@@ -331,7 +306,8 @@ class ErrorHandlingTest extends DatabaseTestCase {
         // Test that error(true) returns string or array
         $errorTrue = $this->db->error(true);
         $this->assertTrue(is_string($errorTrue) || is_array($errorTrue),
-            "error(true) should return string or array");
+            "error(true) should return string or array"
+        );
 
         // If there's an actual error, test the array structure
         // Force an error first
@@ -346,8 +322,10 @@ class ErrorHandlingTest extends DatabaseTestCase {
 
             // Compare with regular error() call
             $regularError = $this->db->error();
-            $this->assertEquals($regularError, $errorArrayAfterFailure['message'],
-                "Regular error() should match error array message");
+            $this->assertEquals($regularError,
+                $errorArrayAfterFailure['message'],
+                "Regular error() should match error array message"
+            );
         }
     }
 
@@ -407,35 +385,6 @@ class ErrorHandlingTest extends DatabaseTestCase {
 
         // Reset to defaults
         $this->db->debug = false;
-        $this->db->halt_on_errors = true;
-    }
-
-    /**
-     * Test that halt_on_errors=true actually halts execution when errors occur
-     * Note: This test is tricky because if it works, the test will halt
-     * We'll test the opposite - that with halt_on_errors=false, execution continues
-     */
-    public function testHaltOnErrorsTruePreservesDefaultBehavior() {
-        // Ensure halt_on_errors is true (default behavior)
-        $this->db->halt_on_errors = true;
-        $this->db->debug = false;
-
-        // For this test, we'll temporarily set halt_on_errors to false to ensure the test doesn't halt
-        $this->db->halt_on_errors = false;
-
-        // Execute failing query
-        $result = $this->db->query("SELECT * FROM nonexistent_halt_test_table");
-        $this->assertFalse($result, "Query should fail");
-
-        // Verify error is captured
-        $error = $this->db->error();
-        $this->assertNotEmpty($error, "Error should be captured");
-
-        // Execution should continue (because we set halt_on_errors to false)
-        $result2 = $this->db->query("SELECT 1 as test");
-        $this->assertNotFalse($result2, "Subsequent query should work with halt_on_errors=false");
-
-        // Reset to default
         $this->db->halt_on_errors = true;
     }
 
@@ -562,39 +511,35 @@ class ErrorHandlingTest extends DatabaseTestCase {
         // Store original debug setting
         $original_debug = $this->db->debug;
         $original_halt = $this->db->halt_on_errors;
-        
+
         // Test that debug mode can be enabled/disabled without affecting functionality
         $this->db->debug = true;
         $this->db->halt_on_errors = false;
-        
+
         // Execute a failing query in debug mode
         $result = $this->db->query("SELECT * FROM debug_test_nonexistent_table");
         $this->assertFalse($result, "Query should fail");
-        
+
         // Error should be captured even in debug mode
         $error = $this->db->error();
         $this->assertNotEmpty($error, "Error should be captured in debug mode");
-        
+
         // Execution should continue (testing halt_on_errors behavior)
         $continue_result = $this->db->query("SELECT 'debug_continues' as test");
         $this->assertNotFalse($continue_result, "Execution should continue in debug mode with halt_on_errors=false");
-        
+
         // Verify we can fetch the result
         $row = $this->db->fetch_assoc($continue_result);
         $this->assertEquals('debug_continues', $row['test'], "Should be able to fetch results after error in debug mode");
-        
+
         // Test that debug mode doesn't interfere with normal operations
         $this->db->debug = false;
         $normal_result = $this->db->query("SELECT 'normal_operation' as test");
         $this->assertNotFalse($normal_result, "Normal operations should work after disabling debug");
-        
+
         // Restore original settings
         $this->db->debug = $original_debug;
         $this->db->halt_on_errors = $original_halt;
-        
-        // Note: Debug output will be displayed at script end due to destructor behavior
-        // This is expected behavior and cannot be captured during unit tests
-        $this->assertTrue(true, "Debug mode test completed - debug output will appear at script end if enabled");
     }
 
     /**
@@ -606,38 +551,38 @@ class ErrorHandlingTest extends DatabaseTestCase {
         $db2->debug = true;
         $db2->halt_on_errors = false;
         $db2->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
-        
+
         // Test that both instances work independently
         $this->db->debug = true;
         $this->db->halt_on_errors = false;
-        
+
         // Execute queries on both instances
         $result1 = $this->db->query("SELECT 'instance1' as source");
         $result2 = $db2->query("SELECT 'instance2' as source");
-        
+
         $this->assertNotFalse($result1, "First instance should work");
         $this->assertNotFalse($result2, "Second instance should work");
-        
+
         // Test error handling on both instances
         $error_result1 = $this->db->query("SELECT * FROM nonexistent_table_instance1");
         $error_result2 = $db2->query("SELECT * FROM nonexistent_table_instance2");
-        
+
         $this->assertFalse($error_result1, "First instance error query should fail");
         $this->assertFalse($error_result2, "Second instance error query should fail");
-        
+
         // Both should capture their own errors
         $error1 = $this->db->error();
         $error2 = $db2->error();
-        
+
         $this->assertNotEmpty($error1, "First instance should have error");
         $this->assertNotEmpty($error2, "Second instance should have error");
         $this->assertStringContainsString('nonexistent_table_instance1', $error1, "First error should reference first table");
         $this->assertStringContainsString('nonexistent_table_instance2', $error2, "Second error should reference second table");
-        
+
         // Clean up second instance
         $db2->debug = false;
         $db2->close();
-        
+
         // Reset first instance
         $this->db->debug = false;
         $this->db->halt_on_errors = true;

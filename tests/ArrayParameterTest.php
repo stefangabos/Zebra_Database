@@ -241,16 +241,26 @@ class ArrayParameterTest extends DatabaseTestCase {
         $this->assertFalse($result);
     }
 
+    /**
+     * A nested array is flattened into the list rather than refused or imploded into the word "Array" -
+     * this used to assert only that the return value was not NULL, which it never can be
+     */
     public function testNestedArrayParameter() {
-        // Arrays within arrays should be flattened or handled appropriately
-        $result = $this->db->query(
-            "SELECT * FROM test_users WHERE name IN (?)",
-            [['John Doe', ['Jane Smith']]] // Nested array
-        );
+        $result = null;
+        $raised = $this->diagnosticsRaisedBy(function() use (&$result) {
+            $result = $this->db->query(
+                "SELECT name FROM test_users WHERE name IN (?)",
+                [['John Doe', ['Jane Smith']]] // Nested array
+            );
+        });
 
-        // Behavior may vary - some implementations might flatten, others might error
-        // We'll test that it doesn't crash
-        $this->assertNotNull($result); // Should return something, even if false
+        $this->assertNotFalse($result, "A nested array must not break the query");
+        $this->assertSame([], $raised, "Nor may it raise an array-to-string conversion notice");
+
+        $names = array_column($this->db->fetch_assoc_all($result), 'name');
+        sort($names);
+
+        $this->assertSame(['Jane Smith', 'John Doe'], $names, "The nested value is part of the list");
     }
 
     // SPECIAL CHARACTER HANDLING IN ARRAYS
@@ -416,21 +426,19 @@ class ArrayParameterTest extends DatabaseTestCase {
 
     // ARRAY CASTING TESTS
 
-    public function testArrayCastingBehavior() {
-        // Test the (array) casting mentioned in requirements
-        $scalar_value = 'John Doe';
+    /**
+     * A scalar given where an array would do is quoted as the single value it is, so "IN (?)" with a
+     * scalar behaves exactly like "IN (?)" with a one-element array
+     */
+    public function testAScalarReplacementBehavesLikeASingleElementArray() {
+        $this->db->query("SELECT name FROM test_users WHERE name IN (?)", ['John Doe']);
+        $from_scalar = $this->db->fetch_assoc_all();
 
-        $result = $this->db->query(
-            "SELECT * FROM test_users WHERE name IN (?)",
-            [$scalar_value] // Single scalar, should be cast to array internally
-        );
+        $this->db->query("SELECT name FROM test_users WHERE name IN (?)", [['John Doe']]);
+        $from_array = $this->db->fetch_assoc_all();
 
-        // This tests whether the library properly handles (array)$replacement casting
-        $this->assertNotFalse($result);
-
-        // The actual behavior depends on the implementation
-        // If scalar is properly cast to array, it should work like array('John Doe')
-        $this->assertGreaterThanOrEqual(0, $this->db->returned_rows);
+        $this->assertSame([['name' => 'John Doe']], $from_scalar);
+        $this->assertSame($from_array, $from_scalar);
     }
 
     public function testImplodeMethodWithArrays() {

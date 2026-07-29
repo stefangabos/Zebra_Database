@@ -7,8 +7,7 @@ require_once __DIR__ . '/bootstrap.php';
  */
 class FetchMethodsTest extends DatabaseTestCase
 {
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $this->connectToDatabase();
         $this->insertTestData();
