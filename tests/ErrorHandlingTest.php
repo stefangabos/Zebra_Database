@@ -291,42 +291,26 @@ class ErrorHandlingTest extends DatabaseTestCase {
     }
 
     /**
-     * Test error method returns consistent format
+     * The method has two return shapes and which one comes back is decided by whether there is an error to
+     * describe, not by the argument: with nothing to report all three calls give the same empty string, and
+     * the array is returned only once something has actually failed
      */
     public function testErrorMethodReturnFormat() {
-        // Test that error() always returns a string
-        $error = $this->db->error();
-        $this->assertIsString($error, "error() should always return a string");
+        // nothing has gone wrong yet
+        $this->assertSame('', $this->db->error(), "error() with nothing to report");
+        $this->assertSame('', $this->db->error(false), "error(FALSE) is the same call");
+        $this->assertSame('', $this->db->error(true), "and so is error(TRUE), until there is something to describe");
 
-        // Test that error(false) behaves same as error()
-        $errorFalse = $this->db->error(false);
-        $this->assertIsString($errorFalse, "error(false) should return a string");
-        $this->assertEquals($error, $errorFalse, "error() and error(false) should return same value");
-
-        // Test that error(true) returns string or array
-        $errorTrue = $this->db->error(true);
-        $this->assertTrue(is_string($errorTrue) || is_array($errorTrue),
-            "error(true) should return string or array"
-        );
-
-        // If there's an actual error, test the array structure
-        // Force an error first
         $this->db->query("SELECT * FROM nonexistent_table");
 
-        $errorArrayAfterFailure = $this->db->error(true);
-        if (is_array($errorArrayAfterFailure)) {
-            $this->assertArrayHasKey('number', $errorArrayAfterFailure, "Error array should have 'number' key");
-            $this->assertArrayHasKey('message', $errorArrayAfterFailure, "Error array should have 'message' key");
-            $this->assertIsInt($errorArrayAfterFailure['number'], "Error number should be integer");
-            $this->assertIsString($errorArrayAfterFailure['message'], "Error message should be string");
+        // and now that there is
+        $error = $this->db->error(true);
 
-            // Compare with regular error() call
-            $regularError = $this->db->error();
-            $this->assertEquals($regularError,
-                $errorArrayAfterFailure['message'],
-                "Regular error() should match error array message"
-            );
-        }
+        $this->assertIsArray($error, "error(TRUE) describes a failure as an array");
+        $this->assertSame(['number', 'message'], array_keys($error), "holding exactly a number and a message");
+        $this->assertIsInt($error['number']);
+        $this->assertIsString($error['message']);
+        $this->assertSame($this->db->error(), $error['message'], "which is the same message the string form gives");
     }
 
     // HALT_ON_ERRORS TESTS - Critical GitHub issue testing
