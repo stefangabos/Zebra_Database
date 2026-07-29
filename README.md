@@ -83,62 +83,6 @@ Or you can install it manually by downloading the latest version, unpacking it, 
 require_once 'path/to/Zebra_Database.php';
 ```
 
-## Running the tests
-
-The test suite is not part of the released package - if you want to run them you need a git checkout of the repository.
-
-The tests run against a real MySQL instance, creating and dropping their own tables in a database of
-their own, so point them at a server you are happy for them to write to.
-
-```bash
-composer install
-
-# copy the defaults and put your connection details in the copy (it is git-ignored)
-cp tests/phpunit.xml.dist tests/phpunit.xml
-
-tests/run-tests.sh
-```
-
-On Windows use `tests\run-tests.bat`, which does the same things in the same order.
-
-Run it with no arguments and it checks everything - the suite, then the PHP compatibility, static analysis
-and coding standard checks. Give it any argument and it runs only the tests you asked for, which is what
-you want while working on something:
-
-```bash
-tests/run-tests.sh --testdox                    # readable output, tests only
-tests/run-tests.sh --filter dcount              # only tests matching "dcount"
-tests/run-tests.sh CacheTest.php                # a single file
-tests/run-tests.sh --filter dcount --static     # the checks as well
-PHP=/path/to/php7.4/bin/php tests/run-tests.sh  # a specific interpreter
-```
-
-The three checks are also available on their own, and those are the ones to reach for while working
-through whatever they report, since they take arguments of their own:
-
-```bash
-composer analyse               # phpstan
-composer check-style           # the coding standard
-composer check-compat          # PHP compatibility, against the supported version
-composer check-compat-legacy   # ...and against the oldest version the library still runs on
-```
-
-A handful of tests cover the memcache and redis caching backends and skip themselves unless both the
-extension and a running server are found. Neither needs any configuration:
-
-```bash
-redis-server --port 6379 --save '' --appendonly no &
-memcached -p 11211 -m 64 &
-```
-
-Coverage is not produced on an ordinary run. Asking for it requires either
-[pcov](https://github.com/krakjoe/pcov) or [Xdebug](https://xdebug.org/) to be installed - without one of
-them PHPUnit reports *"No code coverage driver available"*, runs the tests anyway and writes no report:
-
-```bash
-composer test-coverage      # writes tests/coverage-html
-```
-
 ## How to use
 
 ##### Connecting to a database
@@ -222,3 +166,73 @@ $db->update(
 );
 ```
 > There are over **40 methods** and 20 properties that you can use and **lots** of things you can do with this library. I've prepared an [awesome documentation](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html) so that you can easily get an overview of what can be done. Go ahead, [check it out](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html)!
+
+## Running the tests
+
+The test suite is not part of the released package - if you want to run them you need a git checkout of the repository.
+
+The tests run against a real MySQL instance and **drop and recreate their tables at the start of every
+run** - `test_users`, `test_products` and `test_categories`, in a database of their own - so point them at
+a server you are happy for them to write to.
+
+Running them wants **MySQL 5.7 or newer** - a requirement of the suite, not of the library, which still
+supports 4.1.22+. What sets that floor is strict mode: the suite asserts what MySQL does with a value too
+long for its column, and that is one thing under `STRICT_TRANS_TABLES` and quite another without it, so
+rather than have tests that pass either way the requirement is checked before the first test runs and
+reported if the server does not meet it. 5.7 is simply where strict mode became the default - an older
+server will do if it is switched on there, and the tables themselves only need 5.5.3 for `utf8mb4` - but
+5.7 and up is what this is run against.
+
+```bash
+composer install
+
+# copy the defaults and put your connection details in the copy (it is git-ignored)
+cp tests/phpunit.xml.dist tests/phpunit.xml
+
+tests/run-tests.sh
+```
+
+On Windows use `tests\run-tests.bat`, which does the same things in the same order.
+
+Run it with no arguments and it checks everything - the suite, then the PHP compatibility, static analysis
+and coding standard checks. Give it any argument and it runs only the tests you asked for, which is what
+you want while working on something:
+
+```bash
+tests/run-tests.sh --testdox                    # readable output, tests only
+tests/run-tests.sh --filter dcount              # only tests matching "dcount"
+tests/run-tests.sh CacheTest.php                # a single file
+tests/run-tests.sh --filter dcount --static     # the checks as well
+PHP=/path/to/php7.4/bin/php tests/run-tests.sh  # a specific interpreter
+```
+
+The three checks are also available on their own, and those are the ones to reach for while working
+through whatever they report, since they take arguments of their own:
+
+```bash
+composer analyse               # phpstan
+composer check-style           # the coding standard
+composer check-compat          # PHP compatibility, against the supported version
+composer check-compat-legacy   # ...and against the oldest version the library still runs on
+```
+
+A handful of tests cover the memcache and redis caching backends and skip themselves unless both the
+extension and a running server are found. Neither needs any configuration:
+
+```bash
+redis-server --port 6379 --save '' --appendonly no &
+memcached -p 11211 -m 64 &
+```
+
+Two of those go further and skip unless the redis extension was built with `--enable-redis-lzf`, since what
+they check is that compression is handed over to the extension rather than done twice. All of them run on
+every push through [GitHub Actions](https://github.com/stefangabos/Zebra_Database/actions/workflows/tests.yml),
+against PHP 7.3 through 8.5 with both servers alongside.
+
+Coverage is not produced on an ordinary run. Asking for it requires either
+[pcov](https://github.com/krakjoe/pcov) or [Xdebug](https://xdebug.org/) to be installed - without one of
+them PHPUnit reports *"No code coverage driver available"*, runs the tests anyway and writes no report:
+
+```bash
+composer test-coverage      # writes tests/coverage-html
+```
