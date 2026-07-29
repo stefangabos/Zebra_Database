@@ -37,12 +37,15 @@
         'invalid_option'                        => 'Неверный параметр поделючения %s',
         'line'                                  => 'строка',
         'memcache_extension_not_installed'      => 'расширение Memcache не найдено.<br><span>
-                                                    Для использования memcache в качестве кэширующего средства, PHP должен быть не ниже 4.3.3, скомпилирован
-                                                    с <a href="https://pecl.php.net/package/memcache">memcached</a>, и настроен с опцией <em>--with-zlib[=DIR]</em>.</span>',
-        'redis_extension_not_installed'         => 'Redis extension not found.<br><span>
-                                                    For using redis as caching method, PHP version must be 4.3.3+, must be compiled with the
-                                                    <a href="https://pecl.php.net/package/redis">reids</a> extension, and needs to be
-                                                    configured with <em>--with-zlib[=DIR]</em>.</span>',
+                                                    Для использования memcache в качестве кэширующего средства в PHP должно быть установлено
+                                                    расширение <a href="https://pecl.php.net/package/memcache">memcache</a>.</span>',
+        'redis_extension_not_installed'         => 'расширение Redis не найдено.<br><span>
+                                                    Для использования redis в качестве кэширующего средства в PHP должно быть установлено
+                                                    расширение <a href="https://pecl.php.net/package/redis">redis</a>.</span>',
+        'redis_compression_not_available'       => 'Сжатие redis недоступно.<br><span>
+                                                    Расширение <a href="https://pecl.php.net/package/redis">redis</a> должно быть собрано с опцией
+                                                    <em>--enable-redis-lzf</em>, чтобы свойство <em>redis_compressed</em> имело эффект. Библиотека
+                                                    в любом случае сжимает кэшируемые данные.</span>',
         'milliseconds'                          => 'мс.',
         'mysql_error'                           => 'Ошибка MySQL',
         'no'                                    => 'Нет',

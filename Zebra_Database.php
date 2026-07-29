@@ -74,8 +74,8 @@ class Zebra_Database {
      *                      {@link connect()} method! Failing to do so will disable caching.
      *                      <br>
      *                      *When using this method, PHP must be compiled with the {@link https://pecl.php.net/package/memcache memcache}
-     *                      extension and, if {@link memcache_compressed} property is set to `TRUE`, needs to be configured
-     *                      with `--with-zlib[=DIR]`*
+     *                      extension and, if {@link memcache_compressed} property is set to `TRUE`, that extension has to
+     *                      have been built with zlib support*
      *
      *  - **redis**     -   query results are cached using a {@link https://redis.io/ redis} server<br>
      *                      When using this method make sure to also set the appropriate values for {@link redis_host},
@@ -83,8 +83,11 @@ class Zebra_Database {
      *                      {@link connect()} method! Failing to do so will disable caching.
      *                      <br>
      *                      *When using this method, PHP must be compiled with the {@link https://pecl.php.net/package/redis redis}
-     *                      extension and, if {@link redis_compressed} property is set to `TRUE`, needs to be configured
-     *                      with `--with-zlib[=DIR]`*
+     *                      extension and, if {@link redis_compressed} property is set to `TRUE`, that extension has to
+     *                      have been built with `--enable-redis-lzf`*
+     *
+     *  >   Note that the library compresses everything it caches. `memcache_compressed` and `redis_compressed` are used
+     *      solely for offloading the compression task to the extension rather than it being done by the library.
      *
      *  <code>
      *  // the host where memcache is listening for connections
@@ -93,8 +96,8 @@ class Zebra_Database {
      *  // the port on which memcache is listening for connections
      *  $db->memcache_port = 11211;
      *
-     *  // for this to work, PHP needs to be configured with --with-zlib[=dir] !
-     *  // set it to FALSE otherwise
+     *  // for this to work the memcache extension has to have been built with zlib support
+     *  // (the library compresses what it caches either way, so leaving this alone costs nothing)
      *  $db->memcache_compressed = true;
      *
      *  // cache queries using the memcache server
@@ -512,9 +515,13 @@ class Zebra_Database {
     public $max_query_time = 10;
 
     /**
-     *  Setting this property to `TRUE` will instruct to library to compress the cached results (using `zlib`).
+     *  Setting this property to `TRUE` will ask the memcache extension to compress what it is given.
      *
-     *  *For this to work, PHP needs to be configured with `--with-zlib[=DIR]`!*
+     *  >   Note that the library compresses everything it caches. `memcache_compressed` is used solely for offloading
+     *      the compression task to the extension rather than it being done by the library.
+     *
+     *  *For this to work, the {@link https://pecl.php.net/package/memcache memcache} extension has to have been
+     *  built with zlib support.*
      *
      *  *Set this property only if you are using `memcache` as {@link caching_method}.*
      *
@@ -620,11 +627,17 @@ class Zebra_Database {
     public $notifier_domain = '';
 
     /**
-     *  Setting this property to `TRUE` will instruct to library to compress the cached results (using `zlib`).
+     *  Setting this property to `TRUE` will ask the redis extension to compress what it is given.
      *
-     *  *For this to work, PHP needs to be configured with `--with-zlib[=DIR]`*!
+     *  >   Note that the library compresses everything it caches. `redis_compressed` is used solely for offloading
+     *      the compression task to the extension rather than it being done by the library.
      *
-     *  *Set this property only if you are using `redis` as {@link caching_method}.*
+     *  *For this to work, the {@link https://pecl.php.net/package/redis redis} extension has to have been built
+     *  with `--enable-redis-lzf`.*
+     *
+     *  *Set this property only if you are using `redis` as {@link caching_method}, and set it **prior** to
+     *  calling the {@link connect()} method - the option belongs to the connection, so it is applied when that
+     *  connection is made.*
      *
      *  Default is `FALSE`
      *
@@ -3452,7 +3465,7 @@ class Zebra_Database {
                 $memcache_key = md5($this->memcache_key_prefix . $sql);
 
                 // if there is a cached version of what we're looking for, and data is valid
-                if (($result = $this->memcache->get($memcache_key)) && $cached_result = @unserialize(gzuncompress(base64_decode($result)))) {
+                if (($result = $this->memcache->get($memcache_key)) && $cached_result = $this->_cache_decode($result)) {
 
                     // put results in the right place
                     // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
@@ -3473,7 +3486,7 @@ class Zebra_Database {
                 $redis_key = md5($this->redis_key_prefix . $sql);
 
                 // if there is a cached version of what we're looking for, and data is valid
-                if (($result = $this->redis->get($redis_key)) && $cached_result = @unserialize(gzuncompress(base64_decode($result)))) {
+                if (($result = $this->redis->get($redis_key)) && $cached_result = $this->_cache_decode($result)) {
 
                     // put results in the right place
                     // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
@@ -3494,7 +3507,7 @@ class Zebra_Database {
                 $key = md5($sql);
 
                 // if a cached version of this query's result already exists and it is not expired
-                if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && (int)$_SESSION[$key . '_timestamp'] + (int)$cache > time() && $cached_result = @unserialize(gzuncompress(base64_decode($_SESSION[$key])))) {
+                if (isset($_SESSION[$key]) && isset($_SESSION[$key . '_timestamp']) && (int)$_SESSION[$key . '_timestamp'] + (int)$cache > time() && $cached_result = $this->_cache_decode($_SESSION[$key])) {
 
                     // put results in the right place
                     // (we couldn't do this above because $this->cached_result[] = @unserialize... would've triggered a warning)
@@ -3521,7 +3534,7 @@ class Zebra_Database {
                     if (
                         file_exists($file_name)
                         && filemtime($file_name) + $cache > time()
-                        && ($cached_result = @unserialize(gzuncompress(base64_decode(file_get_contents($file_name)))))
+                        && ($cached_result = $this->_cache_decode(file_get_contents($file_name)))
                     ) {
 
                         // put results in the right place
@@ -3670,7 +3683,7 @@ class Zebra_Database {
                     ));
 
                     // the content to be cached
-                    $content = base64_encode(gzcompress(serialize($cache_data)));
+                    $content = $this->_cache_encode($cache_data);
 
                     // if caching method is "memcache" and memcache is enabled
                     if ($this->caching_method === 'memcache' && $this->memcache)
@@ -4755,6 +4768,61 @@ class Zebra_Database {
     }
 
     /**
+     *  Prepares a set of results for being written to whatever the caching method is.
+     *
+     *  The data is always serialized and always base64 encoded, so that what comes out is safe to put in a file, in
+     *  the session, or in a value on a memcache or redis server.
+     *
+     *  Unless told otherwise, the library compresses the data itself, but when the extension has been asked to compress
+     *  what it is given - through {@link memcache_compressed} or through {@link redis_compressed} - it is left
+     *  uncompressed here instead.
+     *
+     *  @param  array<mixed>    $cache_data     the data to cache
+     *
+     *  @return string
+     *
+     *  @access private
+     */
+    private function _cache_encode($cache_data) {
+
+        $is_extension_compress =
+            ($this->caching_method === 'memcache' && $this->memcache_compressed)
+            || ($this->caching_method === 'redis' && $this->redis_compressed);
+
+        return base64_encode($is_extension_compress ? serialize($cache_data) : gzcompress(serialize($cache_data)));
+
+    }
+
+    /**
+     *  Turns what {@link _cache_encode()} wrote back into the results it was given.
+     *
+     *  A cache entry is written by one run of a script and read by another, so whether it is compressed or not is
+     *  decided by the settings that were in place when it was written rather than by the ones in place now. A cache
+     *  filled while {@link redis_compressed} was on can be read back after it has been turned off, and/or the same entry
+     *  may be shared by several scripts that disagree about it. Both shapes are therefore read, whatever the current
+     *  settings say.
+     *
+     *  @param  string  $content    data read back from cache
+     *
+     *  @return mixed               the cached results, or FALSE if what was read cannot be used
+     *
+     *  @access private
+     */
+    private function _cache_decode($content) {
+
+        if (!is_string($content) || $content === '') return false;
+
+        $decoded = base64_decode($content);
+        $uncompressed = @gzuncompress($decoded);
+
+        // which of the two shapes this is, is not recorded anywhere - the data itself is what says so. gzuncompress()
+        // warns and returns FALSE for anything that was not compressed, so the warning is silenced and its return
+        // value is the answer
+        return @unserialize($uncompressed === false ? $decoded : $uncompressed);
+
+    }
+
+    /**
      *  Checks if the connection to the MySQL server has been previously established by the connect() method.
      *
      *  @return boolean
@@ -4898,7 +4966,43 @@ class Zebra_Database {
 
                         ));
 
-                    else $this->redis = $redis;
+                    else {
+
+                        // if the cached data is also to be compressed by the redis extension itself
+                        if ($this->redis_compressed) {
+
+                            // a build without support for compression may return FALSE but may also throw an exception
+                            // and, since this runs while connecting, that would break the library
+                            try {
+
+                                $compression_available =
+                                    defined('Redis::OPT_COMPRESSION')
+                                    && defined('Redis::COMPRESSION_LZF')
+                                    && @$redis->setOption(Redis::OPT_COMPRESSION, Redis::COMPRESSION_LZF)
+                                    && $redis->getOption(Redis::OPT_COMPRESSION) == Redis::COMPRESSION_LZF;
+
+                            } catch (Exception $error) {
+
+                                $compression_available = false;
+
+                            }
+
+                            // if the extension is not configured with compression support
+                            if (!$compression_available) {
+
+                                $this->_log('errors', array(
+
+                                    'message'   =>  $this->language['redis_compression_not_available']
+
+                                ), false);
+
+                            }
+
+                        }
+
+                        $this->redis = $redis;
+
+                    }
 
                 // if redis extension is not installed
                 } else {

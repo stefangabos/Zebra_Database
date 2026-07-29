@@ -59,9 +59,11 @@ PHP 7.3.0+ with the **mysqli extension** activated, MySQL 4.1.22+
 
 > The library itself still runs on PHP 5.5 and newer, and this is verified on every change with [PHPCompatibility](https://github.com/PHPCompatibility/PHPCompatibility) via `composer check-compat-legacy`. The supported version is given as 7.3 because that is the oldest version the test suite can actually run on, and *supported* should mean *tested*. If you are on PHP 5.5 to 7.2 the library will very likely work, but you are on your own.
 
-For using **memcache** as caching method, PHP must be compiled with the [memcache](https://pecl.php.net/package/memcache) extension and, if [memcache_compressed](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$memcache_compressed) property is set to TRUE, needs to be configured with `–with-zlib[=DIR]`
+For using **memcache** as caching method, PHP must have the [memcache](https://pecl.php.net/package/memcache) extension installed. The [memcache_compressed](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$memcache_compressed) property, which hands the compressing over to memcache instead of doing it in the library, additionally requires that extension to have been built with zlib support
 
-For using **redis** as caching method, PHP must be compiled with the [redis](https://pecl.php.net/package/redis) extension and, if [redis_compressed](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$redis_compressed) property is set to TRUE, needs to be configured with `–with-zlib[=DIR]`
+For using **redis** as caching method, PHP must have the [redis](https://pecl.php.net/package/redis) extension installed. The [redis_compressed](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$redis_compressed) property, which hands the compressing over to the extension instead of doing it in the library, additionally requires that extension to have been built with `--enable-redis-lzf`
+
+> Query results are compressed either way - the two *_compressed* properties only decide whether the library or the caching server does it, and caching works without either of them.
 
 ## Installation
 

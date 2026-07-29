@@ -38,13 +38,15 @@
         'invalid_option'                        => 'Ungültige Verbindungsoption: %s',
         'line'                                  => 'Zeile',
         'memcache_extension_not_installed'      => 'Die Memcache-Erweiterung wurde nicht gefunden.<br><span>
-                                                    Um Memcache als Caching-Methode zu verwenden ist PHP Version 4.3.3+ notwendig, PHP muss mit der
-                                                    <a href="https://pecl.php.net/package/memcache">memcached</a> Erweiterung kompiliert werden und muss mit
-                                                    <em>--with-zlib[=DIR]</em> konfiguriert werden.</span>',
-        'redis_extension_not_installed'         => 'Redis extension not found.<br><span>
-                                                    For using redis as caching method, PHP version must be 4.3.3+, must be compiled with the
-                                                    <a href="https://pecl.php.net/package/redis">reids</a> extension, and needs to be
-                                                    configured with <em>--with-zlib[=DIR]</em>.</span>',
+                                                    Um Memcache als Caching-Methode zu verwenden, muss in PHP die
+                                                    <a href="https://pecl.php.net/package/memcache">memcache</a> Erweiterung installiert sein.</span>',
+        'redis_extension_not_installed'         => 'Die Redis-Erweiterung wurde nicht gefunden.<br><span>
+                                                    Um Redis als Caching-Methode zu verwenden, muss in PHP die
+                                                    <a href="https://pecl.php.net/package/redis">redis</a> Erweiterung installiert sein.</span>',
+        'redis_compression_not_available'       => 'Redis-Komprimierung ist nicht verfügbar.<br><span>
+                                                    Die <a href="https://pecl.php.net/package/redis">redis</a> Erweiterung muss mit
+                                                    <em>--enable-redis-lzf</em> kompiliert werden, damit die Eigenschaft <em>redis_compressed</em> eine
+                                                    Wirkung hat. Die Bibliothek komprimiert die zwischengespeicherten Daten ohnehin.</span>',
         'milliseconds'                          => 'ms',
         'mysql_error'                           => 'MySQL-Fehler',
         'no'                                    => 'Nein',

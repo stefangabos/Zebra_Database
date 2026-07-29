@@ -37,13 +37,15 @@
         'invalid_option'                        => '%s is an invalid connection option',
         'line'                                  => 'Line',
         'memcache_extension_not_installed'      => 'Memcache extension not found.<br><span>
-                                                    For using memcache as caching method, PHP version must be 4.3.3+, must be compiled with the
-                                                    <a href="https://pecl.php.net/package/memcache">memcached</a> extension, and needs to be
-                                                    configured with <em>--with-zlib[=DIR]</em>.</span>',
+                                                    For using memcache as caching method, PHP must have the
+                                                    <a href="https://pecl.php.net/package/memcache">memcache</a> extension installed.</span>',
         'redis_extension_not_installed'         => 'Redis extension not found.<br><span>
-                                                    For using redis as caching method, PHP version must be 4.3.3+, must be compiled with the
-                                                    <a href="https://pecl.php.net/package/redis">reids</a> extension, and needs to be
-                                                    configured with <em>--with-zlib[=DIR]</em>.</span>',
+                                                    For using redis as caching method, PHP must have the
+                                                    <a href="https://pecl.php.net/package/redis">redis</a> extension installed.</span>',
+        'redis_compression_not_available'       => 'Redis compression is not available.<br><span>
+                                                    The <a href="https://pecl.php.net/package/redis">redis</a> extension has to be built with
+                                                    <em>--enable-redis-lzf</em> for the <em>redis_compressed</em> property to have any effect. The
+                                                    library compresses what it caches either way, so nothing is lost by leaving it off.</span>',
         'milliseconds'                          => 'ms',
         'mysql_error'                           => 'MySQL error',
         'no'                                    => 'No',
