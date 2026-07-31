@@ -2344,7 +2344,9 @@ class Zebra_Database {
      *
      *  @since  2.6
      *
-     *  @return array<string>   Returns information about the columns of a given table as an associative array.
+     *  @return array<mixed>    Returns information about the columns of a given table as an associative array, keyed by
+     *                          column name - each entry being the row `SHOW COLUMNS` gives for it and where `Default`
+     *                          is `NULL` when the column has no default. Returns `FALSE` when the table cannot be described.
      */
     public function get_table_columns($table) {
 
