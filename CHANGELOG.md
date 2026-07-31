@@ -10,9 +10,9 @@
 >
 >   The one worth a look is the change to **`set_charset`'s defaults**, and only if you call that method without arguments - the library never calls it for you, so if you never call it either, nothing changes. the new collation compares differently (`'ß' = 'ss'` is true under `utf8mb4_unicode_ci` and false under the old `utf8_general_ci`), which can quietly change what a query matches To keep exactly what you had, pass the old values yourself: `$db->set_charset('utf8', 'utf8_general_ci')`.
 >
->   The minimum PHP version going to 7.3 reads worse than it is - the library still runs on 5.5 and that is verified on every change. 7.3 is simply the oldest version the *test suite* can run on, so it is the oldest one I can honestly say the library is tested on.
+>   The minimum PHP version going to 7.4 reads worse than it is - the library still runs on 5.6.40 and that is verified on every change. 7.4 is simply the oldest version the *test suite* can run on, so it is the oldest one I can honestly say the library is tested on.
 
-- the minimum required PHP version is now **7.3**, up from 5.3. the library itself still runs on PHP 5.5 and newer and this is verified on every change with PHPCompatibility, but 7.3 is the oldest version the test suite can run on, so that's the minimum PHP version the library was *tested* on
+- the minimum required PHP version is now **7.4**, up from 5.3. the library itself still runs on PHP 5.6.40 and newer and this is verified on every change with PHPCompatibility, and by linting and smoke-testing it on a real PHP 5.6.40, but 7.4 is the oldest version the test suite can run on, so that's the minimum PHP version the library was *tested* on
 - `set_charset` now defaults to `utf8mb4`/`utf8mb4_unicode_ci` instead of `utf8`/`utf8_general_ci`; pass the old values explicitly if you need them - note that comparison and sorting differ between the two collations
 - the `INC()` keyword now has to be the whole of a value. Previously a value merely *starting* with it, like `INC(5) apples`, was taken to be an instruction to increment the column, and on a text column that either failed outright or wrote a number over what you meant to store - such values are now stored as the strings they are
 - `table_exists`, `get_table_status` and `optimize` no longer treat an underscore in a table name as a single character wildcard, so `table_exists('order_items')` no longer returns TRUE because a table called `orderXitems` happens to exist. `%` still works as a wildcard in the two that document it
@@ -46,9 +46,10 @@
 - fixed bug where a NULL among the values handed to the internal escaping producing an empty pair of grave accents instead of the SQL keyword, which was invalid SQL and also raised a deprecation on PHP 8.1 and an error on PHP 9
 - fixed bug where `redis_compressed` did nothing
 - fixed bug where when `redis_compressed` or `memcache_compressed` were active the compression happened twice
+- language files now return their messages instead of assigning $this->language directly
 - replaced dynamic mysqli_result properties with a private property thus fixing deprecation notices in PHP 8.2+ and errors in PHP 9
 - updated the list of known MySQL functions; the list decides whether a value is escaped or passed through as SQL, so it is what separates a value being stored from one being executed
-- added a GitHub Actions workflow that runs the test suite on PHP 7.3 through 8.5 against a real MySQL server, with memcache and redis alongside it so the caching backends are covered too, plus the static analysis, PHP compatibility and coding standard checks
+- added a GitHub Actions workflow that runs the test suite on PHP 7.4 through 8.5 against a real MySQL server, with memcache and redis alongside it so the caching backends are covered too, plus the static analysis, PHP compatibility and coding standard checks
 
 ## version 2.13.3 (February 19, 2026)
 
