@@ -3362,8 +3362,8 @@ class Zebra_Database {
 
             ));
 
-        // if $replacements is specified and is an array
-        if ($replacements !== '' && is_array($replacements) && !empty($replacements)) {
+        // if there are replacements to make ($replacements can only be an array at this point)
+        if (!empty($replacements)) {
 
             // found how many items to replace are there in the query string
             preg_match_all('/\?/', $sql, $matches, PREG_OFFSET_CAPTURE);
