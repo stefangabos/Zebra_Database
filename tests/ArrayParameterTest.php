@@ -3,7 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for Zebra_Database array parameter handling in IN clauses and similar constructs
+ * An array given for a single placeholder is expanded into a comma separated list, so that "IN (?)" takes
+ * the whole set it is handed - whatever is in it, and however much of it there is.
  */
 class ArrayParameterTest extends DatabaseTestCase {
 
@@ -58,13 +59,12 @@ class ArrayParameterTest extends DatabaseTestCase {
     }
 
     public function testLargeArrayParameter() {
-        // Create a large array of names
+        // a hundred names that match nothing, and two that do
         $many_names = [];
         for ($i = 1; $i <= 100; $i++) {
             $many_names[] = "User $i";
         }
 
-        // Add some existing names
         $many_names[] = 'John Doe';
         $many_names[] = 'Jane Smith';
 
@@ -74,7 +74,7 @@ class ArrayParameterTest extends DatabaseTestCase {
         );
 
         $this->assertNotFalse($result);
-        $this->assertEquals(2, $this->db->returned_rows); // Should find John and Jane
+        $this->assertEquals(2, $this->db->returned_rows);
 
         $names = [];
         while ($row = $this->db->fetch_assoc($result)) {
@@ -94,7 +94,7 @@ class ArrayParameterTest extends DatabaseTestCase {
         );
 
         $this->assertNotFalse($result);
-        $this->assertEquals(3, $this->db->returned_rows); // All test users
+        $this->assertEquals(3, $this->db->returned_rows); // every test user has one of these ages
 
         $ages = [];
         while ($row = $this->db->fetch_assoc($result)) {
@@ -127,7 +127,7 @@ class ArrayParameterTest extends DatabaseTestCase {
     public function testMixedNumericArrayParameter() {
         $result = $this->db->query(
             "SELECT * FROM test_users WHERE age IN (?)",
-            [[25, 30.0, '35']] // Mix of int, float, string
+            [[25, 30.0, '35']] // an int, a float and a string
         );
 
         $this->assertNotFalse($result);
@@ -143,13 +143,12 @@ class ArrayParameterTest extends DatabaseTestCase {
         );
 
         $this->assertNotFalse($result);
-        $this->assertEquals(3, $this->db->returned_rows); // All users (some active, some inactive)
+        $this->assertEquals(3, $this->db->returned_rows); // every user, active or not
     }
 
     public function testMixedTypeArrayParameter() {
-        // Create test data with mixed types
         $this->db->insert('test_users', [
-            'name' => '42', // String that looks like number
+            'name' => '42', // a name that looks like a number
             'email' => 'number@example.com',
             'age' => 42
         ]);
@@ -160,8 +159,6 @@ class ArrayParameterTest extends DatabaseTestCase {
         );
 
         $this->assertNotFalse($result);
-
-        // Should handle type conversions appropriately
         $this->assertGreaterThanOrEqual(1, $this->db->returned_rows);
     }
 
@@ -177,7 +174,7 @@ class ArrayParameterTest extends DatabaseTestCase {
         );
 
         $this->assertNotFalse($result);
-        $this->assertEquals(2, $this->db->returned_rows); // John (30) and Jane (25)
+        $this->assertEquals(2, $this->db->returned_rows); // John is 30 and Jane is 25
 
         $names = [];
         while ($row = $this->db->fetch_assoc($result)) {
@@ -186,7 +183,7 @@ class ArrayParameterTest extends DatabaseTestCase {
 
         $this->assertContains('John Doe', $names);
         $this->assertContains('Jane Smith', $names);
-        $this->assertNotContains('Bob Johnson', $names); // Bob is 35, not in age array
+        $this->assertNotContains('Bob Johnson', $names); // Bob is 35, which is not in the age list
     }
 
     public function testMixedArrayAndScalarParameters() {
@@ -196,7 +193,7 @@ class ArrayParameterTest extends DatabaseTestCase {
         );
 
         $this->assertNotFalse($result);
-        $this->assertEquals(2, $this->db->returned_rows); // Both are active
+        $this->assertEquals(2, $this->db->returned_rows); // both are active
 
         $names = [];
         while ($row = $this->db->fetch_assoc($result)) {
@@ -219,8 +216,7 @@ class ArrayParameterTest extends DatabaseTestCase {
 
         $this->assertNotFalse($result);
 
-        // Should find John (age 30 > 25, email matches) and potentially Bob (age 35 > 25, email matches)
-        // But need to check our test data for Bob's active status
+        // both John and Bob are over 25 with an email in the list
         $names = [];
         while ($row = $this->db->fetch_assoc($result)) {
             $names[] = $row['name'];
@@ -232,25 +228,24 @@ class ArrayParameterTest extends DatabaseTestCase {
     // ARRAY PARAMETER ERROR HANDLING
 
     public function testArrayParameterWithWrongPlaceholderCount() {
-        // More array parameters than placeholders
+        // two arrays for the one placeholder there is
         $result = $this->db->query(
             "SELECT * FROM test_users WHERE name IN (?)",
-            [['John Doe'], ['Jane Smith']] // Two arrays but one placeholder
+            [['John Doe'], ['Jane Smith']]
         );
 
         $this->assertFalse($result);
     }
 
     /**
-     * A nested array is flattened into the list rather than refused or imploded into the word "Array" -
-     * this used to assert only that the return value was not NULL, which it never can be
+     * A nested array is flattened into the list rather than refused or imploded into the word "Array"
      */
     public function testNestedArrayParameter() {
         $result = null;
         $raised = $this->diagnosticsRaisedBy(function() use (&$result) {
             $result = $this->db->query(
                 "SELECT name FROM test_users WHERE name IN (?)",
-                [['John Doe', ['Jane Smith']]] // Nested array
+                [['John Doe', ['Jane Smith']]]
             );
         });
 
@@ -266,7 +261,6 @@ class ArrayParameterTest extends DatabaseTestCase {
     // SPECIAL CHARACTER HANDLING IN ARRAYS
 
     public function testArrayParameterWithSpecialCharacters() {
-        // Insert test data with special characters
         $special_names = [
             "O'Reilly & Sons",
             "Smith, John Jr.",
@@ -309,7 +303,7 @@ class ArrayParameterTest extends DatabaseTestCase {
             "' UNION SELECT * FROM test_users --"
         ];
 
-        // Insert a normal value for comparison
+        // the one value in the list that is not an attack, so there is something to match
         $this->db->insert('test_users', [
             'name' => 'normal_value',
             'email' => 'normal@example.com',
@@ -322,12 +316,12 @@ class ArrayParameterTest extends DatabaseTestCase {
         );
 
         $this->assertNotFalse($result);
-        $this->assertEquals(1, $this->db->returned_rows); // Should only find 'normal_value'
+        $this->assertEquals(1, $this->db->returned_rows);
 
         $row = $this->db->fetch_assoc($result);
         $this->assertEquals('normal_value', $row['name']);
 
-        // Verify table still exists and has expected data
+        // the table the payload tried to drop is still there
         $count_result = $this->db->query("SELECT COUNT(*) as count FROM test_users");
         $count_row = $this->db->fetch_assoc($count_result);
         $this->assertGreaterThan(0, (int)$count_row['count']);
@@ -336,13 +330,12 @@ class ArrayParameterTest extends DatabaseTestCase {
     // PERFORMANCE AND EDGE CASES
 
     public function testVeryLargeArrayParameter() {
-        // Test with a very large array (1000+ elements)
+        // a thousand values that match nothing, and one that does
         $large_array = [];
         for ($i = 1; $i <= 1000; $i++) {
             $large_array[] = "nonexistent_user_$i";
         }
 
-        // Add one existing user
         $large_array[] = 'John Doe';
 
         $result = $this->db->query(
@@ -351,7 +344,7 @@ class ArrayParameterTest extends DatabaseTestCase {
         );
 
         $this->assertNotFalse($result);
-        $this->assertEquals(1, $this->db->returned_rows); // Should find only John Doe
+        $this->assertEquals(1, $this->db->returned_rows);
 
         $row = $this->db->fetch_assoc($result);
         $this->assertEquals('John Doe', $row['name']);
@@ -366,7 +359,7 @@ class ArrayParameterTest extends DatabaseTestCase {
         );
 
         $this->assertNotFalse($result);
-        $this->assertEquals(2, $this->db->returned_rows); // Should still find only 2 distinct users
+        $this->assertEquals(2, $this->db->returned_rows); // a repeated value does not repeat the row
 
         $names = [];
         while ($row = $this->db->fetch_assoc($result)) {
@@ -390,19 +383,19 @@ class ArrayParameterTest extends DatabaseTestCase {
     }
 
     public function testArrayParameterWithJoins() {
-        // Create some test products linked to users
         $this->db->query("INSERT INTO test_products (name, price, category_id) VALUES ('Laptop', 999.99, 1)");
         $this->db->query("INSERT INTO test_products (name, price, category_id) VALUES ('Book', 19.99, 2)");
 
         $result = $this->db->query(
-            "SELECT u.*, p.name as product_name FROM test_users u
-             JOIN test_products p ON u.age > 25
-             WHERE u.name IN (?)",
+            "SELECT users.*, products.name as product_name FROM test_users users
+             JOIN test_products products ON users.age > 25
+             WHERE users.name IN (?)",
             [['John Doe', 'Jane Smith', 'Bob Johnson']]
         );
 
         $this->assertNotFalse($result);
-        // Should return multiple rows due to cartesian product of JOIN
+
+        // the join is on a condition that is not a relation, so every user meets every product
         $this->assertGreaterThan(0, $this->db->returned_rows);
     }
 
@@ -415,7 +408,7 @@ class ArrayParameterTest extends DatabaseTestCase {
         $this->assertNotFalse($result);
         $this->assertLessThanOrEqual(2, $this->db->returned_rows);
 
-        // Should be ordered by age descending
+        // every age is no greater than the one before it
         $previous_age = PHP_INT_MAX;
         while ($row = $this->db->fetch_assoc($result)) {
             $current_age = (int)$row['age'];
@@ -442,7 +435,6 @@ class ArrayParameterTest extends DatabaseTestCase {
     }
 
     public function testImplodeMethodWithArrays() {
-        // Test the implode method with various array types
         $simple_array = ['a', 'b', 'c'];
         $imploded = $this->db->implode($simple_array);
         $this->assertIsString($imploded);
@@ -459,11 +451,13 @@ class ArrayParameterTest extends DatabaseTestCase {
     // EMPTY ARRAY REPLACEMENTS
 
     /**
-     * An empty array used to be imploded to an empty string, producing "IN ()" - a syntax error. It now
-     * becomes a subquery that returns no rows, which is the only value that is correct in both
-     * directions: "IN" then matches nothing, and "NOT IN" matches everything, which is what an empty
-     * set means. A literal NULL gets "IN" right but "NOT IN" wrong, and an empty string gets both
-     * wrong by matching rows whose value happens to be the empty string.
+     * An empty array was imploded to an empty string, producing "IN ()" - a syntax error. It becomes a
+     * subquery returning no rows, which is the only replacement that is correct in both directions: "IN"
+     * matches nothing and "NOT IN" matches everything, which is what an empty set means. A literal NULL
+     * gets "IN" right and "NOT IN" wrong, and an empty string gets both wrong by matching rows whose
+     * value happens to be the empty string.
+     *
+     * @group regression
      */
     public function testEmptyArrayInAnInClauseMatchesNothing() {
         $result = $this->db->query("SELECT id FROM test_users WHERE name IN (?)", [[]]);
@@ -476,6 +470,9 @@ class ArrayParameterTest extends DatabaseTestCase {
         $this->assertSame([], $ids, "IN over an empty set matches nothing");
     }
 
+    /**
+     * @group regression
+     */
     public function testEmptyArrayInANotInClauseMatchesEverything() {
         $expected = [];
         $all = $this->db->query("SELECT id FROM test_users ORDER BY id");
@@ -493,8 +490,11 @@ class ArrayParameterTest extends DatabaseTestCase {
         $this->assertSame($expected, $ids, "NOT IN over an empty set excludes nothing, so every row matches");
     }
 
+    /**
+     * @group regression
+     */
     public function testEmptyArrayDoesNotMatchRowsWithAnEmptyStringValue() {
-        // this is what an empty string replacement got wrong - it matched the row below
+        // a row whose value is the empty string, which is what an empty string replacement matches
         $this->db->query("DROP TABLE IF EXISTS test_empty_value");
         $this->db->query("CREATE TABLE test_empty_value (id INT, v VARCHAR(20))");
         $this->db->query("INSERT INTO test_empty_value VALUES (1, ''), (2, 'a')");

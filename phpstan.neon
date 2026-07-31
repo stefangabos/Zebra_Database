@@ -6,25 +6,50 @@ parameters:
         - Zebra_Database.php
         - tests
 
+    # every setting is a plain public property that the caller assigns whatever it likes to, and the library
+    # checks the type where it reads one - PropertiesTest pins that an integer in cache_path is reported
+    # rather than fatal. The docblocks say what a setting is *for*, so they are documentation rather than a
+    # guarantee, and a guard against the value the docblock does not describe is exactly the point
+    treatPhpDocTypesAsCertain: false
+
+    # the suite's settings are global constants, and the only way phpstan learns a constant exists is by
+    # executing the define(). tests/settings.php declares them and does nothing else - no connection, no
+    # files written - so running it costs nothing and static analysis stays independent of the database.
+    # bootstrap.php is the file that has the side effects, and phpstan never touches it.
     bootstrapFiles:
         - tests/settings.php
 
+    # SqlFormatter ships inside the library but is not ours - it is read for the symbols it declares and
+    # not analysed
     scanFiles:
         - includes/SqlFormatter.php
 
     excludePaths:
-        - tests/tmp
-        - tests/coverage-html
+        # both are written by a run rather than committed, so they may not be there at all - "(?)" is what
+        # keeps phpstan from stopping over an excluded path it cannot find
+        - tests/tmp (?)
+        - tests/coverage-html (?)
+        # phpcs sniffs, which phpstan cannot reason about without the whole of PHP_CodeSniffer loaded -
+        # its tokens are constants defined at runtime, so even T_CLOSURE comes back as "not found"
         - tests/standards
+        # written to the library's own floor rather than to 7.4, and never loaded by the suite
+        - tests/legacy
+        # a development script rather than suite code - its guard against an emptied mutation list reads as dead
+        - tests/mutate.php
 
     ignoreErrors:
 
+        # The library ships and is held to the full level. The suite is held to everything except declaring
+        # types on its own methods - a test method returns nothing and says so by being a test. Everything
+        # else phpstan finds there is still reported.
         -
             identifier: missingType.return
             path: tests/*
         -
             identifier: missingType.parameter
             path: tests/*
+        # drop this one if every property in the suite carries a @var - an ignore that matches nothing is
+        # itself reported as an error
         -
             identifier: missingType.property
             path: tests/*

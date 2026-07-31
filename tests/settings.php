@@ -4,9 +4,8 @@
  * The settings the test suite runs with, and the helpers that read them.
  *
  * This file only declares things - no connections, no directories created, nothing written. That is what
- * lets anything include it safely, which phpstan needs: it has to know these constants exist, and the only
- * way it learns about a constant is by executing the define(). Including bootstrap.php for that would have
- * it connect to MySQL and stop the analysis when it cannot.
+ * lets anything include it safely, which phpstan needs: the only way it learns a constant exists is by
+ * executing the define(), and pointing it at bootstrap.php would have it connect to MySQL.
  *
  * bootstrap.php includes this file and then does the work that has side effects.
  */
@@ -35,7 +34,7 @@ define('TEST_DB_PASS', test_env('DB_PASS', ''));
 define('TEST_DB_NAME', test_env('DB_NAME', 'zebra_test'));
 // cast so that the constant has one type rather than two - getenv() hands back a string and the fallback
 // is a number, and connect() documents this argument as a string. bootstrap.php casts it back to an int
-// for mysqli's constructor, which wants one.
+// for mysqli's constructor, which wants one
 define('TEST_DB_PORT', (string)test_env('DB_PORT', 3306));
 
 // caching servers - these have no valid empty value, so "?:" is fine here
@@ -80,10 +79,10 @@ function cleanupTempFiles() {
         if (is_file($file)) {
             unlink($file);
         } elseif (is_dir($file) && basename($file) !== '.gitkeep') {
-            $subFiles = glob($file . '/*');
-            foreach ($subFiles as $subFile) {
-                if (is_file($subFile)) {
-                    unlink($subFile);
+            $sub_files = glob($file . '/*');
+            foreach ($sub_files as $sub_file) {
+                if (is_file($sub_file)) {
+                    unlink($sub_file);
                 }
             }
         }

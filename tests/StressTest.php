@@ -3,8 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Stress test suite designed to intentionally break the Zebra_Database library
- * Tests resource exhaustion, extreme inputs, and boundary conditions
+ * The library under load and at the edges - many connections at once, result sets big enough to matter,
+ * values at the limit of what a column holds, and a hundred queries in a row.
  */
 class StressTest extends DatabaseTestCase
 {
@@ -14,13 +14,12 @@ class StressTest extends DatabaseTestCase
     }
 
     /**
-     * Test resource exhaustion with many concurrent connections
+     * Many connections open at the same time, each of them its own
      */
     public function testConnectionExhaustion() {
         $connections = [];
-        $max_connections = 10; // Reasonable limit for testing
+        $max_connections = 10;
 
-        // Create multiple connections
         for ($i = 0; $i < $max_connections; $i++) {
             $db = new Zebra_Database();
             $db->debug = false;
@@ -33,8 +32,7 @@ class StressTest extends DatabaseTestCase
             $connections[] = $db;
         }
 
-        // every one of them has to be a connection of its own, and all of them usable at the same time -
-        // counting the array said only that the loop above had run
+        // every one of them is a connection of its own, and all of them usable at the same time
         $links = [];
 
         foreach ($connections as $db) {
@@ -46,17 +44,15 @@ class StressTest extends DatabaseTestCase
 
         $this->assertCount($max_connections, array_unique($links), "Each instance holds a connection of its own");
 
-        // Clean up connections
         foreach ($connections as $db) {
             $db->close();
         }
     }
 
     /**
-     * Test memory exhaustion with large result sets
+     * A result set big enough that reading it all at once is a decision rather than a detail
      */
     public function testLargeResultSetMemoryHandling() {
-        // Create a table with large data
         $this->db->query("
             CREATE TEMPORARY TABLE large_test_data (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -64,7 +60,6 @@ class StressTest extends DatabaseTestCase
             )
         ");
 
-        // Insert rows with large text data
         $large_text = str_repeat('A', 10000); // 10KB per row
         $row_count = 100; // 1MB total
 
@@ -74,11 +69,10 @@ class StressTest extends DatabaseTestCase
             ]);
         }
 
-        // Test fetching all at once (memory intensive)
         $result = $this->db->query("SELECT * FROM large_test_data");
         $this->assertNotFalse($result, "Should be able to query large dataset");
 
-        // Test fetch_assoc_all with large dataset
+        // a megabyte of rows read in one go, with the memory that takes measured either side of it
         $start_memory = memory_get_usage();
         $all_rows = $this->db->fetch_assoc_all($result);
         $end_memory = memory_get_usage();
@@ -86,14 +80,13 @@ class StressTest extends DatabaseTestCase
         $memory_used = $end_memory - $start_memory;
 
         $this->assertCount($row_count, $all_rows, "Should fetch all rows");
-        $this->assertLessThan(50 * 1024 * 1024, $memory_used, "Memory usage should be reasonable (< 50MB)"); // Generous limit
+        $this->assertLessThan(50 * 1024 * 1024, $memory_used, "Memory usage should be reasonable (< 50MB)");
     }
 
     /**
-     * Test query performance with complex operations
+     * A query with everything in it - a join, a subquery and an aggregate - over a thousand rows
      */
     public function testComplexQueryPerformance() {
-        // Create tables for complex joins
         // (these are deliberately not TEMPORARY tables - MySQL cannot reopen a temporary table within a
         // single query, and the query below refers to perf_test_table2 both in the FROM and in a subquery)
         $this->db->query("DROP TABLE IF EXISTS perf_test_table1");
@@ -117,23 +110,21 @@ class StressTest extends DatabaseTestCase
             )
         ");
 
-        // Insert test data
         for ($i = 1; $i <= 1000; $i++) {
             $this->db->insert('perf_test_table1', ['data' => "data_$i"]);
             $this->db->insert('perf_test_table2', ['table1_id' => $i, 'value' => "value_$i"]);
         }
 
-        // Complex query with joins, subqueries, and aggregation
         $result = $this->db->query("
-            SELECT 
-                t1.id,
-                t1.data,
-                t2.value,
-                (SELECT COUNT(*) FROM perf_test_table2 t2b WHERE t2b.table1_id = t1.id) as count_related
-            FROM perf_test_table1 t1
-            LEFT JOIN perf_test_table2 t2 ON t1.id = t2.table1_id
-            WHERE t1.data LIKE '%data%'
-            ORDER BY t1.id
+            SELECT
+                table1.id,
+                table1.data,
+                table2.value,
+                (SELECT COUNT(*) FROM perf_test_table2 table2_counted WHERE table2_counted.table1_id = table1.id) as count_related
+            FROM perf_test_table1 table1
+            LEFT JOIN perf_test_table2 table2 ON table1.id = table2.table1_id
+            WHERE table1.data LIKE '%data%'
+            ORDER BY table1.id
             LIMIT 10
         ");
 
@@ -143,8 +134,8 @@ class StressTest extends DatabaseTestCase
 
         $this->assertCount(10, $rows, "Should return 10 rows as limited");
 
-        // the rows are what the query says they are - a wall-clock assertion used to stand here instead,
-        // which says nothing about the library and goes red whenever the machine running it is busy
+        // the rows are what the query says they are, which is the part that belongs to the library - how
+        // long it took is a property of the machine it ran on
         $this->assertSame('1', $rows[0]['id'], "Ordered by id, so the first row is the first one inserted");
         $this->assertSame('data_1', $rows[0]['data']);
         $this->assertSame('value_1', $rows[0]['value'], "The joined row is the matching one");
@@ -155,7 +146,7 @@ class StressTest extends DatabaseTestCase
     }
 
     /**
-     * Test boundary conditions with extreme numeric values
+     * The largest and smallest value each numeric column can hold
      */
     public function testExtremeNumericValues() {
         $this->db->query("
@@ -188,10 +179,9 @@ class StressTest extends DatabaseTestCase
     }
 
     /**
-     * Test string handling with extreme lengths and special characters
+     * Strings at both ends of the range - empty, enormous, and full of bytes that are not text
      */
     public function testExtremeStringHandling() {
-        // Test various string lengths and types
         $test_strings = [
             'empty' => '',
             'single_char' => 'a',
@@ -222,14 +212,13 @@ class StressTest extends DatabaseTestCase
             $this->assertTrue($result, "Should insert string: $name");
         }
 
-        // Verify retrieval
         foreach ($test_strings as $name => $expected_string) {
             $result = $this->db->query("SELECT test_value FROM string_test WHERE test_name = ?", [$name]);
             $row = $this->db->fetch_assoc($result);
 
             $this->assertNotEmpty($row, "Should find row for: $name");
 
-            // For binary data, exact comparison might not work due to encoding
+            // "mixed" is left out, its bytes not surviving the round trip as the string they went in as
             if ($name !== 'mixed') {
                 $this->assertEquals($expected_string, $row['test_value'], "Should preserve string: $name");
             }
@@ -237,7 +226,7 @@ class StressTest extends DatabaseTestCase
     }
 
     /**
-     * Test rapid-fire queries to stress query execution
+     * A hundred queries one after another, with the connection expected to be as it was at the end
      */
     public function testRapidFireQueries() {
         $query_count = 100;
@@ -250,15 +239,14 @@ class StressTest extends DatabaseTestCase
             $this->assertEquals($i, $row['iteration'], "Should return correct iteration number");
         }
 
-        // a hundred queries in a row leave the connection exactly as they found it - which is the thing
-        // that could actually break here. How long they took is a property of the machine, not of the
-        // library, and asserting on it only makes the suite fail on a busy CI runner
+        // a hundred queries in a row leave the connection exactly as they found it, which is the part
+        // that belongs to the library - how long they took belongs to the machine they ran on
         $this->assertSame('', $this->db->error(), "Nothing was left behind on the connection");
         $this->assertEquals(1, $this->db->returned_rows, "And the bookkeeping describes the last query, not the run");
     }
 
     /**
-     * Test transaction handling under stress
+     * A transaction with a good deal of work inside it, committed and then rolled back
      */
     public function testTransactionStress() {
         $this->db->query("
@@ -275,20 +263,18 @@ class StressTest extends DatabaseTestCase
             $this->assertTrue($result, "Insert $i should succeed in transaction");
         }
 
-        // Check uncommitted data
+        // the rows are visible on this connection before the commit, since they are its own
         $count_result = $this->db->query("SELECT COUNT(*) as count FROM transaction_test");
         $count_row = $this->db->fetch_assoc($count_result);
         $this->assertEquals(50, $count_row['count'], "Should have 50 records before commit");
 
         $this->db->transaction_complete();
 
-        // Verify data persisted
         $final_count_result = $this->db->query("SELECT COUNT(*) as count FROM transaction_test");
         $final_count_row = $this->db->fetch_assoc($final_count_result);
         $this->assertEquals(50, $final_count_row['count'], "Should have 50 records after commit");
 
-        // Test rollback scenario - starting the transaction in "test mode" rolls everything back when
-        // transaction_complete() is called, even though every single query is valid
+        // a transaction started in test mode is rolled back when it completes, every query in it valid
         $this->db->transaction_start(true);
 
         for ($i = 51; $i <= 100; $i++) {
@@ -297,14 +283,13 @@ class StressTest extends DatabaseTestCase
 
         $this->db->transaction_complete();
 
-        // Verify rollback worked
         $rollback_count_result = $this->db->query("SELECT COUNT(*) as count FROM transaction_test");
         $rollback_count_row = $this->db->fetch_assoc($rollback_count_result);
         $this->assertEquals(50, $rollback_count_row['count'], "Should still have 50 records after rollback");
     }
 
     /**
-     * Test parameter binding with large number of parameters
+     * A hundred replacements in one statement, each of them landing where it was meant to
      */
     public function testMassiveParameterBinding() {
         $param_count = 100;
@@ -324,10 +309,9 @@ class StressTest extends DatabaseTestCase
     }
 
     /**
-     * Test array parameter handling with large arrays
+     * An IN clause built from an array of a thousand values
      */
     public function testLargeArrayParameters() {
-        // Insert some test data first
         for ($i = 1; $i <= 200; $i++) {
             $this->db->insert('test_users', [
                 'name' => "Stress Test User $i",
@@ -336,7 +320,6 @@ class StressTest extends DatabaseTestCase
             ]);
         }
 
-        // Create large IN clause with array parameter
         $large_id_array = range(1, 150);
 
         $result = $this->db->query("SELECT COUNT(*) as count FROM test_users WHERE id IN (?)", [$large_id_array]);
@@ -348,17 +331,15 @@ class StressTest extends DatabaseTestCase
     }
 
     /**
-     * Test cache system under stress
+     * Many queries cached at once, each of them written and read back under a key of its own
      */
     public function testCacheStress() {
         $this->db->cache_path = getTempPath('cache') . '/stress';
 
-        // Ensure cache directory exists
         if (!is_dir($this->db->cache_path)) {
             mkdir($this->db->cache_path, 0777, true);
         }
 
-        // Generate many cached queries
         $cache_count = 50;
 
         for ($i = 1; $i <= $cache_count; $i++) {
@@ -369,18 +350,17 @@ class StressTest extends DatabaseTestCase
             $this->assertEquals("cache_value_$i", $row['cache_test'], "Should return correct cached value");
         }
 
-        // Verify cache files were created
+        // one file per query
         $cache_files = glob($this->db->cache_path . '/*');
         $this->assertGreaterThan(0, count($cache_files), "Should create cache files");
 
-        // Test cache retrieval
+        // and each of them reads back as the query that wrote it
         for ($i = 1; $i <= $cache_count; $i++) {
             $result = $this->db->query("SELECT ? as cache_test", ["cache_value_$i"], 3600);
             $row = $this->db->fetch_assoc($result);
             $this->assertEquals("cache_value_$i", $row['cache_test'], "Should retrieve from cache");
         }
 
-        // Clean up cache files
         $cache_files = glob($this->db->cache_path . '/*');
         foreach ($cache_files as $file) {
             if (is_file($file)) {
@@ -391,7 +371,7 @@ class StressTest extends DatabaseTestCase
     }
 
     /**
-     * Test error handling under stress conditions
+     * One failure after another, with the connection expected to survive every one of them
      */
     public function testErrorHandlingStress() {
         $this->db->halt_on_errors = false;
@@ -402,7 +382,7 @@ class StressTest extends DatabaseTestCase
             "DELETE FROM nonexistent_table WHERE id = 1",
             "INSERT INTO test_users (nonexistent_column) VALUES ('test')",
             "SELECT invalid_function(column) FROM test_users",
-            "CREATE TABLE test_users (id INT)", // Table already exists
+            "CREATE TABLE test_users (id INT)", // a table that is already there
             "DROP DATABASE nonexistent_database",
         ];
 
@@ -413,7 +393,6 @@ class StressTest extends DatabaseTestCase
             $error = $this->db->error();
             $this->assertNotEmpty($error, "Should have error message for query $index");
 
-            // Verify the database connection is still functional after error
             $test_result = $this->db->query("SELECT 1 as test");
             $this->assertNotFalse($test_result, "Database connection should remain functional after error $index");
         }
@@ -422,7 +401,7 @@ class StressTest extends DatabaseTestCase
     }
 
     /**
-     * Test concurrent insert/update operations
+     * A read-then-write counter run in a loop, the way two requests would race for it
      */
     public function testConcurrentOperationSimulation() {
         $this->db->query("
@@ -433,20 +412,16 @@ class StressTest extends DatabaseTestCase
             )
         ");
 
-        // Insert initial record
         $this->db->insert('concurrent_test', ['counter' => 0]);
         $test_id = $this->db->insert_id();
 
-        // Simulate concurrent updates
         $update_count = 50;
 
         for ($i = 1; $i <= $update_count; $i++) {
-            // Read current value
             $result = $this->db->query("SELECT counter FROM concurrent_test WHERE id = ?", [$test_id]);
             $row = $this->db->fetch_assoc($result);
             $current_counter = $row['counter'];
 
-            // Update with incremented value
             $new_counter = $current_counter + 1;
             $update_result = $this->db->update('concurrent_test',
                 ['counter' => $new_counter],
@@ -456,7 +431,6 @@ class StressTest extends DatabaseTestCase
             $this->assertTrue($update_result, "Update $i should succeed");
         }
 
-        // Verify final counter value
         $final_result = $this->db->query("SELECT counter FROM concurrent_test WHERE id = ?", [$test_id]);
         $final_row = $this->db->fetch_assoc($final_result);
 
@@ -464,7 +438,7 @@ class StressTest extends DatabaseTestCase
     }
 
     /**
-     * Test resource cleanup under stress
+     * Result sets left unfreed, and what the server is still holding once they go out of scope
      */
     public function testResourceCleanupStress() {
         $resource_count = 20;
@@ -473,13 +447,12 @@ class StressTest extends DatabaseTestCase
             $result = $this->db->query("SELECT ? as iteration", [$i]);
             $this->assertNotFalse($result, "Query $i should succeed");
 
-            // Don't explicitly free result - test automatic cleanup
+            // deliberately not freed, so that PHP is the one letting go of them
             $row = $this->db->fetch_assoc($result);
             $this->assertEquals($i, $row['iteration'], "Should return correct iteration");
         }
 
-        // results left unfreed must not pile up on the server - what it is still holding is the actual
-        // question here, where counting collected garbage cycles could only ever come out as zero or more
+        // what matters is what the server is still holding, rather than what PHP collected
         gc_collect_cycles();
 
         $final_test = $this->db->query("SELECT 'cleanup_test' as test");

@@ -3,7 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for insert_bulk() and insert_update(), the two insert variants that were barely covered
+ * The two insert variants - insert_bulk(), which writes many rows in one statement, and insert_update(),
+ * which writes one row and updates it instead when it collides with a key that is already there.
  */
 class BulkInsertTest extends DatabaseTestCase
 {
@@ -121,13 +122,11 @@ class BulkInsertTest extends DatabaseTestCase
     /**
      * The message for this was looked up under a key with a stray grave accent in it, so instead of the
      * message the user got an "undefined array key" warning and an empty message
+     *
+     * @group regression
      */
     public function testInsertBulkReportsValuesThatAreNotAnArray() {
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->halt_on_errors = false;
-        $db->cache_path = getTempPath('cache');
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+        $db = $this->probe();
 
         $raised = [];
         set_error_handler(function($number, $message) use (&$raised) {
@@ -148,7 +147,6 @@ class BulkInsertTest extends DatabaseTestCase
         $this->assertNotEmpty($errors[0]['message'], 'The user has to be told what is wrong');
         $this->assertStringContainsString('insert_bulk', $errors[0]['message']);
 
-        $db->shutdown();
     }
 
     // INSERT_UPDATE

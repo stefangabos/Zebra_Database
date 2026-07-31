@@ -3,7 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for Zebra_Database query functionality including parameterized queries
+ * query() itself - the statement, the replacements it is given for its placeholders, and the arguments
+ * that change what it does with the result: caching, highlighting and the found-rows count.
  */
 class QueryTest extends DatabaseTestCase {
     protected function setUp(): void {
@@ -53,7 +54,6 @@ class QueryTest extends DatabaseTestCase {
     }
 
     public function testQueryWithNullParameter() {
-        // Insert a user with null email
         $this->db->insert('test_users', [
             'name' => 'Null Email User',
             'email' => null,
@@ -100,7 +100,6 @@ class QueryTest extends DatabaseTestCase {
         $this->assertNotFalse($result);
         $this->assertEquals(2, $this->db->returned_rows); // John and Jane are active
 
-        // Test with false
         $result = $this->db->query("SELECT * FROM test_users WHERE is_active = ?", [false]);
 
         $this->assertNotFalse($result);
@@ -111,7 +110,6 @@ class QueryTest extends DatabaseTestCase {
     }
 
     public function testQueryWithSpecialCharacters() {
-        // Insert user with special characters
         $special_name = "O'Brien & Co. <script>alert('test')</script>";
         $this->db->insert('test_users', [
             'name' => $special_name,
@@ -131,7 +129,7 @@ class QueryTest extends DatabaseTestCase {
     // escaping of replacements, injection payloads included, is SecurityTest's subject
 
     public function testQueryWithoutParametersUsesRegularQuery() {
-        // Queries without parameters should use regular mysqli_query
+        // with nothing to substitute the statement is sent as it was written
         $result = $this->db->query("SELECT COUNT(*) as total FROM test_users");
 
         $this->assertNotFalse($result);
@@ -140,7 +138,7 @@ class QueryTest extends DatabaseTestCase {
     }
 
     public function testQueryWithUnbufferedMode() {
-        // Set unbuffered mode - should fall back to regular query even with parameters
+        // an unbuffered query still has its placeholders replaced
         $reflection = new ReflectionClass($this->db);
         $unbufferedProperty = $reflection->getProperty('unbuffered');
         $unbufferedProperty->setAccessible(true);
@@ -150,7 +148,7 @@ class QueryTest extends DatabaseTestCase {
 
         $this->assertNotFalse($result);
 
-        // Reset unbuffered mode
+        // back the way it was found
         $unbufferedProperty->setValue($this->db, false);
     }
 
@@ -163,9 +161,8 @@ class QueryTest extends DatabaseTestCase {
         $this->assertNotEmpty($error);
     }
 
-    // a replacement count that does not match the placeholders, and replacements given as something other
-    // than an array, are ParameterizedQueryTest's subject - as are INSERT, UPDATE and DELETE written with
-    // placeholders, which were tested here and there in the same words
+    // a replacement count that does not match the placeholders, replacements given as something other than
+    // an array, and INSERT, UPDATE and DELETE written with placeholders are ParameterizedQueryTest's subject
 
     public function testQueryWithCache() {
         $path = getTempPath('cache');
@@ -174,12 +171,7 @@ class QueryTest extends DatabaseTestCase {
 
         // a probe, so that the cache can be asked whether it was used rather than only whether both calls
         // came back with something - and the suite's own scratch directory rather than a hard-coded /tmp
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->halt_on_errors = false;
-        $db->caching_method = 'disk';
-        $db->cache_path = $path;
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+        $db = $this->probe(['caching_method' => 'disk', 'cache_path' => $path]);
 
         $this->assertNotFalse($db->query("SELECT * FROM test_users WHERE name = ?", ['John Doe'], 3600));
         $this->assertFalse($db->lastFromCache(), 'The first run is a cache miss');
@@ -190,11 +182,10 @@ class QueryTest extends DatabaseTestCase {
         $this->assertTrue($db->lastFromCache(), 'The second is a hit');
         $this->assertSame('John Doe', $db->fetch_assoc($result)['name'], 'And gives back the row that was cached');
 
-        $db->shutdown();
     }
 
     public function testQueryWithHighlight() {
-        // Test highlight parameter - should not affect query execution
+        // highlighting is a debugging concern and changes nothing about the result
         $result = $this->db->query(
             "SELECT * FROM test_users WHERE name = ?",
             ['John Doe'],

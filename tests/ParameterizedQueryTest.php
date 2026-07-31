@@ -3,8 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for parameterized queries - the "?" placeholders that query() and the shorthand methods
- * accept, and the replacements that get escaped and substituted into them.
+ * The "?" placeholders that query() and the shorthand methods accept, and the replacements that are
+ * escaped and substituted into them.
  *
  * Note that the library does not use native prepared statements: values are escaped and quoted and then
  * substituted into the SQL. What is tested here is that substitution and its edge cases.
@@ -31,7 +31,7 @@ class ParameterizedQueryTest extends DatabaseTestCase
     }
 
     public function testQueryWithoutParameters() {
-        // Queries without parameters should use regular mysqli_query
+        // with nothing to substitute the statement is sent as it was written
         $result = $this->db->query("SELECT COUNT(*) as total FROM test_users");
 
         $this->assertNotFalse($result);
@@ -50,7 +50,8 @@ class ParameterizedQueryTest extends DatabaseTestCase
     }
 
     public function testParametersOfDifferentTypes() {
-        // integers, floats and booleans are all escaped and quoted, and MySQL compares them against the
+        // integers, floats and booleans are all escaped and quoted, and MySQL compares the quoted values
+        // against the numeric columns without complaint
         $result = $this->db->query(
             "SELECT * FROM test_users WHERE age = ? AND score = ? AND is_active = ?",
             [30, 85.50, true]
@@ -59,7 +60,6 @@ class ParameterizedQueryTest extends DatabaseTestCase
         $this->assertNotFalse($result);
         $this->assertEquals(1, $this->db->returned_rows, "The row should be matched despite the mixed types");
 
-        // this used to be wrapped in "if ($row)", which meant the test also passed when nothing matched
         $row = $this->db->fetch_assoc($result);
         $this->assertIsArray($row, "A row should have been returned");
         $this->assertEquals('John Doe', $row['name']);
@@ -101,7 +101,7 @@ class ParameterizedQueryTest extends DatabaseTestCase
     }
 
     // an array as a replacement - expanded into a list, empty, single-item, or mixed with scalars - is
-    // ArrayParameterTest's subject, and the four tests that stood here were the same four again
+    // ArrayParameterTest's subject
 
     // ERROR HANDLING
 
@@ -115,19 +115,18 @@ class ParameterizedQueryTest extends DatabaseTestCase
     }
 
     public function testMismatchedNumberOfParameters() {
-        // More placeholders than parameters
+        // more placeholders than replacements
         $result = $this->db->query("SELECT * FROM test_users WHERE name = ? AND age = ?", ['John Doe']);
 
         $this->assertFalse($result);
 
-        // Fewer placeholders than parameters
+        // and more replacements than placeholders
         $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", ['John Doe', 30]);
 
         $this->assertFalse($result);
     }
 
     public function testParametersGivenAsSomethingOtherThanAnArray() {
-        // Parameters must be an array
         $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", 'John Doe');
 
         $this->assertFalse($result);
@@ -147,7 +146,6 @@ class ParameterizedQueryTest extends DatabaseTestCase
         $insert_id = $this->db->insert_id();
         $this->assertGreaterThan(0, $insert_id);
 
-        // Verify the insert
         $verify = $this->db->query("SELECT * FROM test_users WHERE id = ?", [$insert_id]);
         $row = $this->db->fetch_assoc($verify);
         $this->assertEquals('Prepared Insert User', $row['name']);
@@ -162,14 +160,12 @@ class ParameterizedQueryTest extends DatabaseTestCase
         $this->assertTrue($result);
         $this->assertEquals(1, $this->db->affected_rows);
 
-        // Verify the update
         $verify = $this->db->query("SELECT age FROM test_users WHERE name = ?", ['John Doe']);
         $row = $this->db->fetch_assoc($verify);
         $this->assertEquals(31, (int)$row['age']);
     }
 
     public function testParameterizedDelete() {
-        // First insert a test record
         $this->db->query(
             "INSERT INTO test_users (name, email, age) VALUES (?, ?, ?)",
             ['Delete Me', 'delete@example.com', 25]
@@ -183,7 +179,6 @@ class ParameterizedQueryTest extends DatabaseTestCase
         $this->assertTrue($result);
         $this->assertEquals(1, $this->db->affected_rows);
 
-        // Verify the delete
         $verify = $this->db->query("SELECT COUNT(*) as count FROM test_users WHERE name = ?", ['Delete Me']);
         $row = $this->db->fetch_assoc($verify);
         $this->assertEquals(0, (int)$row['count']);
@@ -201,7 +196,6 @@ class ParameterizedQueryTest extends DatabaseTestCase
             $prepared_rows[] = $row;
         }
 
-        // Get result using regular query (no parameters)
         $regular_result = $this->db->query("SELECT * FROM test_users WHERE age > 25");
         $regular_count = $this->db->returned_rows;
 
@@ -210,11 +204,10 @@ class ParameterizedQueryTest extends DatabaseTestCase
             $regular_rows[] = $row;
         }
 
-        // Results should be identical
         $this->assertEquals($prepared_count, $regular_count);
         $this->assertEquals(count($prepared_rows), count($regular_rows));
 
-        // Sort both arrays by ID for comparison
+        // neither query asked for an order, so both are put in one before they are compared
         usort($prepared_rows, function($a, $b) { return $a['id'] - $b['id']; });
         usort($regular_rows, function($a, $b) { return $a['id'] - $b['id']; });
 
@@ -241,7 +234,6 @@ class ParameterizedQueryTest extends DatabaseTestCase
             $this->assertEquals(1, $this->db->affected_rows);
         }
 
-        // Verify all were inserted
         $verify = $this->db->query("SELECT COUNT(*) as count FROM test_users WHERE name LIKE 'Test %'");
         $row = $this->db->fetch_assoc($verify);
         $this->assertEquals(5, (int)$row['count']);
@@ -260,7 +252,6 @@ class ParameterizedQueryTest extends DatabaseTestCase
 
         $this->assertTrue($result);
 
-        // Verify it was stored correctly
         $verify = $this->db->query("SELECT * FROM test_users WHERE email = ?", [$special_email]);
         $row = $this->db->fetch_assoc($verify);
 
@@ -269,10 +260,9 @@ class ParameterizedQueryTest extends DatabaseTestCase
     }
 
     public function testParametersContainingEncodedBinaryData() {
-        // Test handling of binary data (if supported by schema)
+        // the fixture tables have no binary column, so the bytes make the trip base64 encoded
         $binary_data = "\x00\x01\x02\x03\xFF\xFE";
 
-        // Since our test schema doesn't have binary fields, we'll test with escaped strings
         $result = $this->db->query(
             "INSERT INTO test_users (name, email, age) VALUES (?, ?, ?)",
             [base64_encode($binary_data), 'binary@example.com', 30]
@@ -297,7 +287,6 @@ class ParameterizedQueryTest extends DatabaseTestCase
             $row = $this->db->fetch_assoc($result);
             $this->assertEquals($i, (int)$row['iteration']);
 
-            // Explicitly free the result
             $this->assertTrue($this->db->free_result($result), "Freeing the result should report success");
         }
 
@@ -309,7 +298,6 @@ class ParameterizedQueryTest extends DatabaseTestCase
     // EDGE CASES
 
     public function testVeryLongQueryWithAParameter() {
-        // Test with a very long query
         $long_condition = str_repeat("name != 'dummy' AND ", 100) . "1=1";
         $query = "SELECT * FROM test_users WHERE $long_condition AND name = ?";
 
@@ -320,7 +308,6 @@ class ParameterizedQueryTest extends DatabaseTestCase
     }
 
     public function testManyParametersInOneQuery() {
-        // Test with many parameters
         $conditions = [];
         $params = [];
 

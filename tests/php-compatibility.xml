@@ -4,11 +4,13 @@
     <description>Checks the library against the oldest PHP version it claims to support.</description>
 
     <!--
-        Only the library itself. The test suite is never shipped to anyone and is free to use anything the
-        PHPUnit in use supports.
+        Only the library itself, because only the library ships. The suite is still limited to what PHPUnit
+        9.6 and PHP 7.3 understand, since it has to run on the floor declared in composer.json; the older
+        5.6.40 claim is covered by "composer check-compat-legacy" and by tests/run-legacy.sh.
 
-        The path is relative to THIS file, not to where phpcs is run from - hence the "../". The
-        installed_paths below is the other way round, relative to the working directory, hence no "../".
+        The path is relative to THIS file, not to where phpcs is run from - so it needs the "../" while the
+        ruleset lives in tests/. The installed_paths below is the other way round, relative to the working
+        directory, which is why it has no "../".
     -->
     <file>../Zebra_Database.php</file>
 
@@ -16,13 +18,13 @@
     <config name="installed_paths" value="vendor/phpcompatibility/php-compatibility"/>
 
     <!--
-        The floor declared in composer.json. This is what backs that claim up - the test suite cannot run
-        on anything older than 7.3, so something else has to verify the promise.
+        The floor declared in composer.json - the oldest PHP the suite is actually run on rather than the
+        oldest PHPUnit 9.6 would tolerate, which is 7.3.
 
-        "composer check-compat-legacy" runs this same ruleset against 5.5, which is where the library
-        actually still works.
+        The library itself works on 5.6.40, which "composer check-compat-legacy" checks by running this same
+        ruleset against 5.6-, and tests/run-legacy.sh by linting and smoke-testing on a real PHP 5.6.40.
     -->
-    <config name="testVersion" value="7.3-"/>
+    <config name="testVersion" value="7.4-"/>
 
     <rule ref="PHPCompatibility"/>
 

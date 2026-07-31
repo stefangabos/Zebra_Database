@@ -3,7 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for Zebra_Database public properties and their behaviors
+ * The public properties - what each one defaults to, what assigning to it does, and the fact that the
+ * library stores whatever it is given rather than coercing or validating any of it.
  */
 class PropertiesTest extends DatabaseTestCase
 {
@@ -43,15 +44,13 @@ class PropertiesTest extends DatabaseTestCase
             'age' => 30
         ]);
 
-        // with the property disabled the value is escaped but no longer quoted, so the SQL has to
-        // provide the quotes - this is the whole point of the property, as it is what allows a
-        // replacement to be something other than a value, such as a column name
+        // with the property off the value is escaped but not quoted, so the SQL provides the quotes -
+        // which is what lets a replacement be something other than a value, such as a column name
         $result = $this->db->query("SELECT * FROM test_users WHERE name = '?'", ["Test User No Quotes"]);
         $row = $this->db->fetch_assoc($result);
 
         $this->assertEquals("Test User No Quotes", $row['name']);
 
-        // Reset to default
         $this->db->auto_quote_replacements = true;
     }
 
@@ -107,11 +106,10 @@ class PropertiesTest extends DatabaseTestCase
     // DEBUG TESTS
 
     public function testDebugDefault() {
-        // Test the actual class default (before setUp modifies it)
+        // a fresh instance, since setUp turns debugging off on the shared one
         $fresh_db = new Zebra_Database();
         $this->assertTrue($fresh_db->debug);
 
-        // Our test instance has debug disabled in setUp for clean testing
         $this->assertFalse($this->db->debug);
     }
 
@@ -122,7 +120,6 @@ class PropertiesTest extends DatabaseTestCase
         $this->db->debug = true;
         $this->assertTrue($this->db->debug);
 
-        // Reset debug to prevent console output in subsequent tests
         $this->db->debug = false;
     }
 
@@ -134,7 +131,7 @@ class PropertiesTest extends DatabaseTestCase
     }
 
     public function testDebugArray() {
-        // Set up a valid log path to prevent log write errors
+        // debug being an array turns the console into a log file, which needs somewhere to write to
         $this->db->log_path = getTempPath('logs') . '/debug_test.log';
 
         $debug_config = [true, false, true];
@@ -142,7 +139,6 @@ class PropertiesTest extends DatabaseTestCase
 
         $this->assertEquals($debug_config, $this->db->debug);
 
-        // Reset debug to prevent destructor errors
         $this->db->debug = false;
     }
 
@@ -191,11 +187,10 @@ class PropertiesTest extends DatabaseTestCase
         $this->db->halt_on_errors = false;
         $this->assertFalse($this->db->halt_on_errors);
 
-        // Test that errors don't halt execution
+        // with it off a failing query comes back rather than ending the script
         $result = $this->db->query("SELECT * FROM nonexistent_table");
         $this->assertFalse($result);
 
-        // Reset
         $this->db->halt_on_errors = true;
     }
 
@@ -305,35 +300,30 @@ class PropertiesTest extends DatabaseTestCase
     }
 
     public function testAffectedRowsAfterUpdate() {
-        // Insert test data
         $this->db->insert('test_users', [
             'name' => 'Update Test User',
             'email' => 'updatetest@example.com',
             'age' => 25
         ]);
 
-        // Update the record
         $this->db->update('test_users', ['age' => 30], 'name = ?', ['Update Test User']);
 
         $this->assertEquals(1, $this->db->affected_rows);
     }
 
     public function testAffectedRowsAfterDelete() {
-        // Insert test data
         $this->db->insert('test_users', [
             'name' => 'Delete Test User',
             'email' => 'deletetest@example.com',
             'age' => 25
         ]);
 
-        // Delete the record
         $this->db->delete('test_users', 'name = ?', ['Delete Test User']);
 
         $this->assertEquals(1, $this->db->affected_rows);
     }
 
     public function testReturnedRowsAfterSelect() {
-        // Insert multiple test records
         for ($i = 1; $i <= 5; $i++) {
             $this->db->insert('test_users', [
                 'name' => "Returned Rows Test $i",
@@ -348,7 +338,6 @@ class PropertiesTest extends DatabaseTestCase
     }
 
     public function testFoundRowsProperty() {
-        // Insert test data
         for ($i = 1; $i <= 10; $i++) {
             $this->db->insert('test_users', [
                 'name' => "Found Rows Test $i",
@@ -357,11 +346,10 @@ class PropertiesTest extends DatabaseTestCase
             ]);
         }
 
-        // Query with LIMIT but without SQL_CALC_FOUND_ROWS (deprecated feature)
+        // a LIMIT without the calc_rows argument, so found_rows is an integer rather than a count
         $this->db->query("SELECT * FROM test_users WHERE name LIKE 'Found Rows Test%' LIMIT 3");
 
         $this->assertEquals(3, $this->db->returned_rows);
-        // found_rows may or may not be set depending on MySQL version and query type
         $this->assertIsInt($this->db->found_rows);
     }
 
@@ -379,7 +367,6 @@ class PropertiesTest extends DatabaseTestCase
         $this->assertGreaterThan(0, $insert_id);
         $this->assertIsInt($insert_id);
 
-        // Verify the record exists with this ID
         $result = $this->db->query("SELECT * FROM test_users WHERE id = ?", [$insert_id]);
         $row = $this->db->fetch_assoc($result);
         $this->assertEquals('Insert ID Test', $row['name']);
@@ -429,8 +416,6 @@ class PropertiesTest extends DatabaseTestCase
 
     public function testResourcePathDefault() {
         $this->assertNull($this->db->resource_path);
-        // $this->assertNotEmpty($this->db->resource_path);
-        // $this->assertStringContainsString('public', $this->db->resource_path);
     }
 
     public function testResourcePathSetting() {
@@ -484,15 +469,13 @@ class PropertiesTest extends DatabaseTestCase
     // PROPERTIES PERSISTENCE TESTS
 
     public function testPropertiesPersistenceAfterConnection() {
-        // Set custom properties
         $this->db->debug = false;
         $this->db->max_query_time = 60;
         $this->db->auto_quote_replacements = false;
 
-        // Connect to database
+        // connecting reads the settings but leaves them alone
         $this->db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
 
-        // Properties should be preserved
         $this->assertFalse($this->db->debug);
         $this->assertEquals(60, $this->db->max_query_time);
         $this->assertFalse($this->db->auto_quote_replacements);
@@ -528,15 +511,11 @@ class PropertiesTest extends DatabaseTestCase
         ];
     }
 
-    // PROPERTY VALIDATION TESTS - Testing with invalid/bogus values
+    // PROPERTIES GIVEN VALUES THAT MAKE NO SENSE
 
-    /**
-     * Test cache_path with invalid directories and values
-     */
     public function testCachePathInvalidValues() {
-        // a regular file standing where a directory should be - unusable as a cache path for any user,
-        // including root, which "/root/restricted" is not: as root that path is perfectly writable, and
-        // this test then failed for reasons that had nothing to do with the library
+        // a regular file standing where a directory should be, which is unusable as a cache path for
+        // every user - a path like "/root/restricted" is perfectly writable when the suite runs as root
         $file_in_the_way = getTempPath() . '/not-a-directory';
         file_put_contents($file_in_the_way, 'this is a file');
 
@@ -546,21 +525,21 @@ class PropertiesTest extends DatabaseTestCase
             null,
             123,
             [getTempPath()],
-            '/dev/null', // Not a directory
-            '', // Empty string
-            '   ', // Whitespace only
+            '/dev/null', // a file rather than a directory
+            '',
+            '   ',
         ];
 
         foreach ($invalid_paths as $invalid_path) {
             $this->db->cache_path = $invalid_path;
 
-            // Property should accept the value (library doesn't validate at assignment)
+            // the assignment itself is accepted, whatever it is
             $this->assertEquals($invalid_path, $this->db->cache_path);
 
             // an unusable cache path is reported as an error rather than silently ignored, so that a
             // misconfigured cache folder cannot go unnoticed - the query is expected to fail
             if ($invalid_path !== null && $invalid_path !== '') {
-                $result = $this->db->query("SELECT 1 as test", [], 60); // Try to cache
+                $result = $this->db->query("SELECT 1 as test", [], 60);
                 $this->assertFalse($result, "Query should fail loudly when the cache path cannot be used");
             }
         }
@@ -568,64 +547,55 @@ class PropertiesTest extends DatabaseTestCase
         unlink($file_in_the_way);
     }
 
-    /**
-     * Test caching_method with invalid values
-     */
     public function testCachingMethodInvalidValues() {
         $invalid_methods = [
             'invalid_method',
-            'file', // Similar to 'disk' but invalid
-            'mysql', // Not a supported caching method
+            'file',
+            'mysql',
             null,
             123,
             ['disk'],
             '',
-            'DISK', // Wrong case
+            'DISK', // the comparison is case sensitive
         ];
 
         foreach ($invalid_methods as $invalid_method) {
             $this->db->caching_method = $invalid_method;
             $this->assertEquals($invalid_method, $this->db->caching_method);
 
-            // Test that queries still work (might fallback to no caching)
+            // a method the library does not recognise means no caching, not a failed query
             $result = $this->db->query("SELECT 2 as test", [], 60);
             $this->assertNotFalse($result, "Query should work even with invalid caching method");
         }
     }
 
-    /**
-     * Test max_query_time with extreme values
-     */
     public function testMaxQueryTimeExtremeValues() {
         $extreme_values = [
-            -1, // Negative value
-            0, // Zero
-            PHP_INT_MAX, // Very large value
-            -PHP_INT_MAX, // Very negative value
+            -1,
+            0,
+            PHP_INT_MAX,
+            -PHP_INT_MAX,
             'not_a_number',
             null,
             [10],
-            1.5, // Float value
+            1.5,
         ];
 
         foreach ($extreme_values as $extreme_value) {
             $this->db->max_query_time = $extreme_value;
             $this->assertEquals($extreme_value, $this->db->max_query_time);
 
-            // Test that queries still work
+            // the value is only ever compared against a query's duration, so none of these break a query
             $result = $this->db->query("SELECT 3 as test");
             $this->assertNotFalse($result, "Query should work even with extreme max_query_time");
         }
     }
 
-    /**
-     * Test debug_show_records with boundary values
-     */
     public function testDebugShowRecordsExtremeValues() {
         $extreme_values = [
-            -1, // Negative
-            0, // Zero (might break pagination)
-            PHP_INT_MAX, // Very large
+            -1,
+            0,
+            PHP_INT_MAX,
             'invalid',
             null,
             [20],
@@ -635,7 +605,7 @@ class PropertiesTest extends DatabaseTestCase
             $this->db->debug_show_records = $extreme_value;
             $this->assertEquals($extreme_value, $this->db->debug_show_records);
 
-            // Test that debug mode doesn't break
+            // the value decides how many rows the console lists, and none of these stop a query running
             $original_debug = $this->db->debug;
             $this->db->debug = true;
 
@@ -648,9 +618,6 @@ class PropertiesTest extends DatabaseTestCase
         }
     }
 
-    /**
-     * Test memcache configuration with invalid values
-     */
     public function testMemcacheInvalidConfiguration() {
         $invalid_configs = [
             'host' => ['invalid_host_12345', null, 123, ['localhost']],
@@ -665,7 +632,7 @@ class PropertiesTest extends DatabaseTestCase
                 $this->db->$property_name = $invalid_value;
                 $this->assertEquals($invalid_value, $this->db->$property_name);
 
-                // Test that the library doesn't crash when trying to use memcache
+                // a memcache that cannot be reached leaves the query itself alone
                 $this->db->caching_method = 'memcache';
                 $result = $this->db->query("SELECT 5 as test", [], 60);
                 $this->assertNotFalse($result, "Query should work even with invalid memcache config");
@@ -673,9 +640,6 @@ class PropertiesTest extends DatabaseTestCase
         }
     }
 
-    /**
-     * Test redis configuration with invalid values
-     */
     public function testRedisInvalidConfiguration() {
         $invalid_configs = [
             'host' => ['invalid_redis_host_12345', null, 123, ['127.0.0.1']],
@@ -690,7 +654,7 @@ class PropertiesTest extends DatabaseTestCase
                 $this->db->$property_name = $invalid_value;
                 $this->assertEquals($invalid_value, $this->db->$property_name);
 
-                // Test that the library doesn't crash when trying to use redis
+                // a redis that cannot be reached leaves the query itself alone
                 $this->db->caching_method = 'redis';
                 $result = $this->db->query("SELECT 6 as test", [], 60);
                 $this->assertNotFalse($result, "Query should work even with invalid redis config");
@@ -698,9 +662,6 @@ class PropertiesTest extends DatabaseTestCase
         }
     }
 
-    /**
-     * Test notification settings with invalid values
-     */
     public function testNotificationInvalidValues() {
         $invalid_emails = [
             'not_an_email',
@@ -725,7 +686,7 @@ class PropertiesTest extends DatabaseTestCase
             $this->db->notification_address = $invalid_email;
             $this->assertEquals($invalid_email, $this->db->notification_address);
 
-            // Test that queries still work (notifications just might not work)
+            // a notification address is only read when a slow query is found, never by an ordinary one
             $result = $this->db->query("SELECT 7 as test");
             $this->assertNotFalse($result, "Query should work with invalid notification address");
         }
@@ -739,14 +700,11 @@ class PropertiesTest extends DatabaseTestCase
         }
     }
 
-    /**
-     * Test SSL options with malformed configurations
-     */
     public function testSslOptionsInvalidValues() {
         $invalid_ssl_configs = [
             'string_instead_of_array',
             123,
-            null, // This is valid (no SSL)
+            null, // which is the valid one - no SSL at all
             ['invalid_key' => 'value'],
             ['key' => '/nonexistent/key.pem'],
             ['cert' => '/nonexistent/cert.pem'],
@@ -764,51 +722,43 @@ class PropertiesTest extends DatabaseTestCase
             $this->db->ssl_options = $invalid_ssl;
             $this->assertEquals($invalid_ssl, $this->db->ssl_options);
 
-            // Test that connections still work (SSL might just be disabled)
-            // Note: This test assumes the connection will work without SSL
+            // the connection is already up, so none of this reaches mysqli - the assignment is all there is
             $result = $this->db->query("SELECT 9 as test");
             $this->assertNotFalse($result, "Query should work even with invalid SSL config");
         }
     }
 
-    /**
-     * Test debug configuration with values that might break debugging
-     */
     public function testDebugBreakingValues() {
         $breaking_debug_values = [
-            PHP_INT_MAX, // Very large number
-            -1, // Negative
-            'invalid_debug_key_' . str_repeat('x', 1000), // Very long string
+            PHP_INT_MAX,
+            -1,
+            'invalid_debug_key_' . str_repeat('x', 1000),
             ['debug' => true, 'invalid' => 'config'],
-            [true, false, true, false, true], // Long array
+            [true, false, true, false, true], // longer than the three switches it reads
         ];
 
         foreach ($breaking_debug_values as $debug_value) {
             $this->db->debug = $debug_value;
             $this->assertEquals($debug_value, $this->db->debug);
 
-            // Test that queries work and don't cause infinite loops or crashes
+            // the output is swallowed, since what is being asserted is that the query ran at all
             ob_start();
             $result = $this->db->query("SELECT 10 as test");
             $debug_output = ob_get_clean();
 
             $this->assertNotFalse($result, "Query should work with breaking debug values");
 
-            // Reset debug to prevent issues in other tests
             $this->db->debug = false;
         }
     }
 
-    /**
-     * Test debugger_ip with malformed IP addresses
-     */
     public function testDebuggerIpInvalidValues() {
         $invalid_ips = [
             ['not.an.ip.address'],
             ['999.999.999.999'],
-            ['192.168.1'], // Incomplete IP
-            [''], // Empty string
-            [null], // Null value
+            ['192.168.1'],
+            [''],
+            [null],
             ['127.0.0.1', 'invalid.ip'],
             'not_an_array',
             123,
@@ -819,7 +769,7 @@ class PropertiesTest extends DatabaseTestCase
             $this->db->debugger_ip = $invalid_ip;
             $this->assertEquals($invalid_ip, $this->db->debugger_ip);
 
-            // Test that debug functionality doesn't break
+            // the list decides who sees the console, and an address that is in no list simply sees nothing
             $original_debug = $this->db->debug;
             $this->db->debug = true;
 
@@ -833,12 +783,11 @@ class PropertiesTest extends DatabaseTestCase
     }
 
     /**
-     * The settings are plain properties, so an absurdly large value is stored rather than copied about,
-     * and a query afterwards is unaffected by any of it. What this used to assert - that assigning a 1.2MB
-     * string uses less than 50MB - could not have failed
+     * The settings are plain properties, so an absurdly large value is stored as it was given and a query
+     * afterwards is unaffected by any of it
      */
     public function testAbsurdlyLargePropertyValuesAreStoredAsGivenAndChangeNothing() {
-        $large_string = str_repeat('MEMORY_TEST_', 100000); // ~1.2MB string
+        $large_string = str_repeat('MEMORY_TEST_', 100000); // about 1.2MB of it
         $large_array = array_fill(0, 10000, 'array_element');
 
         $this->db->log_path = $large_string;
@@ -854,7 +803,6 @@ class PropertiesTest extends DatabaseTestCase
         $row = $this->db->fetch_assoc($this->db->query("SELECT 12 as test"));
         $this->assertSame('12', $row['test'], "A query is unaffected by any of them");
 
-        // Clean up to free memory
         $this->db->log_path = '';
         $this->db->notification_address = '';
         $this->db->memcache_key_prefix = '';

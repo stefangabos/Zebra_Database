@@ -3,7 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for the select() shorthand method
+ * select(), the shorthand that writes the SELECT for you - what it does with the columns it is given,
+ * what it quotes, and the arguments that follow the table name.
  */
 class SelectMethodTest extends DatabaseTestCase
 {
@@ -100,6 +101,8 @@ class SelectMethodTest extends DatabaseTestCase
      * A MySQL function was only recognised as one when it was the whole of the column, so giving it an
      * alias made it get enclosed in grave accents - "COUNT(*) AS total" came out as "`COUNT(*)` AS total"
      * and the query failed with a syntax error
+     *
+     * @group regression
      */
     public function testSelectWithAnAliasedMysqlFunction() {
         $this->db->select('COUNT(*) AS total', 'test_users');
@@ -153,8 +156,8 @@ class SelectMethodTest extends DatabaseTestCase
     }
 
     /**
-     * The string and the array form have to behave identically - the docblock used to claim that the
-     * array form was the way to keep a value from being escaped
+     * The string and the array form behave identically, whatever the docblock for select() once claimed
+     * about the array form being the way to keep a value from being escaped
      */
     public function testSelectTreatsTheStringAndTheArrayFormIdentically() {
         $columns = ['name', 'NOW()', 'age AS years', 'test_users.email'];
@@ -270,23 +273,18 @@ class SelectMethodTest extends DatabaseTestCase
         $path = getTempPath('cache');
         array_map('unlink', glob($path . '/*'));
 
-        // DatabaseProbe exposes the from_cache flag the library records for each query
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->caching_method = 'disk';
-        $db->cache_path = $path;
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+        // a probe exposes the from_cache flag the library records for each query
+        $db = $this->probe(['caching_method' => 'disk', 'cache_path' => $path]);
 
         $db->select('name', 'test_users', 'is_active = ?', [1], '', '', 10);
         $this->assertFalse($db->lastFromCache(), 'The first run is a cache miss');
 
-        // the very same query a second time must now come from the cache
+        // the very same query a second time, which the cache answers
         $result = $db->select('name', 'test_users', 'is_active = ?', [1], '', '', 10);
         $this->assertTrue($db->lastFromCache(), 'The second identical select is a cache hit');
 
         $this->assertCount(2, $db->fetch_assoc_all($result));
 
-        $db->shutdown();
     }
 
     // ERROR HANDLING

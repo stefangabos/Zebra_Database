@@ -5,26 +5,25 @@ require_once __DIR__ . '/bootstrap.php';
 /**
  * Tests for bugs that were fixed at some point in the library's history and must not come back.
  *
- * Each test names the commit that fixed the bug it guards, so that reverting that commit points
- * straight at the test that goes red. Regressions that also happen to be plain feature tests live
- * with the rest of their feature instead - the multi-byte escaping fix is in SecurityTest, the empty
- * array replacement in ArrayParameterTest, the table_exists wildcards in EdgeCasesTest, the from_cache
- * reporting in CacheTest and the INC() keyword in CrudTest.
+ * Each test names the commit that fixed the bug it guards, so that reverting that commit points straight
+ * at the test that goes red. A regression that is also a plain feature test lives with the rest of its
+ * feature instead - the multi-byte escaping fix in SecurityTest, the empty array replacement in
+ * ArrayParameterTest, the table_exists wildcards in EdgeCasesTest, the INC() keyword in CrudTest and a
+ * dozen more - and carries "@group regression" on the method, so that the set below is not mistaken for
+ * the whole of it.
+ *
+ * The group is on the class because every test in this file is a regression - it is what makes the whole
+ * set runnable on its own with "tests/run-tests.sh --group regression" before tagging a release, and
+ * mutate.php in the project root is what proves the set can actually go red.
+ *
+ * @group regression
  */
 class RegressionTest extends DatabaseTestCase
 {
-    private $probes = [];
-
     protected function setUp(): void {
         parent::setUp();
         $this->connectToDatabase();
         $this->insertTestData();
-    }
-
-    protected function tearDown(): void {
-        foreach ($this->probes as $probe) $probe->shutdown();
-        $this->probes = [];
-        parent::tearDown();
     }
 
     /**
@@ -281,11 +280,7 @@ class RegressionTest extends DatabaseTestCase
      * @dataProvider queriesThatCannotBeExplained
      */
     public function testAQueryThatCannotBeExplainedDoesNotBreakDebugging($query) {
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->halt_on_errors = false;
-        $db->cache_path = getTempPath('cache');
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+        $db = $this->probe();
 
         $result = null;
         $raised = $this->diagnosticsRaisedBy(function() use ($db, $query, &$result) {
@@ -295,7 +290,6 @@ class RegressionTest extends DatabaseTestCase
         $this->assertNotFalse($result, 'The query itself still has to run');
         $this->assertSame([], $raised);
 
-        $db->shutdown();
     }
 
     public function queriesThatCannotBeExplained() {
@@ -318,11 +312,7 @@ class RegressionTest extends DatabaseTestCase
      * @dataProvider queriesThatCannotBeExplained
      */
     public function testAnUnbufferedQueryThatCannotBeExplainedDoesNotBreakDebugging($query) {
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->halt_on_errors = false;
-        $db->cache_path = getTempPath('cache');
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+        $db = $this->probe();
 
         $this->assertTrue($db->debug_show_explain, 'The path under test is only reached while explaining');
 
@@ -334,18 +324,13 @@ class RegressionTest extends DatabaseTestCase
 
         $this->assertGreaterThan(0, $rows, 'The query itself still has to return its rows');
 
-        $db->shutdown();
     }
 
     /**
      * And the counterpart - a query that can be explained still gets explained
      */
     public function testAnUnbufferedQueryThatCanBeExplainedStillIs() {
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->halt_on_errors = false;
-        $db->cache_path = getTempPath('cache');
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+        $db = $this->probe();
 
         $result = $db->query_unbuffered('SELECT * FROM test_users');
         while ($db->fetch_assoc($result)) {
@@ -353,7 +338,6 @@ class RegressionTest extends DatabaseTestCase
 
         $this->assertNotEmpty($db->explainOfLastQuery(), 'A SELECT can be explained, so it has to be');
 
-        $db->shutdown();
     }
 
     /**
@@ -415,8 +399,8 @@ class RegressionTest extends DatabaseTestCase
 
     /**
      * The bookkeeping for an unbuffered query - the SQL, the console index, and whether the row count and
-     * the EXPLAIN are wanted - used to be stashed as properties on the mysqli_result object. PHP 8.2
-     * deprecates creating those and PHP 9 makes it an error, so it lives on the instance now.
+     * the EXPLAIN are wanted - was stashed in properties created on the mysqli_result object. PHP 8.2
+     * deprecates creating those and PHP 9 makes it an error, so it belongs on the instance.
      */
     public function testIteratingAnUnbufferedQueryRaisesNoDeprecations() {
         $db = $this->unbufferedProbe();
@@ -429,7 +413,6 @@ class RegressionTest extends DatabaseTestCase
 
         $this->assertSame([], $raised);
 
-        $db->shutdown();
     }
 
     /**
@@ -451,11 +434,10 @@ class RegressionTest extends DatabaseTestCase
         $this->assertTrue($entry['unbuffered']);
         $this->assertIsArray($entry['explain']);
 
-        $db->shutdown();
     }
 
     /**
-     * The bookkeeping is kept in one place on the instance now rather than on each result, so a query that
+     * That bookkeeping is kept in one place on the instance rather than on each result, so a query that
      * follows an unbuffered one must not inherit anything from it
      */
     public function testTheBookkeepingDoesNotLeakIntoTheNextQuery() {
@@ -479,22 +461,10 @@ class RegressionTest extends DatabaseTestCase
 
         $this->assertEmpty($db->explainOfLastQuery(), 'This query was not to be explained');
 
-        $db->shutdown();
     }
 
     private function unbufferedProbe() {
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->halt_on_errors = false;
-        $db->cache_path = getTempPath('cache');
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
-
-        // a probe runs with debugging on, and the console is printed by a shutdown function that reads that
-        // flag when it runs - so a probe left behind by a failing assertion would spill the whole console
-        // into the test output
-        $this->probes[] = $db;
-
-        return $db;
+        return $this->probe();
     }
 
     /**
@@ -507,11 +477,7 @@ class RegressionTest extends DatabaseTestCase
      * explode() also raises a deprecation for it on PHP 8.1 and an error on PHP 9.
      */
     public function testANullAmongTheColumnsBecomesTheSqlKeyword() {
-        $db = new DatabaseProbe();
-        $db->debug = false;
-        $db->halt_on_errors = false;
-        $db->cache_path = getTempPath('cache');
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+        $db = $this->probe(['debug' => false]);
 
         $escape = new ReflectionMethod('Zebra_Database', '_escape');
         $escape->setAccessible(true);
@@ -522,7 +488,6 @@ class RegressionTest extends DatabaseTestCase
 
         $this->assertSame([], $raised, 'And it must not raise a deprecation on the way');
 
-        $db->shutdown();
     }
 
     /**

@@ -9,7 +9,7 @@ require_once __DIR__ . '/bootstrap.php';
  * Every test here runs its code in a child PHP process through ChildProcess and then asserts on what the
  * child left behind - whether it reached the end of its script, and what it printed. A test that triggered
  * either of these in-process would take the test runner down with it, which is why the halting half of
- * halt_on_errors had no coverage at all until now.
+ * halt_on_errors can only be covered from out here.
  */
 class HaltingTest extends DatabaseTestCase
 {

@@ -3,7 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for Zebra_Database CRUD operations (Create, Read, Update, Delete)
+ * The four statements the library writes on the caller's behalf - insert(), update(), delete() and
+ * truncate() - including the INC() keyword update() understands for counting a column up and down.
  */
 class CrudTest extends DatabaseTestCase
 {
@@ -27,7 +28,6 @@ class CrudTest extends DatabaseTestCase
         $insert_id = $this->db->insert_id();
         $this->assertGreaterThan(0, $insert_id);
 
-        // Verify the insert
         $verify_result = $this->db->query("SELECT * FROM test_users WHERE id = ?", [$insert_id]);
         $row = $this->db->fetch_assoc($verify_result);
         $this->assertEquals('Test User', $row['name']);
@@ -70,23 +70,21 @@ class CrudTest extends DatabaseTestCase
     }
 
     public function testInsertWithOnDuplicateKeyUpdate() {
-        // First insert
         $this->db->insert('test_users', [
             'name' => 'Unique User',
             'email' => 'unique@example.com',
             'age' => 25
         ]);
 
-        // Second insert with same email (should update due to UNIQUE constraint)
+        // the same email again, with the columns to update when it collides
         $result = $this->db->insert('test_users', [
             'name' => 'Updated Unique User',
             'email' => 'unique@example.com',
             'age' => 30
-        ], ['name', 'age']); // enable update on duplicate
+        ], ['name', 'age']);
 
         $this->assertTrue($result);
 
-        // Verify only one record exists with updated data
         $verify_result = $this->db->query("SELECT * FROM test_users WHERE email = ?", ['unique@example.com']);
         $this->assertEquals(1, $this->db->returned_rows);
 
@@ -96,19 +94,18 @@ class CrudTest extends DatabaseTestCase
     }
 
     public function testInsertWithoutOnDuplicateKeyUpdate() {
-        // First insert
         $this->db->insert('test_users', [
             'name' => 'Duplicate User',
             'email' => 'duplicate@example.com',
             'age' => 25
         ]);
 
-        // Second insert with same email (should fail without update)
+        // the same email again, with updating on collision switched off
         $result = $this->db->insert('test_users', [
             'name' => 'Another Duplicate User',
             'email' => 'duplicate@example.com',
             'age' => 30
-        ], true); // disable update on duplicate
+        ], true);
 
         $this->assertFalse($result);
     }
@@ -126,14 +123,12 @@ class CrudTest extends DatabaseTestCase
         $this->assertTrue($result);
         $this->assertEquals(3, $this->db->affected_rows);
 
-        // Verify all records were inserted
         $verify_result = $this->db->query("SELECT COUNT(*) as count FROM test_users WHERE name LIKE 'Bulk User%'");
         $row = $this->db->fetch_assoc($verify_result);
         $this->assertEquals(3, (int)$row['count']);
     }
 
     public function testInsertUpdate() {
-        // Test insert_update method
         $result = $this->db->insert_update('test_users', [
             'name' => 'Insert Update User',
             'email' => 'insertupdate@example.com',
@@ -142,7 +137,7 @@ class CrudTest extends DatabaseTestCase
 
         $this->assertTrue($result);
 
-        // Try to insert the same email again - should update
+        // the same email again, which updates the row that is there
         $result = $this->db->insert_update('test_users', [
             'name' => 'Insert Update User Modified',
             'email' => 'insertupdate@example.com',
@@ -151,7 +146,6 @@ class CrudTest extends DatabaseTestCase
 
         $this->assertTrue($result);
 
-        // Verify the update occurred
         $verify_result = $this->db->query("SELECT * FROM test_users WHERE email = ?", ['insertupdate@example.com']);
         $row = $this->db->fetch_assoc($verify_result);
         $this->assertEquals(27, (int)$row['age']);
@@ -160,7 +154,6 @@ class CrudTest extends DatabaseTestCase
     // UPDATE TESTS
 
     public function testUpdateSimpleRecord() {
-        // Insert test data
         $this->db->insert('test_users', [
             'name' => 'Update Test User',
             'email' => 'update@example.com',
@@ -175,7 +168,6 @@ class CrudTest extends DatabaseTestCase
         $this->assertTrue($result);
         $this->assertEquals(1, $this->db->affected_rows);
 
-        // Verify the update
         $verify_result = $this->db->query("SELECT * FROM test_users WHERE email = ?", ['update@example.com']);
         $row = $this->db->fetch_assoc($verify_result);
         $this->assertEquals('Updated Test User', $row['name']);
@@ -183,7 +175,6 @@ class CrudTest extends DatabaseTestCase
     }
 
     public function testUpdateWithNullValue() {
-        // Insert test data
         $this->db->insert('test_users', [
             'name' => 'Null Update User',
             'email' => 'nullupdate@example.com',
@@ -196,14 +187,12 @@ class CrudTest extends DatabaseTestCase
 
         $this->assertTrue($result);
 
-        // Verify the update
         $verify_result = $this->db->query("SELECT * FROM test_users WHERE name = ?", ['Null Update User']);
         $row = $this->db->fetch_assoc($verify_result);
         $this->assertNull($row['email']);
     }
 
     public function testUpdateMultipleRecords() {
-        // Insert test data
         for ($i = 1; $i <= 3; $i++) {
             $this->db->insert('test_users', [
                 'name' => "Multi Update User $i",
@@ -219,7 +208,6 @@ class CrudTest extends DatabaseTestCase
         $this->assertTrue($result);
         $this->assertEquals(3, $this->db->affected_rows);
 
-        // Verify all records were updated
         $verify_result = $this->db->query("SELECT COUNT(*) as count FROM test_users WHERE name LIKE ? AND is_active = 0", ['Multi Update User%']);
         $row = $this->db->fetch_assoc($verify_result);
         $this->assertEquals(3, (int)$row['count']);
@@ -230,12 +218,11 @@ class CrudTest extends DatabaseTestCase
             'age' => 50
         ], 'name = ?', ['Non-existent User']);
 
-        $this->assertTrue($result); // Query succeeds but no rows affected
+        $this->assertTrue($result); // the statement ran, it simply matched nothing
         $this->assertEquals(0, $this->db->affected_rows);
     }
 
     public function testUpdateWithComplexWhereClause() {
-        // Insert test data
         for ($i = 1; $i <= 5; $i++) {
             $this->db->insert('test_users', [
                 'name' => "Complex Update User $i",
@@ -290,9 +277,11 @@ class CrudTest extends DatabaseTestCase
 
     /**
      * The value to increment by may be given as a parameter marker, with the value itself in the
-     * replacements array - this is what the docblock for update() shows, and it stopped working when the
-     * INC() pattern was tightened to only accept digits so that plain strings looking like "INC(foo)"
-     * would no longer be mistaken for the keyword
+     * replacements array - this is what the docblock for update() shows, and it broke when the INC()
+     * pattern was tightened to digits only so that a plain string looking like "INC(foo)" is not taken
+     * for the keyword
+     *
+     * @group regression
      */
     public function testUpdateIncrementsWithAParameterMarker() {
         $this->insertCounterRow();
@@ -313,8 +302,7 @@ class CrudTest extends DatabaseTestCase
     }
 
     /**
-     * And the behaviour the tightened pattern was introduced for - a value that merely looks like the
-     * keyword is stored as the string it is
+     * The other half of that - a value which merely looks like the keyword is stored as the string it is
      */
     public function testUpdateTreatsAnIncLikeStringAsAPlainValue() {
         $this->insertCounterRow();
@@ -325,12 +313,14 @@ class CrudTest extends DatabaseTestCase
     }
 
     /**
-     * The keyword has to be the whole of the value. It used to only have to start it, so a string like
-     * "INC(5) apples" was taken to be an instruction to add 5 to the column - on a text column that either
-     * failed outright or wrote a number over what the user meant to store, and either way the string never
+     * The keyword has to be the whole of the value. Starting it was enough, so a string like "INC(5)
+     * apples" was taken for an instruction to add 5 to the column - on a text column that either failed
+     * outright or wrote a number over what the caller meant to store, and either way the string never
      * made it into the database
      *
      * @dataProvider incLikeStrings
+     *
+     * @group regression
      */
     public function testUpdateOnlyTreatsIncAsTheKeywordWhenItIsTheWholeValue($value) {
         $this->insertCounterRow();
@@ -367,7 +357,6 @@ class CrudTest extends DatabaseTestCase
     // DELETE TESTS
 
     public function testDeleteSimpleRecord() {
-        // Insert test data
         $this->db->insert('test_users', [
             'name' => 'Delete Test User',
             'email' => 'delete@example.com',
@@ -379,14 +368,12 @@ class CrudTest extends DatabaseTestCase
         $this->assertTrue($result);
         $this->assertEquals(1, $this->db->affected_rows);
 
-        // Verify the delete
         $verify_result = $this->db->query("SELECT COUNT(*) as count FROM test_users WHERE email = ?", ['delete@example.com']);
         $row = $this->db->fetch_assoc($verify_result);
         $this->assertEquals(0, (int)$row['count']);
     }
 
     public function testDeleteMultipleRecords() {
-        // Insert test data
         for ($i = 1; $i <= 3; $i++) {
             $this->db->insert('test_users', [
                 'name' => "Multi Delete User $i",
@@ -400,7 +387,6 @@ class CrudTest extends DatabaseTestCase
         $this->assertTrue($result);
         $this->assertEquals(3, $this->db->affected_rows);
 
-        // Verify all records were deleted
         $verify_result = $this->db->query("SELECT COUNT(*) as count FROM test_users WHERE name LIKE ?", ['Multi Delete User%']);
         $row = $this->db->fetch_assoc($verify_result);
         $this->assertEquals(0, (int)$row['count']);
@@ -409,12 +395,11 @@ class CrudTest extends DatabaseTestCase
     public function testDeleteWithNoMatchingRecords() {
         $result = $this->db->delete('test_users', 'name = ?', ['Non-existent User']);
 
-        $this->assertTrue($result); // Query succeeds but no rows affected
+        $this->assertTrue($result); // the statement ran, it simply matched nothing
         $this->assertEquals(0, $this->db->affected_rows);
     }
 
     public function testDeleteWithComplexWhereClause() {
-        // Insert test data
         for ($i = 1; $i <= 5; $i++) {
             $this->db->insert('test_users', [
                 'name' => "Complex Delete User $i",
@@ -430,24 +415,22 @@ class CrudTest extends DatabaseTestCase
         $this->assertTrue($result);
         $this->assertGreaterThan(0, $this->db->affected_rows);
 
-        // Verify only matching records were deleted
+        // the rows that did not match the condition are still there
         $verify_result = $this->db->query("SELECT COUNT(*) as count FROM test_users WHERE name LIKE ?", ['Complex Delete User%']);
         $row = $this->db->fetch_assoc($verify_result);
-        $this->assertLessThan(5, (int)$row['count']); // Some should be deleted
+        $this->assertLessThan(5, (int)$row['count']);
     }
 
     public function testDeleteAllRecords() {
-        // Insert test data
         $this->db->insert('test_users', ['name' => 'Delete All User 1', 'email' => 'deleteall1@example.com', 'age' => 25]);
         $this->db->insert('test_users', ['name' => 'Delete All User 2', 'email' => 'deleteall2@example.com', 'age' => 30]);
 
-        // Delete all records (no WHERE clause)
+        // no condition, so every row goes
         $result = $this->db->delete('test_users');
 
         $this->assertTrue($result);
         $this->assertGreaterThanOrEqual(2, $this->db->affected_rows);
 
-        // Verify all records were deleted
         $verify_result = $this->db->query("SELECT COUNT(*) as count FROM test_users");
         $row = $this->db->fetch_assoc($verify_result);
         $this->assertEquals(0, (int)$row['count']);
@@ -456,7 +439,6 @@ class CrudTest extends DatabaseTestCase
     // TRUNCATE TESTS
 
     public function testTruncateTable() {
-        // Insert test data
         for ($i = 1; $i <= 5; $i++) {
             $this->db->insert('test_users', [
                 'name' => "Truncate User $i",
@@ -469,12 +451,11 @@ class CrudTest extends DatabaseTestCase
 
         $this->assertTrue($result);
 
-        // Verify table is empty
         $verify_result = $this->db->query("SELECT COUNT(*) as count FROM test_users");
         $row = $this->db->fetch_assoc($verify_result);
         $this->assertEquals(0, (int)$row['count']);
 
-        // Verify auto_increment was reset (insert should start from 1)
+        // the auto-increment counter goes with the rows, so the next row is id 1
         $this->db->insert('test_users', ['name' => 'Reset User', 'email' => 'reset@example.com', 'age' => 25]);
         $this->assertEquals(1, $this->db->insert_id());
     }

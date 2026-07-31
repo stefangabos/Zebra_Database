@@ -3,8 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for Zebra_Database debug functionality, specifically file logging
- * when debug property is set to an array
+ * Debugging written to a file - what the debug property being an array turns the console into, and the
+ * three switches it carries: one file per day, one per hour, and a backtrace with every entry.
  */
 class DebugTest extends DatabaseTestCase {
 
@@ -29,13 +29,12 @@ class DebugTest extends DatabaseTestCase {
     }
 
     protected function tearDown(): void {
-        // Always reset debug to false to prevent destructor errors
+        // debug goes off rather than back to what it was - see setUp
         if ($this->db) {
             $this->db->debug = false;
             $this->db->log_path = $this->original_log_path;
         }
 
-        // Clean up test log files and directory
         $this->cleanupLogFiles();
 
         parent::tearDown();
@@ -71,39 +70,32 @@ class DebugTest extends DatabaseTestCase {
         }
     }
 
-    // Test basic debug array functionality
-
     public function testDebugArrayBasicConfiguration() {
-        // Test basic debug array configuration - daily=false, hourly=false, backtrace=false
+        // daily off, hourly off, backtrace off
         $debug_config = [false, false, false];
         $this->db->log_path = $this->test_log_dir . '/basic.log';
         $this->db->debug = $debug_config;
 
         $this->assertEquals($debug_config, $this->db->debug);
 
-        // Execute a query to generate debug info
         $this->db->query("SELECT 1 as test_value");
 
-        // Force debug output by calling the shutdown function
+        // what the shutdown function does at the end of a request
         $this->db->_show_debugging_console();
 
-        // Check that log file was created
         $this->assertFileExists($this->test_log_dir . '/basic.log');
 
-        // Reset debug to prevent destructor issues
         $this->db->debug = false;
     }
 
     public function testDebugArrayDailyLogging() {
-        // Test daily logging - daily=true, hourly=false, backtrace=false
+        // daily on
         $debug_config = [true, false, false];
         $this->db->log_path = $this->test_log_dir . '/daily.log';
         $this->db->debug = $debug_config;
 
-        // Execute a query
         $this->db->query("SELECT 'daily test' as test_value");
 
-        // Force debug output
         $this->db->_show_debugging_console();
 
         // the name carries the date the entry was written on
@@ -116,15 +108,13 @@ class DebugTest extends DatabaseTestCase {
     }
 
     public function testDebugArrayHourlyLogging() {
-        // Test hourly logging - daily=true, hourly=true, backtrace=false
+        // daily and hourly on
         $debug_config = [true, true, false];
         $this->db->log_path = $this->test_log_dir . '/hourly.log';
         $this->db->debug = $debug_config;
 
-        // Execute a query
         $this->db->query("SELECT 'hourly test' as test_value");
 
-        // Force debug output
         $this->db->_show_debugging_console();
 
         // the name carries the date and the hour the entry was written in
@@ -137,21 +127,17 @@ class DebugTest extends DatabaseTestCase {
     }
 
     public function testDebugArrayBacktraceLogging() {
-        // Test backtrace logging - daily=false, hourly=false, backtrace=true
+        // backtrace on
         $debug_config = [false, false, true];
         $this->db->log_path = $this->test_log_dir . '/backtrace.log';
         $this->db->debug = $debug_config;
 
-        // Execute a query
         $this->db->query("SELECT 'backtrace test' as test_value");
 
-        // Force debug output
         $this->db->_show_debugging_console();
 
-        // Check that log file was created
         $this->assertFileExists($this->test_log_dir . '/backtrace.log');
 
-        // Check that log contains backtrace information
         $log_content = file_get_contents($this->test_log_dir . '/backtrace.log');
         $this->assertStringContainsString('backtrace test', $log_content);
         $this->assertStringContainsString('BACKTRACE', strtoupper($log_content));
@@ -162,15 +148,13 @@ class DebugTest extends DatabaseTestCase {
     }
 
     public function testDebugArrayAllOptionsEnabled() {
-        // Test all options enabled - daily=true, hourly=true, backtrace=true
+        // all three on
         $debug_config = [true, true, true];
         $this->db->log_path = $this->test_log_dir . '/all-options.log';
         $this->db->debug = $debug_config;
 
-        // Execute a query
         $this->db->query("SELECT 'all options test' as test_value");
 
-        // Force debug output
         $this->db->_show_debugging_console();
 
         // hourly wins over daily when both are asked for, and the backtrace goes in the same file
@@ -186,21 +170,17 @@ class DebugTest extends DatabaseTestCase {
     }
 
     public function testDebugArrayWithDirectoryLogPath() {
-        // Test with log_path set to a directory (should create log.txt)
         $debug_config = [false, false, false];
-        $this->db->log_path = $this->test_log_dir; // Directory, not file
+        $this->db->log_path = $this->test_log_dir;
         $this->db->debug = $debug_config;
 
-        // Execute a query
         $this->db->query("SELECT 'directory path test' as test_value");
 
-        // Force debug output
         $this->db->_show_debugging_console();
 
-        // Check that default log.txt file was created
+        // a path that is a directory rather than a file gets a log.txt written into it
         $this->assertFileExists($this->test_log_dir . '/log.txt');
 
-        // Check content
         $log_content = file_get_contents($this->test_log_dir . '/log.txt');
         $this->assertStringContainsString('directory path test', $log_content);
 
@@ -212,26 +192,19 @@ class DebugTest extends DatabaseTestCase {
         $this->db->log_path = $this->test_log_dir . '/both-queries.log';
         $this->db->debug = $debug_config;
 
-        // Disable halt_on_errors so unsuccessful queries don't stop execution
+        // so that the failing query below is reported rather than stopping the run
         $original_halt = $this->db->halt_on_errors;
         $this->db->halt_on_errors = false;
 
-        // Execute a successful query
         $this->db->query("SELECT 'successful query' as test_value");
-
-        // Execute an unsuccessful query
         $this->db->query("SELECT * FROM nonexistent_table");
 
-        // Force debug output
         $this->db->_show_debugging_console();
 
-        // Restore halt_on_errors
         $this->db->halt_on_errors = $original_halt;
 
-        // Check that log file was created
         $this->assertFileExists($this->test_log_dir . '/both-queries.log');
 
-        // Check that log contains both queries
         $log_content = file_get_contents($this->test_log_dir . '/both-queries.log');
         $this->assertStringContainsString('successful query', $log_content);
         $this->assertStringContainsString('nonexistent_table', $log_content);
@@ -240,50 +213,41 @@ class DebugTest extends DatabaseTestCase {
     }
 
     public function testDebugArrayLogContainsProperFormatting() {
-        $debug_config = [false, false, true]; // With backtrace
+        $debug_config = [false, false, true];
         $this->db->log_path = $this->test_log_dir . '/formatting.log';
         $this->db->debug = $debug_config;
 
-        // Execute a query
         $this->db->query("SELECT 'formatting test' as test_value, 42 as number");
 
-        // Force debug output
         $this->db->_show_debugging_console();
 
-        // Check that log file was created
         $this->assertFileExists($this->test_log_dir . '/formatting.log');
 
         $log_content = file_get_contents($this->test_log_dir . '/formatting.log');
 
-        // Check for proper log formatting elements
+        // an entry says what ran, how long it took and where it was called from
         $this->assertStringContainsString('QUERY', strtoupper($log_content));
         $this->assertStringContainsString('DURATION', strtoupper($log_content));
         $this->assertStringContainsString('BACKTRACE', strtoupper($log_content));
         $this->assertStringContainsString('formatting test', $log_content);
 
-        // Check for separator lines
         $this->assertStringContainsString('---', $log_content);
 
         $this->db->debug = false;
     }
 
     public function testDebugArrayDoesNotLogWhenDebugIsNotArray() {
-        // Set debug to boolean true (not array)
         $this->db->log_path = $this->test_log_dir . '/should-not-exist.log';
-        $this->db->debug = true; // Boolean, not array
+        $this->db->debug = true;
 
-        // Execute a query
         $this->db->query("SELECT 'should not be logged' as test_value");
 
-        // Force debug output (should show console, not write file)
+        // a boolean asks for the console, so log_path is left alone however it is set
         ob_start();
         $this->db->_show_debugging_console();
         $output = ob_get_clean();
 
-        // Check that log file was NOT created (since debug is not an array)
         $this->assertFileDoesNotExist($this->test_log_dir . '/should-not-exist.log');
-
-        // But console output should be generated
         $this->assertStringContainsString('should not be logged', $output);
 
         $this->db->debug = false;
@@ -292,19 +256,15 @@ class DebugTest extends DatabaseTestCase {
     public function testDebugArrayWithInvalidLogPath() {
         $debug_config = [false, false, false];
 
-        // Set an invalid log path (unwritable)
         $this->db->log_path = '/invalid/path/that/does/not/exist/debug.log';
         $this->db->debug = $debug_config;
 
-        // Execute a query
         $this->db->query("SELECT 'invalid path test' as test_value");
 
-        // the library reports this with trigger_error(..., E_USER_ERROR), which we catch with our own
-        // error handler rather than with expectError() - that is deprecated in PHPUnit 9.6 and gone in
-        // PHPUnit 10, and it is also what made this test the only warning in an otherwise clean run
-        // collect every error rather than just the last one - trying to open the file raises a warning
-        // of its own before the library gets to report the failure, and which arrives last should not
-        // be something this test depends on
+        // the library reports this with trigger_error(..., E_USER_ERROR), caught here with a handler of our
+        // own rather than with expectError(), which PHPUnit 9.6 deprecates and PHPUnit 10 does not have.
+        // Every message is collected, since opening the file raises a warning of its own before the library
+        // reports the failure, and which of the two arrives last is not something to depend on
         $captured = [];
 
         set_error_handler(function($errno, $errstr) use (&$captured) {
@@ -312,7 +272,6 @@ class DebugTest extends DatabaseTestCase {
             return true; // stop PHP handling it further, so E_USER_ERROR does not halt the run
         });
 
-        // Force debug output (should trigger error)
         $this->db->_show_debugging_console();
 
         restore_error_handler();
@@ -328,23 +287,18 @@ class DebugTest extends DatabaseTestCase {
     }
 
     public function testLogPathPropertyWorksCorrectlyWithDebugArray() {
-        // Test that log_path property is properly used when debug is array
         $custom_log_path = $this->test_log_dir . '/custom-path.log';
 
         $debug_config = [false, false, false];
         $this->db->log_path = $custom_log_path;
         $this->db->debug = $debug_config;
 
-        // Execute a query
         $this->db->query("SELECT 'custom path test' as test_value");
 
-        // Force debug output
         $this->db->_show_debugging_console();
 
-        // Check that the custom log file was created
         $this->assertFileExists($custom_log_path);
 
-        // Check content
         $log_content = file_get_contents($custom_log_path);
         $this->assertStringContainsString('custom path test', $log_content);
 
@@ -356,25 +310,21 @@ class DebugTest extends DatabaseTestCase {
         $this->db->log_path = $this->test_log_dir . '/multiple.log';
         $this->db->debug = $debug_config;
 
-        // Execute multiple queries
         $this->db->query("SELECT 'first query' as test");
         $this->db->query("SELECT 'second query' as test");
         $this->db->query("SELECT 'third query' as test");
 
-        // Force debug output
         $this->db->_show_debugging_console();
 
-        // Check that log file was created
         $this->assertFileExists($this->test_log_dir . '/multiple.log');
 
         $log_content = file_get_contents($this->test_log_dir . '/multiple.log');
 
-        // Check that all queries are logged
         $this->assertStringContainsString('first query', $log_content);
         $this->assertStringContainsString('second query', $log_content);
         $this->assertStringContainsString('third query', $log_content);
 
-        // Check that there are multiple query sections (look for multiple separators)
+        // one separator per query
         $separator_count = substr_count($log_content, '---');
         $this->assertGreaterThanOrEqual(3, $separator_count);
 

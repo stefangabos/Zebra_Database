@@ -3,8 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for the methods that configure the library rather than talk to the database -
- * option() and language()
+ * The methods that configure the library rather than talk to the database - option(), which hands mysqli
+ * its connection options, and language(), which picks the file the messages are read from.
  */
 class ConfigurationTest extends DatabaseTestCase
 {

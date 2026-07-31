@@ -3,16 +3,17 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for Zebra_Database connection functionality
+ * Connecting - lazily by default and immediately when asked, over TCP or over a socket, with credentials
+ * that work and with credentials that do not, and what closing and reconnecting does to all of it.
  */
 class ConnectionTest extends PHPUnit\Framework\TestCase {
     protected $db;
 
     protected function setUp(): void {
         $this->db = new Zebra_Database();
-        $this->db->debug = false; // Disable debug output during tests
+        $this->db->debug = false;
         $this->db->cache_path = getTempPath('cache'); // the suite's own scratch directory
-        // Don't call any connection methods here
+        // nothing connects here - each test connects the way it means to
     }
 
     protected function tearDown(): void {
@@ -25,7 +26,6 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
     public function testConstructor() {
         $db = new Zebra_Database();
 
-        // Test default property values
         $this->assertTrue($db->auto_quote_replacements);
         $this->assertEquals('disk', $db->caching_method);
         $this->assertTrue($db->debug);
@@ -33,8 +33,7 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
         $this->assertEquals(10, $db->max_query_time);
         $this->assertTrue($db->minimize_console);
 
-        // Test that connection is not established yet
-        // We check the connection property directly instead of get_link() which would trigger connection
+        // the property rather than get_link(), which would establish the connection it is asked about
         $reflection = new ReflectionClass($db);
         $connectionProperty = $reflection->getProperty('connection');
         $connectionProperty->setAccessible(true);
@@ -42,75 +41,64 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
     }
 
     public function testLazyConnectionDefault() {
-        // connect() method with default lazy connection behavior
         $this->db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
 
-        // Connection should not be established yet (lazy connection)
-        // We check the connection property directly instead of get_link() which would trigger connection
+        // the property rather than get_link(), which would establish the connection it is asked about
         $reflection = new ReflectionClass($this->db);
         $connectionProperty = $reflection->getProperty('connection');
         $connectionProperty->setAccessible(true);
         $this->assertFalse($connectionProperty->getValue($this->db));
 
-        // Only after executing a query should the connection be established
+        // the first query is what connects
         $result = $this->db->query("SELECT 1 as test");
         $this->assertNotFalse($result);
         $this->assertInstanceOf('mysqli', $this->db->get_link());
     }
 
     public function testImmediateConnectionWithConnectTrue() {
-        // connect() method with connect argument set to TRUE
         $this->db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT, '', true);
 
-        // Connection should be established immediately when connect=true
         $this->assertInstanceOf('mysqli', $this->db->get_link());
     }
 
     public function testLazyConnectionWithInvalidCredentials() {
-        // Invalid credentials with lazy connection should not fail immediately
         $this->db->connect(TEST_DB_HOST, 'invalid_user', 'invalid_pass', TEST_DB_NAME, TEST_DB_PORT);
 
-        // Connection should still be false (lazy connection)
+        // nothing has connected yet, so the credentials have not been tried
         $reflection = new ReflectionClass($this->db);
         $connectionProperty = $reflection->getProperty('connection');
         $connectionProperty->setAccessible(true);
         $this->assertFalse($connectionProperty->getValue($this->db));
 
-        // Error should only occur when actually trying to execute a query
+        // the query is where they are, and where it fails
         $result = $this->db->query("SELECT 1 as test");
         $this->assertFalse($result);
-        // After failed query, connection should still be false/null
         $this->assertFalse($this->db->get_link());
     }
 
     public function testImmediateConnectionWithInvalidCredentials() {
-        // Invalid credentials with immediate connection should fail right away
         $this->db->connect(TEST_DB_HOST, 'invalid_user', 'invalid_pass', TEST_DB_NAME, TEST_DB_PORT, '', true);
 
-        // Connection should fail immediately when connect=true with invalid credentials
         $this->assertFalse($this->db->get_link());
     }
 
     public function testLazyConnectionWithInvalidDatabase() {
-        // Invalid database with lazy connection should not fail immediately
         $this->db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, 'nonexistent_database', TEST_DB_PORT);
 
-        // Connection should still be false (lazy connection)
+        // nothing has connected yet, so the database name has not been looked at
         $reflection = new ReflectionClass($this->db);
         $connectionProperty = $reflection->getProperty('connection');
         $connectionProperty->setAccessible(true);
         $this->assertFalse($connectionProperty->getValue($this->db));
 
-        // Error should only occur when actually trying to execute a query
+        // the query is where it is, and where it fails
         $result = $this->db->query("SELECT 1 as test");
         $this->assertFalse($result);
     }
 
     public function testImmediateConnectionWithInvalidDatabase() {
-        // Invalid database with immediate connection should fail right away
         $this->db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, 'nonexistent_database', TEST_DB_PORT, '', true);
 
-        // Connection should fail immediately when connect=true with invalid database
         $this->assertFalse($this->db->get_link());
     }
 
@@ -151,7 +139,7 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
 
         $this->db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT, '', true);
 
-        // Should still connect successfully with null SSL options
+        // options that are all null are no options at all, and the connection is made without them
         $this->assertInstanceOf('mysqli', $this->db->get_link());
     }
 
@@ -162,15 +150,12 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
     }
 
     public function testReconnectionAfterClose() {
-        // First connection with immediate connect
         $this->db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT, '', true);
         $this->assertInstanceOf('mysqli', $this->db->get_link());
 
-        // Close connection
         $this->db->close();
         $this->assertFalse($this->db->get_link());
 
-        // Reconnect with immediate connect
         $this->db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT, '', true);
         $this->assertInstanceOf('mysqli', $this->db->get_link());
     }
@@ -193,7 +178,6 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
     public function testSelectDatabase() {
         $this->db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT, '', true);
 
-        // Create a temporary database for testing
         $temp_db = 'zebra_test_temp';
         $this->db->query("CREATE DATABASE IF NOT EXISTS `$temp_db`");
 
@@ -201,7 +185,6 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
         $this->assertTrue($result);
         $this->assertEquals($temp_db, $this->db->get_selected_database());
 
-        // Clean up
         $this->db->query("DROP DATABASE `$temp_db`");
         $this->db->select_database(TEST_DB_NAME);
     }
@@ -212,7 +195,7 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
         $result = $this->db->select_database('nonexistent_database');
         $this->assertFalse($result);
 
-        // Should still be connected to the original database
+        // the failed switch leaves the selected database as it was
         $this->assertEquals(TEST_DB_NAME, $this->db->get_selected_database());
     }
 
@@ -222,7 +205,6 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
         $result = $this->db->set_charset('utf8mb4', 'utf8mb4_unicode_ci');
         $this->assertNotFalse($result);
 
-        // Verify charset was set
         $charset_result = $this->db->query("SELECT @@character_set_connection, @@collation_connection");
         $charset_row = $this->db->fetch_assoc($charset_result);
 
@@ -238,18 +220,16 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
     }
 
     public function testConnectionPersistence() {
-        // Test that connection persists across multiple operations
         $this->db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT, '', true);
 
         $link1 = $this->db->get_link();
 
-        // Perform some operations
         $this->db->query("SELECT 1");
         $this->db->query("SELECT 2");
 
         $link2 = $this->db->get_link();
 
-        // Should be the same connection object
+        // one connection serves every query, rather than one being made per query
         $this->assertSame($link1, $link2);
     }
 
@@ -263,7 +243,7 @@ class ConnectionTest extends PHPUnit\Framework\TestCase {
         $db1->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT, '', true);
         $db2->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT, '', true);
 
-        // Should be different connection objects
+        // two instances mean two connections, not one shared between them
         $this->assertNotSame($db1->get_link(), $db2->get_link());
 
         $db1->close();

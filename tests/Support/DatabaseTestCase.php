@@ -1,12 +1,28 @@
 <?php
 
 /**
- * Base test class for database tests
- * Provides common functionality for all Zebra_Database tests
+ * The base class every test class in this suite extends.
+ *
+ * It holds whatever the tests share - the instance under test, a clean slate before each test, cleanup
+ * after each one, and the assertions used in more than one file - so that the test classes themselves
+ * hold nothing but tests.
  */
 abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
 
+    /**
+     * The instance under test, fresh for every test
+     *
+     * @var Zebra_Database|null
+     */
     protected $db;
+
+    /**
+     * Probes created during a test, shut down in tearDown() so that a failing assertion cannot leave one
+     * behind
+     *
+     * @var array<DatabaseProbe>
+     */
+    private $probes = [];
 
     protected function setUp(): void {
         $this->db = new Zebra_Database();
@@ -14,10 +30,15 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
         // an absolute path, so that the suite passes wherever it is started from - a relative one only
         // resolves when the working directory happens to be tests/
         $this->db->cache_path = getTempPath('cache');
-        $this->cleanDatabase();
+        $this->resetState();
     }
 
     protected function tearDown(): void {
+
+        foreach ($this->probes as $probe) $probe->shutdown();
+
+        $this->probes = [];
+
         if ($this->db) {
             // the debugging console is printed by a shutdown function that reads this flag when it runs, so
             // any test that turned debugging on - or that failed before it could turn it back off - would
@@ -25,30 +46,66 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
             $this->db->debug = false;
             $this->db->close();
         }
+
         $this->db = null;
+
+    }
+
+    /**
+     * Returns a probe - a subclass of the library that lets the tests read what it recorded about the
+     * queries it ran.
+     *
+     * The probe is connected and debugging, since debug_info is only filled in while debugging is on, and
+     * it is shut down in tearDown() - so a test does not have to remember to do it, and a failing assertion
+     * cannot leave one behind to print its console into the test output.
+     *
+     * @param   array<string, mixed>    $settings   properties to set before connecting. The caching ones
+     *                                              have to be in place by then, since establishing the
+     *                                              connection is what reads them
+     *
+     * @return  DatabaseProbe
+     */
+    protected function probe($settings = []) {
+
+        $probe = new DatabaseProbe();
+
+        $probe->debug = true;
+        $probe->halt_on_errors = false;
+        $probe->cache_path = getTempPath('cache');
+
+        foreach ($settings as $property => $value) $probe->$property = $value;
+
+        $probe->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+
+        $this->probes[] = $probe;
+
+        return $probe;
+
     }
 
     protected function connectToDatabase() {
         $this->db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
 
-        // Test the connection by running a simple query
+        // connect() is lazy, so a query is what says whether the connection can actually be made
         $result = $this->db->query("SELECT 1 as test");
         return $result !== false;
     }
 
     /**
-     * Empties the fixture tables and puts their auto-increment counters back to where a test expects to
-     * find them.
+     * Puts the world back the way a test expects to find it - empty fixture tables, with their
+     * auto-increment counters back at the start.
      *
      * DELETE rather than TRUNCATE: TRUNCATE is a DDL statement, and at around 6ms against 0.2ms for the
-     * delete it was costing this suite several seconds per run for nothing. The counters do have to be
-     * reset separately, since tests insert a row and then expect to find it at id 1 - which is the one
-     * thing TRUNCATE was doing for us.
+     * delete it costs this suite several seconds per run for nothing. The counters do have to be reset
+     * separately, since tests insert a row and then expect to find it at id 1 - which is the one thing
+     * TRUNCATE does for us.
      *
-     * Called from setUp() only. It used to run in tearDown() as well, which cleaned a database that the
-     * next setUp() was about to clean again.
+     * Called from setUp() only: doing it in tearDown() as well cleans a database that the next setUp() is
+     * about to clean again, and a test that dies half way through is followed by a setUp() regardless.
+     *
+     * @return  void
      */
-    protected function cleanDatabase() {
+    protected function resetState() {
         if ($this->db && $this->connectToDatabase()) {
             foreach (['test_users', 'test_products', 'test_categories'] as $table) {
                 $this->db->query('DELETE FROM ' . $table);
@@ -57,12 +114,19 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
         }
     }
 
+    /**
+     * Puts a known set of rows in place for the tests that need something to work with.
+     *
+     * Keep this small and keep it stable - tests assert against these values by name, so adding a row here
+     * can quietly change what a count somewhere else is supposed to be.
+     *
+     * @return  void
+     */
     protected function insertTestData() {
         if (!$this->connectToDatabase()) {
             $this->fail('Failed to connect to test database');
         }
 
-        // Insert test users
         $this->db->insert('test_users', [
             'name' => 'John Doe',
             'email' => 'john@example.com',
@@ -87,12 +151,10 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
             'is_active' => 0
         ]);
 
-        // Insert test categories
         $this->db->insert('test_categories', ['name' => 'Electronics']);
         $this->db->insert('test_categories', ['name' => 'Books']);
         $this->db->insert('test_categories', ['name' => 'Clothing']);
 
-        // Insert test products
         $this->db->insert('test_products', [
             'name' => 'Laptop',
             'price' => 999.99,
@@ -153,7 +215,7 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
     }
 
     /**
-     * Check if Memcache extension and server are available
+     * Whether there is both a memcache extension and a memcache server to talk to
      */
     protected function isMemcacheAvailable() {
         if (!extension_loaded('memcache')) {
@@ -170,7 +232,7 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
     }
 
     /**
-     * Check if Redis extension and server are available
+     * Whether there is both a redis extension and a redis server to talk to
      */
     protected function isRedisAvailable() {
         if (!extension_loaded('redis')) {
@@ -191,16 +253,16 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
     }
 
     /**
-     * Setup Memcache caching for database instance
-     * Note: Must be called BEFORE connect()
+     * An instance caching to memcache.
+     *
+     * The caching settings are read while the connection is being made, so they have to be in place
+     * before it is - which is why this replaces the instance rather than reconfiguring it
      */
     protected function setupMemcacheCache() {
-        // Close existing connection if any
         if ($this->db) {
             $this->db->close();
         }
 
-        // Create new instance and configure caching BEFORE connecting
         $this->db = new Zebra_Database();
         $this->db->debug = false;
         $this->db->cache_path = getTempPath('cache');
@@ -210,21 +272,17 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
         $this->db->memcache_key_prefix = 'zebra_test_';
         $this->db->memcache_compressed = false;
 
-        // Now connect with caching configured
         $this->connectToDatabase();
     }
 
     /**
-     * Setup Redis caching for database instance
-     * Note: Must be called BEFORE connect()
+     * An instance caching to redis, made the same way and for the same reason
      */
     protected function setupRedisCache() {
-        // Close existing connection if any
         if ($this->db) {
             $this->db->close();
         }
 
-        // Create new instance and configure caching BEFORE connecting
         $this->db = new Zebra_Database();
         $this->db->debug = false;
         $this->db->cache_path = getTempPath('cache');
@@ -234,7 +292,6 @@ abstract class DatabaseTestCase extends PHPUnit\Framework\TestCase {
         $this->db->redis_key_prefix = 'zebra_test_';
         $this->db->redis_compressed = false;
 
-        // Now connect with caching configured
         $this->connectToDatabase();
     }
 

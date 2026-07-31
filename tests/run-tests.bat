@@ -2,17 +2,19 @@
 ::
 :: Runs the test suite. The Windows counterpart of run-tests.sh - keep the two in step.
 ::
-:: Connection settings come from phpunit.xml if present, or from phpunit.xml.dist otherwise - see the
-:: comments in phpunit.xml.dist for how to point the suite at your own database.
+:: Settings come from phpunit.xml if present, or from phpunit.xml.dist otherwise - see the comments in
+:: phpunit.xml.dist for how to point the suite at a setup of your own.
 ::
-:: Any arguments are passed straight through to PHPUnit, so the usual flags all work:
+:: Run it with no arguments and it checks everything. Give it any argument and it runs only the tests you
+:: asked for, because that is the case where you are working on something and do not want to wait:
 ::
-::   run-tests.bat                                  the suite and all three checks
-::   run-tests.bat --testdox                        readable output
-::   run-tests.bat --filter dcount                  only tests matching "dcount"
-::   run-tests.bat CacheTest.php                    a single file
-::   run-tests.bat --coverage-html coverage-html    with a coverage report (needs xdebug or pcov)
-::   run-tests.bat --static                         the checks as well, whatever else is given
+::   tests\run-tests.bat                                  the suite and all three checks
+::   tests\run-tests.bat --testdox                        readable output, tests only
+::   tests\run-tests.bat --filter dcount                  only tests matching "dcount"
+::   tests\run-tests.bat CacheTest.php                    a single file
+::   tests\run-tests.bat --group regression               every test guarding a fix
+::   tests\run-tests.bat --coverage-html coverage-html    with a coverage report (needs xdebug or pcov)
+::   tests\run-tests.bat --static                         the checks as well, whatever else is given
 ::
 :: The three checks that --static adds are also available on their own, and those are the ones to use
 :: while working through what they report, since they take arguments:
@@ -23,7 +25,7 @@
 :: another version, and required on setups where "php" is not on the PATH at all:
 ::
 ::   set "PHP=C:\php\8.3\php.exe"
-::   run-tests.bat
+::   tests\run-tests.bat
 ::
 :: The memcache and redis tests skip themselves unless both a suitable extension and a running server are
 :: found. To include them, start the two servers first - they need no configuration and hold nothing of
@@ -34,10 +36,16 @@ setlocal enabledelayedexpansion
 
 cd /d "%~dp0"
 
+:: a run starts on a clean screen
+cls
+
+:: phpunit and phpstan work out their own widths, and phpstan's result banner is drawn across the whole of it.
+:: COLUMNS is what both of them read first, so setting it lines their output up with the 80 column rules below
+set COLUMNS=80
+
 if "%PHP%"=="" set "PHP=php"
 
-:: with nothing asked for in particular, check everything - the checks add about three seconds to a run
-:: that already takes ten, while on a filtered run of well under a second they would be most of the wait
+:: with nothing asked for in particular, check everything
 set RUN_STATIC=0
 if "%~1"=="" set RUN_STATIC=1
 set "ARGS="
@@ -77,16 +85,31 @@ if "%RUN_STATIC%"=="0" exit /b %TEST_RESULT%
 :: coding-standards.xml both name paths relative to it
 cd ..
 
-echo.
-echo --- php compatibility ---
+call :heading "PHP COMPATIBILITY"
 "%PHP%" vendor\bin\phpcs -p --standard=tests/php-compatibility.xml --runtime-set ignore_warnings_on_exit 1
 
-echo.
-echo --- static analysis ---
+call :heading "STATIC ANALYSIS"
 "%PHP%" vendor\bin\phpstan analyse --no-progress
 
-echo.
-echo --- coding standard ---
+call :heading "CODING STANDARD"
 "%PHP%" vendor\bin\phpcs -p --standard=coding-standards.xml --report=summary
 
+:: the PHP 5.6 check needs Docker, so it runs from tests/run-legacy.sh rather than from here
+call :heading "PHP 5.6"
+echo   not run - it needs Docker, so it is kept out of this script.
+echo   run tests/run-legacy.sh before tagging a release.
+
 exit /b %TEST_RESULT%
+
+:: A banner with the name between two rules, the same shape run-tests.sh draws. "=" rather than the box
+:: drawing character it uses, because what cmd makes of U+2550 depends on the console code page.
+:heading
+setlocal enabledelayedexpansion
+set "rule="
+for /l %%i in (1,1,80) do set "rule=!rule!="
+echo.
+echo !rule!
+echo   %~1
+echo !rule!
+endlocal
+goto :eof

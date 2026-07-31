@@ -3,9 +3,15 @@
 <!--
     Default configuration, safe to commit.
 
-    To run the suite against a database that is not on 127.0.0.1:3306, copy this file to "phpunit.xml"
-    (which is git-ignored) and adjust the values in the <php> block. PHPUnit picks up "phpunit.xml"
-    in preference to this file, so no other change is needed.
+    To run the suite against a setup other than the one below, copy this file to "phpunit.xml" (which is
+    git-ignored) and adjust the values in the <php> block. PHPUnit prefers "phpunit.xml" over this file,
+    so nothing else needs changing.
+
+    DB_NAME is created if it is not there, and the tables in it are dropped and recreated on every run -
+    so point these at a database you are happy to lose.
+
+    testdox is off deliberately - the default progress output is one character per test and ends with just
+    what failed. Ask for the other one on the command line when you want it.
 -->
 
 <phpunit
@@ -16,6 +22,7 @@
     processIsolation="false"
     stopOnFailure="false"
     backupGlobals="false"
+    testdox="false"
     cacheResultFile=".phpunit.result.cache">
 
     <testsuites>
@@ -29,8 +36,8 @@
             <file>../Zebra_Database.php</file>
         </include>
         <!--
-            No report is declared here on purpose, as declaring one makes every single run write a
-            full coverage report. Ask for one explicitly instead, with "composer test-coverage".
+            No report is declared on purpose - declaring one makes every run write a full coverage report.
+            Ask for one explicitly with "composer test-coverage", which needs pcov or xdebug.
         -->
     </coverage>
 
@@ -40,6 +47,8 @@
         <env name="DB_PASS" value=""/>
         <env name="DB_NAME" value="zebra_test"/>
         <env name="DB_PORT" value="3306"/>
+        <!-- the caching servers the memcache and redis tests look for - those tests skip themselves when
+             there is nothing listening, so these only matter on a machine where there is -->
         <env name="MEMCACHE_HOST" value="127.0.0.1"/>
         <env name="MEMCACHE_PORT" value="11211"/>
         <env name="REDIS_HOST" value="127.0.0.1"/>

@@ -3,7 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for transaction_start() and transaction_complete()
+ * transaction_start() and transaction_complete() - committing, rolling back, and the test transaction
+ * that is rolled back whatever happens.
  *
  * These need a storage engine that can actually roll back, so they use a table of their own rather than
  * the shared fixtures - the test tables are InnoDB, but a table created here says so explicitly.
@@ -95,6 +96,8 @@ class TransactionTest extends DatabaseTestCase
      * be tried out without keeping anything. Completing one is a success and has to be reported as such -
      * the status was reset to 0 before being compared against the value standing for a test transaction, so
      * the comparison could never be true and a test transaction was indistinguishable from a failed one.
+     *
+     * @group regression
      */
     public function testATestTransactionReportsSuccess() {
         $this->assertTrue($this->db->transaction_start(true));

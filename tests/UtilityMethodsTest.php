@@ -3,7 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for Zebra_Database utility methods (dcount, dlookup, dmax, dsum)
+ * The four one-line shorthands - dcount(), dlookup(), dmax() and dsum() - how they treat the column and
+ * the table they are given, what they cache, and what they return when nothing matches.
  */
 class UtilityMethodsTest extends DatabaseTestCase
 {
@@ -77,7 +78,7 @@ class UtilityMethodsTest extends DatabaseTestCase
     public function testDcountAllRecords() {
         $count = $this->db->dcount('*', 'test_users');
 
-        $this->assertEquals(3, $count); // We inserted 3 users in insertTestData
+        $this->assertEquals(3, $count); // insertTestData puts three users in
     }
 
     public function testDcountSpecificColumn() {
@@ -95,7 +96,7 @@ class UtilityMethodsTest extends DatabaseTestCase
     public function testDcountWithComplexWhereClause() {
         $count = $this->db->dcount('*', 'test_users', 'age > ? AND is_active = ?', [25, 1]);
 
-        $this->assertEquals(1, $count); // Only John (30, active)
+        $this->assertEquals(1, $count); // John alone is both over 25 and active
     }
 
     public function testDcountWithNoMatches() {
@@ -105,7 +106,6 @@ class UtilityMethodsTest extends DatabaseTestCase
     }
 
     public function testDcountWithNullParameter() {
-        // Insert a user with null email
         $this->db->insert('test_users', [
             'name' => 'Null Email User',
             'email' => null,
@@ -125,23 +125,14 @@ class UtilityMethodsTest extends DatabaseTestCase
 
     /**
      * A probe caching to disk in the suite's own scratch directory, emptied first so that what a previous
-     * test cached cannot be mistaken for what this one is about to.
-     *
-     * These four tests used to write to a hard-coded "/tmp/zebra_test_cache" - which does not exist on
-     * Windows, where the suite is also meant to run - and each carried its own copy of the same fifteen
-     * lines of directory bookkeeping
+     * test cached cannot be mistaken for what this one is about to
      */
     private function cachingProbe() {
         $path = getTempPath('cache');
 
         foreach (glob($path . '/*') as $file) if (is_file($file)) unlink($file);
 
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->halt_on_errors = false;
-        $db->caching_method = 'disk';
-        $db->cache_path = $path;
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+        $db = $this->probe(['caching_method' => 'disk', 'cache_path' => $path]);
 
         return $db;
     }
@@ -152,12 +143,10 @@ class UtilityMethodsTest extends DatabaseTestCase
         $this->assertEquals(2, $db->dcount('*', 'test_users', 'is_active = ?', [1], 3600));
         $this->assertFalse($db->lastFromCache(), 'The first call has to run the query');
 
-        // the same call again gives the same answer - and this time without asking the server, which is the
-        // half that was missing: two identical return values prove nothing about caching on their own
+        // the same call again gives the same answer, and this time without asking the server
         $this->assertEquals(2, $db->dcount('*', 'test_users', 'is_active = ?', [1], 3600));
         $this->assertTrue($db->lastFromCache(), 'The second call is served from the cache');
 
-        $db->shutdown();
     }
 
     public function testDcountInvalidTable() {
@@ -185,8 +174,7 @@ class UtilityMethodsTest extends DatabaseTestCase
     public function testDlookupWithComplexWhereClause() {
         $email = $this->db->dlookup('email', 'test_users', 'age > ? AND is_active = ?', [25, 1]);
 
-        // Should return John's email (he's 30 and active)
-        $this->assertEquals('john@example.com', $email);
+        $this->assertEquals('john@example.com', $email); // John is the only one over 25 and active
     }
 
     public function testDlookupWithNoMatches() {
@@ -196,7 +184,6 @@ class UtilityMethodsTest extends DatabaseTestCase
     }
 
     public function testDlookupWithNullValue() {
-        // Insert user with null email
         $this->db->insert('test_users', [
             'name' => 'Null Email User',
             'email' => null,
@@ -211,8 +198,7 @@ class UtilityMethodsTest extends DatabaseTestCase
     public function testDlookupWithArrayParameter() {
         $name = $this->db->dlookup('name', 'test_users|name', 'name IN (?)', [['John Doe', 'Jane Smith']]);
 
-        // Should return the first one alphabetically
-        $this->assertEquals('Jane Smith', $name);
+        $this->assertEquals('Jane Smith', $name); // the table is ordered by name, so the first one wins
     }
 
     public function testDlookupNumericValue() {
@@ -236,7 +222,6 @@ class UtilityMethodsTest extends DatabaseTestCase
         $this->assertSame('John Doe', $db->dlookup('name', 'test_users', 'email = ?', ['john@example.com'], 3600));
         $this->assertTrue($db->lastFromCache(), 'The second lookup is served from the cache');
 
-        $db->shutdown();
     }
 
     public function testDlookupInvalidTable() {
@@ -292,7 +277,6 @@ class UtilityMethodsTest extends DatabaseTestCase
         $this->assertEquals(35, (int)$db->dmax('age', 'test_users', '', '', 3600));
         $this->assertTrue($db->lastFromCache(), 'The second call is served from the cache');
 
-        $db->shutdown();
     }
 
     public function testDmaxInvalidTable() {
@@ -330,13 +314,14 @@ class UtilityMethodsTest extends DatabaseTestCase
     public function testDsumWithComplexWhereClause() {
         $sum_score = $this->db->dsum('score', 'test_users', 'age > ? AND is_active = ?', [25, 1]);
 
-        $this->assertEquals(85.50, (float)$sum_score); // Only John's score
+        $this->assertEquals(85.50, (float)$sum_score); // John is the only one over 25 and active
     }
 
     /**
-     * Asserted strictly on purpose. SUM() over no rows gives NULL, which the method turns into FALSE the way
-     * dmax does - and "(int)$result" cannot tell the two apart, since both FALSE and NULL cast to 0. That is
-     * how this went unnoticed while the identical fix to dmax was covered.
+     * Asserted strictly on purpose. SUM() over no rows gives NULL, which the method turns into FALSE the
+     * way dmax does - and "(int)$result" cannot tell the two apart, since both FALSE and NULL cast to 0
+     *
+     * @group regression
      */
     public function testDsumWithNoMatches() {
         $result = $this->db->dsum('age', 'test_users', 'name = ?', ['Nonexistent User']);
@@ -351,7 +336,6 @@ class UtilityMethodsTest extends DatabaseTestCase
     }
 
     public function testDsumWithNullValues() {
-        // Insert user with null score
         $this->db->insert('test_users', [
             'name' => 'Null Score User',
             'email' => 'nullscore@example.com',
@@ -361,8 +345,8 @@ class UtilityMethodsTest extends DatabaseTestCase
 
         $sum_score = $this->db->dsum('score', 'test_users');
 
-        // SUM should ignore NULL values
-        $this->assertEquals(256.50, (float)$sum_score); // Same as before
+        // SUM() steps over a NULL rather than making the whole sum NULL
+        $this->assertEquals(256.50, (float)$sum_score);
     }
 
     public function testDsumWithCache() {
@@ -374,7 +358,6 @@ class UtilityMethodsTest extends DatabaseTestCase
         $this->assertEquals(90, (int)$db->dsum('age', 'test_users', '', '', 3600));
         $this->assertTrue($db->lastFromCache(), 'The second call is served from the cache');
 
-        $db->shutdown();
     }
 
     public function testDsumInvalidTable() {
@@ -392,7 +375,6 @@ class UtilityMethodsTest extends DatabaseTestCase
     // EDGE CASES AND INTEGRATION TESTS
 
     public function testUtilityMethodsWithSpecialCharacters() {
-        // Insert user with special characters
         $special_name = "O'Brien & Co. <script>alert('test')</script>";
         $this->db->insert('test_users', [
             'name' => $special_name,
@@ -415,7 +397,6 @@ class UtilityMethodsTest extends DatabaseTestCase
     }
 
     public function testUtilityMethodsWithLargeNumbers() {
-        // Insert user with large numbers
         $this->db->insert('test_users', [
             'name' => 'Large Number User',
             'email' => 'large@example.com',
@@ -434,7 +415,6 @@ class UtilityMethodsTest extends DatabaseTestCase
     }
 
     public function testUtilityMethodsWithEmptyTable() {
-        // Empty the table
         $this->db->delete('test_users');
 
         $count = $this->db->dcount('*', 'test_users');
@@ -446,14 +426,15 @@ class UtilityMethodsTest extends DatabaseTestCase
         $max_result = $this->db->dmax('age', 'test_users');
         $this->assertFalse($max_result);
 
-        // note the strict assertion - casting to int would turn both FALSE and NULL into 0, which is
-        // exactly how a NULL return went unnoticed here. dmax and dsum both document that the return
-        // value has to be tested with ===, so that is what is tested
+        // strictly, since casting to int would turn both FALSE and NULL into 0 - dmax and dsum document
+        // that their return value has to be tested with ===, so that is how it is tested
         $sum_result = $this->db->dsum('age', 'test_users');
-        $this->assertFalse($sum_result);
-        $this->assertNotNull($sum_result, "dsum must return FALSE rather than NULL when there is nothing to sum");
+        $this->assertFalse($sum_result, "dsum must return FALSE rather than NULL when there is nothing to sum");
     }
 
+    /**
+     * @group regression
+     */
     public function testAggregateMethodsReturnFalseNotNullWhenNothingMatches() {
         // SUM() and MAX() over zero matching rows come back as a single NULL row rather than no rows at
         // all, so the "did we get any rows" guard inside these methods passes and the NULL reaches the

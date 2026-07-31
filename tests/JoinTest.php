@@ -3,8 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for JOIN operations, focusing on column name collisions
- * and edge cases discovered in GitHub issues
+ * Joins, and what becomes of a column name that two of the joined tables both have - which is a property
+ * of PHP arrays rather than of the library, and is why aliasing is the answer to all of it.
  */
 class JoinTest extends DatabaseTestCase
 {
@@ -15,7 +15,7 @@ class JoinTest extends DatabaseTestCase
     }
 
     private function setupJoinTestData() {
-        // Create tables with intentionally colliding column names
+        // two tables that deliberately share the names id, name and created_at
         $this->db->query("
             CREATE TABLE IF NOT EXISTS test_authors (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -36,7 +36,6 @@ class JoinTest extends DatabaseTestCase
             ) ENGINE=InnoDB
         ");
 
-        // Insert test data
         $this->db->insert('test_authors', [
             'name' => 'John Doe',
             'email' => 'john@example.com'
@@ -71,21 +70,16 @@ class JoinTest extends DatabaseTestCase
     }
 
     /**
-     * Test JOIN with colliding column names (id, name, created_at)
-     *
-     * When two joined tables have a column of the same name, an associative row can only hold one of
-     * them and the one read last wins. That is how PHP arrays work rather than anything the library
-     * does, and mysqli_fetch_assoc() behaves identically, so there is nothing here to fix - the answer
-     * is to alias the columns, which testJoinWithAliasedColumns covers.
-     *
-     * This test pins that behaviour down so that it is a documented, deliberate limitation rather than
-     * a surprise.
+     * When two joined tables have a column of the same name, an associative row can only hold one of them
+     * and the one read last wins. That is how PHP arrays work rather than anything the library does, and
+     * mysqli_fetch_assoc() behaves identically - so this pins a deliberate limitation rather than a bug,
+     * and the answer to it is the aliasing the next test covers
      */
     public function testJoinWithCollidingColumnNames() {
         $result = $this->db->query("
-            SELECT a.*, b.*
-            FROM test_authors a
-            INNER JOIN test_books b ON a.id = b.author_id
+            SELECT authors.*, books.*
+            FROM test_authors authors
+            INNER JOIN test_books books ON authors.id = books.author_id
         ");
 
         $this->assertNotFalse($result, "JOIN query should succeed");
@@ -107,22 +101,22 @@ class JoinTest extends DatabaseTestCase
     }
 
     /**
-     * Test JOIN with explicit column aliasing to avoid collisions
+     * Aliasing every column is what makes both sides of a collision reachable
      */
     public function testJoinWithColumnAliases() {
         $result = $this->db->query("
             SELECT
-                a.id as author_id,
-                a.name as author_name,
-                a.email as author_email,
-                a.created_at as author_created_at,
-                b.id as book_id,
-                b.title as book_title,
-                b.name as book_series,
-                b.created_at as book_created_at
-            FROM test_authors a
-            INNER JOIN test_books b ON a.id = b.author_id
-            ORDER BY a.id, b.id
+                authors.id as author_id,
+                authors.name as author_name,
+                authors.email as author_email,
+                authors.created_at as author_created_at,
+                books.id as book_id,
+                books.title as book_title,
+                books.name as book_series,
+                books.created_at as book_created_at
+            FROM test_authors authors
+            INNER JOIN test_books books ON authors.id = books.author_id
+            ORDER BY authors.id, books.id
         ");
 
         $this->assertNotFalse($result, "JOIN with aliases should succeed");
@@ -130,7 +124,6 @@ class JoinTest extends DatabaseTestCase
         $row = $this->db->fetch_assoc($result);
         $this->assertNotEmpty($row, "Should return results");
 
-        // All aliased columns should be present
         $expected_columns = ['author_id', 'author_name', 'author_email', 'author_created_at',
                             'book_id', 'book_title', 'book_series', 'book_created_at'];
 
@@ -138,7 +131,6 @@ class JoinTest extends DatabaseTestCase
             $this->assertArrayHasKey($column, $row, "Should have column: $column");
         }
 
-        // Verify data integrity
         $this->assertNotEquals($row['author_name'],
             $row['book_series'],
             "Author name and book series should be different values"
@@ -146,10 +138,9 @@ class JoinTest extends DatabaseTestCase
     }
 
     /**
-     * Test complex JOIN with multiple table and column collisions
+     * Three tables, each contributing an id, a name and an email, and one of each surviving
      */
     public function testComplexJoinWithMultipleCollisions() {
-        // Create another table with more colliding column names
         $this->db->query("
             CREATE TABLE IF NOT EXISTS test_publishers (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -164,14 +155,13 @@ class JoinTest extends DatabaseTestCase
             'email' => 'contact@publisherone.com'
         ]);
 
-        // Add publisher_id to books table
         $this->db->query("ALTER TABLE test_books ADD COLUMN publisher_id INT DEFAULT 1");
 
         $result = $this->db->query("
             SELECT *
-            FROM test_authors a
-            INNER JOIN test_books b ON a.id = b.author_id
-            INNER JOIN test_publishers p ON b.publisher_id = p.id
+            FROM test_authors authors
+            INNER JOIN test_books books ON authors.id = books.author_id
+            INNER JOIN test_publishers publishers ON books.publisher_id = publishers.id
             LIMIT 1
         ");
 
@@ -180,35 +170,32 @@ class JoinTest extends DatabaseTestCase
         $row = $this->db->fetch_assoc($result);
         $this->assertNotEmpty($row, "Should return results from complex JOIN");
 
-        // three tables each contribute a "name", an "email" and an "id", and what comes back holds one of
-        // each - the publisher's, since that table is joined last. Counting the keys was what this used to
-        // do, which can only ever come out as one and so said nothing at all
+        // what comes back holds one of each - the publisher's, that table being the one joined last
         $this->assertSame('Publisher One', $row['name'], "The last table joined is the one whose column survives");
         $this->assertSame('contact@publisherone.com', $row['email']);
 
         // and the columns the earlier tables contributed are unreachable rather than merged in
-        $this->assertNotContains('a.name', array_keys($row));
+        $this->assertNotContains('authors.name', array_keys($row));
         $this->assertNotContains('test_authors.name', array_keys($row));
 
-        // Clean up
         $this->db->query("DROP TABLE IF EXISTS test_publishers");
     }
 
     /**
-     * Test LEFT JOIN behavior with NULL values and column collisions
+     * The unmatched side of a LEFT JOIN comes back as NULLs, aliases and all
      */
     public function testLeftJoinWithNullsAndCollisions() {
-        // Insert an author without books
+        // an author with no books, so that there is a row with nothing on the other side of the join
         $this->db->insert('test_authors', [
             'name' => 'Author Without Books',
             'email' => 'lonely@author.com'
         ]);
 
         $result = $this->db->query("
-            SELECT a.name as author_name, b.name as book_series, b.title
-            FROM test_authors a
-            LEFT JOIN test_books b ON a.id = b.author_id
-            ORDER BY a.id
+            SELECT authors.name as author_name, books.name as book_series, books.title
+            FROM test_authors authors
+            LEFT JOIN test_books books ON authors.id = books.author_id
+            ORDER BY authors.id
         ");
 
         $this->assertNotFalse($result, "LEFT JOIN should succeed");
@@ -216,7 +203,6 @@ class JoinTest extends DatabaseTestCase
         $rows = $this->db->fetch_assoc_all($result);
         $this->assertNotEmpty($rows, "Should return results from LEFT JOIN");
 
-        // Find the author without books
         $lonely_author_found = false;
         foreach ($rows as $row) {
             if ($row['author_name'] === 'Author Without Books') {
@@ -230,7 +216,7 @@ class JoinTest extends DatabaseTestCase
     }
 
     /**
-     * Test UNION operations with potentially colliding columns
+     * A UNION's rows take the shape of the first SELECT, whatever the tables underneath are called
      */
     public function testUnionWithCollidingColumns() {
         $result = $this->db->query("
@@ -245,7 +231,6 @@ class JoinTest extends DatabaseTestCase
         $rows = $this->db->fetch_assoc_all($result);
         $this->assertNotEmpty($rows, "UNION should return results");
 
-        // Verify that UNION preserves column structure
         foreach ($rows as $row) {
             $this->assertArrayHasKey('id', $row);
             $this->assertArrayHasKey('name', $row);
@@ -255,10 +240,9 @@ class JoinTest extends DatabaseTestCase
     }
 
     /**
-     * Test self-JOIN with column name collisions
+     * A table joined to itself collides with itself in every column, so aliases are the only way to read it
      */
     public function testSelfJoinWithCollisions() {
-        // Create a table with self-referencing relationships
         $this->db->query("
             CREATE TABLE IF NOT EXISTS test_categories2 (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -269,7 +253,6 @@ class JoinTest extends DatabaseTestCase
             ) ENGINE=InnoDB
         ");
 
-        // Insert hierarchical data
         $this->db->insert('test_categories2', ['name' => 'Root Category', 'parent_id' => null, 'level' => 1]);
         $root_id = $this->db->insert_id();
 
@@ -295,12 +278,12 @@ class JoinTest extends DatabaseTestCase
         $this->assertEquals('Child Category', $row['child_name']);
         $this->assertNotEquals($row['parent_id'], $row['child_id'], "Parent and child IDs should be different");
 
-        // Clean up
         $this->db->query("DROP TABLE IF EXISTS test_categories2");
     }
 
     /**
-     * Test JOIN with potentially problematic column names (reserved words, special chars)
+     * Column names that have to be quoted to be named at all - a reserved word, a hyphen, a leading digit -
+     * come back under exactly those names
      */
     public function testJoinWithProblematicColumnNames() {
         $this->db->query("
@@ -322,14 +305,14 @@ class JoinTest extends DatabaseTestCase
 
         $result = $this->db->query("
             SELECT
-                a.id as author_id,
-                a.name as author_name,
-                s.`order`,
-                s.`user-name`,
-                s.`123numeric`,
-                s.`select`
-            FROM test_authors a
-            CROSS JOIN test_special_columns s
+                authors.id as author_id,
+                authors.name as author_name,
+                special_columns.`order`,
+                special_columns.`user-name`,
+                special_columns.`123numeric`,
+                special_columns.`select`
+            FROM test_authors authors
+            CROSS JOIN test_special_columns special_columns
             LIMIT 1
         ");
 
@@ -338,38 +321,35 @@ class JoinTest extends DatabaseTestCase
         $row = $this->db->fetch_assoc($result);
         $this->assertNotEmpty($row, "Should return results");
 
-        // Verify all problematic columns are accessible
         $this->assertArrayHasKey('order', $row);
         $this->assertArrayHasKey('user-name', $row);
         $this->assertArrayHasKey('123numeric', $row);
         $this->assertArrayHasKey('select', $row);
 
-        // Clean up
         $this->db->query("DROP TABLE IF EXISTS test_special_columns");
     }
 
     /**
-     * Test that fetch_assoc properly handles duplicate column names in JOINs
+     * Both fetchers lose the same half of a collision, since both are reading the same rows
      */
     public function testFetchAssocWithDuplicateJoinColumns() {
         $result = $this->db->query("
-            SELECT a.name, b.name, a.id, b.id
-            FROM test_authors a
-            INNER JOIN test_books b ON a.id = b.author_id
+            SELECT authors.name, books.name, authors.id, books.id
+            FROM test_authors authors
+            INNER JOIN test_books books ON authors.id = books.author_id
             LIMIT 1
         ");
 
         $this->assertNotFalse($result, "Query with duplicate column names should succeed");
 
-        // Test both fetch methods
         $assoc_row = $this->db->fetch_assoc($result);
         $this->assertNotEmpty($assoc_row, "fetch_assoc should return data");
 
-        // Reset result pointer to test fetch_assoc_all
+        // the same query again, the row pointer having moved past the only row there is
         $this->db->query("
-            SELECT a.name, b.name, a.id, b.id
-            FROM test_authors a
-            INNER JOIN test_books b ON a.id = b.author_id
+            SELECT authors.name, books.name, authors.id, books.id
+            FROM test_authors authors
+            INNER JOIN test_books books ON authors.id = books.author_id
             LIMIT 1
         ");
 
@@ -377,9 +357,8 @@ class JoinTest extends DatabaseTestCase
         $this->assertNotEmpty($all_rows, "fetch_assoc_all should return data");
         $this->assertCount(1, $all_rows, "Should return exactly 1 row");
 
-        // four columns were selected - a.name, b.name, a.id and b.id - and two keys come back, because the
-        // second of each pair overwrites the first. Comparing the key count against the unique key count
-        // was the old assertion here, and one array cannot have more keys than it has unique keys
+        // four columns were selected - the name and the id of each table - and two keys come back, the
+        // second of each pair having overwritten the first
         $this->assertSame(['name', 'id'], array_keys($assoc_row), "Four columns collapse into two keys");
         $this->assertSame($all_rows[0], $assoc_row, "Both fetch methods lose the same half");
     }

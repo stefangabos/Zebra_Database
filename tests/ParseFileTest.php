@@ -3,7 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for the parse_file() method, which runs the statements found in a MySQL dump file
+ * parse_file(), which runs the statements it finds in a MySQL dump - what it recognises as a statement,
+ * what it steps over, and the two limitations that follow from recognising them line by line.
  */
 class ParseFileTest extends DatabaseTestCase
 {
@@ -192,11 +193,7 @@ class ParseFileTest extends DatabaseTestCase
     }
 
     public function testParseFileLogsAnErrorForAFileThatDoesNotExist() {
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->halt_on_errors = false;
-        $db->cache_path = getTempPath('cache');
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+        $db = $this->probe();
 
         @$db->parse_file(getTempPath('uploads') . '/no_such_file.sql');
 
@@ -204,7 +201,6 @@ class ParseFileTest extends DatabaseTestCase
 
         $this->assertNotEmpty($errors, 'A file that cannot be opened has to be reported');
 
-        $db->shutdown();
     }
 
     /**

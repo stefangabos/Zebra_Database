@@ -3,7 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for Zebra_Database result fetching methods
+ * Reading a result set - a row at a time or all at once, as an array or as an object, with or without
+ * being handed the result to read from - and the methods that go with it: free_result, seek, get_columns.
  */
 class FetchMethodsTest extends DatabaseTestCase
 {
@@ -47,7 +48,6 @@ class FetchMethodsTest extends DatabaseTestCase
     }
 
     public function testFetchAssocWithNullValues() {
-        // Insert user with null email
         $this->db->insert('test_users', [
             'name' => 'Null Email User',
             'email' => null,
@@ -84,9 +84,9 @@ class FetchMethodsTest extends DatabaseTestCase
     }
 
     public function testFetchAssocWithoutResult() {
-        // Test calling fetch_assoc without providing a result (should use last result)
+        // given nothing to read from, it reads from the query that ran last
         $this->db->query("SELECT * FROM test_users WHERE name = ?", ['John Doe']);
-        $row = $this->db->fetch_assoc(); // No result parameter
+        $row = $this->db->fetch_assoc();
 
         $this->assertIsArray($row);
         $this->assertEquals('John Doe', $row['name']);
@@ -99,7 +99,6 @@ class FetchMethodsTest extends DatabaseTestCase
         $this->assertIsArray($all_rows);
         $this->assertCount(3, $all_rows);
 
-        // Test data structure
         $this->assertEquals('Bob Johnson', $all_rows[0]['name']);
         $this->assertEquals('Jane Smith', $all_rows[1]['name']);
         $this->assertEquals('John Doe', $all_rows[2]['name']);
@@ -173,7 +172,6 @@ class FetchMethodsTest extends DatabaseTestCase
     }
 
     public function testFetchObjWithNullValues() {
-        // Insert user with null email
         $this->db->insert('test_users', [
             'name' => 'Null Email User',
             'email' => null,
@@ -210,9 +208,9 @@ class FetchMethodsTest extends DatabaseTestCase
     }
 
     public function testFetchObjWithoutResult() {
-        // Test calling fetch_obj without providing a result (should use last result)
+        // given nothing to read from, it reads from the query that ran last
         $this->db->query("SELECT * FROM test_users WHERE name = ?", ['John Doe']);
-        $obj = $this->db->fetch_obj(); // No result parameter
+        $obj = $this->db->fetch_obj();
 
         $this->assertIsObject($obj);
         $this->assertEquals('John Doe', $obj->name);
@@ -225,7 +223,6 @@ class FetchMethodsTest extends DatabaseTestCase
         $this->assertIsArray($all_objects);
         $this->assertCount(3, $all_objects);
 
-        // Test data structure
         $this->assertIsObject($all_objects[0]);
         $this->assertEquals('Bob Johnson', $all_objects[0]->name);
         $this->assertEquals('Jane Smith', $all_objects[1]->name);
@@ -273,17 +270,15 @@ class FetchMethodsTest extends DatabaseTestCase
     public function testMixedFetchAssocAndFetchObj() {
         $result = $this->db->query("SELECT * FROM test_users ORDER BY name");
 
-        // Fetch first row as array
+        // both fetchers move the same row pointer, so they take turns rather than each starting over
         $array_row = $this->db->fetch_assoc($result);
         $this->assertIsArray($array_row);
         $this->assertEquals('Bob Johnson', $array_row['name']);
 
-        // Fetch second row as object
         $object_row = $this->db->fetch_obj($result);
         $this->assertIsObject($object_row);
         $this->assertEquals('Jane Smith', $object_row->name);
 
-        // Fetch third row as array again
         $array_row2 = $this->db->fetch_assoc($result);
         $this->assertIsArray($array_row2);
         $this->assertEquals('John Doe', $array_row2['name']);
@@ -294,16 +289,11 @@ class FetchMethodsTest extends DatabaseTestCase
     public function testFreeResult() {
         $result = $this->db->query("SELECT * FROM test_users LIMIT 1");
 
-        // Verify we can fetch data
         $row = $this->db->fetch_assoc($result);
         $this->assertIsArray($row);
 
-        // Free the result
         $free_result = $this->db->free_result($result);
         $this->assertTrue($free_result);
-
-        // Attempting to fetch after free should return false or null
-        // Note: Behavior may vary depending on MySQL version
     }
 
     /**
@@ -311,6 +301,8 @@ class FetchMethodsTest extends DatabaseTestCase
      * raises an Error rather than a warning. An already freed result is still an instance of mysqli_result,
      * so there is nothing to check beforehand - the attempt has to be made and the Error caught, which is
      * what turns the second call into a plain FALSE.
+     *
+     * @group regression
      */
     public function testFreeingTheSameResultTwiceReportsFalseRatherThanDying() {
         $result = $this->db->query('SELECT * FROM test_users LIMIT 1');
@@ -322,7 +314,7 @@ class FetchMethodsTest extends DatabaseTestCase
     public function testFreeResultWithoutParameter() {
         $this->db->query("SELECT * FROM test_users LIMIT 1");
 
-        // Free result without parameter (should free last result)
+        // given nothing, it frees the result of the query that ran last
         $free_result = $this->db->free_result();
         $this->assertTrue($free_result);
     }
@@ -332,11 +324,10 @@ class FetchMethodsTest extends DatabaseTestCase
     public function testSeek() {
         $result = $this->db->query("SELECT * FROM test_users ORDER BY name");
 
-        // Seek to second row (index 1)
+        // the second row, the rows being counted from zero
         $seek_result = $this->db->seek(1, $result);
         $this->assertTrue($seek_result);
 
-        // Fetch should return the second row
         $row = $this->db->fetch_assoc($result);
         $this->assertEquals('Jane Smith', $row['name']);
     }
@@ -344,15 +335,13 @@ class FetchMethodsTest extends DatabaseTestCase
     public function testSeekToFirstRow() {
         $result = $this->db->query("SELECT * FROM test_users ORDER BY name");
 
-        // Fetch first row
         $first_row = $this->db->fetch_assoc($result);
         $this->assertEquals('Bob Johnson', $first_row['name']);
 
-        // Seek back to beginning
+        // back to where the pointer started, so the same row comes back a second time
         $seek_result = $this->db->seek(0, $result);
         $this->assertTrue($seek_result);
 
-        // Should get the first row again
         $row_again = $this->db->fetch_assoc($result);
         $this->assertEquals('Bob Johnson', $row_again['name']);
     }
@@ -360,7 +349,6 @@ class FetchMethodsTest extends DatabaseTestCase
     public function testSeekOutOfBounds() {
         $result = $this->db->query("SELECT * FROM test_users ORDER BY name");
 
-        // Try to seek to a row that doesn't exist
         $seek_result = $this->db->seek(10, $result);
         $this->assertFalse($seek_result);
     }
@@ -368,7 +356,7 @@ class FetchMethodsTest extends DatabaseTestCase
     public function testSeekWithoutParameter() {
         $this->db->query("SELECT * FROM test_users ORDER BY name");
 
-        // Seek without result parameter (should use last result)
+        // given nothing, it seeks in the result of the query that ran last
         $seek_result = $this->db->seek(1);
         $this->assertTrue($seek_result);
 
@@ -385,7 +373,6 @@ class FetchMethodsTest extends DatabaseTestCase
         $this->assertIsArray($columns);
         $this->assertCount(3, $columns);
 
-        // Check that we get column metadata arrays
         $column_names = [];
         foreach ($columns as $column) {
             $this->assertIsArray($column);
@@ -400,12 +387,11 @@ class FetchMethodsTest extends DatabaseTestCase
 
     public function testGetColumnsWithoutParameter() {
         $this->db->query("SELECT name, email FROM test_users LIMIT 1");
-        $columns = $this->db->get_columns(); // No result parameter
+        $columns = $this->db->get_columns();
 
         $this->assertIsArray($columns);
         $this->assertCount(2, $columns);
 
-        // Check that we get column metadata arrays
         $column_names = [];
         foreach ($columns as $column) {
             $this->assertIsArray($column);
@@ -423,7 +409,6 @@ class FetchMethodsTest extends DatabaseTestCase
 
         $this->assertIsArray($columns);
 
-        // Check that we get column metadata arrays
         $column_names = [];
         foreach ($columns as $column) {
             $this->assertIsArray($column);
@@ -446,26 +431,17 @@ class FetchMethodsTest extends DatabaseTestCase
         $result = $this->db->query("SELECT * FROM test_users WHERE name = ?", ['John Doe']);
         $row = $this->db->fetch_assoc($result);
 
-        // Test integer
+        // mysqli hands every column back as a string, so what is asserted is what the value reads as
         $this->assertIsNumeric($row['id']);
         $this->assertIsNumeric($row['age']);
-
-        // Test string
         $this->assertIsString($row['name']);
         $this->assertIsString($row['email']);
-
-        // Test decimal/float
         $this->assertIsNumeric($row['score']);
-
-        // Test boolean (stored as tinyint)
         $this->assertIsNumeric($row['is_active']);
-
-        // Test timestamp
         $this->assertNotEmpty($row['created_at']);
     }
 
     public function testFetchLargeDataSet() {
-        // Insert many records for testing
         for ($i = 1; $i <= 100; $i++) {
             $this->db->insert('test_users', [
                 'name' => "User $i",

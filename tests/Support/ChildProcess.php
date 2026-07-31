@@ -1,40 +1,31 @@
 <?php
 
 /**
- * Runs a snippet of PHP in a process of its own and hands back what it did.
+ * Runs PHP in a process of its own and hands back what it did.
  *
- * Some of what the library does cannot be observed from inside a test: halt_on_errors stops the script,
- * and the debugging console is printed by a shutdown function that only runs when the script ends. Both
- * are the library's most visible behaviour, and testing them in-process is impossible - a test that
- * triggers them takes the test runner with it.
+ * Two kinds of test need this. Anything that ends the script - a deliberate die(), an uncaught exception, a
+ * fatal error - would take the test runner with it in-process; halt_on_errors and the debugging console,
+ * which is printed by a shutdown function, are both of that kind. And anything that has to be watched while
+ * it is still running needs a second process to watch from.
  *
- * So the snippet runs in a child, and what the child leaves behind - its exit status, its output, and
- * whether it reached the end - is what gets asserted.
+ *   ChildProcess::run($script, $env)     starts it, waits for it, returns what it did
+ *   ChildProcess::start($script, $env)   starts it and hands back a handle to watch and kill
+ *
+ * Both take either the path of a PHP file or a snippet of code, plus the environment it runs with.
  */
 class ChildProcess
 {
     /**
-     * The PHP interpreter running this suite, so that a child is always the same version as its parent
+     * The lines a child runs before a snippet it was given. A script given by path brings its own.
+     *
+     * A snippet therefore starts with $db connected to the same database the suite itself uses, and with
+     * the settings a test would otherwise have to repeat every time.
+     *
+     * @return  string
      */
-    private static function interpreter() {
-        return defined('PHP_BINARY') && PHP_BINARY !== '' ? PHP_BINARY : 'php';
-    }
+    private static function preamble() {
 
-    /**
-     * Runs the given code and returns ['status' => int, 'output' => string].
-     *
-     * The snippet is written to a file under tmp/ rather than passed to "php -r", so that it can be
-     * written the way any other PHP is - with the library included and the connection details filled in
-     * from the same settings the suite itself uses.
-     *
-     * @param   string  $code   the body of the script, with $db already connected and $reached_the_end
-     *                          available to write to
-     *
-     * @return  array<string, mixed>
-     */
-    public static function run($code) {
-
-        $script = '<?php' . PHP_EOL
+        return '<?php' . PHP_EOL
             . 'require_once ' . var_export(dirname(__DIR__, 2) . '/Zebra_Database.php', true) . ';' . PHP_EOL
             . '$db = new Zebra_Database();' . PHP_EOL
             . '$db->debug = false;' . PHP_EOL
@@ -44,36 +35,96 @@ class ChildProcess
                 . var_export(TEST_DB_USER, true) . ', '
                 . var_export(TEST_DB_PASS, true) . ', '
                 . var_export(TEST_DB_NAME, true) . ', '
-                . var_export(TEST_DB_PORT, true) . ');' . PHP_EOL
-            . $code . PHP_EOL
-            // the marker is how a test tells "the script ran to the end" from "the script was stopped",
-            // which is the whole point of running it out here
-            . 'echo "[REACHED THE END]";' . PHP_EOL;
+                . var_export(TEST_DB_PORT, true) . ');' . PHP_EOL;
 
-        $path = getTempPath('child') . '/child_' . md5($code) . '.php';
-        file_put_contents($path, $script);
+    }
+
+    /**
+     * The PHP interpreter running this suite, so that a child is always the same version as its parent
+     *
+     * @return  string
+     */
+    private static function interpreter() {
+
+        return PHP_BINARY;
+
+    }
+
+    /**
+     * Works out what to run, writing a temporary script when handed code rather than a path.
+     *
+     * @param   string  $script     the path of a PHP file, or the body of one
+     *
+     * @return  array<string, mixed>    "path" and whether it is "temporary"
+     */
+    private static function resolve($script) {
+
+        if (strpos($script, PHP_EOL) === false && substr($script, -4) === '.php' && is_file($script)) {
+            return ['path' => $script, 'temporary' => false];
+        }
+
+        $path = getTempPath('child') . '/child_' . md5($script) . '.php';
+
+        // the marker at the end is how a test tells "ran to completion" from "was stopped part way"
+        file_put_contents($path, self::preamble() . $script . PHP_EOL . 'echo "[REACHED THE END]";' . PHP_EOL);
+
+        return ['path' => $path, 'temporary' => true];
+
+    }
+
+    /**
+     * Starts a child and returns straight away.
+     *
+     * @param   string                  $script     the path of a PHP file, or the body of one
+     * @param   array<string, string>   $env        added on top of the environment phpunit was started with
+     *
+     * @return  ChildProcessHandle
+     */
+    public static function start($script, $env = []) {
+
+        $resolved = self::resolve($script);
 
         $descriptors = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
-        $process = proc_open(escapeshellarg(self::interpreter()) . ' ' . escapeshellarg($path), $descriptors, $pipes);
+
+        // "exec" so that the shell replaces itself with PHP - without it proc_open() runs the command through
+        // "/bin/sh -c" and this handle holds the shell, so proc_terminate() signals that and leaves PHP running
+        $process = proc_open(
+            'exec ' . escapeshellarg(self::interpreter()) . ' ' . escapeshellarg($resolved['path']),
+            $descriptors,
+            $pipes,
+            null,
+            // proc_open() drops entries whose value is an empty string - the child sees those as never set
+            array_merge(getenv(), $env)
+        );
 
         if (!is_resource($process)) {
-            unlink($path);
+            if ($resolved['temporary']) unlink($resolved['path']);
             throw new RuntimeException('Could not start a child PHP process');
         }
 
-        $output = stream_get_contents($pipes[1]) . stream_get_contents($pipes[2]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
+        // reading either pipe blocks until the child closes it, which for a child still running is never
+        stream_set_blocking($pipes[1], false);
+        stream_set_blocking($pipes[2], false);
 
-        $status = proc_close($process);
+        return new ChildProcessHandle($process, $pipes, $resolved['temporary'] ? $resolved['path'] : null);
 
-        unlink($path);
+    }
 
-        return [
-            'status'            => $status,
-            'output'            => $output,
-            'reached_the_end'   => strpos($output, '[REACHED THE END]') !== false,
-        ];
+    /**
+     * Runs a child to completion and returns what became of it.
+     *
+     * @param   string                  $script     the path of a PHP file, or the body of one
+     * @param   array<string, string>   $env        added on top of the environment phpunit was started with
+     *
+     * @return  array<string, mixed>    "status", "output" and "reached_the_end"
+     */
+    public static function run($script, $env = []) {
+
+        $handle = self::start($script, $env);
+
+        $handle->wait();
+
+        return $handle->status();
 
     }
 }

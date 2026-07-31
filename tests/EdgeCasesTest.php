@@ -3,7 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for Zebra_Database edge cases and error conditions
+ * The awkward values and the awkward moments - NULLs, empty strings, zeroes, unicode, numbers at the edge
+ * of what a column holds, and the methods that have to keep their footing when a query goes wrong.
  */
 class EdgeCasesTest extends DatabaseTestCase
 {
@@ -12,15 +13,14 @@ class EdgeCasesTest extends DatabaseTestCase
         $this->connectToDatabase();
     }
 
-    // SQL injection through replacements is covered in SecurityTest, and through array replacements in
-    // ArrayParameterTest - the two tests that used to stand here were the same payloads run the same way
+    // SQL injection through replacements is SecurityTest's subject, and through array replacements
+    // ArrayParameterTest's
 
     // MEMORY AND RESOURCE TESTS
 
     /**
-     * A value too long for its column is refused rather than quietly cut down to size. This used to assert
-     * one thing or the other depending on whether the server ran in strict mode, so it passed either way
-     * and pinned neither - the bootstrap now requires strict mode, which is what makes one answer correct
+     * A value too long for its column is refused rather than quietly cut down to size. There is one correct
+     * answer here rather than two because the bootstrap requires a server running in strict mode
      */
     public function testAValueTooLongForItsColumnIsRefused() {
         $large_text = str_repeat('A', 10000); // 10KB into a varchar(100)
@@ -37,7 +37,6 @@ class EdgeCasesTest extends DatabaseTestCase
     }
 
     public function testManySmallQueries() {
-        // Test system stability with many small queries
         for ($i = 0; $i < 100; $i++) {
             $result = $this->db->query("SELECT ? as test_value", [$i]);
             $row = $this->db->fetch_assoc($result);
@@ -60,14 +59,13 @@ class EdgeCasesTest extends DatabaseTestCase
             'score' => null
         ]);
 
-        // Test various NULL comparisons
         $result = $this->db->query("SELECT * FROM test_users WHERE email IS NULL");
         $this->assertEquals(1, $this->db->returned_rows);
 
         $result = $this->db->query("SELECT * FROM test_users WHERE age IS NULL");
         $this->assertEquals(1, $this->db->returned_rows);
 
-        // Test NULL in array parameters
+        // and a NULL inside an array replacement
         $result = $this->db->query("SELECT * FROM test_users WHERE email IN (?)", [[null, 'test@example.com']]);
         $this->assertNotFalse($result);
     }
@@ -148,12 +146,12 @@ class EdgeCasesTest extends DatabaseTestCase
         $result = $this->db->query("SELECT * FROM test_users WHERE email = ?", ['float@example.com']);
         $row = $this->db->fetch_assoc($result);
 
-        // MySQL may have limited precision, so we test within reasonable bounds
+        // the column cannot hold every digit of this, so the comparison allows for what it rounds off
         $this->assertEqualsWithDelta($precise_float, (float)$row['score'], 0.01);
     }
 
     public function testLargeIntegerHandling() {
-        $large_int = 2147483647; // Max 32-bit signed integer
+        $large_int = 2147483647; // the largest 32 bit signed integer
 
         $this->db->insert('test_users', [
             'name' => 'Large Int Test',
@@ -183,18 +181,15 @@ class EdgeCasesTest extends DatabaseTestCase
         $this->assertEquals(-123.45, (float)$row['score']);
     }
 
-    // array replacements - empty, single, large and mixed-type - belong to ArrayParameterTest, which tests
-    // all four and rather more thoroughly than the copies that used to sit here
+    // array replacements - empty, single, large and mixed-type - are ArrayParameterTest's subject
 
     // CONNECTION EDGE CASES
 
     public function testQueryAfterConnectionLoss() {
-        // This is difficult to test without actually killing the connection
-        // We'll test the error handling mechanism instead
+        // a connection cannot be pulled out from under the library from in here, so what this exercises is
+        // the path a query takes when the server refuses it
+        $this->db->halt_on_errors = false;
 
-        $this->db->halt_on_errors = false; // Don't halt on errors for this test
-
-        // Try to query a non-existent table
         $result = $this->db->query("SELECT * FROM definitely_nonexistent_table_12345");
 
         $this->assertFalse($result);
@@ -202,7 +197,6 @@ class EdgeCasesTest extends DatabaseTestCase
         $error = $this->db->error();
         $this->assertNotEmpty($error);
 
-        // Reset
         $this->db->halt_on_errors = true;
     }
 
@@ -213,7 +207,6 @@ class EdgeCasesTest extends DatabaseTestCase
 
         $this->db->transaction_start();
 
-        // Successful insert
         $result1 = $this->db->insert('test_users', [
             'name' => 'Transaction Test 1',
             'email' => 'trans1@example.com',
@@ -224,12 +217,10 @@ class EdgeCasesTest extends DatabaseTestCase
         $result2 = $this->db->query("INSERT INTO nonexistent_table VALUES (1, 2, 3)");
         $this->assertFalse($result2);
 
-        // a transaction that had a failing query in it is rolled back and reports failure - both halves
-        // matter, and asserting only that a boolean came back said nothing about either
+        // a transaction with a failed query in it is rolled back, and says so
         $this->assertFalse($this->db->transaction_complete(), "A transaction that had an error has failed");
         $this->assertEquals(0, $this->db->dcount('*', 'test_users'), "The insert before the failure is gone too");
 
-        // Reset error handling
         $this->db->halt_on_errors = true;
     }
 
@@ -239,7 +230,6 @@ class EdgeCasesTest extends DatabaseTestCase
         $dangerous_string = "'; DROP TABLE test_users; --";
         $escaped = $this->db->escape($dangerous_string);
 
-        // The escape method should make the string safe
         $this->assertIsString($escaped);
         $this->assertNotEquals($dangerous_string, $escaped);
     }
@@ -252,8 +242,11 @@ class EdgeCasesTest extends DatabaseTestCase
         $this->assertSame('', $escaped);
     }
 
+    /**
+     * @group regression
+     */
     public function testImplodeHandlesNullsWithoutADeprecation() {
-        // implode() hands each item to escape(), so an array holding a NULL used to reach
+        // implode() hands each item to escape(), so an array holding a NULL reached
         // mysqli_real_escape_string with it
         $this->assertSame("'a','','b'", $this->db->implode(['a', null, 'b']));
     }
@@ -267,7 +260,6 @@ class EdgeCasesTest extends DatabaseTestCase
     // UTILITY METHOD EDGE CASES
 
     public function testImplodeMethod() {
-        // Test with various array types
         $simple_array = [1, 2, 3];
         $result = $this->db->implode($simple_array);
         $this->assertIsString($result);
@@ -335,9 +327,9 @@ class EdgeCasesTest extends DatabaseTestCase
 
         $this->db->halt_on_errors = false;
 
-        $result = $this->db->query("SELECT 1 as test", '', 3600); // Try to cache
+        $result = $this->db->query("SELECT 1 as test", '', 3600);
 
-        // Should break
+        // with nowhere to write the cache the query fails, rather than quietly running uncached
         $this->assertFalse($result);
 
         $this->db->halt_on_errors = true;
@@ -346,14 +338,13 @@ class EdgeCasesTest extends DatabaseTestCase
     // RESOURCE MANAGEMENT EDGE CASES
 
     public function testMultipleResultsHandling() {
+        // two result sets alive at once, each still fetchable from
         $result1 = $this->db->query("SELECT 1 as val");
         $result2 = $this->db->query("SELECT 2 as val");
 
-        // Both results should be valid
         $this->assertNotFalse($result1);
         $this->assertNotFalse($result2);
 
-        // Should be able to fetch from both
         $row1 = $this->db->fetch_assoc($result1);
         $row2 = $this->db->fetch_assoc($result2);
 
@@ -364,8 +355,8 @@ class EdgeCasesTest extends DatabaseTestCase
     // BOUNDARY VALUE TESTING
 
     public function testMaximumFieldLengths() {
-        // Test with maximum typical varchar length (might need adjustment based on schema)
-        $long_string = str_repeat('x', 100); // Adjust based on your field limits
+        // exactly what the column holds, one character less being untested and one more being refused
+        $long_string = str_repeat('x', 100);
 
         $result = $this->db->insert('test_users', [
             'name' => $long_string,
@@ -390,6 +381,8 @@ class EdgeCasesTest extends DatabaseTestCase
      * 'orderXitems' and reports a table that does not exist as existing.
      *
      * "%" is deliberately left unescaped, as matching several tables with it is a supported use.
+     *
+     * @group regression
      */
     public function testTableExistsMatchesUnderscoresLiterally() {
         $this->db->query("DROP TABLE IF EXISTS order_items");

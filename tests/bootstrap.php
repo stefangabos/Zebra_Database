@@ -1,65 +1,61 @@
 <?php
 
 /**
- * Bootstrap file for PHPUnit tests
- * Sets up the test environment and includes necessary classes
+ * Bootstrap for the test suite - loads the library and the support classes, reads the configuration, and
+ * prepares whatever the tests need to exist before they run.
  *
- * Everything here has side effects - it connects, it creates directories, it creates the test database.
- * The settings themselves, and the helpers that read them, live in settings.php so that phpcs and phpstan
- * can learn what exists without any of this running.
+ * PHPUnit is pointed at this file by tests/phpunit.xml.dist.
  */
 
-// include the Zebra_Database class
+// the library under test
 require_once __DIR__ . '/../Zebra_Database.php';
 
-// include support classes
+// support classes (also listed in composer.json under autoload-dev, this is for running phpunit directly)
 require_once __DIR__ . '/Support/DatabaseTestCase.php';
 require_once __DIR__ . '/Support/DatabaseProbe.php';
 require_once __DIR__ . '/Support/ChildProcess.php';
+require_once __DIR__ . '/Support/ChildProcessHandle.php';
 
-// the settings and the helpers - declarations only, no side effects
+// the settings and the helpers - declarations only, no side effects, which is what lets phpcs and phpstan
+// read them without any of the setup below running
 require_once __DIR__ . '/settings.php';
 
-// Ensure tmp directories exist
-if (!is_dir(TEST_TMP_PATH)) {
-    mkdir(TEST_TMP_PATH, 0777, true);
-}
-if (!is_dir(TEST_TMP_PATH . '/cache')) {
-    mkdir(TEST_TMP_PATH . '/cache', 0777, true);
-}
-if (!is_dir(TEST_TMP_PATH . '/logs')) {
-    mkdir(TEST_TMP_PATH . '/logs', 0777, true);
-}
+// the scratch directories - "child" holds the scripts ChildProcess writes. Everything the suite writes goes
+// under here, so that it is all cleaned up together and nothing depends on there being a /tmp
+foreach ([TEST_TMP_PATH, TEST_TMP_PATH . '/cache', TEST_TMP_PATH . '/logs', TEST_TMP_PATH . '/child'] as $path)
+    if (!is_dir($path)) mkdir($path, 0777, true);
 
-// Create test database if it doesn't exist
+register_shutdown_function('cleanupTempFiles');
+
+/* ---------------------------------------------------------------------------------------------------------
+ * DATABASE SETUP
+ *
+ * The fixture tables are created once for the whole run. Each test starts from empty ones - see
+ * resetState() in the base class.
+ * ------------------------------------------------------------------------------------------------------ */
+
 try {
 
     // the port is cast because it arrives as a string from the environment while mysqli wants an integer -
     // the library's own connect() method takes it as a string, which is why the constant is left as one
     $connection = new mysqli(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, '', (int)TEST_DB_PORT);
 
-    if ($connection->connect_error) {
-        throw new Exception('Failed to connect to MySQL: ' . $connection->connect_error);
-    }
+    if ($connection->connect_error) throw new Exception('Could not connect to MySQL: ' . $connection->connect_error);
 
-    // the tables are utf8mb4, so this connection has to be as well - otherwise the rows written here go in
-    // through whatever the server's default happens to be, and the suite would be testing that instead
+    // the tables are utf8mb4, so this connection has to be as well, or the rows written here go in through
+    // whatever the server's default happens to be and the suite ends up testing that instead
     $connection->set_charset('utf8mb4');
 
-    // the suite asserts what MySQL does with a value that does not fit its column, which is one thing under
-    // STRICT_TRANS_TABLES and quite another without it. Rather than writing tests that branch on whichever
-    // server they happen to meet - or quietly changing a setting on the machine this is running on - the
-    // requirement is stated here and checked, so an unsuitable server is reported rather than worked around
+    // what MySQL does with a value too big for its column depends on STRICT_TRANS_TABLES, so the suite
+    // states which it expects and checks for it - a test that branches on the server it meets asserts nothing
     $mode = $connection->query('SELECT @@SESSION.sql_mode AS mode')->fetch_assoc();
 
-    if (strpos($mode['mode'], 'STRICT_TRANS_TABLES') === false && strpos($mode['mode'], 'STRICT_ALL_TABLES') === false) {
+    if (strpos($mode['mode'], 'STRICT_TRANS_TABLES') === false && strpos($mode['mode'], 'STRICT_ALL_TABLES') === false)
         throw new Exception(
             'The server this suite is pointed at does not run in strict mode (sql_mode is "' . $mode['mode'] . '").' . "\n"
             . 'Add STRICT_TRANS_TABLES to sql_mode in the server\'s configuration - it is the default from MySQL 5.7 onwards.'
         );
-    }
 
-    // Create test database
     $connection->query("CREATE DATABASE IF NOT EXISTS `" . TEST_DB_NAME . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
     $connection->select_db(TEST_DB_NAME);
 
@@ -69,7 +65,6 @@ try {
     foreach (['test_products', 'test_categories', 'test_users'] as $table)
         $connection->query('DROP TABLE IF EXISTS `' . $table . '`');
 
-    // Create test tables
     $connection->query("
         CREATE TABLE IF NOT EXISTS `test_users` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -104,11 +99,8 @@ try {
 
     $connection->close();
 
-} catch (Exception $e) {
-    echo "Database setup failed: " . $e->getMessage() . "\n";
-    echo "Please ensure MySQL is running and the test database credentials are correct.\n";
+} catch (Exception $error) {
+    echo 'Database setup failed: ' . $error->getMessage() . "\n";
+    echo "The suite needs a MySQL it can reach with the credentials in tests/phpunit.xml.dist.\n";
     exit(1);
 }
-
-// Register shutdown function to clean up temp files
-register_shutdown_function('cleanupTempFiles');

@@ -1,11 +1,11 @@
 <?php
 
+require_once __DIR__ . '/bootstrap.php';
+
 /**
- * Tests for Zebra_Database caching functionality (Memcache and Redis)
+ * Caching a query's result set, over each of the three backends the library speaks to - memcache, redis
+ * and the disk - covering what is written, what is read back, and what is never cached at all.
  */
-
-require_once 'bootstrap.php';
-
 class CacheTest extends DatabaseTestCase
 {
     protected function setUp(): void {
@@ -27,22 +27,21 @@ class CacheTest extends DatabaseTestCase
         $this->setupMemcacheCache();
         $this->clearCache();
 
-        // First query - should be cached
+        // the first run is what fills the cache
         $this->db->query('SELECT * FROM test_users ORDER BY id', '', 60);
         $result1 = $this->db->fetch_assoc_all();
         $this->assertNotEmpty($result1);
 
-        // Verify cache was created by checking Memcache directly
+        // read straight out of memcache, under the key the library computes
         $memcache = new Memcache();
         $memcache->connect(TEST_MEMCACHE_HOST, TEST_MEMCACHE_PORT);
-        // The cache key format should match what Zebra_Database uses
         $cache_key = md5($this->db->memcache_key_prefix . 'SELECT * FROM test_users ORDER BY id');
         $cached_data = $memcache->get($cache_key);
         $memcache->close();
 
         $this->assertNotFalse($cached_data, 'Data should be cached in Memcache');
 
-        // Second identical query - should come from cache
+        // the same query again, which the cache answers
         $this->db->query('SELECT * FROM test_users ORDER BY id', '', 60);
         $result2 = $this->db->fetch_assoc_all();
         $this->assertEquals($result1, $result2, 'Cached results should match original results');
@@ -56,23 +55,22 @@ class CacheTest extends DatabaseTestCase
         $this->setupRedisCache();
         $this->clearCache();
 
-        // First query - should be cached
+        // the first run is what fills the cache
         $this->db->query('SELECT * FROM test_users ORDER BY id', '', 60);
         $result1 = $this->db->fetch_assoc_all();
         $this->assertNotEmpty($result1);
 
-        // Verify cache was created by checking Redis directly
+        // read straight out of redis, under the key the library computes
         $redis = new Redis();
         $redis->connect(TEST_REDIS_HOST, TEST_REDIS_PORT);
 
-        // The cache key format should match what Zebra_Database uses
         $cache_key = md5($this->db->redis_key_prefix . 'SELECT * FROM test_users ORDER BY id');
         $cached_data = $redis->get($cache_key);
         $redis->close();
 
         $this->assertNotFalse($cached_data, 'Data should be cached in Redis');
 
-        // Second identical query - should come from cache
+        // the same query again, which the cache answers
         $this->db->query('SELECT * FROM test_users ORDER BY id', '', 60);
         $result2 = $this->db->fetch_assoc_all();
         $this->assertEquals($result1, $result2, 'Cached results should match original results');
@@ -87,11 +85,10 @@ class CacheTest extends DatabaseTestCase
         $this->db->memcache_key_prefix = 'custom_prefix_';
         $this->clearCache();
 
-        // Execute query to create cache
         $this->db->query('SELECT COUNT(*) as count FROM test_users', '', 60);
         $this->db->fetch_assoc_all();
 
-        // Check that cache key uses custom prefix
+        // the entry is filed under the prefix that was set, rather than the default one
         $memcache = new Memcache();
         $memcache->connect(TEST_MEMCACHE_HOST, TEST_MEMCACHE_PORT);
 
@@ -111,11 +108,10 @@ class CacheTest extends DatabaseTestCase
         $this->db->redis_key_prefix = 'custom_redis_';
         $this->clearCache();
 
-        // Execute query to create cache
         $this->db->query('SELECT COUNT(*) as count FROM test_users', '', 60);
         $this->db->fetch_assoc_all();
 
-        // Check that cache key uses custom prefix
+        // the entry is filed under the prefix that was set, rather than the default one
         $redis = new Redis();
         $redis->connect(TEST_REDIS_HOST, TEST_REDIS_PORT);
 
@@ -135,12 +131,11 @@ class CacheTest extends DatabaseTestCase
         $this->db->memcache_compressed = true;
         $this->clearCache();
 
-        // Execute query that should create a compressed cache entry
         $this->db->query('SELECT * FROM test_users ORDER BY id', '', 60);
         $result = $this->db->fetch_assoc_all();
         $this->assertNotEmpty($result);
 
-        // Verify cache exists (we can't easily verify compression, but we can verify it works)
+        // the entry is there and readable, which is as far as memcache lets a test look
         $memcache = new Memcache();
         $memcache->connect(TEST_MEMCACHE_HOST, TEST_MEMCACHE_PORT);
 
@@ -154,11 +149,12 @@ class CacheTest extends DatabaseTestCase
     /**
      * redis_compressed asks the redis extension to compress what it is given, the way memcache_compressed
      * asks memcache to. The property was declared and documented but never read by anything, so redis data
-     * was stored exactly the same either way - and the test that used to be here set the property, checked
-     * that *something* had been cached, and passed no matter what.
+     * was stored exactly the same either way.
      *
      * What tells the two apart is the connection's own option, so that is what gets asked. Reading the
      * value back has to keep working either way, since the extension decompresses on the way out.
+     *
+     * @group regression
      */
     public function testRedisCompressionIsAskedOfTheExtension() {
         if (!$this->isRedisAvailable()) {
@@ -197,7 +193,6 @@ class CacheTest extends DatabaseTestCase
         $this->assertTrue($db->lastFromCache(), 'The second read comes from the cache');
         $this->assertEquals($stored, $db->fetch_assoc_all(), 'And gives back what was put in');
 
-        $db->shutdown();
     }
 
     public function testRedisIsNotAskedToCompressUnlessItIsAskedFor() {
@@ -224,7 +219,6 @@ class CacheTest extends DatabaseTestCase
             'The default is to leave the extension alone'
         );
 
-        $db->shutdown();
     }
 
     /**
@@ -262,18 +256,13 @@ class CacheTest extends DatabaseTestCase
         $redis->flushAll();
         $redis->close();
 
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->halt_on_errors = false;
-        $db->cache_path = getTempPath('cache');
-        $db->caching_method = 'redis';
-        $db->redis_host = TEST_REDIS_HOST;
-        $db->redis_port = TEST_REDIS_PORT;
-        $db->redis_key_prefix = 'zebra_test_';
-        $db->redis_compressed = $compressed;
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
-
-        return $db;
+        return $this->probe([
+            'caching_method'    => 'redis',
+            'redis_host'        => TEST_REDIS_HOST,
+            'redis_port'        => TEST_REDIS_PORT,
+            'redis_key_prefix'  => 'zebra_test_',
+            'redis_compressed'  => $compressed,
+        ]);
     }
 
     /**
@@ -303,13 +292,12 @@ class CacheTest extends DatabaseTestCase
         $this->setupMemcacheCache();
         $this->clearCache();
 
-        // Execute different queries
         $this->db->query('SELECT * FROM test_users WHERE age > 25', '', 60);
         $this->db->fetch_assoc_all();
         $this->db->query('SELECT * FROM test_users WHERE age < 35', '', 60);
         $this->db->fetch_assoc_all();
 
-        // Check that both queries created separate cache entries
+        // each statement has an entry of its own, under a key of its own
         $memcache = new Memcache();
         $memcache->connect(TEST_MEMCACHE_HOST, TEST_MEMCACHE_PORT);
 
@@ -333,23 +321,22 @@ class CacheTest extends DatabaseTestCase
         $this->setupRedisCache();
         $this->clearCache();
 
-        // Execute parameterized query
         $this->db->query('SELECT * FROM test_users WHERE age = ?', [30], 60);
         $result1 = $this->db->fetch_assoc_all();
         $this->assertNotEmpty($result1);
 
-        // Same query with different parameter
+        // the same statement with a different replacement is a different query
         $this->db->query('SELECT * FROM test_users WHERE age = ?', [25], 60);
         $result2 = $this->db->fetch_assoc_all();
 
         $this->assertNotEquals($result1, $result2, 'Different parameters should return different results');
 
-        // Same query with same parameter should come from cache
+        // and back to the first replacement, which is the one that was cached
         $this->db->query('SELECT * FROM test_users WHERE age = ?', [30], 60);
         $result3 = $this->db->fetch_assoc_all();
         $this->assertEquals($result1, $result3, 'Same parameterized query should return cached result');
 
-        // Check that both queries created separate cache entries
+        // the key is built from the statement with the replacements already in it
         $redis = new Redis();
         $redis->connect(TEST_REDIS_HOST, TEST_REDIS_PORT);
         $cache_key = md5($this->db->redis_key_prefix . 'SELECT * FROM test_users WHERE age = \'30\'');
@@ -360,24 +347,22 @@ class CacheTest extends DatabaseTestCase
     }
 
     public function testMemcacheConnectionFailure() {
-        // Test graceful handling when Memcache server is not available
         $this->db->caching_method = 'memcache';
         $this->db->memcache_host = 'nonexistent_host';
         $this->db->memcache_port = 99999;
 
-        // Query should still work even if caching fails
+        // a cache that cannot be reached does not take the query down with it
         $this->db->query('SELECT * FROM test_users ORDER BY id LIMIT 1');
         $result = $this->db->fetch_assoc_all();
         $this->assertNotEmpty($result, 'Query should work even when Memcache connection fails');
     }
 
     public function testRedisConnectionFailure() {
-        // Test graceful handling when Redis server is not available
         $this->db->caching_method = 'redis';
         $this->db->redis_host = 'nonexistent_host';
         $this->db->redis_port = 99999;
 
-        // Query should still work even if caching fails
+        // a cache that cannot be reached does not take the query down with it
         $this->db->query('SELECT * FROM test_users ORDER BY id LIMIT 1');
         $result = $this->db->fetch_assoc_all();
         $this->assertNotEmpty($result, 'Query should work even when Redis connection fails');
@@ -390,21 +375,18 @@ class CacheTest extends DatabaseTestCase
         $path = getTempPath('cache');
         array_map('unlink', glob($path . '/*'));
 
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->halt_on_errors = false;
-        $db->caching_method = 'disk';
-        $db->cache_path = $path;
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
+        $db = $this->probe(['caching_method' => 'disk', 'cache_path' => $path]);
 
         return $db;
     }
 
     /**
      * Only queries that return a result set are cached. Passing a cache lifetime to an INSERT, UPDATE
-     * or DELETE caches nothing, so such a query has to report that it was not served from cache - the
-     * flag used to be set optimistically as soon as caching was asked for and only cleared inside the
-     * branch that caches result sets, which action queries never reach.
+     * or DELETE caches nothing, so such a query has to report that it was not served from cache - the flag
+     * was set optimistically as soon as caching was asked for and cleared only inside the branch that
+     * caches result sets, which an action query never reaches.
+     *
+     * @group regression
      */
     public function testActionQueriesAreNotReportedAsComingFromCache() {
         $db = $this->diskCachingProbe();
@@ -421,7 +403,6 @@ class CacheTest extends DatabaseTestCase
         $db->query("INSERT INTO test_users (name, email, age) VALUES ('Cached Action', 'ca@example.com', 20)", '', 60);
         $this->assertFalse($db->lastFromCache(), 'Neither is an insert');
 
-        $db->shutdown();
     }
 
     /**
@@ -442,18 +423,19 @@ class CacheTest extends DatabaseTestCase
         $this->assertNotFalse(@gzuncompress($content), 'The file holds compressed data');
         $this->assertIsArray(@unserialize(gzuncompress($content)), 'And that uncompresses to the rows');
 
-        $db->shutdown();
     }
 
     /**
-     * Cache files written before the library learned to leave the compressing to the caching server are all
-     * compressed, whatever the settings said. Reading has to cope with both shapes - a changed setting, or an
-     * upgrade, is no reason to hand the caller a miss or, worse, a warning
+     * A cache file left behind by an older version is compressed whatever the settings say, since leaving
+     * the compressing to the caching server came later. Reading copes with both shapes - a changed setting,
+     * or an upgrade, is no reason to hand the caller a miss or, worse, a warning
+     *
+     * @group regression
      */
     public function testACacheWrittenTheOldWayIsStillRead() {
         $db = $this->diskCachingProbe();
 
-        // what an older version of the library would have left behind: always compressed
+        // a file in the shape an older version of the library wrote: compressed, whatever the settings
         $rows = [['id' => '1', 'name' => 'Written by an older version'], ['returned_rows' => 1, 'found_rows' => 0, 'column_info' => []]];
 
         file_put_contents(
@@ -469,11 +451,12 @@ class CacheTest extends DatabaseTestCase
         $this->assertTrue($db->lastFromCache(), 'The old file is a hit rather than a miss');
         $this->assertSame('Written by an older version', $db->fetch_assoc()['name']);
 
-        $db->shutdown();
     }
 
     /**
-     * And the observable half of the same thing - a cached action query really does run every time.
+     * The observable half of the same thing - a cached action query really does run every time
+     *
+     * @group regression
      */
     public function testCachedActionQueriesStillExecuteEveryTime() {
         $db = $this->diskCachingProbe();
@@ -490,6 +473,5 @@ class CacheTest extends DatabaseTestCase
         $this->assertEquals(4, (int)$row['id'], 'Each of the three updates must have run - 1 + 3');
 
         $db->query('DROP TABLE test_counter');
-        $db->shutdown();
     }
 }

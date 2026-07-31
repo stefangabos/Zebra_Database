@@ -3,8 +3,8 @@
 require_once __DIR__ . '/bootstrap.php';
 
 /**
- * Test suite for the methods that inspect or maintain the schema rather than the data -
- * get_tables(), get_table_columns(), get_table_status(), optimize() and truncate()
+ * The methods that look at the schema rather than at the data - get_tables(), get_table_columns(),
+ * get_table_status(), optimize() and truncate()
  */
 class SchemaMethodsTest extends DatabaseTestCase
 {
@@ -12,18 +12,6 @@ class SchemaMethodsTest extends DatabaseTestCase
         parent::setUp();
         $this->connectToDatabase();
         $this->insertTestData();
-    }
-
-    /**
-     * A debugging instance, so that the statements the library sends can be read back
-     */
-    private function probe() {
-        $db = new DatabaseProbe();
-        $db->debug = true;
-        $db->halt_on_errors = false;
-        $db->cache_path = getTempPath('cache');
-        $db->connect(TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASS, TEST_DB_NAME, TEST_DB_PORT);
-        return $db;
     }
 
     // GET_TABLES
@@ -49,6 +37,8 @@ class SchemaMethodsTest extends DatabaseTestCase
     /**
      * SHOW TABLES IN <unknown database> fails, so fetch_assoc_all() returns FALSE - the method used to
      * iterate over that FALSE and warn
+     *
+     * @group regression
      */
     public function testGetTablesReturnsAnEmptyArrayForAnUnknownDatabase() {
         $this->db->halt_on_errors = false;
@@ -130,6 +120,8 @@ class SchemaMethodsTest extends DatabaseTestCase
     /**
      * The table name ends up in a LIKE pattern, where "_" stands for any single character - so asking for
      * "test_users" used to return "testXusers" as well
+     *
+     * @group regression
      */
     public function testGetTableStatusDoesNotTreatUnderscoresAsWildcards() {
         $this->db->query('DROP TABLE IF EXISTS testXusers');
@@ -151,6 +143,8 @@ class SchemaMethodsTest extends DatabaseTestCase
     /**
      * optimize() picks the tables to work on through get_table_status(), so it used to optimize
      * anything the underscore wildcard happened to match as well
+     *
+     * @group regression
      */
     public function testOptimizeDoesNotTreatUnderscoresAsWildcards() {
         $this->db->query('DROP TABLE IF EXISTS testXusers');
@@ -159,7 +153,6 @@ class SchemaMethodsTest extends DatabaseTestCase
         $db = $this->probe();
         $db->optimize('test_users');
         $optimized = $this->optimizedTables($db);
-        $db->shutdown();
 
         $this->db->query('DROP TABLE testXusers');
 
@@ -185,7 +178,6 @@ class SchemaMethodsTest extends DatabaseTestCase
         $this->assertContains('test_products', $optimized);
         $this->assertContains('test_categories', $optimized);
 
-        $db->shutdown();
     }
 
     public function testOptimizeCanBeNarrowedToASingleTable() {
@@ -195,7 +187,6 @@ class SchemaMethodsTest extends DatabaseTestCase
 
         $this->assertSame(['test_users'], $this->optimizedTables($db));
 
-        $db->shutdown();
     }
 
     public function testOptimizeAcceptsAPercentWildcard() {
@@ -205,7 +196,6 @@ class SchemaMethodsTest extends DatabaseTestCase
 
         $this->assertSame(['test_categories'], $this->optimizedTables($db));
 
-        $db->shutdown();
     }
 
     public function testOptimizeRunsNothingWhenNoTableMatches() {
@@ -216,7 +206,6 @@ class SchemaMethodsTest extends DatabaseTestCase
         $this->assertSame([], $this->optimizedTables($db));
         $this->assertSame([], $db->errors(), 'Matching no table is not an error');
 
-        $db->shutdown();
     }
 
     public function testOptimizeAcceptsADatabaseQualifiedTable() {
@@ -230,11 +219,6 @@ class SchemaMethodsTest extends DatabaseTestCase
         // qualified in, qualified out
         $this->assertSame(TEST_DB_NAME . '.test_users', $optimized[0]);
 
-        $db->shutdown();
-    }
-
-    public function testOptimizeReturnsNothing() {
-        $this->assertNull($this->db->optimize('test_users'));
     }
 
     /**
