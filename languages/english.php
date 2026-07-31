@@ -8,7 +8,7 @@
     *
     */
 
-    $this->language = array(
+    return array(
 
         'affected_rows'                         => 'affected rows',
         'backtrace'                             => 'backtrace',

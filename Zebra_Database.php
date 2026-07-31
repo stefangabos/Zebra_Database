@@ -3065,8 +3065,9 @@ class Zebra_Database {
      */
     public function language($language) {
 
-        // include the language file
-        require $this->path . '/languages/' . $language . '.php';
+        // the language files return their messages
+        $messages = require $this->path . '/languages/' . $language . '.php';
+        if (is_array($messages)) $this->language = $messages;
 
     }
 

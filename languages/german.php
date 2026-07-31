@@ -9,7 +9,7 @@
     *
     */
 
-    $this->language = array(
+    return array(
 
         'affected_rows'                         => 'Betroffene Zeilen',
         'backtrace'                             => 'Ablaufverfolgung',
