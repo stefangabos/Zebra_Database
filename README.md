@@ -55,9 +55,9 @@ Your support is greatly appreciated and it keeps me motivated continue working o
 
 ## Requirements
 
-PHP 7.3.0+ with the **mysqli extension** activated, MySQL 4.1.22+
+PHP 7.4.0+ with the **mysqli extension** activated, MySQL 4.1.22+
 
-> The library itself still runs on PHP 5.5 and newer, and this is verified on every change with [PHPCompatibility](https://github.com/PHPCompatibility/PHPCompatibility) via `composer check-compat-legacy`. The supported version is given as 7.3 because that is the oldest version the test suite can actually run on, and *supported* should mean *tested*. If you are on PHP 5.5 to 7.2 the library will very likely work, but you are on your own.
+> The library itself still runs on PHP 5.6.40 and newer, and this is verified on every change with [PHPCompatibility](https://github.com/PHPCompatibility/PHPCompatibility) via `composer check-compat-legacy`, and by linting and smoke-testing it on a real PHP 5.6.40 via `tests/run-legacy.sh`. The supported version is given as 7.4 because that is the oldest version the test suite runs on, and *supported* should mean *tested*. If you are on PHP 5.6.40 to 7.3 the library will very likely work, but you are on your own.
 
 For using **memcache** as caching method, PHP must have the [memcache](https://pecl.php.net/package/memcache) extension installed. The [memcache_compressed](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$memcache_compressed) property, which hands the compressing over to memcache instead of doing it in the library, additionally requires that extension to have been built with zlib support
 
@@ -202,8 +202,18 @@ you want while working on something:
 tests/run-tests.sh --testdox                    # readable output, tests only
 tests/run-tests.sh --filter dcount              # only tests matching "dcount"
 tests/run-tests.sh CacheTest.php                # a single file
+tests/run-tests.sh --group regression           # every test guarding a past fix
 tests/run-tests.sh --filter dcount --static     # the checks as well
 PHP=/path/to/php7.4/bin/php tests/run-tests.sh  # a specific interpreter
+```
+
+The suite needs PHP 7.4 or newer. The library goes back further than that, and `tests/run-legacy.sh` is
+what backs that claim up - it lints everything that ships and round-trips a row on a real PHP 5.6.40 in a
+container, against a MySQL of its own, so it needs Docker running:
+
+```bash
+tests/run-legacy.sh         # lint, then the smoke test
+tests/run-legacy.sh --lint  # the lint alone, which needs no database
 ```
 
 The three checks are also available on their own, and those are the ones to reach for while working
@@ -227,7 +237,7 @@ memcached -p 11211 -m 64 &
 Two of those go further and skip unless the redis extension was built with `--enable-redis-lzf`, since what
 they check is that compression is handed over to the extension rather than done twice. All of them run on
 every push through [GitHub Actions](https://github.com/stefangabos/Zebra_Database/actions/workflows/tests.yml),
-against PHP 7.3 through 8.5 with both servers alongside.
+against PHP 7.4 through 8.5 with both servers alongside.
 
 Coverage is not produced on an ordinary run. Asking for it requires either
 [pcov](https://github.com/krakjoe/pcov) or [Xdebug](https://xdebug.org/) to be installed - without one of
