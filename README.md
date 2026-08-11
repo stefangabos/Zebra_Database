@@ -55,9 +55,9 @@ Your support is greatly appreciated and it keeps me motivated continue working o
 
 ## Requirements
 
-PHP 7.4.0+ with the **mysqli extension** activated, MySQL 4.1.22+
+PHP 5.5.38+ with the **mysqli extension** activated, MySQL 4.1.22+
 
-> The library itself still runs on PHP 5.6.40 and newer, and this is verified on every change with [PHPCompatibility](https://github.com/PHPCompatibility/PHPCompatibility) via `composer check-compat-legacy`, and by linting and smoke-testing it on a real PHP 5.6.40 via `tests/run-legacy.sh`. The supported version is given as 7.4 because that is the oldest version the test suite runs on, and *supported* should mean *tested*. If you are on PHP 5.6.40 to 7.3 the library will very likely work, but you are on your own.
+> Composer declares 7.4 as the minimum - the oldest PHP the test suite is actually run on. The library itself still works on 5.5.38, checked on every change with [PHPCompatibility](https://github.com/PHPCompatibility/PHPCompatibility) via `composer check-compat-legacy`, and by linting and smoke-testing it on a real PHP 5.5.38 via `tests/run-legacy.sh`. If you are on a PHP older than 7.4, install by downloading the release rather than through Composer.
 
 For using **memcache** as caching method, PHP must have the [memcache](https://pecl.php.net/package/memcache) extension installed. The [memcache_compressed](https://stefangabos.github.io/Zebra_Database/Zebra_Database/Zebra_Database.html#var$memcache_compressed) property, which hands the compressing over to memcache instead of doing it in the library, additionally requires that extension to have been built with zlib support
 
@@ -208,7 +208,7 @@ PHP=/path/to/php7.4/bin/php tests/run-tests.sh  # a specific interpreter
 ```
 
 The suite needs PHP 7.4 or newer. The library goes back further than that, and `tests/run-legacy.sh` is
-what backs that claim up - it lints everything that ships and round-trips a row on a real PHP 5.6.40 in a
+what backs that claim up - it lints everything that ships and round-trips a row on a real PHP 5.5.38 in a
 container, against a MySQL of its own, so it needs Docker running:
 
 ```bash
