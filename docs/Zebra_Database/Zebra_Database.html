@@ -70,7 +70,7 @@ I have a few other projects that you might be interested in — <a href="https:/
 </ul>
 <h4>Version:</h4>
 <ul>
-<li>3.0.0 (last revision: July 28, 2026)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
+<li>3.0.0 (last revision: July 29, 2026)<br>See <a href="https://github.com/stefangabos/Zebra_Database/blob/master/CHANGELOG.md" class="projects-homepage">CHANGELOG</a></li>
 </ul>
 <h4>License:</h4>
 <ul>
@@ -1795,7 +1795,7 @@ array<string>
 <h4 id="methodget_table_columns" class="method"><span><em>method</em></span> get_table_columns()</h4>
 <div class="doc_block">
 <p class="code">
-array<string>
+array<mixed>
 <span class="src-var">get_table_columns</span>
 (
 <span class="src-key">string</span>
@@ -1818,7 +1818,7 @@ array<string>
 <table>
 <tr>
 <td><strong>return:</strong>&nbsp;&nbsp;</td>
-<td>Returns information about the columns of a given table as an associative array.</td>
+<td>Returns information about the columns of a given table as an associative array, keyed by                           column name - each entry being the row <code>SHOW COLUMNS</code> gives for it and where <code>Default</code>                           is <code>NULL</code> when the column has no default. Returns <code>FALSE</code> when the table cannot be described.</td>
 </tr>
 <tr>
 <td><strong>since:</strong>&nbsp;&nbsp;</td>
@@ -3208,7 +3208,8 @@ boolean
 </tr>
 </table>
 <div id="doc_footer">
-Documentation generated on <span>Wed, 29 July 2026</span>
+Documentation generated on <span>Thu, 17 September 2026</span>
+<p class="doc_author">I also build fast, custom-coded one-page websites for small businesses at <a href="https://pagedrop.pro/">PageDrop.pro</a></p>
 </div>
 </div>
 <!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-0301ZD47Q7"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-0301ZD47Q7');</script></body>
