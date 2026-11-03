@@ -10,7 +10,7 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Database here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    3.0.0 (last revision: July 29, 2026)
+ *  @version    3.0.1 (last revision: November 03, 2026)
  *  @copyright  © 2006 - 2026 Stefan Gabos
  *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_Database
@@ -818,6 +818,17 @@ class Zebra_Database {
      *  @access private
      */
     private $log_path_is_function;
+
+    /**
+     *  Queries longer than this many characters are shown as they are in the debugging console and in the debug log
+     *  instead of being pretty-printed.
+     *
+     *  Pretty-printing a very long query can take longer than the request is allowed to run.
+     *
+     *  @var integer
+     *  @access private
+     */
+    private $max_formatted_query_length = 20000;
 
     /**
      *  A flag telling the script whether it was called from CLI or in the browser
@@ -5144,7 +5155,7 @@ class Zebra_Database {
                             if (isset($debug_info['query']))
 
                                 // format and highlight query
-                                $debug_info['query'] = class_exists('SqlFormatter') ? SqlFormatter::format($debug_info['query']) : $debug_info['query'];
+                                $debug_info['query'] = class_exists('SqlFormatter') && strlen($debug_info['query']) <= $this->max_formatted_query_length ? SqlFormatter::format($debug_info['query']) : $debug_info['query'];
 
                             // all blocks are enclosed in tables
                             $output .= '
@@ -6109,7 +6120,7 @@ class Zebra_Database {
                         $output =
 
                             // query
-                            "\n" . html_entity_decode(strip_tags(class_exists('SqlFormatter') ? SqlFormatter::format($debug_info['query']) : $debug_info['query'])) . "\n" .
+                            "\n" . html_entity_decode(strip_tags(class_exists('SqlFormatter') && strlen($debug_info['query']) <= $this->max_formatted_query_length ? SqlFormatter::format($debug_info['query']) : $debug_info['query'])) . "\n" .
 
                             // date
                             (!$is_cli_request ? $labels[0] . str_pad('', $longest_label_length - $this->_strlen($labels[0]), ' ', STR_PAD_RIGHT) . ': ' . @date('Y-m-d H:i:s') . "\n" : '') .
