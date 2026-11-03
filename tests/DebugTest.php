@@ -236,6 +236,56 @@ class DebugTest extends DatabaseTestCase {
         $this->db->debug = false;
     }
 
+    /**
+     * A very long query is shown as it is in the debugging console instead of being pretty-printed.
+     *
+     * Formatting a query of hundreds of kilobytes, like a big bulk insert, took longer than the request was
+     * allowed to run, and the page died in SqlFormatter with "Maximum execution time exceeded" while drawing
+     * the console. Past the limit the query text goes out untouched, so it appears in one piece; a short query
+     * next to it is still formatted.
+     *
+     * @group regression
+     */
+    public function testVeryLongQueriesAreNotFormattedInTheConsole() {
+        $long_value = str_repeat('x', 25000);
+
+        $this->db->debug = true;
+        $this->db->query("SELECT 'short query' AS short_value");
+        $this->db->query("SELECT '" . $long_value . "' AS long_value");
+
+        ob_start();
+        $this->db->_show_debugging_console();
+        $output = ob_get_clean();
+
+        // unformatted, the long query keeps its "SELECT '" and the value glued together
+        $this->assertStringContainsString("SELECT '" . $long_value . "'", $output);
+
+        // formatted, the keyword of the short query is wrapped in markup
+        $this->assertStringNotContainsString("SELECT 'short query'", $output);
+        $this->assertStringContainsString('short query', $output);
+
+        $this->db->debug = false;
+    }
+
+    /**
+     * The same limit applies to queries written to the debug log.
+     *
+     * @group regression
+     */
+    public function testVeryLongQueriesAreNotFormattedInTheLog() {
+        $long_value = str_repeat('x', 25000);
+
+        $this->db->log_path = $this->test_log_dir . '/long.log';
+        $this->db->debug = [false, false, false];
+        $this->db->query("SELECT '" . $long_value . "' AS long_value");
+
+        $this->db->_show_debugging_console();
+
+        $this->assertStringContainsString("SELECT '" . $long_value . "' AS long_value", file_get_contents($this->test_log_dir . '/long.log'));
+
+        $this->db->debug = false;
+    }
+
     public function testDebugArrayDoesNotLogWhenDebugIsNotArray() {
         $this->db->log_path = $this->test_log_dir . '/should-not-exist.log';
         $this->db->debug = true;
