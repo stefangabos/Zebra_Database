@@ -911,6 +911,7 @@ class Zebra_Database {
      *  -   1, a transaction is in progress
      *  -   2, a transaction is in progress but an error occurred with one of the queries
      *  -   3, transaction is run in test mode and it will be rolled back upon completion
+     *  -   4, transaction is run in test mode, it will be rolled back upon completion, and an error occurred with one of the queries
      *
      *  @var int
      *  @access private
@@ -3597,11 +3598,12 @@ class Zebra_Database {
 
             }
 
-            // if no test transaction, query was unsuccessful and a transaction is in progress
-            if ($this->transaction_status !== 3 && !$this->last_result && $this->transaction_status !== 0)
+            // if query was unsuccessful and a transaction is in progress
+            if (!$this->last_result && $this->transaction_status !== 0)
 
-                // set transaction_status to 2 so that the transaction_commit know that it has to rollback
-                $this->transaction_status = 2;
+                // set transaction_status to 2 so that the transaction_commit know that it has to rollback,
+                // or to 4 for a test transaction, so that it knows the test failed
+                $this->transaction_status = ($this->transaction_status === 3 || $this->transaction_status === 4 ? 4 : 2);
 
         }
 
@@ -4421,7 +4423,9 @@ class Zebra_Database {
      *
      *  @since  2.1
      *
-     *  @return boolean     Returns `TRUE` on success or `FALSE` on error
+     *  @return boolean     Returns `TRUE` on success or `FALSE` on error. For a transaction started in "test mode",
+     *                      returns `TRUE` if all the queries were valid or `FALSE` if any of them failed - either way,
+     *                      the queries are rolled back
      */
     public function transaction_complete() {
 
@@ -4431,9 +4435,9 @@ class Zebra_Database {
         if ($this->transaction_status !== 0) {
 
             // if this was a test transaction or there was an error with one of the queries in the transaction
-            if ($this->transaction_status === 3 || $this->transaction_status === 2) {
+            if ($this->transaction_status === 2 || $this->transaction_status === 3 || $this->transaction_status === 4) {
 
-                // remember which of the two it was, as the flag is about to be reset
+                // remember if it was a test transaction with no errors, as the flag is about to be reset
                 $is_test_transaction = $this->transaction_status === 3;
 
                 // rollback changes
@@ -4442,7 +4446,7 @@ class Zebra_Database {
                 // set flag so that the query method will know that no transaction is in progress
                 $this->transaction_status = 0;
 
-                // if it was a test transaction return TRUE or FALSE otherwise
+                // if it was a test transaction with no errors return TRUE or FALSE otherwise
                 return $is_test_transaction;
 
             }
