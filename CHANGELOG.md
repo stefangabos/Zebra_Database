@@ -1,6 +1,7 @@
 ## version 3.0.1 (TBA)
 
 - very long queries are no longer pretty-printed in the debugging console and in the debug log, where formatting them could take longer than the request was allowed to run
+- fixed an issue where `transaction_complete` now returns `FALSE` for a test transaction in which a query failed, as it does for a real one; it previously returned `TRUE` for any test transaction, as a failed query was never recorded while in test mode
 
 ## version 3.0.0 (July 29, 2026)
 
