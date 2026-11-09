@@ -120,12 +120,13 @@ class TransactionTest extends DatabaseTestCase
     }
 
     /**
-     * A test transaction is deliberately never marked as failed - the query method skips that when a test
-     * transaction is in progress, since it is going to be rolled back either way. So the return value says
-     * that the test ran and kept nothing, not that every query in it worked. A failing query reports itself
-     * at the point it fails.
+     * A test transaction says whether every query in it worked, as a real one does, so that a dry run can tell a
+     * change that would go through from one that would not - it is rolled back either way. A failing query was
+     * never recorded while in test mode, so completing a test transaction reported success whatever happened.
+     *
+     * @group regression
      */
-    public function testATestTransactionReportsSuccessEvenWithAFailingQuery() {
+    public function testATestTransactionReportsAFailingQuery() {
         $this->db->halt_on_errors = false;
 
         $this->db->transaction_start(true);
@@ -137,7 +138,7 @@ class TransactionTest extends DatabaseTestCase
         );
         $this->assertStringContainsString('no_such_table', $this->db->error());
 
-        $this->assertTrue($this->db->transaction_complete());
+        $this->assertFalse($this->db->transaction_complete(), 'A test transaction with a failing query is not a success');
         $this->assertSame(0, $this->rows());
     }
 
